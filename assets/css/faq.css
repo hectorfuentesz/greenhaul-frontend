@@ -1,0 +1,59 @@
+/* ================================================================= */
+/* ===== ESTILOS PARA LA PÁGINA DE PREGUNTAS FRECUENTES (FAQ) ===== */
+/* ================================================================= */
+
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-left: 5px solid transparent;
+  transition: border-left-color 0.3s ease;
+}
+
+.faq-item:hover {
+  border-left-color: var(--accent-green);
+}
+
+.faq-question {
+  padding: 20px 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.faq-question .icon {
+  font-size: 1.2rem;
+  color: var(--primary-solid);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.faq-item.active .faq-question .icon {
+  transform: rotate(45deg);
+  color: var(--accent-green);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+.faq-answer p {
+  padding: 0 30px 20px 30px;
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+}

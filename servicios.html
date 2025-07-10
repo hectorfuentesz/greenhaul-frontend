@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>greenhauL - Mudanzas Sostenibles</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="container navbar-content">
+        <a href="index.html" class="logo">
+        <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
+    </a>
+            <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse" id="navbarCollapse">
+                <ul class="nav-links-list">
+                    <li><a href="index.html" class="nav-link active">Inicio</a></li>
+                    <li><a href="productos.html" class="nav-link">Productos</a></li>
+                    <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                    <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                    <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                    <li><a href="faq.html" class="nav-link">Preguntas</a></li>
+                </ul>
+                <div class="navbar-right-items">
+                <div class="navbar-user-actions" id="navbarUserActions">
+                        <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                        <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+                        <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                    <div class="nav-icons">
+                        <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <main class="page-content">
+        <section class="section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Nuestros <span class="highlight-sostenible">Servicios</span></h2>
+                    <p>Soluciones adicionales para hacer tu mudanza aún más fácil y libre de estrés.</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">👐</div>
+                        <h3>Embalaje Profesional</h3>
+                        <p>Nuestro equipo de expertos se encarga de empacar todas tus pertenencias de forma rápida, eficiente y segura.</p>
+                        <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">🛠️</div>
+                        <h3>Montaje de Muebles</h3>
+                        <p>Desarmamos tus muebles en el domicilio antiguo y los volvemos a armar en el nuevo hogar, ahorrándote tiempo y esfuerzo.</p>
+                        <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">🏢</div>
+                        <h3>Almacenamiento Temporal</h3>
+                        <p>Ofrecemos bodegas seguras y accesibles para guardar tus pertenencias por semanas o meses si lo necesitas.</p>
+                        <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">♻️</div>
+                        <h3>Retiro de Sobrantes</h3>
+                        <p>Al finalizar, recogemos el material de embalaje usado y otros artículos que quieras donar o desechar de forma ecológica.</p>
+                        <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
+                    </div>
+
+                    <div class="service-card">
+                        <div class="service-icon">🔌</div>
+                        <h3>Conexión de Aparatos</h3>
+                        <p>Un servicio básico para conectar tus electrodomésticos esenciales como refrigerador y lavadora en tu nuevo hogar.</p>
+                        <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+    <div class="container footer-content">
+        <div class="footer-info">
+            <h3>greenhauL</h3>
+            <p>Mudanzas sostenibles, sin complicaciones.</p>
+            <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
+            <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
+        </div>
+        <div class="footer-links">
+            <h3>Enlaces Rápidos</h3>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="servicios.html">Servicios</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </div>
+        <div class="footer-social-links">
+            <h3>Síguenos</h3>
+            <div class="social-icons-wrapper">
+                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+    </div>
+</footer>
+    
+    <div class="cart-modal-overlay" id="cartModalOverlay">
+        <div class="cart-modal"><div class="cart-modal-header"><h2>Tu Carrito</h2><button class="close-modal-btn" id="closeCartModalBtn">&times;</button></div><div class="cart-modal-body" id="cartItemsContainer"></div><div class="cart-modal-footer"><div class="cart-summary"><p>Subtotal: <span id="cartSubtotal">$0.00</span></p><p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p><h3>Total: <span id="cartTotal">$0.00</span></h3></div><div class="cart-footer-buttons"><button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button><a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a></div></div></div>
+    </div>
+    <div class="cart-notification" id="cartNotification"><div class="notification-content"><div class="notification-icon-wrapper"><span class="notification-icon"></span></div><p id="notificationText"></p></div></div>
+    
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

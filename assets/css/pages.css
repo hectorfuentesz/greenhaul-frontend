@@ -1,0 +1,300 @@
+/* ======================================================= */
+/* ===== ESTILOS "SLICK" V2 PARA "NOSOTROS" (CON MÁS COLOR) ===== */
+/* ======================================================= */
+
+/* Tema oscuro para esta página */
+body.dark-theme {
+  background-color: #12181F; /* Un azul muy oscuro en lugar de negro puro */
+  color: #e0e0e0;
+}
+/* CAMBIO: Los títulos de sección ahora usan el color verde de acento */
+body.dark-theme .section-title h2 {
+  color: var(--accent-green);
+}
+body.dark-theme .section-title p {
+  color: rgba(255, 255, 255, 0.7);
+}
+body.dark-theme .navbar {
+  background: rgba(18, 24, 31, 0.8);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+body.dark-theme .logo,
+body.dark-theme .nav-link {
+  color: #ffffff;
+}
+body.dark-theme .footer {
+  background-color: #0D1117;
+  border-top: 1px solid #333;
+}
+
+/* Hero Banner con colores más intensos */
+.about-hero-slick {
+  position: relative;
+  padding: 140px 0;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-background-animation {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  /* CAMBIO: Opacidad de los gradientes aumentada para más color */
+  background: radial-gradient(circle at 15% 25%, hsla(158, 100%, 50%, 0.35), transparent 40%),
+              radial-gradient(circle at 85% 65%, hsla(217, 79%, 66%, 0.3), transparent 40%);
+  animation: floating-lights 15s infinite ease-in-out;
+  z-index: 0;
+}
+@keyframes floating-lights {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-20px, 20px) scale(1.1); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.about-hero-slick .container { position: relative; z-index: 1; }
+/* CAMBIO: El título principal ahora usa el gradiente de la marca */
+.about-hero-slick h1 {
+  font-size: 4.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  background-image: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.about-hero-slick p {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* Sección de Impacto con bordes de color */
+.impact-section-slick {
+  background-color: transparent;
+  padding: 100px 0;
+}
+.impact-grid-slick {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+.impact-card-slick {
+  background: rgba(30, 38, 51, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 40px 20px;
+  border-radius: var(--border-radius);
+  text-align: center;
+  /* CAMBIO: Borde superior con el gradiente de la marca */
+  border-top: 3px solid;
+  border-image: var(--gradient-primary) 1;
+  transition: transform 0.3s;
+}
+.impact-card-slick:hover {
+  transform: translateY(-5px);
+}
+.impact-icon-slick {
+  font-size: 3rem;
+  color: var(--accent-green);
+  margin-bottom: 20px;
+}
+.impact-card-slick h3 { font-size: 3.5rem; color: white; margin-bottom: 5px; }
+.impact-card-slick p { font-size: 1.1rem; color: rgba(255, 255, 255, 0.7); margin: 0; }
+
+/* Sección de Equipo con más color */
+.team-section-slick { padding-bottom: 120px; }
+.team-grid-slick {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+}
+.team-card-slick {
+  text-align: center;
+  transition: transform 0.3s;
+}
+.team-card-slick:hover { transform: scale(1.05); }
+.team-card-slick img {
+  width: 160px; height: 160px; border-radius: 50%; object-fit: cover;
+  margin: 0 auto 20px auto;
+  /* CAMBIO: Borde y sombra con el color primario de la marca */
+  border: 4px solid var(--primary-solid);
+  box-shadow: 0 0 30px rgba(74, 144, 226, 0.5);
+}
+.team-info-slick h4 { font-size: 1.5rem; color: white; margin-bottom: 5px; }
+.team-info-slick span { color: var(--primary-solid); font-weight: 500; }
+
+/* Animaciones de Scroll */
+.animate-on-load, .animate-on-scroll {
+  opacity: 0;
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.animate-on-load { transform: translateY(20px); }
+.animate-on-scroll { transform: translateY(40px); }
+.animate-on-load.is-visible,
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.impact-card-slick.animate-on-scroll:nth-child(2) { transition-delay: 0.2s; }
+.impact-card-slick.animate-on-scroll:nth-child(3) { transition-delay: 0.4s; }
+
+/* ===== ESTILOS ESPECÍFICOS PARA LA PÁGINA "NOSOTROS" ===== */
+.about-hero {
+    padding: 100px 0;
+    background-color: #f8f9fa;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+.about-hero-subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-solid);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+.about-hero h1 {
+    color: var(--text-dark);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.about-hero .lead-text {
+    font-size: 1.25rem;
+    max-width: 800px;
+    margin: 25px auto 0 auto;
+    color: var(--text-dark);
+}
+
+.philosophy-section {
+    background-color: var(--background);
+}
+.philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+.philosophy-card {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.philosophy-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+.philosophy-icon {
+    font-size: 3rem;
+    color: var(--accent-green);
+    margin-bottom: 20px;
+}
+.philosophy-card h3 {
+    color: var(--text-dark);
+    margin-bottom: 15px;
+}
+.philosophy-card p {
+    color: var(--text-light);
+}
+
+.mission-section {
+    background-color: #f8f9fa;
+}
+.mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+.mission-image img {
+    width: 100%;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-hover);
+}
+.mission-content h2 {
+    text-align: left;
+    color: var(--text-dark);
+}
+.mission-content p {
+    color: var(--text-dark);
+}
+
+.team-section {
+    padding-bottom: 120px;
+    background-color: var(--background);
+}
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+}
+.team-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+.team-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-hover);
+}
+.team-photo img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+.team-info h4 {
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+}
+.team-role {
+    color: var(--primary-solid);
+    font-weight: 500;
+}
+.team-socials {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.team-socials a {
+    color: var(--text-light);
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+.team-socials a:hover {
+    color: var(--primary-solid);
+}
+
+/* Responsive para página nosotros */
+@media(max-width: 992px) {
+    .mission-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .philosophy-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+@media(max-width: 768px) {
+    .about-hero h1 {
+        font-size: 2.5rem;
+    }
+    .about-hero .lead-text {
+        font-size: 1.1rem;
+    }
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+}

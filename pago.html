@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proceder al Pago - EcoBox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        /* ===== ESTILOS BASE (Para consistencia) ===== */
+        :root {
+            --primary-solid: #4a90e2; --accent-green: #00b386; --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
+            --gradient-primary-hover: linear-gradient(to right, #008c6b, #3a7bcd);
+            --color-dark: #2c3e50; --color-light: #f8f9fa; --color-text: #555;
+            --color-white: #ffffff; --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px; --border-color: #e0e0e0;
+            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-main); color: var(--color-text); background-color: var(--color-light); line-height: 1.7; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        h2 { font-size: 2.8rem; text-align: center; color: var(--color-dark); margin-bottom: 15px; }
+        p { color: var(--color-text); }
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .section-title p { color: #888; max-width: 700px; margin: 0 auto; }
+        .btn { display: inline-block; padding: 12px 28px; border-radius: 999px; font-weight: 600; text-align: center; border: none; cursor: pointer; text-decoration: none; transition: all 0.3s ease; }
+        .btn-primary { background-image: var(--gradient-primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .btn-primary:hover { background-image: var(--gradient-primary-hover); transform: translateY(-3px); }
+        .btn-secondary { background: #e9ecef; color: var(--color-dark); }
+        .navbar { position: relative; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); }
+        .navbar-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary-solid); text-decoration: none; }
+        .nav-links-list { list-style: none; display: flex; gap: 30px; padding: 0; margin: 0; }
+        .nav-link { font-weight: 500; color: var(--color-text); text-decoration: none; }
+        .footer { background-color: var(--color-dark); color: #aaa; padding: 40px 20px; text-align: center; margin-top: auto;}
+        main { flex-grow: 1; padding: 80px 0; }
+        .payment-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 50px; align-items: flex-start; }
+        .form-container, .summary-container { background-color: var(--color-white); padding: 40px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
+        .form-container h3, .summary-container h3 { font-size: 1.8rem; color: var(--color-dark); margin-top: 0; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .name-grid .form-group:first-child { grid-column: 1 / -1; }
+        .btn-submit { width: 100%; padding: 15px; font-size: 1.2rem; }
+        .order-summary-list { list-style: none; padding: 0; margin: 0 0 20px 0; }
+        .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .summary-totals { list-style: none; padding: 20px 0 0 0; margin: 0; border-top: 2px solid var(--border-color); }
+        .summary-totals li { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .summary-totals li.total { font-size: 1.5rem; font-weight: 700; color: var(--color-dark); margin-top: 10px; }
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+        .popup-overlay.active { opacity: 1; visibility: visible; }
+        .popup-card { background-color: var(--color-white); border-radius: var(--border-radius); box-shadow: 0 15px 40px rgba(0,0,0,0.3); width: 90%; max-width: 450px; text-align: center; padding: 40px 30px; transform: scale(0.9); opacity: 0; transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s; }
+        .popup-overlay.active .popup-card { transform: scale(1); opacity: 1; }
+        .popup-icon { width: 80px; height: 80px; margin: 0 auto 25px auto; background-color: var(--accent-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+        .popup-card h2 { font-size: 2rem; color: var(--color-dark); margin-bottom: 15px; }
+        .popup-card .message { font-size: 1.1rem; color: var(--color-text); margin-bottom: 25px; }
+        .order-details-box { background-color: var(--color-light); border-radius: 8px; padding: 15px; margin-bottom: 30px; }
+        .order-details-box p { margin: 0; font-size: 0.9rem; color: var(--color-text); }
+        .order-details-box strong { font-size: 1.2rem; color: var(--color-dark); }
+        .popup-actions { display: flex; gap: 15px; justify-content: center; }
+        @media(max-width: 992px) { .payment-layout, .name-grid { grid-template-columns: 1fr; } .summary-container { margin-top: 40px; } }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo">ECOBOX</a>
+            <ul class="nav-links-list">
+                <li><a href="index.html" class="nav-link">Inicio</a></li>
+                <li><a href="productos.html" class="nav-link">Productos</a></li>
+                <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>Finalizar Compra</h2>
+                <p>Estás a un solo paso de completar tu pedido.</p>
+            </div>
+
+            <div class="payment-layout">
+                <div class="form-container">
+                    <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
+                    <form id="paymentForm">
+                        <div class="name-grid">
+                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control" required></div>
+                            <div class="form-group"><label for="lastName1">Apellido Paterno</label><input type="text" id="lastName1" class="form-control" required></div>
+                            <div class="form-group"><label for="lastName2">Apellido Materno</label><input type="text" id="lastName2" class="form-control" required></div>
+                        </div>
+                        <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" id="cardNumber" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX" required></div>
+                        <div style="display: flex; gap: 20px;">
+                            <div class="form-group" style="flex: 1;"><label for="expiryDate">Expiración (MM/AA)</label><input type="text" id="expiryDate" class="form-control" placeholder="MM/AA" required></div>
+                            <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX" required></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-submit">Pagar Ahora</button>
+                    </form>
+                </div>
+                <div class="summary-container">
+                    <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Pedido</h3>
+                    <ul class="order-summary-list" id="summaryItemsContainer"></ul>
+                    <ul class="summary-totals">
+                        <li><span>Subtotal:</span> <span id="summarySubtotal">$0.00</span></li>
+                        <li><span>Impuestos (16%):</span> <span id="summaryTaxes">$0.00</span></li>
+                        <li class="total"><span>Total:</span> <span id="summaryTotal">$0.00</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div class="popup-overlay" id="orderSuccessPopup">
+        <div class="popup-card">
+            <div class="popup-icon"><i class="fas fa-check"></i></div>
+            <h2>¡Pedido Realizado!</h2>
+            <p class="message">Tu compra ha sido confirmada. Un asesor se comunicará por WhatsApp para dar seguimiento.</p>
+            <div class="order-details-box">
+                <p>Tu número de orden es:</p><strong id="orderId"></strong>
+            </div>
+            <div class="popup-actions">
+                <a href="cuenta.html" class="btn btn-secondary">Ir a Mis Pedidos</a>
+                <a href="index.html" class="btn btn-primary">Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+            const itemsContainer = document.getElementById('summaryItemsContainer');
+            const subtotalEl = document.getElementById('summarySubtotal');
+            const taxesEl = document.getElementById('summaryTaxes');
+            const totalEl = document.getElementById('summaryTotal');
+            const paymentForm = document.getElementById('paymentForm');
+
+            function renderOrderSummary() {
+                if (!itemsContainer) return;
+                if (cart.length === 0) {
+                    itemsContainer.innerHTML = '<li>No hay productos en tu carrito.</li>';
+                    return;
+                }
+                itemsContainer.innerHTML = '';
+                let subtotal = 0;
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    itemsContainer.innerHTML += `<li class="summary-item"><div><div class="item-name">${item.name}</div><div class="item-qty">Cantidad: ${item.quantity}</div></div><div class="item-price">$${itemTotal.toFixed(2)}</div></li>`;
+                });
+                const taxes = subtotal * 0.16;
+                const total = subtotal + taxes;
+                subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+                taxesEl.textContent = `$${taxes.toFixed(2)}`;
+                totalEl.textContent = `$${total.toFixed(2)}`;
+            }
+
+            document.getElementById('cardNumber').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 16).replace(/(.{4})/g, '$1-').trim().slice(0, 19); });
+            document.getElementById('expiryDate').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4).replace(/(.{2})/, '$1/').slice(0, 5); });
+            document.getElementById('cvv').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4); });
+
+            paymentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const orderSuccessPopup = document.getElementById('orderSuccessPopup');
+                document.getElementById('orderId').textContent = `ECOBOX-${Math.floor(Math.random() * 90000) + 10000}`;
+                orderSuccessPopup.classList.add('active');
+                if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
+                localStorage.removeItem('shoppingCart');
+            });
+
+            renderOrderSummary();
+        });
+    </script>
+</body>
+</html>
