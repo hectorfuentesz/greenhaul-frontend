@@ -113,27 +113,9 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- FUNCIÓN DE NOTIFICACIÓN LOCAL ---
-            // He incluido esta función aquí para que la página sea auto-suficiente.
             function showNotification(message, type = 'success') {
-                const notificationElement = document.getElementById('cartNotification'); // Asegúrate de que este div exista en tu HTML
-                if (!notificationElement) {
-                    alert(message); // Fallback por si la notificación no existe
-                    return;
-                }
-                const messageElement = notificationElement.querySelector('#notificationText');
-                const iconElement = notificationElement.querySelector('.notification-icon');
-                const svgSuccess = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><path d="M5 13l4 4L19 7"/></svg>';
-                const svgError = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-                
-                if (messageElement) messageElement.textContent = message;
-                if (iconElement) iconElement.innerHTML = type === 'success' ? svgSuccess : svgError;
-
-                notificationElement.className = 'cart-notification';
-                notificationElement.classList.add(type, 'visible');
-
-                setTimeout(() => {
-                    notificationElement.classList.remove('visible');
-                }, 3000);
+                // Esta función se puede expandir para usar un pop-up con diseño
+                alert(message);
             }
 
             // --- LÓGICA DEL FORMULARIO DE LOGIN REAL ---
@@ -151,7 +133,7 @@
 
                     try {
                         // RECUERDA USAR LA URL DE TU BACK-END
-                        const backendUrl = 'greenhaul-backend-production.up.railway.app'; 
+                        const backendUrl = 'URL_DE_TU_BACKEND_AQUI'; 
                         
                         const response = await fetch(`${backendUrl}/api/login`, {
                             method: 'POST',
@@ -162,15 +144,14 @@
                         const data = await response.json();
 
                         if (response.ok) {
-                            // Si el login es exitoso, guarda los datos del usuario en el navegador
+                            // Si el login es exitoso, guarda los datos del usuario
                             localStorage.setItem('greenhaulUser', JSON.stringify(data.user));
                             
-                            showNotification('¡Bienvenido de nuevo!', 'success');
-                            setTimeout(() => {
-                                window.location.href = 'cuenta.html'; // Redirige a la página de la cuenta
-                            }, 1500);
+                            showNotification('¡Bienvenido de nuevo!');
+                            // Redirige a la página de la cuenta
+                            window.location.href = 'cuenta.html'; 
                         } else {
-                            // Muestra el error que viene del back-end (ej. "Credenciales inválidas")
+                            // Muestra el error que viene del back-end
                             showNotification(data.message, 'error');
                         }
 
