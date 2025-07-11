@@ -1,88 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crear Cuenta - GreenHaul</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <style>
-    .form-container {
-      max-width: 550px;
-      margin: 0 auto;
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    .form-control {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-    .btn.loading {
-      pointer-events: none;
-      position: relative;
-      color: transparent !important;
-    }
-    .btn.loading::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 20px;
-      height: 20px;
-      margin-top: -10px;
-      margin-left: -10px;
-      border: 3px solid rgba(255,255,255,0.5);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .cart-notification {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translate(-50%, 150%);
-      background-color: #00b386;
-      color: white;
-      padding: 15px 25px;
-      border-radius: 50px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      z-index: 2001;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      opacity: 0;
-      transition: all 0.4s ease-out;
-    }
-    .cart-notification.error {
-      background-color: #e74c3c;
-    }
-    .cart-notification.visible {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-    .cart-notification span {
-      color: white; /* 🔑 Aquí forzamos el color blanco del texto */
-    }
-  </style>
-</head>
-<body>
-  <header>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Crear Cuenta - GreenHaul</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+        <link rel="stylesheet" href="assets/css/styles.css">
+        <style>
+            /* Estilos específicos para esta página */
+            .form-container { max-width: 550px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+            .form-group { margin-bottom: 20px; }
+            .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+            .form-control { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
+            .btn.loading { pointer-events: none; position: relative; color: transparent !important; }
+            .btn.loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin-top: -10px; margin-left: -10px; border: 3px solid rgba(255,255,255,0.5); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+            @keyframes spin { to { transform: rotate(360deg); } }
+            /* Estilos para el pop-up de notificación */
+            .cart-notification { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 150%); background-color: #00b386; color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 2001; display: flex; align-items: center; gap: 15px; opacity: 0; transition: all 0.4s ease-out; }
+            .cart-notification.error { background-color: #e74c3c; }
+            .cart-notification.visible { opacity: 1; transform: translate(-50%, 0); }
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar">
+                <div class="container navbar-content">
+                    <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;"></a>
+                    <ul class="nav-links-list">
+                        <li><a href="index.html" class="nav-link">Inicio</a></li>
+                        <li><a href="productos.html" class="nav-link">Productos</a></li>
+                        <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                        <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                        <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
     <nav class="navbar">
       <div class="container navbar-content">
         <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo GreenHaul" style="height: 55px;"></a>
