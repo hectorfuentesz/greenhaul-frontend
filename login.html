@@ -14,6 +14,7 @@
         .form-control { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
         .btn.loading { pointer-events: none; position: relative; color: transparent !important; }
         .btn.loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin-top: -10px; margin-left: -10px; border: 3px solid rgba(255,255,255,0.5); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .btn-primary, .btn-primary:hover { color: white; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .cart-notification { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 150%); background-color: #00b386; color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 2001; opacity: 0; transition: all 0.4s ease-out; }
         .cart-notification.error { background-color: #e74c3c; }
@@ -69,26 +70,33 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- FUNCIÓN DE NOTIFICACIÓN LOCAL ---
             function showNotification(message, type = 'success') {
-                const el = document.getElementById('cartNotification');
-                if (el) {
-                    el.querySelector('#notificationText').textContent = message;
-                    el.className = 'cart-notification';
-                    el.classList.add(type, 'visible');
-                    setTimeout(() => el.classList.remove('visible'), 3000);
+                const notificationElement = document.getElementById('cartNotification');
+                if (notificationElement) {
+                    const messageText = notificationElement.querySelector('#notificationText');
+                    if(messageText) messageText.textContent = message;
+                    notificationElement.className = 'cart-notification';
+                    notificationElement.classList.add(type, 'visible');
+                    setTimeout(() => {
+                        notificationElement.classList.remove('visible');
+                    }, 3000);
                 } else {
                     alert(message);
                 }
             }
 
+            // --- LÓGICA DEL FORMULARIO DE LOGIN CON CONEXIÓN REAL ---
             const loginForm = document.getElementById('loginForm');
-            if(loginForm){
+            if (loginForm) {
                 loginForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    
                     const email = document.getElementById('email').value;
                     const password = document.getElementById('password').value;
                     const submitButton = loginForm.querySelector('button[type="submit"]');
 
+                    // Asegúrate de que el botón tenga la clase correcta para la animación
                     submitButton.classList.add('loading');
                     submitButton.disabled = true;
 
@@ -104,12 +112,15 @@
                         const data = await response.json();
 
                         if (response.ok) {
+                            // Si el login es exitoso, guarda los datos del usuario
                             localStorage.setItem('greenhaulUser', JSON.stringify(data.user));
+                            
                             showNotification('¡Bienvenido de nuevo!', 'success');
                             setTimeout(() => {
                                 window.location.href = 'cuenta.html';
                             }, 1500);
                         } else {
+                            // Muestra el error que viene del back-end
                             showNotification(data.message, 'error');
                         }
                     } catch (error) {
