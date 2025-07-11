@@ -112,20 +112,31 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- FUNCIÓN DE NOTIFICACIÓN LOCAL (Para que funcione sin depender de main.js) ---
+            // --- FUNCIÓN DE NOTIFICACIÓN LOCAL ---
+            // He incluido esta función aquí para que la página sea auto-suficiente.
             function showNotification(message, type = 'success') {
-                const notificationElement = document.getElementById('cartNotification');
-                if (notificationElement) {
-                    notificationElement.querySelector('#notificationText').textContent = message;
-                    notificationElement.className = 'cart-notification';
-                    notificationElement.classList.add(type, 'visible');
-                    setTimeout(() => { notificationElement.classList.remove('visible'); }, 3000);
-                } else {
-                    alert(message);
+                const notificationElement = document.getElementById('cartNotification'); // Asegúrate de que este div exista en tu HTML
+                if (!notificationElement) {
+                    alert(message); // Fallback por si la notificación no existe
+                    return;
                 }
+                const messageElement = notificationElement.querySelector('#notificationText');
+                const iconElement = notificationElement.querySelector('.notification-icon');
+                const svgSuccess = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><path d="M5 13l4 4L19 7"/></svg>';
+                const svgError = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+                
+                if (messageElement) messageElement.textContent = message;
+                if (iconElement) iconElement.innerHTML = type === 'success' ? svgSuccess : svgError;
+
+                notificationElement.className = 'cart-notification';
+                notificationElement.classList.add(type, 'visible');
+
+                setTimeout(() => {
+                    notificationElement.classList.remove('visible');
+                }, 3000);
             }
 
-            // --- LÓGICA DEL FORMULARIO DE LOGIN ---
+            // --- LÓGICA DEL FORMULARIO DE LOGIN REAL ---
             const loginForm = document.getElementById('loginForm');
             if (loginForm) {
                 loginForm.addEventListener('submit', async (e) => {
@@ -133,16 +144,14 @@
                     
                     const email = document.getElementById('email').value;
                     const password = document.getElementById('password').value;
-                    // CORRECCIÓN: Se asegura de que el botón tenga la clase correcta
-                    const submitButton = loginForm.querySelector('button[type="submit"]');
+                    const submitButton = loginForm.querySelector('.btn-submit');
 
-                    // Lógica para la animación de carga
                     submitButton.classList.add('loading');
                     submitButton.disabled = true;
 
                     try {
-                        // ===== CORRECCIÓN 1: Se añade 'https://' a la URL =====
-                        const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+                        // RECUERDA USAR LA URL DE TU BACK-END
+                        const backendUrl = 'greenhaul-backend-production.up.railway.app'; 
                         
                         const response = await fetch(`${backendUrl}/api/login`, {
                             method: 'POST',
@@ -153,14 +162,15 @@
                         const data = await response.json();
 
                         if (response.ok) {
-                            // ===== CORRECCIÓN 2: Se usa la clave 'greenhaulUser' para consistencia =====
+                            // Si el login es exitoso, guarda los datos del usuario en el navegador
                             localStorage.setItem('greenhaulUser', JSON.stringify(data.user));
                             
                             showNotification('¡Bienvenido de nuevo!', 'success');
                             setTimeout(() => {
-                                window.location.href = 'cuenta.html';
+                                window.location.href = 'cuenta.html'; // Redirige a la página de la cuenta
                             }, 1500);
                         } else {
+                            // Muestra el error que viene del back-end (ej. "Credenciales inválidas")
                             showNotification(data.message, 'error');
                         }
 
@@ -172,8 +182,6 @@
                     }
                 });
             }
-            
-            // La lógica del botón de simulación se ha eliminado para usar solo la conexión real.
         });
     </script>
 </body>
