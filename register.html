@@ -27,6 +27,13 @@
             .cart-notification { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 150%); background-color: #00b386; color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 2001; display: flex; align-items: center; gap: 15px; opacity: 0; transition: all 0.4s ease-out; }
             .cart-notification.error { background-color: #e74c3c; }
             .cart-notification.visible { opacity: 1; transform: translate(-50%, 0); }
+
+            /* ======================================================= */
+        /* ===== CORRECCIÓN PARA EL COLOR DEL TEXTO DEL POP-UP ===== */
+        /* ======================================================= */
+        .cart-notification p {
+            color: white;
+        }
         </style>
     </head>
     <body>
