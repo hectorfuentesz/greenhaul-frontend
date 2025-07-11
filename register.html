@@ -18,7 +18,7 @@
                 color: white; /* Asegura que el texto siempre sea blanco */
             }
             /* ========================= */
-
+        
             .btn.loading { pointer-events: none; position: relative; color: transparent !important; }
             .btn.loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin-top: -10px; margin-left: -10px; border: 3px solid rgba(255,255,255,0.5); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
             @keyframes spin { to { transform: rotate(360deg); } }
@@ -27,13 +27,12 @@
             .cart-notification { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 150%); background-color: #00b386; color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 2001; display: flex; align-items: center; gap: 15px; opacity: 0; transition: all 0.4s ease-out; }
             .cart-notification.error { background-color: #e74c3c; }
             .cart-notification.visible { opacity: 1; transform: translate(-50%, 0); }
-
-            /* ======================================================= */
-        /* ===== CORRECCIÓN PARA EL COLOR DEL TEXTO DEL POP-UP ===== */
-        /* ======================================================= */
-        .cart-notification p {
-            color: white;
-        }
+            
+            /* ===== CORRECCIÓN DE ESPECIFICIDAD PARA EL TEXTO DEL POP-UP ===== */
+            .cart-notification p {
+                color: white !important; /* El !important asegura que esta regla gane */
+                margin: 0;
+            }
         </style>
     </head>
     <body>
