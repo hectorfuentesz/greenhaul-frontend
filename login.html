@@ -110,30 +110,70 @@
 
     <script src="assets/js/main.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // ... (código existente)
-        const simulateLoginBtn = document.getElementById('simulateLoginBtn');
-        if(simulateLoginBtn) {
-            simulateLoginBtn.addEventListener('click', () => {
-                const user = { name: 'Hector' }; 
-                localStorage.setItem('ecoboxUser', JSON.stringify(user));
-                
-                showNotification('¡Inicio de sesión simulado con éxito!', 'success');
-                setTimeout(() => {
-                    // ===== ESTA ES LA LÍNEA CORREGIDA =====
-                    window.location.href = 'cuenta.html';
-                }, 1500);
-            });
-        }
+        document.addEventListener('DOMContentLoaded', () => {
 
-            // Lógica del formulario real (por ahora solo muestra notificación)
+            // --- FUNCIÓN DE NOTIFICACIÓN LOCAL (Para que funcione sin depender de main.js) ---
+            function showNotification(message, type = 'success') {
+                const notificationElement = document.getElementById('cartNotification');
+                if (notificationElement) {
+                    notificationElement.querySelector('#notificationText').textContent = message;
+                    notificationElement.className = 'cart-notification';
+                    notificationElement.classList.add(type, 'visible');
+                    setTimeout(() => { notificationElement.classList.remove('visible'); }, 3000);
+                } else {
+                    alert(message);
+                }
+            }
+
+            // --- LÓGICA DEL FORMULARIO DE LOGIN ---
             const loginForm = document.getElementById('loginForm');
-            if(loginForm){
-                loginForm.addEventListener('submit', (e) => {
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    showNotification('Función de login real no implementada aún.', 'warning');
+                    
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    // CORRECCIÓN: Se asegura de que el botón tenga la clase correcta
+                    const submitButton = loginForm.querySelector('button[type="submit"]');
+
+                    // Lógica para la animación de carga
+                    submitButton.classList.add('loading');
+                    submitButton.disabled = true;
+
+                    try {
+                        // ===== CORRECCIÓN 1: Se añade 'https://' a la URL =====
+                        const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+                        
+                        const response = await fetch(`${backendUrl}/api/login`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            // ===== CORRECCIÓN 2: Se usa la clave 'greenhaulUser' para consistencia =====
+                            localStorage.setItem('greenhaulUser', JSON.stringify(data.user));
+                            
+                            showNotification('¡Bienvenido de nuevo!', 'success');
+                            setTimeout(() => {
+                                window.location.href = 'cuenta.html';
+                            }, 1500);
+                        } else {
+                            showNotification(data.message, 'error');
+                        }
+
+                    } catch (error) {
+                        showNotification('Error al conectar con el servidor.', 'error');
+                    } finally {
+                        submitButton.classList.remove('loading');
+                        submitButton.disabled = false;
+                    }
                 });
             }
+            
+            // La lógica del botón de simulación se ha eliminado para usar solo la conexión real.
         });
     </script>
 </body>
