@@ -5,49 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Cuenta - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/cuenta.css">
+    
     <style>
-        /* Estilo para los campos no editables */
-        .form-control[disabled] {
-            background-color: #e9ecef;
-            cursor: not-allowed;
-            color: #6c757d;
+        :root {
+            --primary-solid: #4a90e2; --accent-green: #00b386; --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
+            --color-dark: #2c3e50; --color-light: #f8f9fa; --color-text: #555;
+            --color-white: #ffffff; --accent-red: #e74c3c;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08); --border-radius: 12px; --border-color: #e0e0e0;
+            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        /* ===== NUEVOS ESTILOS PARA EL POP-UP SUPERIOR DERECHO ===== */
-        .toast-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #2ecc71; /* Verde por defecto */
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateX(120%);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        .toast-notification.error {
-            background-color: #e74c3c; /* Rojo para errores */
-        }
-        .toast-notification.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .toast-notification .icon {
-            font-size: 1.2rem;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-main); color: var(--color-text); background-color: var(--color-light); line-height: 1.7; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section { padding: 80px 0; }
+        h2 { font-size: 2.8rem; text-align: center; color: var(--color-dark); margin-bottom: 60px; font-weight: 700;}
+        h3 { font-size: 1.8rem; color: var(--color-dark); margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .btn { display: inline-block; padding: 12px 28px; border-radius: 999px; font-weight: 600; text-align: center; border: none; cursor: pointer; text-decoration: none; transition: all 0.3s ease; }
+        .btn-primary { background-image: var(--gradient-primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .btn-tertiary { background: none; border: none; color: var(--accent-red); font-weight: 500; cursor: pointer; font-size: 1.2rem; }
+        .navbar { position: sticky; top: 0; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); z-index: 1000; }
+        .navbar-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo img { height: 55px; }
+        .nav-link { font-weight: 500; color: var(--color-text); text-decoration: none; }
+        .nav-link.active { color: var(--primary-solid); font-weight: 600; }
+        .navbar-user-actions { display: flex; align-items: center; gap: 15px; }
+        main { flex-grow: 1; padding-top: 80px; }
+        .account-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; align-items: flex-start; }
+        .account-sidebar { position: sticky; top: 120px; }
+        .account-nav { display: flex; flex-direction: column; gap: 8px; background-color: var(--color-white); border-radius: var(--border-radius); padding: 10px; box-shadow: var(--shadow); }
+        .account-nav-link { padding: 12px 20px; border-radius: 8px; color: var(--color-text); font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        .account-nav-link i { width: 20px; text-align: center; color: var(--primary-solid); }
+        .account-nav-link:hover { background-color: #f0f0f0; }
+        .account-nav-link.active { background-image: var(--gradient-primary); color: var(--color-white); }
+        .account-nav-link.active i { color: var(--color-white); }
+        .account-content { min-height: 500px; }
+        .account-section { display: none; background-color: var(--color-white); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
+        .account-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .form-control[disabled] { background-color: #e9ecef; cursor: not-allowed; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;}
+        #notificationPopup { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(150%); background-color: var(--color-dark); color: white; padding: 15px 25px; border-radius: 50px; z-index: 1001; opacity: 0; transition: all 0.4s ease; }
+        #notificationPopup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
 </head>
 <body>
+
     <header>
-        </header>
+        <nav class="navbar">
+            <div class="container navbar-content">
+                <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;"></a>
+                <div class="navbar-right-items">
+                    <div class="navbar-user-actions">
+                        <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
+                        <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
+                        <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
 
     <main class="page-content">
         <section class="section">
@@ -56,34 +76,36 @@
                 <div class="account-layout">
                     <aside class="account-sidebar">
                         <nav class="account-nav">
-                            <a class="account-nav-link active" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+                            <a class="account-nav-link" data-section="dashboard"><i class="fas fa-th-large"></i> Resumen</a>
                             <a class="account-nav-link" data-section="pedidos"><i class="fas fa-box"></i> Mis Pedidos</a>
+                            <a class="account-nav-link active" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+                            <a class="account-nav-link" data-section="direcciones"><i class="fas fa-map-marker-alt"></i> Direcciones</a>
                         </nav>
                     </aside>
                     <div class="account-content">
+                        <div id="dashboard-section" class="account-section"></div>
+                        <div id="pedidos-section" class="account-section"></div>
                         <div id="perfil-section" class="account-section active">
                             <h3>Configuración de Perfil</h3>
                             <form id="profileForm">
+                                <div class="form-grid">
+                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control" disabled></div>
+                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control" disabled></div>
+                                </div>
+                                <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
+                                <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control"></div>
                                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                             </form>
                         </div>
-                        <div id="pedidos-section" class="account-section">
-                            </div>
+                        <div id="direcciones-section" class="account-section"></div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
     
-    <footer class="footer">
-        </footer>
+    <div id="notificationPopup"></div>
 
-    <div class="toast-notification" id="profileUpdateNotification">
-        <span class="icon" id="notificationIcon"></span>
-        <span id="notificationText"></span>
-    </div>
-
-    <script type="module" src="/assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
@@ -93,36 +115,35 @@
                 return;
             }
 
-            // --- FUNCIÓN PARA EL NUEVO POP-UP ---
-            function showToastNotification(message, type = "success") {
-                const el = document.getElementById("profileUpdateNotification");
-                const icon = el.querySelector("#notificationIcon");
-                const text = el.querySelector("#notificationText");
-
-                icon.innerHTML = type === "success" ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>';
-                text.textContent = message;
+            const userNameSpan = document.getElementById('userName');
+            const accountTitle = document.getElementById('account-title');
+            const profileNameInput = document.getElementById('profile-name');
+            const profileLastnameInput = document.getElementById('profile-lastname');
+            const profileEmailInput = document.getElementById('profile-email');
+            const profileWhatsappInput = document.getElementById('profile-whatsapp');
+            
+            function populateUI(user) {
+                if (userNameSpan) userNameSpan.textContent = user.name.split(' ')[0];
+                if (accountTitle) accountTitle.textContent = `Panel de Control de ${user.name}`;
                 
-                el.className = `toast-notification ${type}`; // Limpia clases viejas
-                el.classList.add("show");
-
-                setTimeout(() => {
-                    el.classList.remove("show");
-                }, 4000);
+                const nameParts = user.name.split(' ');
+                const firstName = nameParts.slice(0, 2).join(' ');
+                const lastName = nameParts.slice(2).join(' ');
+                
+                if (profileNameInput) profileNameInput.value = firstName;
+                if (profileLastnameInput) profileLastnameInput.value = lastName;
+                if (profileEmailInput) profileEmailInput.value = user.email;
+                if (profileWhatsappInput) profileWhatsappInput.value = user.whatsapp || '';
             }
 
-            // --- Lógica del formulario para guardar ---
             const profileForm = document.getElementById('profileForm');
             if (profileForm) {
                 profileForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    const submitButton = profileForm.querySelector('button[type="submit"]');
                     const updatedData = {
-                        email: document.getElementById('profile-email').value,
-                        whatsapp: document.getElementById('profile-whatsapp').value
+                        email: profileEmailInput.value,
+                        whatsapp: profileWhatsappInput.value
                     };
-
-                    submitButton.classList.add('loading');
-                    submitButton.disabled = true;
 
                     try {
                         const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
@@ -133,23 +154,35 @@
                         });
 
                         const result = await response.json();
+
                         if (response.ok) {
+                            // ===== CORRECCIÓN AQUÍ =====
+                            // 1. Actualiza el objeto de usuario en el navegador
                             const updatedUser = { ...loggedInUser, ...updatedData };
                             localStorage.setItem('greenhaulUser', JSON.stringify(updatedUser));
-                            showToastNotification('¡Perfil actualizado con éxito!', 'success');
+                            
+                            // 2. Refresca la UI con los nuevos datos
+                            populateUI(updatedUser);
+
+                            alert('¡Perfil actualizado con éxito!');
                         } else {
-                            showToastNotification(result.message, 'error');
+                            alert(`Error: ${result.message}`);
                         }
                     } catch (error) {
-                        showToastNotification('Error al conectar con el servidor.', 'error');
-                    } finally {
-                        submitButton.classList.remove('loading');
-                        submitButton.disabled = false;
+                        alert('Error al conectar con el servidor.');
                     }
                 });
             }
             
-            // ... (resto de la lógica para poblar la UI, tabs, y cerrar sesión)
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('greenhaulUser');
+                    window.location.href = 'index.html';
+                });
+            }
+
+            populateUI(loggedInUser);
         });
     </script>
 </body>
