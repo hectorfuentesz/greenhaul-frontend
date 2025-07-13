@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * ===============================================
-     * MÓDULO DE SESIÓN DE USUARIO
+     * MÓDULO DE SESIÓN DE USUARIO (CORREGIDO)
      * ===============================================
      */
     const initUserSession = () => {
@@ -85,13 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const accountLink = document.getElementById('accountLink');
         const logoutBtn = document.getElementById('logoutBtn');
         const userNameSpan = document.getElementById('userName');
-        const savedUser = JSON.parse(localStorage.getItem('ecoboxUser'));
+        // ===== CORRECCIÓN AQUÍ: Se busca la clave correcta =====
+        const savedUser = JSON.parse(localStorage.getItem('greenhaulUser'));
 
         if (savedUser && savedUser.name) {
             if (loginBtn) loginBtn.style.display = 'none';
             if (accountLink) accountLink.style.display = 'flex';
             if (logoutBtn) logoutBtn.style.display = 'block';
-            if (userNameSpan) userNameSpan.textContent = savedUser.name;
+            if (userNameSpan) userNameSpan.textContent = savedUser.name.split(' ')[0]; // Muestra solo el primer nombre
         } else {
             if (loginBtn) loginBtn.style.display = 'flex';
             if (accountLink) accountLink.style.display = 'none';
@@ -105,9 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.removeItem('ecoboxUser');
-                showNotification('Has cerrado sesión.', 'warning');
-                setTimeout(() => window.location.href = 'index.html', 1500);
+                localStorage.removeItem('greenhaulUser');
+                // showNotification ya no está disponible globalmente, podrías usar un alert o redirigir directamente
+                alert('Has cerrado sesión.');
+                window.location.href = 'index.html';
             });
         }
     };
