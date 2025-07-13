@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - GreenHaul</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
         /* Estilos específicos para esta página */
@@ -94,7 +94,6 @@
                     submitButton.disabled = true;
 
                     try {
-                        // URL correcta y completa del back-end
                         const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
                         
                         const response = await fetch(`${backendUrl}/api/login`, {
@@ -106,7 +105,7 @@
                         const data = await response.json();
 
                         if (response.ok) {
-                            // Guarda los datos del usuario para que las otras páginas lo reconozcan
+                            // Se guardan los datos del usuario para que las otras páginas lo reconozcan
                             localStorage.setItem('greenhaulUser', JSON.stringify(data.user));
                             
                             showNotification('¡Bienvenido de nuevo!', 'success');
@@ -114,11 +113,9 @@
                                 window.location.href = 'cuenta.html';
                             }, 1500);
                         } else {
-                            // Muestra el mensaje de error que viene del back-end
                             showNotification(data.message, 'error');
                         }
                     } catch (error) {
-                        console.error("Error en el fetch de login:", error);
                         showNotification('Error al conectar con el servidor.', 'error');
                     } finally {
                         submitButton.classList.remove('loading');
