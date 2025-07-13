@@ -5,14 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Cuenta - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css"> <link rel="stylesheet" href="assets/css/cuenta.css"> </head>
+    
+    <style>
+        :root {
+            --primary-solid: #4a90e2; --accent-green: #00b386; --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
+            --gradient-primary-hover: linear-gradient(to right, #008c6b, #3a7bcd);
+            --color-dark: #2c3e50; --color-light: #f8f9fa; --color-text: #555;
+            --color-white: #ffffff; --accent-orange: #ff9900; --accent-red: #e74c3c;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08); --border-radius: 12px; --border-color: #e0e0e0;
+            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-main); color: var(--color-text); background-color: var(--color-light); line-height: 1.7; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section { padding: 80px 0; }
+        h2 { font-size: 2.8rem; text-align: center; color: var(--color-dark); margin-bottom: 60px; font-weight: 700;}
+        h3 { font-size: 1.8rem; color: var(--color-dark); margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        h4 { font-size: 1.1rem; color: var(--color-text); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn { display: inline-block; padding: 12px 28px; border-radius: 999px; font-weight: 600; text-align: center; border: none; cursor: pointer; text-decoration: none; transition: all 0.3s ease; }
+        .btn-primary { background-image: var(--gradient-primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .btn-primary:hover { background-image: var(--gradient-primary-hover); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .btn-outline { background-color: var(--primary-solid); color: white !important; border-radius: 50px; text-decoration:none; padding: 8px 20px;}
+        .btn-tertiary { background: none; border: none; color: var(--accent-red); font-weight: 500; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; }
+        .btn-tertiary:hover { transform: scale(1.15); }
+        .navbar { position: sticky; top: 0; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); z-index: 1000; }
+        .navbar-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo img { height: 55px; }
+        .nav-links-list { list-style: none; display: flex; gap: 30px; padding: 0; margin: 0; }
+        .nav-link { font-weight: 500; color: var(--color-text); text-decoration: none; }
+        .nav-link.active { color: var(--primary-solid); font-weight: 600; }
+        .navbar-right-items { display: flex; align-items: center; gap: 25px; margin-left: auto; }
+        .navbar-user-actions { display: flex; align-items: center; gap: 15px; }
+        .footer { background-color: var(--text-dark); color: #aaa; padding: 40px 20px; text-align: center; margin-top: auto;}
+        main { flex-grow: 1; padding-top: 80px; }
+        .account-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; align-items: flex-start; }
+        .account-sidebar { position: sticky; top: 120px; }
+        .account-nav { display: flex; flex-direction: column; gap: 8px; background-color: var(--color-white); border-radius: var(--border-radius); padding: 10px; box-shadow: var(--shadow); }
+        .account-nav-link { padding: 12px 20px; border-radius: 8px; color: var(--color-text); font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 15px; transition: all 0.2s ease; cursor: pointer; }
+        .account-nav-link i { width: 20px; text-align: center; color: var(--primary-solid); }
+        .account-nav-link:hover { background-color: #f0f0f0; transform: translateX(5px); }
+        .account-nav-link.active { background-image: var(--gradient-primary); color: var(--color-white); transform: translateX(0); box-shadow: 0 4px 10px rgba(0, 179, 134, 0.3); }
+        .account-nav-link.active i { color: var(--color-white); }
+        .account-content { min-height: 500px; }
+        .account-section { display: none; background-color: var(--color-white); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
+        .account-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .account-section > h3 { margin-top: 0; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .dashboard-card { background-color: var(--color-light); border-radius: var(--border-radius); padding: 25px; border-left: 5px solid var(--accent-green); }
+        .dashboard-card:nth-child(2) { border-left-color: var(--primary-solid); }
+        .dashboard-card:nth-child(3) { border-left-color: var(--accent-orange); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
+        .card-header h4 { color: #999; }
+        .card-header .icon { font-size: 1.8rem; color: var(--accent-green); }
+        .dashboard-card:nth-child(2) .icon { color: var(--primary-solid); }
+        .dashboard-card:nth-child(3) .icon { color: var(--accent-orange); }
+        .card-body { flex-grow: 1; display: flex; align-items: flex-end; justify-content: space-between; }
+        .stats { list-style: none; padding: 0; margin: 0; }
+        .stats li { padding-bottom: 5px; font-size: 1rem; }
+        .stats li span { font-weight: 600; color: var(--color-dark); }
+        .progress-donut { --p: 0; --b: 12px; --c: var(--accent-green); width: 90px; height: 90px; position: relative; display: inline-grid; place-content: center; font-size: 1.4rem; font-weight: bold; }
+        .progress-donut::before { content: ""; position: absolute; border-radius: 50%; inset: 0; background: conic-gradient(var(--c) calc(var(--p) * 1%), #e6e6e6 0); -webkit-mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b))); mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b))); }
+        .order-list .order-item { background: var(--color-light); border-radius: 8px; margin-bottom: 15px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr auto; align-items: center; gap: 20px; }
+        .order-item-status { font-weight: bold; padding: 5px 12px; border-radius: 99px; font-size: 0.8rem; }
+        .status-completado { color: #008c6b; background-color: rgba(0, 179, 134, 0.1); }
+        .status-activo { color: #3a7bcd; background-color: rgba(74, 144, 226, 0.1); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;}
+        .address-list .address-item { background: var(--color-light); border-radius: 8px; margin-bottom: 15px; padding: 20px; }
+        .address-item .tag { background: var(--primary-solid); color: white; padding: 3px 10px; border-radius: 99px; font-size: 0.8rem; display: inline-block; margin-left: 10px;}
+        #notificationPopup { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background-color: var(--color-dark); color: white; padding: 15px 25px; border-radius: 50px; z-index: 1001; opacity: 0; transition: all 0.4s ease; pointer-events: none; }
+        #notificationPopup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    </style>
+</head>
 <body>
+
     <header>
         <nav class="navbar">
             <div class="container navbar-content">
-                <a href="index.html" class="logo">
-                    <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;">
-                </a>
+                <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;"></a>
                 <ul class="nav-links-list">
                     <li><a href="index.html" class="nav-link">Inicio</a></li>
                     <li><a href="productos.html" class="nav-link">Productos</a></li>
@@ -21,12 +94,10 @@
                     <li><a href="contacto.html" class="nav-link">Contacto</a></li>
                 </ul>
                 <div class="navbar-right-items">
-                    <div class="navbar-user-actions" id="navbarUserActions">
+                    <div class="navbar-user-actions">
                         <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
                         <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
-                        <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
+                        <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
                 </div>
             </div>
@@ -82,21 +153,18 @@
             </div>
         </section>
     </main>
-
-    <footer class="footer">
-        </footer>
-
+    
     <div id="notificationPopup"></div>
 
-    <script type="module" src="/assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- DATOS DE EJEMPLO Y LOCALSTORAGE ---
             let userData = {
                 name: 'Usuario', lastname: '', email: '', whatsapp: '',
                 orders: [{ id: '#ECO-2025-003', date: '01 Julio, 2025', total: '$850.00', status: 'Activo' }],
                 addresses: [{ street: 'Av. Insurgentes Sur 3579, CDMX', tag: 'Principal' }],
                 rental: { startDate: '2025-07-01', endDate: '2025-07-31', mediumBoxes: 40, largeBoxes: 15, totalPlanBoxes: 100 },
-                ecoImpact: { cardboardSavedKg: 195, tripsSaved: 4, ecoLevel: 'Héroe', ecoProgress: 85 }
+                ecoImpact: { cardboardSavedKg: 195, ecoLevel: 'Héroe', ecoProgress: 85 }
             };
 
             const savedUser = JSON.parse(localStorage.getItem('greenhaulUser'));
@@ -106,6 +174,7 @@
             }
             userData = { ...userData, ...savedUser };
 
+            // --- SELECTORES DE ELEMENTOS ---
             const userNameSpan = document.getElementById('userName');
             const accountTitle = document.getElementById('account-title');
             const profileNameInput = document.getElementById('profile-name');
@@ -113,9 +182,10 @@
             const profileEmailInput = document.getElementById('profile-email');
             const profileWhatsappInput = document.getElementById('profile-whatsapp');
             
+            // --- FUNCIÓN PARA POBLAR TODA LA INTERFAZ ---
             function populateUI() {
                 // Lógica para el Header
-                userNameSpan.textContent = userData.name.split(' ')[0]; // Muestra solo el primer nombre en el header
+                userNameSpan.textContent = userData.name.split(' ')[0];
                 accountTitle.textContent = `Panel de Control de ${userData.name}`;
                 
                 // Lógica para separar nombre y apellidos en el formulario
@@ -141,16 +211,7 @@
                 });
             }
 
-            // Lógica para Cerrar Sesión
-            const logoutBtn = document.getElementById('logoutBtn');
-            if(logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    localStorage.removeItem('greenhaulUser');
-                    window.location.href = 'index.html';
-                });
-            }
-
-            // Lógica de Tabs
+            // Lógica de TABS
             const navLinks = document.querySelectorAll('.account-nav-link');
             const sections = document.querySelectorAll('.account-section');
             navLinks.forEach(link => {
@@ -162,6 +223,15 @@
                     document.getElementById(link.dataset.section + '-section').classList.add('active');
                 });
             });
+
+            // Lógica para Cerrar Sesión
+            const logoutBtn = document.getElementById('logoutBtn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('greenhaulUser');
+                    window.location.href = 'index.html';
+                });
+            }
 
             // Llamada inicial para poblar la UI
             populateUI();
