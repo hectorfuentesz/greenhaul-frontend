@@ -83,14 +83,14 @@
       }
     }
 
-    /* Popup con estilo GreenHaul */
+    /* POPUP ESTILO DEFINIDO */
     .cart-notification {
       position: fixed;
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%) translateY(100%);
-      background: linear-gradient(135deg, #2d3436, #00cec9);
-      color: white;
+      background-color: #222;
+      color: #ffffff; /* Texto siempre blanco */
       padding: 18px 30px;
       border-radius: 16px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
@@ -100,6 +100,7 @@
       opacity: 0;
       z-index: 9999;
       transition: all 0.4s ease;
+      font-weight: bold;
     }
 
     .cart-notification.visible {
@@ -108,11 +109,11 @@
     }
 
     .cart-notification.success {
-      border-left: 6px solid #00b894;
+      background-color: #00b894;
     }
 
     .cart-notification.error {
-      border-left: 6px solid #d63031;
+      background-color: #d63031;
     }
 
     .cart-notification .icon {
@@ -158,7 +159,6 @@
     </div>
   </main>
 
-  <!-- POPUP -->
   <div class="cart-notification" id="cartNotification">
     <span class="icon" id="notificationIcon"></span>
     <span id="notificationText"></span>
