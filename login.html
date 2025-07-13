@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
+        /* Estilos específicos para esta página */
         .form-container { max-width: 500px; margin: 100px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
@@ -17,6 +18,7 @@
         .cart-notification { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 150%); background-color: #00b386; color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 2001; opacity: 0; transition: all 0.4s ease-out; }
         .cart-notification.error { background-color: #e74c3c; }
         .cart-notification.visible { opacity: 1; transform: translate(-50%, 0); }
+        .cart-notification p { color: white !important; margin: 0; }
     </style>
 </head>
 <body>
@@ -62,10 +64,9 @@
     </main>
         
     <footer class="footer">
-        <div class="container"><p>&copy; 2025 GreenHaul. Todos los derechos reservados.</p></div>
-    </footer>
+        </footer>
     
-    <div class="cart-notification" id="cartNotification"><span id="notificationText"></span></div>
+    <div class="cart-notification" id="cartNotification"><p id="notificationText"></p></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -93,6 +94,7 @@
                     submitButton.disabled = true;
 
                     try {
+                        // URL correcta y completa del back-end
                         const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
                         
                         const response = await fetch(`${backendUrl}/api/login`, {
@@ -104,17 +106,19 @@
                         const data = await response.json();
 
                         if (response.ok) {
-                            // Guardamos los datos del usuario para que las otras páginas lo reconozcan
-                            localStorage.setItem('ecoboxUser', JSON.stringify(data.user)); 
+                            // Guarda los datos del usuario para que las otras páginas lo reconozcan
+                            localStorage.setItem('greenhaulUser', JSON.stringify(data.user));
                             
                             showNotification('¡Bienvenido de nuevo!', 'success');
                             setTimeout(() => {
                                 window.location.href = 'cuenta.html';
                             }, 1500);
                         } else {
+                            // Muestra el mensaje de error que viene del back-end
                             showNotification(data.message, 'error');
                         }
                     } catch (error) {
+                        console.error("Error en el fetch de login:", error);
                         showNotification('Error al conectar con el servidor.', 'error');
                     } finally {
                         submitButton.classList.remove('loading');
