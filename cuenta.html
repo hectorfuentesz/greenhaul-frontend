@@ -75,7 +75,7 @@
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;}
         .address-list .address-item { background: var(--color-light); border-radius: 8px; margin-bottom: 15px; padding: 20px; }
-        .address-item .tag { background: var(--primary-solid); color: white; padding: 3px 10px; border-radius: 99px; font-size: 0.8rem; display: inline-block; margin-left: 10px;}
+        .address-item .tag { background: var(--primary-solid); color: white; padding: 3px 10px; border-radius: 99px; font-size: 0.8rem; display: inline-block; margin-left: 10px; }
         #notificationPopup { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background-color: var(--color-dark); color: white; padding: 15px 25px; border-radius: 50px; z-index: 1001; opacity: 0; transition: all 0.4s ease; pointer-events: none; }
         #notificationPopup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
@@ -86,13 +86,6 @@
         <nav class="navbar">
             <div class="container navbar-content">
                 <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;"></a>
-                <ul class="nav-links-list">
-                    <li><a href="index.html" class="nav-link">Inicio</a></li>
-                    <li><a href="productos.html" class="nav-link">Productos</a></li>
-                    <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-                    <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-                    <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-                </ul>
                 <div class="navbar-right-items">
                     <div class="navbar-user-actions">
                         <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
@@ -137,7 +130,7 @@
                                     <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name"></div>
                                     <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname"></div>
                                 </div>
-                                <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" disabled></div>
+                                <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email"></div>
                                 <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp"></div>
                                 <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
                                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -158,13 +151,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- DATOS DE EJEMPLO Y LOCALSTORAGE ---
+            // --- DATOS INICIALES Y CARGA DESDE LOCALSTORAGE ---
             let userData = {
                 name: 'Usuario', lastname: '', email: '', whatsapp: '',
-                orders: [{ id: '#ECO-2025-003', date: '01 Julio, 2025', total: '$850.00', status: 'Activo' }],
-                addresses: [{ street: 'Av. Insurgentes Sur 3579, CDMX', tag: 'Principal' }],
-                rental: { startDate: '2025-07-01', endDate: '2025-07-31', mediumBoxes: 40, largeBoxes: 15, totalPlanBoxes: 100 },
-                ecoImpact: { cardboardSavedKg: 195, ecoLevel: 'Héroe', ecoProgress: 85 }
+                orders: [{ id: '#GRN-2025-001', date: '13 Julio, 2025', total: '$950.00', status: 'Activo' }],
+                addresses: [{ street: 'Av. de los Insurgentes Sur 3579, Tlalpan, CDMX', tag: 'Principal' }],
+                rental: { startDate: '2025-07-13', endDate: '2025-08-12', mediumBoxes: 50, largeBoxes: 20, totalPlanBoxes: 100 },
+                ecoImpact: { cardboardSavedKg: 250, ecoLevel: 'Maestro', ecoProgress: 95 }
             };
 
             const savedUser = JSON.parse(localStorage.getItem('greenhaulUser'));
@@ -184,34 +177,26 @@
             
             // --- FUNCIÓN PARA POBLAR TODA LA INTERFAZ ---
             function populateUI() {
-                // Lógica para el Header
                 userNameSpan.textContent = userData.name.split(' ')[0];
                 accountTitle.textContent = `Panel de Control de ${userData.name}`;
                 
-                // Lógica para separar nombre y apellidos en el formulario
                 const nameParts = userData.name.split(' ');
-                const firstName = nameParts.slice(0, 2).join(' ');
-                const lastName = nameParts.slice(2).join(' ');
-
+                const firstName = nameParts.slice(0, 2).join(' '); // Toma los dos primeros como nombre(s)
+                const lastName = nameParts.slice(2).join(' ');  // El resto como apellidos
+                
                 profileNameInput.value = firstName;
                 profileLastnameInput.value = lastName;
                 profileEmailInput.value = userData.email;
                 profileWhatsappInput.value = userData.whatsapp || '';
 
-                // Lógica para Pedidos y Direcciones (con datos de ejemplo)
-                const orderContainer = document.getElementById('order-history-container');
-                orderContainer.innerHTML = '';
-                userData.orders.forEach(order => {
-                    orderContainer.innerHTML += `<div class="order-item"><span>${order.id}</span><span>${order.date}</span><span>${order.total}</span><span class="order-item-status status-${order.status.toLowerCase()}">${order.status}</span></div>`;
-                });
-                const addressContainer = document.getElementById('address-list-container');
-                addressContainer.innerHTML = '';
-                userData.addresses.forEach(addr => {
-                    addressContainer.innerHTML += `<div class="address-item"><p>${addr.street}</p>${addr.tag ? `<span class="tag">${addr.tag}</span>` : ''}</div>`;
-                });
+                // Lógica del dashboard (ejemplo)
+                document.getElementById('daysLeft').textContent = `30 días`;
+                document.getElementById('daysUsed').textContent = `0 días`;
+                document.getElementById('rentalProgress').textContent = `0%`;
+                document.getElementById('rentalProgress').style.setProperty('--p', 0);
             }
 
-            // Lógica de TABS
+            // --- LÓGICA DE TABS ---
             const navLinks = document.querySelectorAll('.account-nav-link');
             const sections = document.querySelectorAll('.account-section');
             navLinks.forEach(link => {
@@ -224,16 +209,22 @@
                 });
             });
 
-            // Lógica para Cerrar Sesión
+            // --- LÓGICA PARA CERRAR SESIÓN ---
             const logoutBtn = document.getElementById('logoutBtn');
-            if(logoutBtn) {
+            if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     localStorage.removeItem('greenhaulUser');
                     window.location.href = 'index.html';
                 });
             }
 
-            // Llamada inicial para poblar la UI
+            // --- LÓGICA DEL FORMULARIO DE PERFIL ---
+            document.getElementById('profileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Funcionalidad para guardar cambios aún no implementada.');
+            });
+
+            // --- INICIALIZACIÓN ---
             populateUI();
         });
     </script>
