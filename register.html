@@ -62,42 +62,41 @@
         }
       
         .cart-notification {
-          position: fixed;
-          bottom: 30px;
-          left: 50%;
-          transform: translate(-50%, 100%);
-          background-color: #2ecc71; /* verde suave */
-          color: white;
-          padding: 18px 28px;
-          border-radius: 12px;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-          z-index: 2001;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          opacity: 0;
-          font-size: 16px;
-          transition: transform 0.4s ease-out, opacity 0.4s ease-out;
-        }
-      
-        .cart-notification.error {
-          background-color: #e74c3c; /* rojo */
-        }
-      
-        .cart-notification.visible {
-          opacity: 1;
-          transform: translate(-50%, 0);
-        }
-      
-        #notificationText {
-          color: white;
-          font-weight: 500;
-        }
-      
-        .cart-notification .icon {
-          font-size: 20px;
-          margin-right: 8px;
-        }
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  background: rgba(30, 30, 30, 0.95);
+  color: #ffffff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0;
+  z-index: 9999;
+  transition: all 0.4s ease;
+}
+
+.cart-notification.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.cart-notification.success {
+  border-left: 6px solid #2ecc71;
+}
+
+.cart-notification.error {
+  border-left: 6px solid #e74c3c;
+}
+
+.cart-notification .icon {
+  font-size: 20px;
+}
       
         .cart-notification.success .icon::before {
           content: "✔";
@@ -156,25 +155,27 @@
         document.addEventListener('DOMContentLoaded', () => {
             function showNotification(message, type = 'success') {
   const el = document.getElementById('cartNotification');
-  if (el) {
-    const textEl = el.querySelector('#notificationText');
-    textEl.textContent = message;
-
-    // Limpia clases previas y agrega las nuevas
-    el.className = 'cart-notification ' + type + ' visible';
-
-    // Agrega ícono si no existe
-    if (!el.querySelector('.icon')) {
-      const iconSpan = document.createElement('span');
-      iconSpan.classList.add('icon');
-      el.prepend(iconSpan);
-    }
-
-    setTimeout(() => el.classList.remove('visible'), 3000);
-  } else {
+  if (!el) {
     alert(message);
+    return;
   }
+
+  const iconSpan = el.querySelector('.icon') || document.createElement('span');
+  iconSpan.className = 'icon';
+  iconSpan.innerHTML = type === 'success' ? '✔️' : '❌';
+
+  const textEl = el.querySelector('#notificationText');
+  textEl.textContent = message;
+
+  el.className = `cart-notification ${type} visible`;
+
+  if (!el.contains(iconSpan)) {
+    el.prepend(iconSpan);
+  }
+
+  setTimeout(() => el.classList.remove('visible'), 4000);
 }
+
 
 
             const registerForm = document.getElementById('registerForm');
