@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Crear Cuenta - GreenHaul</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
 
+  <!-- Estilos internos autocontenidos -->
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
@@ -85,7 +84,7 @@
       }
     }
 
-    /* Notificación flotante moderna */
+    /* Nueva notificación flotante */
     .cart-notification {
       position: fixed;
       bottom: 30px;
@@ -120,26 +119,18 @@
     .cart-notification .icon {
       font-size: 20px;
     }
+
+    footer {
+      margin-top: 100px;
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
   </style>
 </head>
 <body>
-
-  <header>
-    <nav class="navbar">
-      <div class="container navbar-content">
-        <a href="index.html" class="logo">
-          <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;" />
-        </a>
-        <ul class="nav-links-list">
-          <li><a href="index.html" class="nav-link">Inicio</a></li>
-          <li><a href="productos.html" class="nav-link">Productos</a></li>
-          <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-        </ul>
-      </div>
-    </nav>
-  </header>
-
-  <main class="page-content">
+  <main>
     <div class="form-container">
       <h2 style="text-align: center;">Crea tu Cuenta en GreenHaul</h2>
       <p style="text-align: center;">Es rápido, fácil y te permitirá gestionar tus pedidos.</p>
@@ -176,7 +167,6 @@
     </div>
   </main>
 
-  <!-- POPUP -->
   <div class="cart-notification" id="cartNotification">
     <span class="icon" id="notificationIcon"></span>
     <span id="notificationText"></span>
