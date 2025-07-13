@@ -17,14 +17,17 @@
           border-radius: 12px;
           box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
+      
         .form-group {
           margin-bottom: 20px;
         }
+      
         .form-group label {
           display: block;
           margin-bottom: 8px;
           font-weight: 600;
         }
+      
         .form-control {
           width: 100%;
           padding: 12px;
@@ -32,11 +35,13 @@
           border-radius: 8px;
           font-size: 1rem;
         }
+      
         .btn.loading {
           pointer-events: none;
           position: relative;
           color: transparent !important;
         }
+      
         .btn.loading::after {
           content: '';
           position: absolute;
@@ -51,41 +56,58 @@
           border-radius: 50%;
           animation: spin 0.8s linear infinite;
         }
+      
         @keyframes spin {
           to { transform: rotate(360deg); }
         }
+      
         .cart-notification {
           position: fixed;
           bottom: 30px;
           left: 50%;
-          transform: translate(-50%, 150%);
-          background-color: #00b386;
+          transform: translate(-50%, 100%);
+          background-color: #2ecc71; /* verde suave */
           color: white;
-          padding: 15px 25px;
-          border-radius: 50px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+          padding: 18px 28px;
+          border-radius: 12px;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.2);
           z-index: 2001;
           display: flex;
           align-items: center;
-          gap: 15px;
+          gap: 12px;
           opacity: 0;
-          transition: all 0.4s ease-out;
+          font-size: 16px;
+          transition: transform 0.4s ease-out, opacity 0.4s ease-out;
         }
+      
         .cart-notification.error {
-          background-color: #e74c3c;
+          background-color: #e74c3c; /* rojo */
         }
+      
         .cart-notification.visible {
           opacity: 1;
           transform: translate(-50%, 0);
         }
       
-        /* ✅ Corregimos color del texto en el mensaje */
         #notificationText {
-          color: white !important;
+          color: white;
           font-weight: 500;
-          font-size: 1rem;
+        }
+      
+        .cart-notification .icon {
+          font-size: 20px;
+          margin-right: 8px;
+        }
+      
+        .cart-notification.success .icon::before {
+          content: "✔";
+        }
+      
+        .cart-notification.error .icon::before {
+          content: "✖";
         }
       </style>
+      
       
 </head>
 <body>
@@ -133,16 +155,27 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             function showNotification(message, type = 'success') {
-                const el = document.getElementById('cartNotification');
-                if (el) {
-                    el.querySelector('#notificationText').textContent = message;
-                    el.className = 'cart-notification';
-                    el.classList.add(type, 'visible');
-                    setTimeout(() => el.classList.remove('visible'), 3000);
-                } else {
-                    alert(message);
-                }
-            }
+  const el = document.getElementById('cartNotification');
+  if (el) {
+    const textEl = el.querySelector('#notificationText');
+    textEl.textContent = message;
+
+    // Limpia clases previas y agrega las nuevas
+    el.className = 'cart-notification ' + type + ' visible';
+
+    // Agrega ícono si no existe
+    if (!el.querySelector('.icon')) {
+      const iconSpan = document.createElement('span');
+      iconSpan.classList.add('icon');
+      el.prepend(iconSpan);
+    }
+
+    setTimeout(() => el.classList.remove('visible'), 3000);
+  } else {
+    alert(message);
+  }
+}
+
 
             const registerForm = document.getElementById('registerForm');
             if (registerForm) {
