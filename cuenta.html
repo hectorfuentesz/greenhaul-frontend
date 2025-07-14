@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Cuenta - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
     <style>
@@ -89,7 +90,7 @@
         .modal-header h3 { border: none; margin: 0; padding: 0; }
         .modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--color-text); }
         .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
-
+        
         #address-map { height: 250px; width: 100%; border-radius: var(--border-radius); margin-top: 20px; border: 1px solid var(--border-color); }
 
         @media (max-width: 850px) {
@@ -199,18 +200,14 @@
             <form id="addressForm">
                 <input type="hidden" id="addressId">
                 <div class="form-group">
-                    <label for="address-name">Nombre de la dirección (ej. Casa, Oficina)</label>
-                    <input type="text" id="address-name" class="form-control">
-                    </div>
-                <div class="form-group">
                     <label for="address-street">Calle y Número</label>
-                    <input type="text" id="address-street" class="form-control">
-                    </div>
+                    <input type="text" id="address-street" class="form-control" required>
+                </div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="address-city">Ciudad</label>
-                        <input type="text" id="address-city" class="form-control">
-                        </div>
+                        <input type="text" id="address-city" class="form-control" required>
+                    </div>
                     <div class="form-group">
                         <label for="address-state">Estado</label>
                         <input type="text" id="address-state" class="form-control">
@@ -283,7 +280,7 @@
             }
 
             const profileForm = document.getElementById('profileForm');
-            // ... Lógica del formulario de perfil ...
+            // ... (resto de la lógica de perfil) ...
 
             const addressModal = document.getElementById('addressModal');
             const addAddressBtn = document.getElementById('addAddressBtn');
@@ -294,7 +291,6 @@
             const modalTitle = document.getElementById('modalTitle');
             const addressIdInput = document.getElementById('addressId');
 
-            const nameInput = document.getElementById('address-name'); 
             const streetInput = document.getElementById('address-street');
             const cityInput = document.getElementById('address-city');
             const stateInput = document.getElementById('address-state');
@@ -308,6 +304,7 @@
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
+
                 marker = L.marker([19.4326, -99.1332], { draggable: true }).addTo(map);
                 marker.on('dragend', function(event) {
                     const position = marker.getLatLng();
@@ -334,8 +331,12 @@
 
             const openModal = () => {
                 addressModal.classList.add('show');
-                setTimeout(() => { initMap(); map.invalidateSize(); }, 100);
+                setTimeout(() => {
+                    initMap();
+                    map.invalidateSize();
+                }, 100);
             };
+
             const closeModal = () => {
                 addressModal.classList.remove('show');
                 addressForm.reset();
@@ -350,22 +351,23 @@
             modalCancelBtn.addEventListener('click', closeModal);
             
             async function loadAddresses() {
-                // ... lógica para cargar direcciones ...
-                 try {
+                try {
                     const response = await fetch(`${backendUrl}/api/users/${userData.id}/addresses`);
                     if (!response.ok) throw new Error('No se pudieron cargar las direcciones.');
                     const addresses = await response.json();
+                    
                     addressListContainer.innerHTML = '';
                     if (addresses.length === 0) {
                         addressListContainer.innerHTML = '<p>Aún no tienes direcciones guardadas. ¡Agrega una!</p>';
                         return;
                     }
+
                     addresses.forEach(addr => {
                         const card = document.createElement('div');
                         card.className = 'address-card';
                         card.innerHTML = `
-                            <div class="address-card-header"><h4><i class="fas fa-map-marker-alt"></i> ${addr.name || 'Dirección'}</h4></div>
-                            <div class="address-card-body"><p>${addr.street}, ${addr.city || ''}</p><p>${addr.state || ''}, ${addr.postal_code || ''}</p></div>
+                            <div class="address-card-header"><h4><i class="fas fa-map-marker-alt"></i> ${addr.city}</h4></div>
+                            <div class="address-card-body"><p>${addr.street}, ${addr.state || ''}</p><p>${addr.postal_code || ''}</p></div>
                             <div class="address-card-actions">
                                 <button class="btn btn-outline edit-btn" data-id="${addr.id}">Editar</button>
                                 <button class="btn-tertiary delete-btn" data-id="${addr.id}" title="Eliminar"><i class="fas fa-trash"></i></button>
@@ -379,18 +381,9 @@
 
             addressForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-
-                // INICIO: Validación manual en JavaScript
-                if (!nameInput.value || !streetInput.value || !cityInput.value) {
-                    showNotification('Por favor, completa el nombre, calle y ciudad.', true);
-                    return; // Detiene la ejecución si los campos están vacíos
-                }
-                // FIN: Validación manual en JavaScript
-
                 const addressId = addressIdInput.value;
                 const isUpdating = !!addressId;
                 const addressData = {
-                    name: nameInput.value,
                     street: streetInput.value,
                     city: cityInput.value,
                     state: stateInput.value,
@@ -402,10 +395,7 @@
                 try {
                     const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addressData) });
                     const result = await response.json();
-                    if (!response.ok) {
-                        // Si el backend manda un mensaje, lo usamos. Si no, uno genérico.
-                        throw new Error(result.message || 'Ocurrió un error al guardar.');
-                    }
+                    if (!response.ok) throw new Error(result.message);
                     showNotification(result.message);
                     closeModal();
                     loadAddresses();
@@ -415,7 +405,6 @@
             });
 
             addressListContainer.addEventListener('click', async (e) => {
-                // ... lógica para editar y eliminar ...
                 const editBtn = e.target.closest('.edit-btn');
                 const deleteBtn = e.target.closest('.delete-btn');
                 if (editBtn) {
@@ -426,7 +415,6 @@
                     if (addressToEdit) {
                         modalTitle.textContent = 'Editar Dirección';
                         addressIdInput.value = addressToEdit.id;
-                        nameInput.value = addressToEdit.name || '';
                         streetInput.value = addressToEdit.street;
                         cityInput.value = addressToEdit.city;
                         stateInput.value = addressToEdit.state || '';
