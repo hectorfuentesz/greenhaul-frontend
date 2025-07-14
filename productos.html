@@ -7,9 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/pages.css">
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
 </head>
 <body>
 <header>
@@ -49,7 +47,6 @@
         </div>
     </nav>
 </header>
-
 <main class="page-content">
     <section class="section">
         <div class="container">
@@ -175,7 +172,6 @@
         </div>
     </section>
 </main>
-
 <footer class="footer">
     <div class="container footer-content">
         <div class="footer-info">
@@ -208,7 +204,7 @@
         &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
     </div>
 </footer>
-    
+
 <div class="cart-modal-overlay" id="cartModalOverlay">
     <div class="cart-modal">
         <div class="cart-modal-header">
@@ -241,30 +237,55 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Configuración para el calendario de FECHA DE ENTREGA
+    
+    // ===================================================
+    // LÓGICA PARA LOS CALENDARIOS (FLATPICKR)
+    // ===================================================
     const fechaEntregaPicker = flatpickr("#fecha-entrega", {
-        locale: "es", // Usar el idioma español
-        minDate: "today", // No permitir seleccionar fechas pasadas
-        altInput: true, // Muestra la fecha en un formato amigable
-        altFormat: "F j, Y", // Formato amigable: "Julio 14, 2025"
-        dateFormat: "Y-m-d", // Formato para el sistema: "2025-07-14"
-        
-        // Cuando se selecciona una fecha de entrega...
+        locale: "es",
+        minDate: "today",
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
         onChange: function(selectedDates, dateStr, instance) {
-            // ...configura la fecha mínima para el calendario de recolección.
             if (fechaRecoleccionPicker) {
                 fechaRecoleccionPicker.set('minDate', dateStr);
             }
         }
     });
 
-    // 2. Configuración para el calendario de FECHA DE RECOLECCIÓN
     const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
         locale: "es",
         minDate: "today",
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
+    });
+
+    // ===================================================
+    // LÓGICA PARA ABRIR Y CERRAR EL MODAL DEL CARRITO (NUEVO)
+    // ===================================================
+    const cartIcon = document.getElementById('cartIcon');
+    const cartModalOverlay = document.getElementById('cartModalOverlay');
+    const closeCartModalBtn = document.getElementById('closeCartModalBtn');
+
+    // Función para abrir el modal
+    cartIcon.addEventListener('click', function(event) {
+        event.preventDefault(); // Previene que el enlace '#' te lleve al tope de la página
+        cartModalOverlay.classList.add('is-visible');
+    });
+
+    // Función para cerrar el modal con el botón 'X'
+    closeCartModalBtn.addEventListener('click', function() {
+        cartModalOverlay.classList.remove('is-visible');
+    });
+
+    // Función para cerrar el modal haciendo clic en el fondo oscuro
+    cartModalOverlay.addEventListener('click', function(event) {
+        // Si el clic fue directamente en el fondo (overlay) y no en el modal blanco
+        if (event.target === cartModalOverlay) {
+            cartModalOverlay.classList.remove('is-visible');
+        }
     });
 });
 </script>
