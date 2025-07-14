@@ -1,6 +1,6 @@
 /**
  * =================================================================
- * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL CORREGIDA)
+ * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA CON FECHAS DE RENTA)
  * =================================================================
  */
 
@@ -27,7 +27,6 @@ function showNotification(message, type = 'success') {
         notificationElement.classList.remove('visible');
     }, 3000);
 }
-
 
 // --- 2. LÓGICA PRINCIPAL DEL SITIO ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -74,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * ===============================================
-     * MÓDULO DE SESIÓN DE USUARIO (CORREGIDO)
+     * MÓDULO DE SESIÓN DE USUARIO
      * ===============================================
      */
     const initUserSession = () => {
@@ -96,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (logoutBtn) logoutBtn.style.display = 'none';
         }
         
-        // CORRECCIÓN: Esta línea es crucial para mostrar el contenedor de acciones
         if (userActionsContainer) {
             userActionsContainer.classList.add('visible');
         }
@@ -113,11 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     /**
      * ===============================================
-     * MÓDULO DEL CARRITO DE COMPRAS (COMPLETO Y CORREGIDO)
+     * MÓDULO DEL CARRITO DE COMPRAS (CON FECHAS DE RENTA)
      * ===============================================
      */
      const initShoppingCart = () => {
-        let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+        let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null };
         
         const cartIcon = document.getElementById('cartIcon');
         const cartModalOverlay = document.getElementById('cartModalOverlay');
@@ -126,9 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const emptyCartBtn = document.getElementById('emptyCartBtn');
         const proceedToCheckoutBtn = document.getElementById('proceedToCheckoutBtn');
 
-        if (!cartIcon || !cartModalOverlay || !closeCartModalBtn) {
-            return;
-        }
+        if (!cartIcon || !cartModalOverlay || !closeCartModalBtn) return;
 
         const saveCart = () => {
             localStorage.setItem('shoppingCart', JSON.stringify(cart));
@@ -137,18 +133,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateCartCount = () => {
             const cartCountEl = document.getElementById('cartCount');
             if (!cartCountEl) return;
-            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            const totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
             cartCountEl.textContent = totalItems;
             cartCountEl.style.display = totalItems > 0 ? 'flex' : 'none';
         };
 
+        const renderCartModal = () => {
+            if (!cartItemsContainer) return;
+            cartItemsContainer.innerHTML = '';
+
+            const cartStartDateEl = document.getElementById('cartStartDate');
+            const cartEndDateEl = document.getElementById('cartEndDate');
+            const rentalDatesContainerEl = document.querySelector('.cart-rental-dates');
+
+            if (cart.rentalDates && cartStartDateEl && cartEndDateEl) {
+                cartStartDateEl.textContent = cart.rentalDates.start;
+                cartEndDateEl.textContent = cart.rentalDates.end;
+                if (rentalDatesContainerEl) rentalDatesContainerEl.style.display = 'block';
+            } else {
+                if (rentalDatesContainerEl) rentalDatesContainerEl.style.display = 'none';
+            }
+
+            if (cart.items.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
+            } else {
+                cart.items.forEach(item => {
+                    const price = (typeof item.price === 'number') ? item.price : 0;
+                    const quantity = (typeof item.quantity === 'number') ? item.quantity : 1;
+                    let opts = Array.from({length: 20}, (_, i) => `<option value="${i + 1}" ${quantity === i ? 'selected' : ''}>${i + 1}</option>`).join('');
+                    cartItemsContainer.innerHTML += `<div class="cart-item" data-product-id="${item.id}"><div class="cart-item-details"><h4>${item.name}</h4><p class="price">$${price.toFixed(2)} c/u</p></div><div class="cart-item-controls"><label for="cart-qty-${item.id}">Cant:</label><select id="cart-qty-${item.id}" class="cart-item-quantity">${opts}</select><button class="remove-item-btn" title="Eliminar">&times;</button></div></div>`;
+                });
+            }
+            updateCartModalTotals();
+            addCartModalEventListeners();
+        };
+        
         const updateCartModalTotals = () => {
             const subtotalEl = document.getElementById('cartSubtotal');
             const taxesEl = document.getElementById('cartTaxes');
             const totalEl = document.getElementById('cartTotal');
             if (!subtotalEl || !taxesEl || !totalEl) return;
 
-            const subtotal = cart.reduce((sum, item) => {
+            const subtotal = cart.items.reduce((sum, item) => {
                 const price = (typeof item.price === 'number') ? item.price : 0;
                 const quantity = (typeof item.quantity === 'number') ? item.quantity : 0;
                 return sum + (price * quantity);
@@ -162,19 +188,21 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const removeCartItem = (productId) => {
-            cart = cart.filter(item => item.id !== productId);
+            cart.items = cart.items.filter(item => item.id !== productId);
+            if (cart.items.length === 0) {
+                cart.rentalDates = null;
+            }
             saveCart();
             renderCartModal();
             updateCartCount();
         };
-
+        
         const updateCartItemQuantity = (productId, newQuantity) => {
-            const itemInCart = cart.find(item => item.id === productId);
+            const itemInCart = cart.items.find(item => item.id === productId);
             if (itemInCart) {
                 itemInCart.quantity = newQuantity;
                 saveCart();
                 renderCartModal();
-                updateCartCount();
             }
         };
 
@@ -187,67 +215,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 s.addEventListener('change', (e) => updateCartItemQuantity(e.target.closest('.cart-item').dataset.productId, parseInt(e.target.value, 10)));
             });
         };
-        
-        const renderCartModal = () => {
-            if (!cartItemsContainer) return;
-            cartItemsContainer.innerHTML = '';
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
-            } else {
-                cart.forEach(item => {
-                    const price = (typeof item.price === 'number') ? item.price : 0;
-                    // CORRECCIÓN: Asegura que la cantidad sea un número válido.
-                    const quantity = (typeof item.quantity === 'number') ? item.quantity : 1;
-                    
-                    let opts = '';
-                    for (let i = 1; i <= 20; i++) {
-                        opts += `<option value="${i}" ${quantity === i ? 'selected' : ''}>${i}</option>`;
-                    }
-                    
-                    cartItemsContainer.innerHTML += `
-                        <div class="cart-item" data-product-id="${item.id}">
-                            <div class="cart-item-details">
-                                <h4>${item.name}</h4>
-                                <p class="price">$${price.toFixed(2)} c/u</p>
-                            </div>
-                            <div class="cart-item-controls">
-                                <label for="cart-qty-${item.id}">Cant:</label>
-                                <select id="cart-qty-${item.id}" class="cart-item-quantity">${opts}</select>
-                                <button class="remove-item-btn" title="Eliminar">&times;</button>
-                            </div>
-                        </div>`;
-                });
-            }
-            updateCartModalTotals();
-            addCartModalEventListeners();
-        };
 
-        const addToCart = (product) => {
-            const itemInCart = cart.find(item => item.id === product.id);
+        const addToCart = (product, rentalDates) => {
+            if (cart.items.length === 0) {
+                cart.rentalDates = rentalDates;
+            }
+            const itemInCart = cart.items.find(item => item.id === product.id);
             if (itemInCart) {
                 itemInCart.quantity += product.quantity;
             } else {
-                cart.push(product);
+                cart.items.push(product);
             }
             showNotification(`${product.name} añadido al carrito.`, 'success');
             saveCart();
             updateCartCount();
         };
 
+        const clearCart = () => {
+            cart = { items: [], rentalDates: null };
+            saveCart();
+            renderCartModal();
+            updateCartCount();
+        };
+
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
             button.addEventListener('click', e => {
+                const startDateInput = document.getElementById('fecha-entrega');
+                const endDateInput = document.getElementById('fecha-recoleccion');
+
+                if (!startDateInput.value || !endDateInput.value) {
+                    showNotification('Por favor, selecciona las fechas de entrega y recolección.', 'error');
+                    startDateInput.parentElement.parentElement.parentElement.classList.add('shake-animation');
+                    setTimeout(() => startDateInput.parentElement.parentElement.parentElement.classList.remove('shake-animation'), 500);
+                    return;
+                }
+
+                const newRentalDates = { start: startDateInput.value, end: endDateInput.value };
+
+                if (cart.rentalDates && (cart.rentalDates.start !== newRentalDates.start || cart.rentalDates.end !== newRentalDates.end)) {
+                    if (!confirm('Has cambiado las fechas de renta. ¿Deseas vaciar el carrito actual y empezar un nuevo pedido?')) {
+                        return;
+                    }
+                    clearCart();
+                }
+
                 const productCard = e.target.closest('.product-card');
                 const quantitySelect = productCard?.querySelector('.product-qty');
                 if (!quantitySelect || !quantitySelect.value) {
-                    showNotification('Por favor, selecciona una cantidad.', 'error');
-                    return;
+                    showNotification('Por favor, selecciona una cantidad.', 'error'); return;
                 }
                 addToCart({
                     id: productCard.dataset.productId,
                     name: productCard.querySelector('h3').textContent,
                     price: parseFloat(productCard.dataset.productPrice),
                     quantity: parseInt(quantitySelect.value, 10),
-                });
+                }, newRentalDates);
                 quantitySelect.value = "";
             });
         });
@@ -258,37 +280,29 @@ document.addEventListener('DOMContentLoaded', () => {
             cartModalOverlay.classList.add('active');
         });
 
-        closeCartModalBtn.addEventListener('click', () => {
-            cartModalOverlay.classList.remove('active');
-        });
+        closeCartModalBtn.addEventListener('click', () => cartModalOverlay.classList.remove('active'));
+        cartModalOverlay.addEventListener('click', e => { if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('active'); });
         
-        cartModalOverlay.addEventListener('click', (e) => {
-            if (e.target === cartModalOverlay) {
-                cartModalOverlay.classList.remove('active');
-            }
-        });
-        
-        // CORRECCIÓN: El listener para el botón de vaciar carrito estaba faltando.
         if (emptyCartBtn) {
             emptyCartBtn.addEventListener('click', () => {
-                cart = [];
-                saveCart();
-                renderCartModal();
-                updateCartCount();
+                clearCart();
                 showNotification('El carrito ha sido vaciado.', 'success');
             });
         }
 
         if (proceedToCheckoutBtn) {
             proceedToCheckoutBtn.addEventListener('click', e => {
-                if (cart.length === 0) {
+                if (cart.items.length === 0) {
                     e.preventDefault();
                     showNotification('Tu carrito está vacío.', 'error');
                 }
+                // Guardamos el carrito una última vez para asegurar que las fechas van en la orden
+                saveCart();
             });
         }
         
         updateCartCount();
+        renderCartModal(); // Para que las fechas se muestren al cargar la página si ya existen
     };
 
     /**
@@ -311,8 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
-    // ... Tu función initCalculator() aquí ...
-
+    // Aquí puedes añadir tu función initCalculator si la tienes
 
     /**
      * ===============================================
@@ -323,6 +336,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initActiveNav();
     initUserSession();
     initShoppingCart();
-    // initCalculator(); // Descomenta si tienes esa función
     initProductPageElements();
 });
