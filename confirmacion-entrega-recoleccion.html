@@ -121,7 +121,6 @@
         let deliveryMap, deliveryMarker;
         let pickupMap, pickupMarker;
 
-        // --- Función para inicializar los mapas ---
         function setupMap(mapId, inputId, onDragEndCallback) {
             const map = L.map(mapId).setView(initialCoords, 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
@@ -131,7 +130,6 @@
             return { map, marker };
         }
 
-        // --- Lógica de geocodificación (convertir coordenadas a texto y viceversa) ---
         async function updateAddressFromCoords(lat, lng, inputElement) {
             inputElement.value = "Buscando...";
             const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
@@ -165,47 +163,49 @@
             }
         }
         
-        // --- Inicializar mapa de Entrega ---
         const deliveryElements = setupMap('deliveryMap', 'deliveryAddress', (e) => {
             updateAddressFromCoords(e.target.getLatLng().lat, e.target.getLatLng().lng, document.getElementById('deliveryAddress'));
         });
         deliveryMap = deliveryElements.map;
         deliveryMarker = deliveryElements.marker;
 
-        // --- Inicializar mapa de Recolección ---
         const pickupElements = setupMap('pickupMap', 'pickupAddress', (e) => {
             updateAddressFromCoords(e.target.getLatLng().lat, e.target.getLatLng().lng, document.getElementById('pickupAddress'));
         });
         pickupMap = pickupElements.map;
         pickupMarker = pickupElements.marker;
 
-        // --- LÓGICA PARA CARGAR Y USAR DIRECCIONES GUARDADAS ---
         const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
         if (loggedInUser && loggedInUser.id) {
-            // Mostrar los contenedores de los menús desplegables
             document.getElementById('saved-delivery-addresses-container').style.display = 'block';
             document.getElementById('saved-pickup-addresses-container').style.display = 'block';
 
             const deliverySelect = document.getElementById('savedDeliveryAddress');
             const pickupSelect = document.getElementById('savedPickupAddress');
             
-            // Cargar las direcciones del usuario desde el backend
             fetch(`${backendUrl}/api/users/${loggedInUser.id}/addresses`)
                 .then(response => response.json())
                 .then(addresses => {
                     if (addresses && addresses.length > 0) {
                         addresses.forEach(addr => {
                             const option = document.createElement('option');
-                            const fullAddress = `${addr.street}, ${addr.city}, ${addr.state || ''}, ${addr.postal_code || ''}`;
-                            option.value = fullAddress; // Guardamos la dirección completa
-                            option.textContent = addr.name; // Mostramos el nombre (ej. "Casa")
+                            // Construimos la dirección completa para usarla tanto en el valor como en el texto
+                            const fullAddress = `${addr.street}, ${addr.city}, ${addr.state || ''}`;
+                            
+                            option.value = fullAddress;
+
+                            // --- INICIO DE LA CORRECCIÓN ---
+                            // El texto de la opción ahora será la dirección completa,
+                            // en lugar de 'addr.name' que no existe y causaba el campo en blanco.
+                            option.textContent = fullAddress;
+                            // --- FIN DE LA CORRECCIÓN ---
+
                             deliverySelect.appendChild(option.cloneNode(true));
                             pickupSelect.appendChild(option);
                         });
                     }
                 });
             
-            // Event listener para el menú de Entrega
             deliverySelect.addEventListener('change', (e) => {
                 const selectedAddress = e.target.value;
                 if (selectedAddress) {
@@ -214,7 +214,6 @@
                 }
             });
 
-            // Event listener para el menú de Recolección
             pickupSelect.addEventListener('change', (e) => {
                 const selectedAddress = e.target.value;
                 if (selectedAddress) {
@@ -224,7 +223,6 @@
             });
         }
         
-        // --- Lógica de confirmación de formularios y pago ---
         document.getElementById('deliveryAddressForm').addEventListener('submit', (e) => {
             e.preventDefault();
             isDeliveryAddressConfirmed = true;
@@ -242,8 +240,6 @@
                 showNotification('Por favor, confirma ambas direcciones.', 'error');
                 return;
             }
-            // Aquí guardarías las direcciones seleccionadas antes de ir a pago
-            // Ejemplo: sessionStorage.setItem('deliveryAddress', document.getElementById('deliveryAddress').value);
             window.location.href = 'pago.html';
         });
     });
