@@ -165,6 +165,21 @@
         const profileLastnameInput = document.getElementById('profile-lastname');
         const profileEmailInput = document.getElementById('profile-email');
         const profileWhatsappInput = document.getElementById('profile-whatsapp');
+        const notificationPopup = document.getElementById('notificationPopup');
+
+        function showNotification(message, isError = false) {
+            notificationPopup.textContent = message;
+            notificationPopup.classList.add('show');
+            if (isError) {
+                notificationPopup.classList.add('notification-error');
+            } else {
+                notificationPopup.classList.remove('notification-error');
+            }
+            setTimeout(() => {
+                notificationPopup.classList.remove('show');
+                notificationPopup.classList.remove('notification-error');
+            }, 3000);
+        }
 
         function renderDashboard(data) {
             const dashboard = document.getElementById('dashboard-cards');
@@ -241,98 +256,84 @@
             const lastName = nameParts.slice(2).join(' ');
 
             profileNameInput.value = firstName;
-            profileLastnameInput.value = lastName;
-            profileEmailInput.value = userData.email;
+            profileLastnameInput.value = lastName || '';
+            profileEmailInput.value = userData.email || '';
             profileWhatsappInput.value = userData.whatsapp || '';
 
+            // Aquí puedes cargar datos reales para los dashboards, direcciones y pedidos
+            // Por ahora, solo datos de ejemplo:
             renderDashboard({
-                totalAmount: userData.totalAmount || 0,
-                totalBoxes: userData.totalBoxes || 0,
-                nextPickup: userData.nextPickup || '',
-                lastOrderDate: userData.lastOrderDate || ''
+                totalAmount: 1200.50,
+                totalBoxes: 30,
+                nextPickup: '2025-07-20',
+                lastOrderDate: '2025-07-01'
             });
-
             renderAddresses(userData.addresses || []);
             renderOrders(userData.orders || []);
         }
 
-        function showNotification(message, isError = false) {
-            const popup = document.getElementById('notificationPopup');
-            popup.textContent = message;
-            if (isError) {
-                popup.classList.add('notification-error');
-            } else {
-                popup.classList.remove('notification-error');
-            }
-            popup.classList.add('show');
-            setTimeout(() => popup.classList.remove('show'), 3000);
-        }
-
+        // Control de navegación lateral
         const navLinks = document.querySelectorAll('.account-nav-link');
-        const sections = document.querySelectorAll('.account-section');
         navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
+            link.addEventListener('click', () => {
                 navLinks.forEach(l => l.classList.remove('active'));
-                sections.forEach(s => s.classList.remove('active'));
                 link.classList.add('active');
-                document.getElementById(link.dataset.section + '-section').classList.add('active');
+
+                const sectionToShow = link.getAttribute('data-section');
+                document.querySelectorAll('.account-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(`${sectionToShow}-section`).classList.add('active');
             });
         });
 
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                localStorage.removeItem('greenhaulUser');
-                window.location.href = 'index.html';
-            });
-        }
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('greenhaulUser');
+            window.location.href = 'login.html';
+        });
 
-        const profileForm = document.getElementById('profileForm');
-        if (profileForm) {
-            profileForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+        // Enviar formulario para actualizar perfil
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-                const updatedEmail = profileEmailInput.value.trim();
-                const updatedWhatsapp = profileWhatsappInput.value.trim();
+            const updatedEmail = profileEmailInput.value.trim();
+            const updatedWhatsapp = profileWhatsappInput.value.trim();
 
-                if (!updatedEmail) {
-                    showNotification('El correo electrónico es obligatorio.', true);
+            if (!updatedEmail) {
+                showNotification('El correo electrónico es obligatorio.', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://greenhaul-backend-production.up.railway.app/api/users/${userData.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: updatedEmail,
+                        whatsapp: updatedWhatsapp
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showNotification(data.message || 'Error al actualizar perfil.', true);
                     return;
                 }
 
-                try {
-                    const response = await fetch('https://greenhaul-backend-production.up.railway.app/api/users/update', {
-                        method: 'PUT', // o POST según tu backend
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            id: userData.id,
-                            email: updatedEmail,
-                            whatsapp: updatedWhatsapp
-                        })
-                    });
+                // Actualizar localStorage con los nuevos datos
+                userData.email = data.user.email;
+                userData.whatsapp = data.user.whatsapp;
+                localStorage.setItem('greenhaulUser', JSON.stringify(userData));
 
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.message || 'Error al actualizar el usuario.');
-                    }
+                showNotification('Perfil actualizado correctamente.');
 
-                    const result = await response.json();
-
-                    // Actualizar localStorage con la nueva info
-                    userData.email = updatedEmail;
-                    userData.whatsapp = updatedWhatsapp;
-                    localStorage.setItem('greenhaulUser', JSON.stringify(userData));
-
-                    populateUI();
-
-                    showNotification('Cambios guardados correctamente.');
-
-                } catch (error) {
-                    showNotification(error.message || 'Error en la conexión con el servidor.', true);
-                }
-            });
-        }
+            } catch (error) {
+                showNotification('Error en la conexión con el servidor.', true);
+                console.error(error);
+            }
+        });
 
         populateUI();
     });
