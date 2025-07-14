@@ -7,30 +7,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
-        /* ... (Todos los estilos CSS se quedan exactamente igual) ... */
+        /* ===== ESTILOS BASE Y DE COLOR ===== */
         :root {
-            --primary-solid: #4a90e2; --accent-green: #00b386; --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
+            --primary-solid: #4a90e2; 
+            --accent-green: #00b386;
+            --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
             --gradient-primary-hover: linear-gradient(to right, #008c6b, #3a7bcd);
-            --color-dark: #2c3e50; --color-light: #f8f9fa; --color-text: #555;
-            --color-white: #ffffff; --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            --border-radius: 12px; --border-color: #e0e0e0;
+            --color-dark: #2c3e50; 
+            --color-light: #f8f9fa; 
+            --color-text: #555;
+            --color-white: #ffffff; 
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px; 
+            --border-color: #e0e0e0;
             --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font-main); color: var(--color-text); background-color: var(--color-light); line-height: 1.7; display: flex; flex-direction: column; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        h2 { font-size: 2.8rem; text-align: center; color: var(--color-dark); margin-bottom: 15px; }
+        h2 { font-size: 2.8rem; text-align: center; color: var(--primary-solid); margin-bottom: 15px; }
         p { color: var(--color-text); }
         .section-title { text-align: center; margin-bottom: 60px; }
         .section-title p { color: #888; max-width: 700px; margin: 0 auto; }
+        
         .btn { display: inline-block; padding: 12px 28px; border-radius: 999px; font-weight: 600; text-align: center; border: none; cursor: pointer; text-decoration: none; transition: all 0.3s ease; }
         .btn-primary { background-image: var(--gradient-primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .btn-primary:hover { background-image: var(--gradient-primary-hover); transform: translateY(-3px); }
         .btn-secondary { background: #e9ecef; color: var(--color-dark); }
         .btn-outline { background-color: transparent; color: var(--primary-solid) !important; border-radius: 50px; text-decoration:none; padding: 8px 20px; border: 1px solid var(--primary-solid); }
         .btn-outline:hover { background-color: var(--primary-solid); color: var(--color-white) !important; }
-        .btn-tertiary { background: none; border: none; color: var(--accent-red); font-weight: 500; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; }
+        .btn-tertiary { background: none; border: none; color: #e74c3c; font-weight: 500; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; }
         .btn-tertiary:hover { transform: scale(1.15); }
+        
         .navbar { position: relative; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); }
         .navbar-content { display: flex; justify-content: space-between; align-items: center; }
         .logo img { height: 50px; }
@@ -41,22 +49,30 @@
         .navbar-user-actions { display: flex; align-items: center; gap: 15px; }
         .navbar-toggler { display: none; background: none; border: none; cursor: pointer; padding: 5px; }
         .toggler-icon { display: block; width: 22px; height: 2px; background-color: var(--color-dark); margin: 5px 0; transition: all 0.3s; }
+
         .footer { background-color: var(--color-dark); color: #aaa; padding: 40px 20px; text-align: center; margin-top: auto;}
         main { flex-grow: 1; padding: 80px 0; }
         .payment-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 50px; align-items: flex-start; }
         .form-container, .summary-container { background-color: var(--color-white); padding: 40px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
+        
         .form-container h3, .summary-container h3 { font-size: 1.8rem; color: var(--color-dark); margin-top: 0; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .form-container h3 i, .summary-container h3 i { color: var(--accent-green); margin-right: 10px; }
+
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
         .form-control { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
         .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .name-grid .form-group:first-child { grid-column: 1 / -1; }
         .btn-submit { width: 100%; padding: 15px; font-size: 1.2rem; }
+        
         .order-summary-list { list-style: none; padding: 0; margin: 0 0 20px 0; }
         .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
         .summary-totals { list-style: none; padding: 20px 0 0 0; margin: 0; border-top: 2px solid var(--border-color); }
         .summary-totals li { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .summary-totals li.total { font-size: 1.5rem; font-weight: 700; color: var(--color-dark); margin-top: 10px; }
+        .summary-totals li.total { font-size: 1.5rem; font-weight: 700; margin-top: 10px; }
+        .summary-totals li.total span:first-child { color: var(--primary-solid); }
+        .summary-totals li.total span:last-child { color: var(--color-dark); }
+        
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .popup-overlay.active { opacity: 1; visibility: visible; }
         .popup-card { background-color: var(--color-white); border-radius: var(--border-radius); box-shadow: 0 15px 40px rgba(0,0,0,0.3); width: 90%; max-width: 450px; text-align: center; padding: 40px 30px; transform: scale(0.9); opacity: 0; transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s; }
@@ -67,6 +83,7 @@
         .order-details-box p { margin: 0; font-size: 0.9rem; color: var(--color-text); }
         .order-details-box strong { font-size: 1.2rem; color: var(--color-dark); }
         .popup-actions { display: flex; gap: 15px; justify-content: center; }
+        
         @media(max-width: 992px) { 
             .payment-layout, .name-grid { grid-template-columns: 1fr; } 
             .summary-container { margin-top: 40px; }
@@ -118,7 +135,6 @@
                 <h2>Finalizar Compra</h2>
                 <p>Estás a un solo paso de completar tu pedido.</p>
             </div>
-
             <div class="payment-layout">
                 <div class="form-container">
                     <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
@@ -148,6 +164,7 @@
             </div>
         </div>
     </main>
+    
     <div class="popup-overlay" id="orderSuccessPopup">
         <div class="popup-card">
             <div class="popup-icon"><i class="fas fa-check"></i></div>
@@ -162,11 +179,9 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- Lógica para el header responsivo y estado de sesión ---
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
             if (navbarToggler) {
@@ -174,13 +189,11 @@
                     navbarCollapse.classList.toggle('active');
                 });
             }
-
             const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
             const loginBtn = document.getElementById('loginBtn');
             const accountLink = document.getElementById('accountLink');
             const logoutBtn = document.getElementById('logoutBtn');
             const userNameSpan = document.getElementById('userName');
-
             if (loggedInUser) {
                 if(loginBtn) loginBtn.style.display = 'none';
                 if(accountLink) accountLink.style.display = 'flex';
@@ -191,15 +204,13 @@
                 if(accountLink) accountLink.style.display = 'none';
                 if(logoutBtn) logoutBtn.style.display = 'none';
             }
-
             if(logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     localStorage.removeItem('greenhaulUser');
                     window.location.reload();
                 });
             }
-            
-            // --- Lógica del formulario de pago ---
+
             const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
             const itemsContainer = document.getElementById('summaryItemsContainer');
             const subtotalEl = document.getElementById('summarySubtotal');
@@ -215,17 +226,10 @@
                 }
                 itemsContainer.innerHTML = '';
                 let subtotal = 0;
-                // Asumiendo que el carrito tiene objetos con { name, price, quantity }
                 cart.forEach(item => {
                     const itemTotal = (item.price || 0) * (item.quantity || 1);
                     subtotal += itemTotal;
-                    itemsContainer.innerHTML += `<li class="summary-item">
-                        <div>
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-qty">Cantidad: ${item.quantity || 1}</div>
-                        </div>
-                        <div class="item-price">$${itemTotal.toFixed(2)}</div>
-                    </li>`;
+                    itemsContainer.innerHTML += `<li class="summary-item"><div><div class="item-name">${item.name}</div><div class="item-qty">Cantidad: ${item.quantity || 1}</div></div><div class="item-price">$${itemTotal.toFixed(2)}</div></li>`;
                 });
                 const taxes = subtotal * 0.16;
                 const total = subtotal + taxes;
@@ -234,12 +238,10 @@
                 totalEl.textContent = `$${total.toFixed(2)}`;
             }
 
-            // Formato de inputs
             document.getElementById('cardNumber').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 16).replace(/(.{4})/g, '$1-').trim().slice(0, 19); });
             document.getElementById('expiryDate').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4).replace(/(.{2})/, '$1/').slice(0, 5); });
             document.getElementById('cvv').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4); });
 
-            // Envío del formulario
             paymentForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const orderSuccessPopup = document.getElementById('orderSuccessPopup');
