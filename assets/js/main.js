@@ -34,6 +34,8 @@ function showNotification(message, type = 'success') {
 // --- 2. LÓGICA PRINCIPAL DEL SITIO ---
 document.addEventListener('DOMContentLoaded', () => {
 
+    console.log("DOM cargado. Ejecutando main.js... 🚀");
+
     /**
      * ===============================================
      * MÓDULO DE NAVBAR Y ELEMENTOS GLOBALES
@@ -63,12 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const initActiveNav = () => {
         const navLinks = document.querySelectorAll('.nav-links-list .nav-link');
-        const currentPath = window.location.pathname;
+        const currentPath = window.location.pathname.split('/').pop();
 
         navLinks.forEach(link => {
-            const linkPath = new URL(link.href).pathname;
+            const linkPath = link.getAttribute('href');
             link.classList.remove('active');
-            if (linkPath === currentPath || (currentPath === '/' && link.getAttribute('href') === 'index.html')) {
+            if (linkPath === currentPath || (currentPath === '' && linkPath === 'index.html')) {
                 link.classList.add('active');
             }
         });
@@ -76,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * ===============================================
-     * MÓDULO DE SESIÓN DE USUARIO (CORREGIDO)
+     * MÓDULO DE SESIÓN DE USUARIO
      * ===============================================
      */
     const initUserSession = () => {
@@ -85,29 +87,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const accountLink = document.getElementById('accountLink');
         const logoutBtn = document.getElementById('logoutBtn');
         const userNameSpan = document.getElementById('userName');
-        // ===== CORRECCIÓN AQUÍ: Se busca la clave correcta =====
         const savedUser = JSON.parse(localStorage.getItem('greenhaulUser'));
 
         if (savedUser && savedUser.name) {
             if (loginBtn) loginBtn.style.display = 'none';
             if (accountLink) accountLink.style.display = 'flex';
             if (logoutBtn) logoutBtn.style.display = 'block';
-            if (userNameSpan) userNameSpan.textContent = savedUser.name.split(' ')[0]; // Muestra solo el primer nombre
+            if (userNameSpan) userNameSpan.textContent = savedUser.name.split(' ')[0];
         } else {
             if (loginBtn) loginBtn.style.display = 'flex';
             if (accountLink) accountLink.style.display = 'none';
             if (logoutBtn) logoutBtn.style.display = 'none';
         }
         
-        if (userActionsContainer) {
-            userActionsContainer.classList.add('visible');
-        }
+        if (userActionsContainer) userActionsContainer.classList.add('visible');
 
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('greenhaulUser');
-                // showNotification ya no está disponible globalmente, podrías usar un alert o redirigir directamente
                 alert('Has cerrado sesión.');
                 window.location.href = 'index.html';
             });
@@ -116,13 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     /**
      * ===============================================
-     * MÓDULO DEL CARRITO DE COMPRAS (COMPLETO Y CORREGIDO)
+     * MÓDULO DEL CARRITO DE COMPRAS
      * ===============================================
      */
      const initShoppingCart = () => {
-        let cart = [];
-
-        // Selectores de elementos del DOM
+        let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+        
         const cartIcon = document.getElementById('cartIcon');
         const cartModalOverlay = document.getElementById('cartModalOverlay');
         const closeCartModalBtn = document.getElementById('closeCartModalBtn');
@@ -130,16 +127,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const emptyCartBtn = document.getElementById('emptyCartBtn');
         const proceedToCheckoutBtn = document.getElementById('proceedToCheckoutBtn');
 
-        // --- FUNCIONES INTERNAS DEL CARRITO ---
+        if (!cartIcon || !cartModalOverlay) {
+            console.error("Error Crítico: No se encontró el ícono del carrito o el contenedor del modal. Verifica que el HTML del carrito exista en esta página.");
+            return;
+        }
 
-        const saveCart = () => {
-            localStorage.setItem('shoppingCart', JSON.stringify(cart));
-        };
+        const saveCart = () => localStorage.setItem('shoppingCart', JSON.stringify(cart));
         
         const updateCartCount = () => {
             const cartCountEl = document.getElementById('cartCount');
             if (!cartCountEl) return;
-            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             cartCountEl.textContent = totalItems;
             cartCountEl.style.display = totalItems > 0 ? 'flex' : 'none';
         };
@@ -149,11 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const taxesEl = document.getElementById('cartTaxes');
             const totalEl = document.getElementById('cartTotal');
             if (!subtotalEl || !taxesEl || !totalEl) return;
-
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const taxes = subtotal * 0.16;
             const total = subtotal + taxes;
-
             subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
             taxesEl.textContent = `$${taxes.toFixed(2)}`;
             totalEl.textContent = `$${total.toFixed(2)}`;
@@ -178,38 +174,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const addCartModalEventListeners = () => {
             if (!cartItemsContainer) return;
-
-            const removeButtons = cartItemsContainer.querySelectorAll('.remove-item-btn');
-            removeButtons.forEach(button => {
-                button.onclick = (e) => {
-                    const productId = e.target.closest('.cart-item').dataset.productId;
-                    removeCartItem(productId);
-                };
-            });
-
-            const quantitySelects = cartItemsContainer.querySelectorAll('.cart-item-quantity');
-            quantitySelects.forEach(select => {
-                select.onchange = (e) => {
-                    const productId = e.target.closest('.cart-item').dataset.productId;
-                    const newQuantity = parseInt(e.target.value, 10);
-                    updateCartItemQuantity(productId, newQuantity);
-                };
-            });
+            cartItemsContainer.querySelectorAll('.remove-item-btn').forEach(b => b.onclick = e => removeCartItem(e.target.closest('.cart-item').dataset.productId));
+            cartItemsContainer.querySelectorAll('.cart-item-quantity').forEach(s => s.onchange = e => updateCartItemQuantity(e.target.closest('.cart-item').dataset.productId, parseInt(e.target.value, 10)));
         };
         
         const renderCartModal = () => {
             if (!cartItemsContainer) return;
             cartItemsContainer.innerHTML = '';
-
             if (cart.length === 0) {
                 cartItemsContainer.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
             } else {
                 cart.forEach(item => {
-                    let quantityOptions = '';
-                    for (let i = 1; i <= 20; i++) { // Límite de 20 por producto
-                        quantityOptions += `<option value="${i}" ${item.quantity === i ? 'selected' : ''}>${i}</option>`;
-                    }
-                    const itemHTML = `
+                    let opts = Array.from({length: 20}, (_, i) => `<option value="${i + 1}" ${item.quantity === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join('');
+                    cartItemsContainer.innerHTML += `
                         <div class="cart-item" data-product-id="${item.id}">
                             <div class="cart-item-details">
                                 <h4>${item.name}</h4>
@@ -217,11 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             <div class="cart-item-controls">
                                 <label>Cant:</label>
-                                <select class="cart-item-quantity">${quantityOptions}</select>
+                                <select class="cart-item-quantity">${opts}</select>
                                 <button class="remove-item-btn" title="Eliminar">&times;</button>
                             </div>
                         </div>`;
-                    cartItemsContainer.innerHTML += itemHTML;
                 });
             }
             updateCartModalTotals();
@@ -229,154 +205,109 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const addToCart = (product) => {
-            const existingItem = cart.find(item => item.id === product.id);
-            if (existingItem) {
-                existingItem.quantity = product.quantity;
-                showNotification(`Cantidad de ${product.name} actualizada.`, 'success');
+            const itemInCart = cart.find(item => item.id === product.id);
+            if (itemInCart) {
+                itemInCart.quantity += product.quantity;
             } else {
                 cart.push(product);
-                showNotification(`${product.name} añadido al carrito.`, 'success');
             }
+            showNotification(`${product.name} añadido al carrito.`, 'success');
             saveCart();
             updateCartCount();
         };
 
-        // --- ASIGNACIÓN DE EVENTOS ---
-
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
             button.addEventListener('click', e => {
                 const productCard = e.target.closest('.product-card');
-                if (!productCard) return;
-
-                const quantitySelect = productCard.querySelector('.product-qty');
+                const quantitySelect = productCard?.querySelector('.product-qty');
                 if (!quantitySelect || !quantitySelect.value) {
                     showNotification('Por favor, selecciona una cantidad.', 'error');
                     return;
                 }
-                const product = {
+                addToCart({
                     id: productCard.dataset.productId,
                     name: productCard.querySelector('h3').textContent,
                     price: parseFloat(productCard.dataset.productPrice),
                     quantity: parseInt(quantitySelect.value, 10),
-                    emoji: productCard.querySelector('.product-image')?.textContent.trim() || '📦'
-                };
-                addToCart(product);
+                });
+                quantitySelect.value = ""; // Resetea el selector de cantidad
             });
         });
 
-        if (cartIcon) {
-            cartIcon.addEventListener('click', e => {
-                e.preventDefault();
-                renderCartModal();
-                if (cartModalOverlay) cartModalOverlay.classList.add('active');
-            });
-        }
-        if (closeCartModalBtn) {
-            closeCartModalBtn.addEventListener('click', () => {
-                if (cartModalOverlay) cartModalOverlay.classList.remove('active');
-            });
-        }
-        if (emptyCartBtn) {
-            emptyCartBtn.addEventListener('click', () => {
-                cart = [];
-                saveCart();
-                renderCartModal();
-                updateCartCount();
-            });
-        }
-        if (proceedToCheckoutBtn) {
-            proceedToCheckoutBtn.addEventListener('click', (e) => {
-                if (cart.length === 0) {
-                    e.preventDefault();
-                    showNotification('Tu carrito está vacío.', 'error');
-                }
-            });
+        cartIcon.addEventListener('click', e => {
+            e.preventDefault();
+            console.log("Clic en el carrito detectado. Intentando abrir modal...");
+            renderCartModal();
+            cartModalOverlay.classList.add('active');
+        });
+
+        if(closeCartModalBtn) {
+            closeCartModalBtn.addEventListener('click', () => cartModalOverlay.classList.remove('active'));
         }
         
-        // Carga inicial del carrito
-        const storedCart = localStorage.getItem('shoppingCart');
-        cart = JSON.parse(storedCart) || [];
+        cartModalOverlay.addEventListener('click', (e) => {
+            if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('active');
+        });
+        
+        if (emptyCartBtn) emptyCartBtn.addEventListener('click', () => {
+            cart = [];
+            saveCart();
+            renderCartModal();
+            updateCartCount();
+        });
+
+        if (proceedToCheckoutBtn) proceedToCheckoutBtn.addEventListener('click', e => {
+            if (cart.length === 0) {
+                e.preventDefault();
+                showNotification('Tu carrito está vacío.', 'error');
+            }
+        });
+        
         updateCartCount();
+        console.log("Módulo de Carrito inicializado correctamente. ✔️");
     };
 
+    /**
+     * ===============================================
+     * MÓDULO PARA LA PÁGINA DE PRODUCTOS
+     * ===============================================
+     */
+    const initProductPageElements = () => {
+        const rentalDatesContainer = document.querySelector('.rental-dates-container');
+        if (!rentalDatesContainer || typeof flatpickr === 'undefined') return;
+
+        const fechaEntregaPicker = flatpickr("#fecha-entrega", {
+            locale: "es",
+            minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+            onChange: function(selectedDates, dateStr) {
+                if (fechaRecoleccionPicker) {
+                    fechaRecoleccionPicker.set('minDate', dateStr);
+                }
+            }
+        });
+
+        const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
+            locale: "es",
+            minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+        console.log("Módulo de Página de Productos inicializado correctamente. ✔️");
+    };
+    
     /**
      * ===============================================
      * MÓDULO PARA LA CALCULADORA INTERACTIVA
      * ===============================================
      */
     const initCalculator = () => {
-        const calcSteps = document.querySelectorAll('.calculator-step');
-        if (calcSteps.length === 0) return; // No ejecuta si no hay calculadora
-
-        const progressBar = document.getElementById('progressBar');
-        const stepIndicators = document.querySelectorAll('.progress-steps .step');
-        const calculateBtn = document.getElementById('calculateBtn');
-        const calculatorResult = document.getElementById('calculatorResult');
-        let currentStep = 1;
-
-        const showStep = (stepNumber) => {
-            calcSteps.forEach(step => step.classList.remove('active'));
-            const nextStepEl = document.getElementById(`calc-step-${stepNumber}`);
-            if (nextStepEl) nextStepEl.classList.add('active');
-            
-            const progressPercentage = ((stepNumber - 1) / (stepIndicators.length - 1)) * 100;
-            if (progressBar) progressBar.style.width = `${progressPercentage}%`;
-
-            stepIndicators.forEach((indicator, index) => {
-                indicator.classList.toggle('active', index < stepNumber);
-            });
-        };
-
-        document.querySelectorAll('input[name="homeType"], input[name="belongings"]').forEach(radio => {
-            radio.addEventListener('click', () => {
-                if (currentStep < 3) {
-                    setTimeout(() => {
-                        currentStep++;
-                        showStep(currentStep);
-                    }, 200);
-                }
-            });
-        });
-
-        if (calculateBtn) {
-            calculateBtn.addEventListener('click', () => {
-                const homeType = document.querySelector('input[name="homeType"]:checked')?.value;
-                const belongings = document.querySelector('input[name="belongings"]:checked')?.value;
-                const extras = [...document.querySelectorAll('input[name="extras"]:checked')].map(cb => cb.value);
-
-                if (!homeType || !belongings) {
-                    showNotification('Por favor completa los pasos 1 y 2.', 'error');
-                    return;
-                }
-
-                let mediumBoxes = 0, largeBoxes = 0;
-                switch (homeType) {
-                    case 'studio': mediumBoxes = 8; largeBoxes = 4; break;
-                    case '1br': mediumBoxes = 12; largeBoxes = 6; break;
-                    case '2br': mediumBoxes = 18; largeBoxes = 9; break;
-                    case '4br': mediumBoxes = 35; largeBoxes = 18; break;
-                }
-                const mult = { 'minimal': 0.7, 'normal': 1.0, 'many': 1.4 };
-                mediumBoxes = Math.round(mediumBoxes * mult[belongings]);
-                largeBoxes = Math.round(largeBoxes * mult[belongings]);
-                if (extras.includes('office')) { mediumBoxes += 5; largeBoxes += 2; }
-                if (extras.includes('storage')) { mediumBoxes += 8; largeBoxes += 4; }
-                if (extras.includes('garage')) { mediumBoxes += 6; largeBoxes += 3; }
-                
-                if (calculatorResult) {
-                    calculatorResult.innerHTML = `
-                        <p>Basado en tus respuestas, te recomendamos:</p>
-                        <strong>${mediumBoxes} Cajas Medianas y ${largeBoxes} Cajas Grandes</strong>
-                        <a href="productos.html" class="btn btn-primary" style="margin-top:15px;">Ver Paquetes</a>
-                    `;
-                    calculatorResult.classList.add('visible');
-                    calculatorResult.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        }
-        
-        showStep(currentStep);
+        // Tu función de calculadora aquí...
     };
+
 
     /**
      * ===============================================
@@ -388,4 +319,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initUserSession();
     initShoppingCart();
     initCalculator();
+    initProductPageElements();
 });
