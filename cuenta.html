@@ -53,22 +53,32 @@
 </head>
 <body>
 
-    <header>
-        <nav class="navbar">
-            <div class="container navbar-content">
-                <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;"></a>
-                <ul class="nav-links-list">
-                    </ul>
-                <div class="navbar-right-items">
-                    <div class="navbar-user-actions">
-                        <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
-                        <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
-                        <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-                    </div>
+  <header>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo">
+                <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;">
+            </a>
+            <ul class="nav-links-list">
+                <li><a href="index.html" class="nav-link">Inicio</a></li>
+                <li><a href="productos.html" class="nav-link">Productos</a></li>
+                <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                <li><a href="faq.html" class="nav-link">Preguntas</a></li>
+            </ul>
+            <div class="navbar-right-items">
+                <div class="navbar-user-actions" id="navbarUserActions">
+                    <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
+                    <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
+                    <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
                 </div>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
     <main class="page-content">
         <section class="section">
@@ -102,6 +112,34 @@
             </div>
         </section>
     </main>
+
+    <footer class="footer">
+      <div class="container footer-content">
+          <div class="footer-info">
+              <h3>GreenHaul</h3>
+              <p>Mudanzas sostenibles, sin complicaciones.</p>
+              <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
+          </div>
+          <div class="footer-links">
+              <h3>Enlaces Rápidos</h3>
+              <ul>
+                  <li><a href="index.html">Inicio</a></li>
+                  <li><a href="productos.html">Productos</a></li>
+                  <li><a href="servicios.html">Servicios</a></li>
+              </ul>
+          </div>
+          <div class="footer-social-links">
+              <h3>Síguenos</h3>
+              <div class="social-icons-wrapper">
+                  <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              </div>
+          </div>
+      </div>
+      <div class="footer-bottom">
+          &copy; <span id="current-year"></span> GreenHaul. Todos los derechos reservados.
+      </div>
+  </footer>
     
     <div id="notificationPopup"></div>
 
