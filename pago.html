@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
-        /* ===== ESTILOS BASE (Para consistencia) ===== */
+        /* ... (Todos los estilos CSS se quedan exactamente igual) ... */
         :root {
             --primary-solid: #4a90e2; --accent-green: #00b386; --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
             --gradient-primary-hover: linear-gradient(to right, #008c6b, #3a7bcd);
@@ -31,31 +31,16 @@
         .btn-outline:hover { background-color: var(--primary-solid); color: var(--color-white) !important; }
         .btn-tertiary { background: none; border: none; color: var(--accent-red); font-weight: 500; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; }
         .btn-tertiary:hover { transform: scale(1.15); }
-        
-        /* INICIO: Estilos del Header corregidos para centrar */
         .navbar { position: relative; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); }
         .navbar-content { display: flex; justify-content: space-between; align-items: center; }
         .logo img { height: 50px; }
-        .navbar-collapse { 
-            display: flex; 
-            align-items: center; 
-            flex-grow: 1; /* Permite que este contenedor crezca */
-            justify-content: center; /* Centra el contenido (la lista) */
-        }
-        .nav-links-list { 
-            list-style: none; 
-            display: flex; 
-            gap: 40px; /* Aumentamos un poco el espacio */
-            padding: 0; 
-            margin: 0; 
-        }
+        .navbar-collapse { display: flex; align-items: center; flex-grow: 1; justify-content: center; }
+        .nav-links-list { list-style: none; display: flex; gap: 40px; padding: 0; margin: 0; }
         .nav-link { font-weight: 500; color: var(--color-text); text-decoration: none; }
         .navbar-right-items { display: flex; align-items: center; gap: 20px; }
         .navbar-user-actions { display: flex; align-items: center; gap: 15px; }
         .navbar-toggler { display: none; background: none; border: none; cursor: pointer; padding: 5px; }
         .toggler-icon { display: block; width: 22px; height: 2px; background-color: var(--color-dark); margin: 5px 0; transition: all 0.3s; }
-        /* FIN: Estilos del Header corregidos */
-
         .footer { background-color: var(--color-dark); color: #aaa; padding: 40px 20px; text-align: center; margin-top: auto;}
         main { flex-grow: 1; padding: 80px 0; }
         .payment-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 50px; align-items: flex-start; }
@@ -87,15 +72,7 @@
             .summary-container { margin-top: 40px; }
             .navbar-toggler { display: block; }
             .navbar-content { flex-wrap: wrap; }
-            .navbar-collapse {
-                display: none;
-                flex-direction: column;
-                width: 100%;
-                text-align: center;
-                gap: 0;
-                flex-grow: unset; /* Resetea el crecimiento en móvil */
-                justify-content: flex-start; /* Alinea al inicio en móvil */
-            }
+            .navbar-collapse { display: none; flex-direction: column; width: 100%; text-align: center; gap: 0; flex-grow: unset; justify-content: flex-start; }
             .navbar-collapse.active { display: flex; }
             .nav-links-list { flex-direction: column; width: 100%; gap: 0; }
             .nav-links-list li { width: 100%; border-bottom: 1px solid var(--border-color); }
@@ -106,7 +83,6 @@
     </style>
 </head>
 <body>
-
     <header class="navbar">
         <div class="container navbar-content">
             <a href="index.html" class="logo">
@@ -137,12 +113,60 @@
     </header>
 
     <main class="page-content">
-       </main>
+        <div class="container">
+            <div class="section-title">
+                <h2>Finalizar Compra</h2>
+                <p>Estás a un solo paso de completar tu pedido.</p>
+            </div>
+
+            <div class="payment-layout">
+                <div class="form-container">
+                    <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
+                    <form id="paymentForm">
+                        <div class="name-grid">
+                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control" required></div>
+                            <div class="form-group"><label for="lastName1">Apellido Paterno</label><input type="text" id="lastName1" class="form-control" required></div>
+                            <div class="form-group"><label for="lastName2">Apellido Materno</label><input type="text" id="lastName2" class="form-control" required></div>
+                        </div>
+                        <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" id="cardNumber" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX" required></div>
+                        <div style="display: flex; gap: 20px;">
+                            <div class="form-group" style="flex: 1;"><label for="expiryDate">Expiración (MM/AA)</label><input type="text" id="expiryDate" class="form-control" placeholder="MM/AA" required></div>
+                            <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX" required></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-submit">Pagar Ahora</button>
+                    </form>
+                </div>
+                <div class="summary-container">
+                    <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Pedido</h3>
+                    <ul class="order-summary-list" id="summaryItemsContainer"></ul>
+                    <ul class="summary-totals">
+                        <li><span>Subtotal:</span> <span id="summarySubtotal">$0.00</span></li>
+                        <li><span>Impuestos (16%):</span> <span id="summaryTaxes">$0.00</span></li>
+                        <li class="total"><span>Total:</span> <span id="summaryTotal">$0.00</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="popup-overlay" id="orderSuccessPopup">
+        <div class="popup-card">
+            <div class="popup-icon"><i class="fas fa-check"></i></div>
+            <h2>¡Pedido Realizado!</h2>
+            <p class="message">Tu compra ha sido confirmada. Un asesor se comunicará por WhatsApp para dar seguimiento.</p>
+            <div class="order-details-box">
+                <p>Tu número de orden es:</p><strong id="orderId"></strong>
+            </div>
+            <div class="popup-actions">
+                <a href="cuenta.html" class="btn btn-secondary">Ir a Mis Pedidos</a>
+                <a href="index.html" class="btn btn-primary">Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
     
-       <script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- INICIO: Lógica para el header responsivo y estado de sesión ---
+            // --- Lógica para el header responsivo y estado de sesión ---
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
             if (navbarToggler) {
@@ -174,9 +198,8 @@
                     window.location.reload();
                 });
             }
-            // --- FIN: Lógica del header ---
-
-
+            
+            // --- Lógica del formulario de pago ---
             const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
             const itemsContainer = document.getElementById('summaryItemsContainer');
             const subtotalEl = document.getElementById('summarySubtotal');
@@ -192,10 +215,17 @@
                 }
                 itemsContainer.innerHTML = '';
                 let subtotal = 0;
+                // Asumiendo que el carrito tiene objetos con { name, price, quantity }
                 cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
+                    const itemTotal = (item.price || 0) * (item.quantity || 1);
                     subtotal += itemTotal;
-                    itemsContainer.innerHTML += `<li class="summary-item"><div><div class="item-name">${item.name}</div><div class="item-qty">Cantidad: ${item.quantity}</div></div><div class="item-price">$${itemTotal.toFixed(2)}</div></li>`;
+                    itemsContainer.innerHTML += `<li class="summary-item">
+                        <div>
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-qty">Cantidad: ${item.quantity || 1}</div>
+                        </div>
+                        <div class="item-price">$${itemTotal.toFixed(2)}</div>
+                    </li>`;
                 });
                 const taxes = subtotal * 0.16;
                 const total = subtotal + taxes;
@@ -204,14 +234,16 @@
                 totalEl.textContent = `$${total.toFixed(2)}`;
             }
 
+            // Formato de inputs
             document.getElementById('cardNumber').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 16).replace(/(.{4})/g, '$1-').trim().slice(0, 19); });
             document.getElementById('expiryDate').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4).replace(/(.{2})/, '$1/').slice(0, 5); });
             document.getElementById('cvv').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4); });
 
+            // Envío del formulario
             paymentForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const orderSuccessPopup = document.getElementById('orderSuccessPopup');
-                document.getElementById('orderId').textContent = `ECOBOX-${Math.floor(Math.random() * 90000) + 10000}`;
+                document.getElementById('orderId').textContent = `GRNHL-${Math.floor(Math.random() * 90000) + 10000}`;
                 orderSuccessPopup.classList.add('active');
                 if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
                 localStorage.removeItem('shoppingCart');
