@@ -28,12 +28,47 @@
         .popup-overlay.active .popup-card { transform: scale(1); opacity: 1; }
         .popup-card h3 { font-size: 1.8rem; margin-bottom: 15px; }
         .popup-card p { margin-bottom: 25px; }
-        .popup-actions { margin-top: 20px; }
+        .popup-actions { margin-top: 20px; display: flex; gap: 15px; justify-content: center;}
     </style>
 </head>
 <body>
     <header>
-        </header>
+        <nav class="navbar">
+            <div class="container navbar-content">
+            <a href="index.html" class="logo">
+            <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
+        </a>
+                <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                    <span class="toggler-icon"></span>
+                    <span class="toggler-icon"></span>
+                    <span class="toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse" id="navbarCollapse">
+                    <ul class="nav-links-list">
+                        <li><a href="index.html" class="nav-link">Inicio</a></li>
+                        <li><a href="productos.html" class="nav-link active">Productos</a></li>
+                        <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                        <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                        <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                        <li><a href="faq.html" class="nav-link">Preguntas</a></li>
+                    </ul>
+                    <div class="navbar-right-items">
+                    <div class="navbar-user-actions" id="navbarUserActions">
+                            <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                            <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+                            <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                        </div>
+                        <div class="nav-icons">
+                            <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count" id="cartCount">0</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
 
     <main class="page-content">
         <section class="section">
@@ -43,11 +78,7 @@
                     <p>Alquila nuestras cajas reutilizables y accesorios para una mudanza eficiente y ecológica.</p>
                 </div>
                 <div class="product-grid" id="productGrid">
-                    <div class="product-card" 
-                         data-product-id="kit-pequeno" 
-                         data-product-name="Kit Mudanza Pequeña" 
-                         data-price-per-unit="35.00" 
-                         data-rental-type="semana">
+                    <div class="product-card" data-product-id="kit-pequeno" data-product-name="Kit Mudanza Pequeña" data-price-per-unit="35.00" data-rental-type="semana">
                         <div class="badge best-value">Mejor Valor</div>
                         <div class="product-image">🏡</div>
                         <div class="product-info">
@@ -57,66 +88,87 @@
                                 <li>10 cajas medianas y 5 grandes</li>
                                 <li>Cinta y marcadores incluidos</li>
                             </ul>
+                            <div class="quantity-control">
+                                <label for="qty-kit-pequeno">Cantidad:</label>
+                                <select id="qty-kit-pequeno" class="product-qty form-control">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+                            </div>
                             <p class="price">$35.00 <span>/semana</span></p>
                             <button class="btn btn-primary add-to-cart-btn">Seleccionar Fechas</button>
                         </div>
                     </div>
 
-                    <div class="product-card" 
-                         data-product-id="diablito-renta" 
-                         data-product-name="Renta de 'Diablito'" 
-                         data-price-per-unit="15.00" 
-                         data-rental-type="dia">
+                    <div class="product-card" data-product-id="diablito-renta" data-product-name="Renta de 'Diablito'" data-price-per-unit="15.00" data-rental-type="dia">
                         <div class="product-image">🛒</div>
                         <div class="product-info">
                             <h3>Renta de "Diablito"</h3>
                             <p class="description">Facilita el movimiento de cajas pesadas y muebles.</p>
+                            <div class="quantity-control">
+                                <label for="qty-diablito">Cantidad:</label>
+                                <select id="qty-diablito" class="product-qty form-control">
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
                             <p class="price">$15.00 <span>/día</span></p>
                             <button class="btn btn-primary add-to-cart-btn">Seleccionar Fechas</button>
                         </div>
                     </div>
 
-                    <div class="product-card" 
-                         data-product-id="kit-embalaje" 
-                         data-product-name="Kit de Embalaje Eco" 
-                         data-price-per-unit="25.00" 
-                         data-rental-type="compra">
+                    <div class="product-card" data-product-id="kit-embalaje" data-product-name="Kit de Embalaje Eco" data-price-per-unit="25.00" data-rental-type="compra">
                         <div class="product-image">📦</div>
                         <div class="product-info">
                             <h3>Kit de Embalaje Eco</h3>
                             <p class="description">Incluye papel reciclado y cinta de papel.</p>
+                            <div class="quantity-control">
+                                <label for="qty-embalaje">Cantidad:</label>
+                                <select id="qty-embalaje" class="product-qty form-control">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
                             <p class="price">$25.00 <span>/kit</span></p>
                             <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        </footer>
+        <div class="container footer-content">
+            <div class="footer-info"><h3>greenhauL</h3><p>Mudanzas sostenibles, sin complicaciones.</p><p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p><p><i class="fas fa-envelope"></i> info@greenhauL.com</p><p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p></div>
+            <div class="footer-links"><h3>Enlaces Rápidos</h3><ul><li><a href="index.html">Inicio</a></li><li><a href="productos.html">Productos</a></li><li><a href="servicios.html">Servicios</a></li><li><a href="nosotros.html">Nosotros</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
+            <div class="footer-social-links"><h3>Síguenos</h3><div class="social-icons-wrapper"><a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a></div></div>
+        </div>
+        <div class="footer-bottom">&copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.</div>
+    </footer>
     
     <div class="popup-overlay" id="dateSelectionPopup">
         <div class="popup-card">
             <h3>Elige tus Fechas de Alquiler</h3>
             <p>Selecciona el día que entregamos y el día que recolectamos.</p>
-            <div class="form-group">
-                <label for="deliveryDate" style="text-align: left;">Fecha de Entrega</label>
-                <input type="text" id="deliveryDate" class="form-control" placeholder="Selecciona una fecha...">
-            </div>
-            <div class="form-group">
-                <label for="pickupDate" style="text-align: left;">Fecha de Recolección</label>
-                <input type="text" id="pickupDate" class="form-control" placeholder="Selecciona una fecha...">
-            </div>
-            <div class="popup-actions">
-                <button id="cancelDatesBtn" class="btn btn-secondary">Cancelar</button>
-                <button id="confirmDatesBtn" class="btn btn-primary">Confirmar y Añadir</button>
+            <div class="form-group"><label for="deliveryDate" style="text-align: left;">Fecha de Entrega</label><input type="text" id="deliveryDate" class="form-control" placeholder="Selecciona una fecha..."></div>
+            <div class="form-group"><label for="pickupDate" style="text-align: left;">Fecha de Recolección</label><input type="text" id="pickupDate" class="form-control" placeholder="Selecciona una fecha..."></div>
+            <div class="popup-actions"><button id="cancelDatesBtn" class="btn btn-secondary">Cancelar</button><button id="confirmDatesBtn" class="btn btn-primary">Confirmar y Añadir</button></div>
+        </div>
+    </div>
+
+    <div class="cart-modal-overlay" id="cartModalOverlay">
+        <div class="cart-modal">
+            <div class="cart-modal-header"><h2>Tu Carrito</h2><button class="close-modal-btn" id="closeCartModalBtn">&times;</button></div>
+            <div class="cart-modal-body" id="cartItemsContainer"></div>
+            <div class="cart-modal-footer">
+                <div class="cart-summary"><p>Subtotal: <span id="cartSubtotal">$0.00</span></p><p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p><h3>Total: <span id="cartTotal">$0.00</span></h3></div>
+                <div class="cart-footer-buttons"><button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button><a href="direcciones.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a></div>
             </div>
         </div>
     </div>
-    <div class="cart-modal-overlay" id="cartModalOverlay"> ... </div>
-    <div class="cart-notification" id="cartNotification"> ... </div>
+    
+    <div class="cart-notification" id="cartNotification"><div class="notification-content"><div class="notification-icon-wrapper"><span class="notification-icon"></span></div><p id="notificationText"></p></div></div>
     
     <script type="module" src="/assets/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -130,45 +182,52 @@
         const confirmDatesBtn = document.getElementById('confirmDatesBtn');
         const cancelDatesBtn = document.getElementById('cancelDatesBtn');
 
-        let currentProduct = null; // Para guardar la info del producto seleccionado
+        let productToProcess = null; // Guarda la info del producto y cantidad
 
         // Configuración de los selectores de fecha
         const deliveryPicker = flatpickr(deliveryDateInput, {
             minDate: "today",
             dateFormat: "Y-m-d",
-            onChange: function(selectedDates) {
+            onChange: function(selectedDates, dateStr, instance) {
                 if (selectedDates[0]) {
                     pickupPicker.set('minDate', selectedDates[0]);
                 }
             }
         });
-
-        const pickupPicker = flatpickr(pickupDateInput, {
-            dateFormat: "Y-m-d",
-        });
+        const pickupPicker = flatpickr(pickupDateInput, { dateFormat: "Y-m-d" });
         
-        // Usamos delegación de eventos para manejar todos los botones "Añadir"
+        // Delegación de eventos para los botones de "Añadir al Carrito"
         productGrid.addEventListener('click', (e) => {
             if (e.target.classList.contains('add-to-cart-btn')) {
                 const card = e.target.closest('.product-card');
-                currentProduct = {
+                const quantitySelect = card.querySelector('.product-qty');
+                const quantity = quantitySelect ? parseInt(quantitySelect.value) : 1;
+
+                if (!quantity) {
+                    alert('Por favor, selecciona una cantidad.');
+                    return;
+                }
+
+                productToProcess = {
                     id: card.dataset.productId,
                     name: card.dataset.productName,
                     pricePerUnit: parseFloat(card.dataset.pricePerUnit),
-                    rentalType: card.dataset.rentalType
+                    rentalType: card.dataset.rentalType,
+                    quantity: quantity
                 };
 
-                if (currentProduct.rentalType === 'dia' || currentProduct.rentalType === 'semana') {
-                    // Si es alquiler, abre el popup de fechas
+                if (productToProcess.rentalType === 'dia' || productToProcess.rentalType === 'semana') {
                     datePopup.classList.add('active');
                 } else {
-                    // Si es compra directa, lo añade al carrito (asumiendo que tienes una función global)
-                    const itemToAdd = { ...currentProduct, price: currentProduct.pricePerUnit, quantity: 1 };
-                    // Reemplaza 'window.addToCart' con tu función real si es diferente
+                    const itemToAdd = { 
+                        ...productToProcess,
+                        price: productToProcess.pricePerUnit * productToProcess.quantity
+                    };
+                    // Asumo que tienes una función global addToCart en tu main.js
                     if (window.addToCart) {
                         window.addToCart(itemToAdd);
                     } else {
-                        console.error("Función addToCart no encontrada.");
+                        console.error("Función addToCart no encontrada. Asegúrate de que esté disponible globalmente desde main.js.");
                     }
                 }
             }
@@ -179,33 +238,39 @@
             const deliveryDate = deliveryDateInput.value;
             const pickupDate = pickupDateInput.value;
 
-            if (!deliveryDate || !pickupDate || !currentProduct) {
+            if (!deliveryDate || !pickupDate || !productToProcess) {
                 alert("Por favor, selecciona ambas fechas.");
                 return;
             }
 
             const start = new Date(deliveryDate);
             const end = new Date(pickupDate);
-            let duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-            if (duration < 1) duration = 1; // Mínimo 1 día de alquiler
+            const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) || 1;
 
-            let calculatedPrice;
-            let finalName;
-
-            if (currentProduct.rentalType === 'semana') {
-                const weeks = Math.ceil(duration / 7);
-                calculatedPrice = weeks * currentProduct.pricePerUnit;
-                finalName = `${currentProduct.name} (${weeks} semana/s)`;
-            } else { // 'dia'
-                calculatedPrice = duration * currentProduct.pricePerUnit;
-                finalName = `${currentProduct.name} (${duration} día/s)`;
+            if (duration < 1) {
+                alert("La fecha de recolección debe ser posterior a la de entrega.");
+                return;
             }
 
+            let rentalPrice;
+            let finalName;
+
+            if (productToProcess.rentalType === 'semana') {
+                const weeks = Math.ceil(duration / 7) || 1;
+                rentalPrice = weeks * productToProcess.pricePerUnit;
+                finalName = `${productToProcess.name} (${weeks} semana/s)`;
+            } else { // 'dia'
+                rentalPrice = duration * productToProcess.pricePerUnit;
+                finalName = `${productToProcess.name} (${duration} día/s)`;
+            }
+
+            const finalPrice = rentalPrice * productToProcess.quantity;
+
             const itemToAdd = {
-                id: currentProduct.id,
+                id: productToProcess.id,
                 name: finalName,
-                price: calculatedPrice,
-                quantity: 1, // Por ahora la cantidad es 1, se podría añadir un selector si quieres
+                price: finalPrice,
+                quantity: productToProcess.quantity,
                 deliveryDate: deliveryDate,
                 pickupDate: pickupDate,
             };
@@ -223,11 +288,11 @@
             datePopup.classList.remove('active');
             deliveryPicker.clear();
             pickupPicker.clear();
-            currentProduct = null;
+            productToProcess = null;
         }
 
         cancelDatesBtn.addEventListener('click', closeDatePopup);
     });
     </script>
-    </body>
+</body>
 </html>
