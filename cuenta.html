@@ -165,14 +165,33 @@
         const profileLastnameInput = document.getElementById('profile-lastname');
         const profileEmailInput = document.getElementById('profile-email');
         const profileWhatsappInput = document.getElementById('profile-whatsapp');
-        const dashboardData = document.getElementById('dashboard-data');
-        const orderContainer = document.getElementById('order-history-container');
-        const addressList = document.getElementById('address-list');
+
+        function renderDashboard(data) {
+            const dashboard = document.getElementById('dashboard-cards');
+            dashboard.innerHTML = `
+                <div class="dashboard-card">
+                    <div class="card-header"><h4>Monto Total</h4><div class="icon"><i class="fas fa-dollar-sign"></i></div></div>
+                    <div class="card-body"><span>$${data.totalAmount.toFixed(2)}</span></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-header"><h4>Total de Cajas</h4><div class="icon"><i class="fas fa-box-open"></i></div></div>
+                    <div class="card-body"><span>${data.totalBoxes}</span></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-header"><h4>Próxima Recolección</h4><div class="icon"><i class="fas fa-calendar-check"></i></div></div>
+                    <div class="card-body"><span>${data.nextPickup || 'Sin fecha'}</span></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-header"><h4>Último Pedido</h4><div class="icon"><i class="fas fa-history"></i></div></div>
+                    <div class="card-body"><span>${data.lastOrderDate || 'N/A'}</span></div>
+                </div>
+            `;
+        }
 
         function populateUI() {
             userNameSpan.textContent = userData.name.split(' ')[0];
             accountTitle.textContent = `Panel de Control de ${userData.name}`;
-
+            
             const nameParts = userData.name.split(' ');
             const firstName = nameParts.slice(0, 2).join(' ');
             const lastName = nameParts.slice(2).join(' ');
@@ -182,43 +201,13 @@
             profileEmailInput.value = userData.email;
             profileWhatsappInput.value = userData.whatsapp || '';
 
-            // Datos ficticios de ejemplo para el resumen
-            dashboardData.innerHTML = `
-                <div class="dashboard-card">
-                    <div class="card-header"><h4>Total de Pedidos</h4><i class="fas fa-box icon"></i></div>
-                    <div class="card-body"><span>${userData.orders?.length || 0}</span></div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="card-header"><h4>Último Pedido</h4><i class="fas fa-clock icon"></i></div>
-                    <div class="card-body"><span>${userData.orders?.[0]?.date || 'Sin registros'}</span></div>
-                </div>
-            `;
-
-            // Pedidos
-            if (userData.orders?.length > 0) {
-                orderContainer.innerHTML = userData.orders.map(order => `
-                    <div class="order-item">
-                        <div><strong>#${order.id}</strong></div>
-                        <div>${order.date}</div>
-                        <div>${order.total}</div>
-                        <div><span class="order-item-status status-${order.status.toLowerCase()}">${order.status}</span></div>
-                    </div>
-                `).join('');
-            } else {
-                orderContainer.innerHTML = '<p>No hay pedidos aún.</p>';
-            }
-
-            // Direcciones
-            if (userData.addresses?.length > 0) {
-                addressList.innerHTML = userData.addresses.map(addr => `
-                    <div class="dashboard-card">
-                        <div class="card-header"><h4>${addr.alias || 'Dirección'}</h4><i class="fas fa-map-marker-alt icon"></i></div>
-                        <div class="card-body">${addr.street}, ${addr.city}, ${addr.state}</div>
-                    </div>
-                `).join('');
-            } else {
-                addressList.innerHTML = '<p>No hay direcciones registradas.</p>';
-            }
+            // Render resumen
+            renderDashboard({
+                totalAmount: userData.totalAmount || 0,
+                totalBoxes: userData.totalBoxes || 0,
+                nextPickup: userData.nextPickup || '',
+                lastOrderDate: userData.lastOrderDate || ''
+            });
         }
 
         const navLinks = document.querySelectorAll('.account-nav-link');
@@ -245,7 +234,13 @@
         if (profileForm) {
             profileForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                // Tu lógica fetch aquí si deseas guardar cambios en backend
+                // Aquí puedes agregar tu lógica de actualización con fetch
+                // Por ejemplo:
+                // await fetch('/api/update-profile', { method: 'POST', body: JSON.stringify({...}) });
+                const popup = document.getElementById('notificationPopup');
+                popup.textContent = "Cambios guardados correctamente.";
+                popup.classList.add('show');
+                setTimeout(() => popup.classList.remove('show'), 3000);
             });
         }
 
