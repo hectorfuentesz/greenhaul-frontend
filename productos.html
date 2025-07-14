@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/pages.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 </head>
 <body>
 <header>
@@ -63,11 +66,11 @@
                 <div class="date-fields">
                     <div class="form-group">
                         <label for="fecha-entrega"><i class="fas fa-calendar-alt"></i> Fecha de Entrega</label>
-                        <input type="date" id="fecha-entrega" name="fecha-entrega" class="form-control">
+                        <input type="date" id="fecha-entrega" name="fecha-entrega" class="form-control" placeholder="Selecciona una fecha...">
                     </div>
                     <div class="form-group">
                         <label for="fecha-recoleccion"><i class="fas fa-calendar-check"></i> Fecha de Recolección</label>
-                        <input type="date" id="fecha-recoleccion" name="fecha-recoleccion" class="form-control">
+                        <input type="date" id="fecha-recoleccion" name="fecha-recoleccion" class="form-control" placeholder="Selecciona una fecha...">
                     </div>
                 </div>
             </div>
@@ -205,7 +208,7 @@
         &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
     </div>
 </footer>
-
+    
 <div class="cart-modal-overlay" id="cartModalOverlay">
     <div class="cart-modal">
         <div class="cart-modal-header">
@@ -232,6 +235,39 @@
         <p id="notificationText"></p>
     </div>
 </div>
+    
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Configuración para el calendario de FECHA DE ENTREGA
+    const fechaEntregaPicker = flatpickr("#fecha-entrega", {
+        locale: "es", // Usar el idioma español
+        minDate: "today", // No permitir seleccionar fechas pasadas
+        altInput: true, // Muestra la fecha en un formato amigable
+        altFormat: "F j, Y", // Formato amigable: "Julio 14, 2025"
+        dateFormat: "Y-m-d", // Formato para el sistema: "2025-07-14"
+        
+        // Cuando se selecciona una fecha de entrega...
+        onChange: function(selectedDates, dateStr, instance) {
+            // ...configura la fecha mínima para el calendario de recolección.
+            if (fechaRecoleccionPicker) {
+                fechaRecoleccionPicker.set('minDate', dateStr);
+            }
+        }
+    });
+
+    // 2. Configuración para el calendario de FECHA DE RECOLECCIÓN
+    const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
+        locale: "es",
+        minDate: "today",
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+    });
+});
+</script>
 
 <script type="module" src="/assets/js/main.js"></script>
 </body>

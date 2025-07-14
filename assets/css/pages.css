@@ -298,3 +298,94 @@ body.dark-theme .footer {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ===================================================================== */
+/* ========== INICIO: ESTILOS PARA LA PÁGINA DE PRODUCTOS ========== */
+/* ===================================================================== */
+
+/* Contenedor principal de la sección de fechas */
+.rental-dates-container {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-top: 4px solid #4A90E2; /* Borde superior de acento */
+    border-radius: 12px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Título "1. Elige tu período de renta" */
+.rental-dates-container .section-subtitle h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #343a40;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+/* Párrafo de instrucción debajo del título */
+.rental-dates-container .section-subtitle p {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+/* Contenedor para los dos campos de fecha */
+.date-fields {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-end;
+}
+
+/* Grupo de cada campo (etiqueta + input) */
+.date-fields .form-group {
+    flex: 1;
+}
+
+/* Estilo para las etiquetas "Fecha de Entrega" y "Fecha de Recolección" */
+.date-fields label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+    text-transform: uppercase;
+}
+/* Regla para dar color a los íconos */
+.date-fields label i {
+    color: #4A90E2;
+}
+
+/* Estilo para los inputs de Flatpickr */
+.date-fields .form-control[readonly] {
+    background-color: #ffffff !important;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+}
+
+/* Efecto visual cuando el campo de fecha está activo */
+.date-fields .form-control:focus,
+.flatpickr-input:focus {
+    border-color: #4A90E2; /* Color de borde personalizado */
+    box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25); /* Resplandor personalizado */
+}
+
+/* Para dispositivos móviles, apila los campos uno sobre otro */
+@media (max-width: 768px) {
+    .date-fields {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: stretch;
+    }
+
+    .rental-dates-container {
+        padding: 1.5rem;
+    }
+}
+/* ===================================================================== */
+/* ========== FIN: ESTILOS PARA LA PÁGINA DE PRODUCTOS ========== */
+/* ===================================================================== */
