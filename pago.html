@@ -32,6 +32,7 @@
         .btn { display: inline-block; padding: 12px 28px; border-radius: 999px; font-weight: 600; text-align: center; border: none; cursor: pointer; text-decoration: none; transition: all 0.3s ease; }
         .btn-primary { background-image: var(--gradient-primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .btn-primary:hover { background-image: var(--gradient-primary-hover); transform: translateY(-3px); }
+        .btn-primary:disabled { background-image: none; background-color: #ccc; cursor: not-allowed; }
         .btn-secondary { background: #e9ecef; color: var(--color-dark); }
         .btn-outline { background-color: transparent; color: var(--primary-solid) !important; border-radius: 50px; text-decoration:none; padding: 8px 20px; border: 1px solid var(--primary-solid); }
         .btn-outline:hover { background-color: var(--primary-solid); color: var(--color-white) !important; }
@@ -105,14 +106,8 @@
 <body>
     <header class="navbar">
         <div class="container navbar-content">
-            <a href="index.html" class="logo">
-                <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 50px;">
-            </a>
-            <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
-                <span class="toggler-icon"></span>
-                <span class="toggler-icon"></span>
-                <span class="toggler-icon"></span>
-            </button>
+            <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 50px;"></a>
+            <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation"><span class="toggler-icon"></span><span class="toggler-icon"></span><span class="toggler-icon"></span></button>
             <div class="navbar-collapse" id="navbarCollapse">
                 <ul class="nav-links-list">
                     <li><a href="index.html" class="nav-link">Inicio</a></li>
@@ -143,7 +138,7 @@
                     <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
                     <form id="paymentForm">
                         <div class="name-grid">
-                             <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control"></div>
+                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control"></div>
                             <div class="form-group"><label for="lastName1">Apellido Paterno</label><input type="text" id="lastName1" class="form-control"></div>
                             <div class="form-group"><label for="lastName2">Apellido Materno</label><input type="text" id="lastName2" class="form-control"></div>
                         </div>
@@ -152,7 +147,7 @@
                             <div class="form-group" style="flex: 1;"><label for="expiryDate">Expiración (MM/AA)</label><input type="text" id="expiryDate" class="form-control" placeholder="MM/AA"></div>
                             <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX"></div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-submit">Pagar Ahora</button>
+                        <button type="submit" class="btn btn-primary btn-submit" id="payBtn">Pagar Ahora</button>
                     </form>
                 </div>
                 <div class="summary-container">
@@ -192,8 +187,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- Lógica del Header ---
+            // Lógica del Header 
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
             if (navbarToggler) { navbarToggler.addEventListener('click', () => { navbarCollapse.classList.toggle('active'); }); }
@@ -202,6 +196,8 @@
             const accountLink = document.getElementById('accountLink');
             const logoutBtn = document.getElementById('logoutBtn');
             const userNameSpan = document.getElementById('userName');
+            const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+
             if (loggedInUser) {
                 if(loginBtn) loginBtn.style.display = 'none';
                 if(accountLink) accountLink.style.display = 'flex';
@@ -214,18 +210,21 @@
             }
             if(logoutBtn) { logoutBtn.addEventListener('click', () => { localStorage.removeItem('greenhaulUser'); window.location.reload(); }); }
             
-            // --- Lógica del Resumen de Compra ---
+            // Lógica del Resumen de Compra
             const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
             const itemsContainer = document.getElementById('summaryItemsContainer');
             const subtotalEl = document.getElementById('summarySubtotal');
             const taxesEl = document.getElementById('summaryTaxes');
             const totalEl = document.getElementById('summaryTotal');
             const paymentForm = document.getElementById('paymentForm');
+            let finalTotalAmount = 0; // Variable para guardar el total
 
             function renderOrderSummary() {
                 if (!itemsContainer) return;
+                const payBtn = document.getElementById('payBtn');
                 if (cart.length === 0) {
                     itemsContainer.innerHTML = '<li>No hay productos en tu carrito.</li>';
+                    if(payBtn) payBtn.disabled = true; // Deshabilita el botón si no hay nada que pagar
                     return;
                 }
                 itemsContainer.innerHTML = '';
@@ -239,65 +238,86 @@
                 });
                 const taxes = subtotal * 0.16;
                 const total = subtotal + taxes;
+                finalTotalAmount = total; // Guardamos el total para usarlo después
                 subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
                 taxesEl.textContent = `$${taxes.toFixed(2)}`;
                 totalEl.textContent = `$${total.toFixed(2)}`;
             }
             renderOrderSummary();
 
-            // --- Lógica de formato de Inputs ---
+            // Lógica de formato de Inputs
             document.getElementById('cardNumber').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 16).replace(/(.{4})/g, '$1-').trim().slice(0, 19); });
             document.getElementById('expiryDate').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4).replace(/(.{2})/, '$1/').slice(0, 5); });
             document.getElementById('cvv').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4); });
 
-            // --- Lógica de Envío del Formulario y Popup ---
-            paymentForm.addEventListener('submit', (e) => {
+            // --- INICIO: LÓGICA DE ENVÍO AL BACKEND ---
+            paymentForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const payBtn = document.getElementById('payBtn');
                 
-                // 1. Validación de campos
+                // Validación
                 const inputs = paymentForm.querySelectorAll('input');
                 let allFieldsFilled = true;
                 inputs.forEach(input => {
-                    if (input.value.trim() === '') {
-                        allFieldsFilled = false;
-                    }
+                    if (input.value.trim() === '') allFieldsFilled = false;
                 });
-
                 if (!allFieldsFilled) {
-                    alert('Por favor, completa todos los detalles de pago para continuar.');
-                    return; // Detiene la función si falta algún campo
+                    alert('Por favor, completa todos los detalles de pago.');
+                    return;
                 }
 
-                // 2. Si todo es válido, mostramos el popup
-                const orderSuccessPopup = document.getElementById('orderSuccessPopup');
-                const orderIdElement = document.getElementById('orderId');
-                const copyBtn = document.getElementById('copyOrderIdBtn');
+                // Feedback visual: Deshabilitar botón y mostrar carga
+                payBtn.disabled = true;
+                payBtn.textContent = 'Procesando...';
+                
+                // Preparar datos para el backend
+                const orderData = {
+                    userId: loggedInUser ? loggedInUser.id : null,
+                    cartItems: cart,
+                    totalAmount: finalTotalAmount
+                };
 
-                if (orderSuccessPopup && orderIdElement && copyBtn) {
-                    const newOrderId = `GRNHL-${Math.floor(Math.random() * 90000) + 10000}`;
-                    orderIdElement.textContent = newOrderId;
-                    
-                    orderSuccessPopup.classList.add('active');
-                    
-                    if (typeof confetti === 'function') { 
-                        confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); 
+                try {
+                    // Enviar datos al backend
+                    const response = await fetch(`${backendUrl}/api/orders`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.message || 'No se pudo procesar el pedido.');
                     }
+                    
+                    // Si todo es exitoso, mostrar el popup
+                    const orderSuccessPopup = document.getElementById('orderSuccessPopup');
+                    const orderIdElement = document.getElementById('orderId');
+                    const copyBtn = document.getElementById('copyOrderIdBtn');
+                    const realOrderId = result.orderId;
+
+                    orderIdElement.textContent = `GRNHL-${realOrderId}`;
+                    orderSuccessPopup.classList.add('active');
+                    if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
                     
                     localStorage.removeItem('shoppingCart');
 
                     copyBtn.onclick = function() {
-                        navigator.clipboard.writeText(newOrderId).then(() => {
-                            copyBtn.innerHTML = '<i class="fas fa-check"></i>'; // Cambia a un check
-                            setTimeout(() => {
-                                copyBtn.innerHTML = '<i class="far fa-copy"></i>'; // Vuelve al ícono original
-                            }, 2000);
-                        }).catch(err => {
-                            console.error('Error al copiar: ', err);
-                            alert('No se pudo copiar el folio.');
+                        navigator.clipboard.writeText(`GRNHL-${realOrderId}`).then(() => {
+                            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                            setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
                         });
                     };
+
+                } catch (error) {
+                    alert(`Error: ${error.message}`);
+                    // Volver a habilitar el botón si hay un error
+                    payBtn.disabled = false;
+                    payBtn.textContent = 'Pagar Ahora';
                 }
             });
+            // --- FIN: LÓGICA DE ENVÍO AL BACKEND ---
         });
     </script>
 </body>
