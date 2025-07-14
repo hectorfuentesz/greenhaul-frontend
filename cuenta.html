@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mi Cuenta - GreenHaul</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <style>
         :root {
             --primary-solid: #4a90e2; --accent-green: #00b386; --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
@@ -74,27 +74,27 @@
 </head>
 <body>
 
-    <header>
-        <nav class="navbar">
-            <div class="container navbar-content">
-                <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;"></a>
-                <ul class="nav-links-list">
-                    <li><a href="index.html" class="nav-link">Inicio</a></li>
-                    <li><a href="productos.html" class="nav-link">Productos</a></li>
-                    <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-                    <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-                    <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-                </ul>
-                <div class="navbar-right-items">
-                    <div class="navbar-user-actions">
-                        <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
-                        <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
-                        <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-                    </div>
+<header>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;"></a>
+            <ul class="nav-links-list">
+                <li><a href="index.html" class="nav-link">Inicio</a></li>
+                <li><a href="productos.html" class="nav-link">Productos</a></li>
+                <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+            </ul>
+            <div class="navbar-right-items">
+                <div class="navbar-user-actions">
+                    <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
+                    <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
+                    <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
 <main class="page-content">
     <section class="section">
@@ -188,10 +188,54 @@
             `;
         }
 
+        function renderAddresses(addresses = []) {
+            const addressList = document.getElementById('address-list');
+            addressList.innerHTML = '';
+
+            if (addresses.length === 0) {
+                addressList.innerHTML = '<p>No tienes direcciones guardadas.</p>';
+            } else {
+                addresses.forEach(addr => {
+                    const div = document.createElement('div');
+                    div.textContent = addr;
+                    addressList.appendChild(div);
+                });
+            }
+
+            // Botón Añadir Dirección
+            const addButton = document.createElement('button');
+            addButton.textContent = 'Añadir Dirección';
+            addButton.className = 'btn btn-primary';
+            addButton.style.marginTop = '15px';
+            addButton.addEventListener('click', () => {
+                alert('Aquí mostrarías el formulario para agregar una dirección');
+            });
+            addressList.appendChild(addButton);
+        }
+
+        function renderOrders(orders = []) {
+            const orderHistoryContainer = document.getElementById('order-history-container');
+            orderHistoryContainer.innerHTML = '';
+            if (orders.length === 0) {
+                orderHistoryContainer.innerHTML = '<p>En espera de tu primer pedido.</p>';
+            } else {
+                orders.forEach(order => {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.className = 'order-item';
+                    orderDiv.innerHTML = `
+                        <div>${order.id}</div>
+                        <div>${order.date}</div>
+                        <div>${order.status}</div>
+                    `;
+                    orderHistoryContainer.appendChild(orderDiv);
+                });
+            }
+        }
+
         function populateUI() {
             userNameSpan.textContent = userData.name.split(' ')[0];
             accountTitle.textContent = `Panel de Control de ${userData.name}`;
-            
+
             const nameParts = userData.name.split(' ');
             const firstName = nameParts.slice(0, 2).join(' ');
             const lastName = nameParts.slice(2).join(' ');
@@ -201,13 +245,15 @@
             profileEmailInput.value = userData.email;
             profileWhatsappInput.value = userData.whatsapp || '';
 
-            // Render resumen
             renderDashboard({
                 totalAmount: userData.totalAmount || 0,
                 totalBoxes: userData.totalBoxes || 0,
                 nextPickup: userData.nextPickup || '',
                 lastOrderDate: userData.lastOrderDate || ''
             });
+
+            renderAddresses(userData.addresses || []);
+            renderOrders(userData.orders || []);
         }
 
         const navLinks = document.querySelectorAll('.account-nav-link');
@@ -235,8 +281,6 @@
             profileForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 // Aquí puedes agregar tu lógica de actualización con fetch
-                // Por ejemplo:
-                // await fetch('/api/update-profile', { method: 'POST', body: JSON.stringify({...}) });
                 const popup = document.getElementById('notificationPopup');
                 popup.textContent = "Cambios guardados correctamente.";
                 popup.classList.add('show');
@@ -247,5 +291,6 @@
         populateUI();
     });
 </script>
+
 </body>
 </html>
