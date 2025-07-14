@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proceder al Pago - EcoBox</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Proceder al Pago - GreenHaul</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
         /* ===== ESTILOS BASE (Para consistencia) ===== */
@@ -27,11 +26,24 @@
         .btn-primary { background-image: var(--gradient-primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .btn-primary:hover { background-image: var(--gradient-primary-hover); transform: translateY(-3px); }
         .btn-secondary { background: #e9ecef; color: var(--color-dark); }
+        .btn-outline { background-color: transparent; color: var(--primary-solid) !important; border-radius: 50px; text-decoration:none; padding: 8px 20px; border: 1px solid var(--primary-solid); }
+        .btn-outline:hover { background-color: var(--primary-solid); color: var(--color-white) !important; }
+        .btn-tertiary { background: none; border: none; color: var(--accent-red); font-weight: 500; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; }
+        .btn-tertiary:hover { transform: scale(1.15); }
+        
+        /* INICIO: Estilos del Header completo */
         .navbar { position: relative; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); }
         .navbar-content { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary-solid); text-decoration: none; }
+        .logo img { height: 50px; }
+        .navbar-collapse { display: flex; align-items: center; gap: 30px; }
         .nav-links-list { list-style: none; display: flex; gap: 30px; padding: 0; margin: 0; }
         .nav-link { font-weight: 500; color: var(--color-text); text-decoration: none; }
+        .navbar-right-items { display: flex; align-items: center; gap: 20px; }
+        .navbar-user-actions { display: flex; align-items: center; gap: 15px; }
+        .navbar-toggler { display: none; background: none; border: none; cursor: pointer; padding: 5px; }
+        .toggler-icon { display: block; width: 22px; height: 2px; background-color: var(--color-dark); margin: 5px 0; transition: all 0.3s; }
+        /* FIN: Estilos del Header completo */
+
         .footer { background-color: var(--color-dark); color: #aaa; padding: 40px 20px; text-align: center; margin-top: auto;}
         main { flex-grow: 1; padding: 80px 0; }
         .payment-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 50px; align-items: flex-start; }
@@ -51,7 +63,6 @@
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .popup-overlay.active { opacity: 1; visibility: visible; }
         .popup-card { background-color: var(--color-white); border-radius: var(--border-radius); box-shadow: 0 15px 40px rgba(0,0,0,0.3); width: 90%; max-width: 450px; text-align: center; padding: 40px 30px; transform: scale(0.9); opacity: 0; transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s; }
-        .popup-overlay.active .popup-card { transform: scale(1); opacity: 1; }
         .popup-icon { width: 80px; height: 80px; margin: 0 auto 25px auto; background-color: var(--accent-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
         .popup-card h2 { font-size: 2rem; color: var(--color-dark); margin-bottom: 15px; }
         .popup-card .message { font-size: 1.1rem; color: var(--color-text); margin-bottom: 25px; }
@@ -59,22 +70,59 @@
         .order-details-box p { margin: 0; font-size: 0.9rem; color: var(--color-text); }
         .order-details-box strong { font-size: 1.2rem; color: var(--color-dark); }
         .popup-actions { display: flex; gap: 15px; justify-content: center; }
-        @media(max-width: 992px) { .payment-layout, .name-grid { grid-template-columns: 1fr; } .summary-container { margin-top: 40px; } }
+        @media(max-width: 992px) { 
+            .payment-layout, .name-grid { grid-template-columns: 1fr; } 
+            .summary-container { margin-top: 40px; }
+            /* INICIO: Media queries para el header responsivo */
+            .navbar-toggler { display: block; }
+            .navbar-content { flex-wrap: wrap; }
+            .navbar-collapse {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+                gap: 0;
+            }
+            .navbar-collapse.active { display: flex; }
+            .nav-links-list { flex-direction: column; width: 100%; gap: 0; }
+            .nav-links-list li { width: 100%; border-bottom: 1px solid var(--border-color); }
+            .nav-links-list li:last-child { border-bottom: none; }
+            .nav-link { padding: 15px; display: block; }
+            .navbar-right-items { margin-top: 20px; }
+            /* FIN: Media queries para el header responsivo */
+        }
     </style>
 </head>
 <body>
 
     <header class="navbar">
         <div class="container navbar-content">
-            <a href="index.html" class="logo">ECOBOX</a>
-            <ul class="nav-links-list">
-                <li><a href="index.html" class="nav-link">Inicio</a></li>
-                <li><a href="productos.html" class="nav-link">Productos</a></li>
-                <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-            </ul>
+            <a href="index.html" class="logo">
+                <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 50px;">
+            </a>
+            <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse" id="navbarCollapse">
+                <ul class="nav-links-list">
+                    <li><a href="index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="productos.html" class="nav-link">Productos</a></li>
+                    <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                    <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                    <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                </ul>
+                <div class="navbar-right-items">
+                    <div class="navbar-user-actions" id="navbarUserActions">
+                        <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                        <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+                        <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
-
     <main class="page-content">
         <div class="container">
             <div class="section-title">
@@ -129,6 +177,42 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- INICIO: Lógica para el header responsivo y estado de sesión ---
+            const navbarToggler = document.getElementById('navbarToggler');
+            const navbarCollapse = document.getElementById('navbarCollapse');
+            if (navbarToggler) {
+                navbarToggler.addEventListener('click', () => {
+                    navbarCollapse.classList.toggle('active');
+                });
+            }
+
+            const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
+            const loginBtn = document.getElementById('loginBtn');
+            const accountLink = document.getElementById('accountLink');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userNameSpan = document.getElementById('userName');
+
+            if (loggedInUser) {
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(accountLink) accountLink.style.display = 'flex';
+                if(logoutBtn) logoutBtn.style.display = 'block';
+                if(userNameSpan) userNameSpan.textContent = loggedInUser.name.split(' ')[0];
+            } else {
+                if(loginBtn) loginBtn.style.display = 'block';
+                if(accountLink) accountLink.style.display = 'none';
+                if(logoutBtn) logoutBtn.style.display = 'none';
+            }
+
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('greenhaulUser');
+                    window.location.reload();
+                });
+            }
+            // --- FIN: Lógica del header ---
+
+
             const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
             const itemsContainer = document.getElementById('summaryItemsContainer');
             const subtotalEl = document.getElementById('summarySubtotal');
