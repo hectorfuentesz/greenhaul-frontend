@@ -140,14 +140,14 @@
                     <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
                     <form id="paymentForm">
                         <div class="name-grid">
-                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control" required></div>
-                            <div class="form-group"><label for="lastName1">Apellido Paterno</label><input type="text" id="lastName1" class="form-control" required></div>
-                            <div class="form-group"><label for="lastName2">Apellido Materno</label><input type="text" id="lastName2" class="form-control" required></div>
+                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control"></div>
+                            <div class="form-group"><label for="lastName1">Apellido Paterno</label><input type="text" id="lastName1" class="form-control"></div>
+                            <div class="form-group"><label for="lastName2">Apellido Materno</label><input type="text" id="lastName2" class="form-control"></div>
                         </div>
-                        <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" id="cardNumber" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX" required></div>
+                        <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" id="cardNumber" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX"></div>
                         <div style="display: flex; gap: 20px;">
-                            <div class="form-group" style="flex: 1;"><label for="expiryDate">Expiración (MM/AA)</label><input type="text" id="expiryDate" class="form-control" placeholder="MM/AA" required></div>
-                            <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX" required></div>
+                            <div class="form-group" style="flex: 1;"><label for="expiryDate">Expiración (MM/AA)</label><input type="text" id="expiryDate" class="form-control" placeholder="MM/AA"></div>
+                            <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX"></div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-submit">Pagar Ahora</button>
                     </form>
@@ -182,13 +182,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // Lógica del Header 
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
-            if (navbarToggler) {
-                navbarToggler.addEventListener('click', () => {
-                    navbarCollapse.classList.toggle('active');
-                });
-            }
+            if (navbarToggler) { navbarToggler.addEventListener('click', () => { navbarCollapse.classList.toggle('active'); }); }
             const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
             const loginBtn = document.getElementById('loginBtn');
             const accountLink = document.getElementById('accountLink');
@@ -204,20 +202,15 @@
                 if(accountLink) accountLink.style.display = 'none';
                 if(logoutBtn) logoutBtn.style.display = 'none';
             }
-            if(logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    localStorage.removeItem('greenhaulUser');
-                    window.location.reload();
-                });
-            }
-
+            if(logoutBtn) { logoutBtn.addEventListener('click', () => { localStorage.removeItem('greenhaulUser'); window.location.reload(); }); }
+            
+            // Lógica del Resumen de Compra
             const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
             const itemsContainer = document.getElementById('summaryItemsContainer');
             const subtotalEl = document.getElementById('summarySubtotal');
             const taxesEl = document.getElementById('summaryTaxes');
             const totalEl = document.getElementById('summaryTotal');
             const paymentForm = document.getElementById('paymentForm');
-
             function renderOrderSummary() {
                 if (!itemsContainer) return;
                 if (cart.length === 0) {
@@ -237,21 +230,45 @@
                 taxesEl.textContent = `$${taxes.toFixed(2)}`;
                 totalEl.textContent = `$${total.toFixed(2)}`;
             }
+            renderOrderSummary();
 
+            // Lógica de formato de Inputs
             document.getElementById('cardNumber').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 16).replace(/(.{4})/g, '$1-').trim().slice(0, 19); });
             document.getElementById('expiryDate').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4).replace(/(.{2})/, '$1/').slice(0, 5); });
             document.getElementById('cvv').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4); });
 
+            // --- INICIO: LÓGICA DE ENVÍO Y VALIDACIÓN DEL FORMULARIO ---
             paymentForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const orderSuccessPopup = document.getElementById('orderSuccessPopup');
-                document.getElementById('orderId').textContent = `GRNHL-${Math.floor(Math.random() * 90000) + 10000}`;
-                orderSuccessPopup.classList.add('active');
-                if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
-                localStorage.removeItem('shoppingCart');
-            });
+                e.preventDefault(); // Siempre previene el envío por defecto para controlarlo con JS
+                
+                // 1. Obtenemos los valores de los campos
+                const firstName = document.getElementById('firstName').value;
+                const cardNumber = document.getElementById('cardNumber').value;
+                const expiryDate = document.getElementById('expiryDate').value;
+                const cvv = document.getElementById('cvv').value;
 
-            renderOrderSummary();
+                // 2. Validación robusta: Verificamos que los campos no estén vacíos
+                if (!firstName.trim() || !cardNumber.trim() || !expiryDate.trim() || !cvv.trim()) {
+                    alert('Por favor, completa todos los detalles de pago para continuar.');
+                    return; // Detiene la ejecución si algún campo está vacío
+                }
+
+                // 3. Si la validación es exitosa, procedemos a mostrar el popup
+                const orderSuccessPopup = document.getElementById('orderSuccessPopup');
+                if(orderSuccessPopup) {
+                    document.getElementById('orderId').textContent = `GRNHL-${Math.floor(Math.random() * 90000) + 10000}`;
+                    orderSuccessPopup.classList.add('active');
+                    
+                    // 4. Lanzamos el confeti
+                    if (typeof confetti === 'function') { 
+                        confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); 
+                    }
+                    
+                    // 5. Limpiamos el carrito del almacenamiento local
+                    localStorage.removeItem('shoppingCart');
+                }
+            });
+            // --- FIN: LÓGICA DE ENVÍO Y VALIDACIÓN ---
         });
     </script>
 </body>
