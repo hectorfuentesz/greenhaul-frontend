@@ -28,31 +28,11 @@
         .btn-tertiary { background: none; border: none; color: var(--accent-red); font-weight: 500; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; }
         .btn-tertiary:hover { transform: scale(1.15); }
         .navbar { position: sticky; top: 0; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); z-index: 1000; }
-        .navbar-content {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.logo {
-  flex: 0 0 auto; /* Ocupa solo el espacio necesario */
-}
-
-.nav-links-list {
-  display: flex;
-  gap: 30px;
-  list-style: none;
-  padding: 0;
-  margin: 0 auto; /* Esto centra el menú */
-}
-
-.navbar-right-items {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 25px;
-}
-
+        .navbar-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo img { height: 55px; }
+        .nav-links-list { list-style: none; display: flex; gap: 30px; padding: 0; margin: 0; }
+        .nav-link { font-weight: 500; color: var(--color-text); text-decoration: none; }
+        .navbar-right-items { display: flex; align-items: center; gap: 25px; margin-left: auto; }
         .navbar-user-actions { display: flex; align-items: center; gap: 15px; }
         .footer { background-color: var(--color-dark); color: #aaa; padding: 40px 20px; text-align: center; margin-top: auto;}
         main { flex-grow: 1; padding-top: 80px; }
