@@ -113,7 +113,6 @@
                             <a class="account-nav-link active" data-section="dashboard"><i class="fas fa-th-large"></i> Resumen</a>
                             <a class="account-nav-link" data-section="pedidos"><i class="fas fa-box"></i> Mis Pedidos</a>
                             <a class="account-nav-link" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
-                            <a class="account-nav-link" data-section="direcciones"><i class="fas fa-map-marker-alt"></i> Direcciones</a>
                         </nav>
                     </aside>
                     <div class="account-content">
@@ -133,19 +132,14 @@
                             <h3>Configuración de Perfil</h3>
                             <form id="profileForm">
                                 <div class="form-grid">
-                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control" disabled></div>
-                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control" disabled></div>
+                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" disabled></div>
+                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" disabled></div>
                                 </div>
-                                <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
-                                <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control"></div>
+                                <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email"></div>
+                                <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp"></div>
                                 <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
                                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                             </form>
-                        </div>
-                        <div id="direcciones-section" class="account-section">
-                            <h3>Mis Direcciones</h3>
-                            <div class="address-list" id="address-list-container"></div>
-                            <button class="btn btn-primary" style="margin-top:20px;">Añadir Nueva Dirección</button>
                         </div>
                     </div>
                 </div>
@@ -159,7 +153,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             let userData = {};
             const savedUser = JSON.parse(localStorage.getItem('greenhaulUser'));
-
             if (!savedUser) {
                 window.location.href = 'login.html';
                 return;
@@ -173,22 +166,39 @@
             const profileEmailInput = document.getElementById('profile-email');
             const profileWhatsappInput = document.getElementById('profile-whatsapp');
             
-            function populateUI(user) {
-                if (userNameSpan) userNameSpan.textContent = user.name.split(' ')[0];
-                if (accountTitle) accountTitle.textContent = `Panel de Control de ${user.name}`;
+            function populateUI() {
+                userNameSpan.textContent = userData.name.split(' ')[0];
+                accountTitle.textContent = `Panel de Control de ${userData.name}`;
                 
-                const nameParts = user.name.split(' ');
-                const firstName = nameParts.slice(0, 2).join(' ');
-                const lastName = nameParts.slice(2).join(' ');
-                
-                if (profileNameInput) profileNameInput.value = firstName;
-                if (profileLastnameInput) profileLastnameInput.value = lastName;
-                if (profileEmailInput) profileEmailInput.value = user.email;
-                if (profileWhatsappInput) profileWhatsappInput.value = user.whatsapp || '';
+                const nameParts = userData.name.split(' ');
+                profileNameInput.value = nameParts.slice(0, 2).join(' ');
+                profileLastnameInput.value = nameParts.slice(2).join(' ');
+                profileEmailInput.value = userData.email;
+                profileWhatsappInput.value = userData.whatsapp || '';
+            }
+
+            const navLinks = document.querySelectorAll('.account-nav-link');
+            const sections = document.querySelectorAll('.account-section');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    link.classList.add('active');
+                    document.getElementById(link.dataset.section + '-section').classList.add('active');
+                });
+            });
+
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('greenhaulUser');
+                    window.location.href = 'index.html';
+                });
             }
 
             const profileForm = document.getElementById('profileForm');
-            if (profileForm) {
+            if(profileForm){
                 profileForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     
@@ -207,11 +217,13 @@
 
                         const result = await response.json();
                         if (response.ok) {
-                            const updatedUser = { ...userData, ...updatedData };
-                            localStorage.setItem('greenhaulUser', JSON.stringify(updatedUser));
-                            userData = updatedUser;
-                            populateUI(userData);
-                            alert('¡Perfil actualizado con éxito!');
+                            userData = { ...userData, ...updatedData };
+                            localStorage.setItem('greenhaulUser', JSON.stringify(userData));
+                            populateUI();
+                            const notification = document.getElementById('notificationPopup');
+                            notification.textContent = '¡Perfil actualizado!';
+                            notification.classList.add('show');
+                            setTimeout(() => notification.classList.remove('show'), 3000);
                         } else {
                             alert(`Error: ${result.message}`);
                         }
@@ -221,15 +233,7 @@
                 });
             }
 
-            const logoutBtn = document.getElementById('logoutBtn');
-            if(logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    localStorage.removeItem('greenhaulUser');
-                    window.location.href = 'index.html';
-                });
-            }
-            
-            populateUI(userData);
+            populateUI();
         });
     </script>
 </body>
