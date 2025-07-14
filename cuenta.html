@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Cuenta - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    
     <style>
         :root {
             --primary-solid: #4a90e2; --accent-green: #00b386; --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
@@ -97,111 +96,159 @@
         </nav>
     </header>
 
-    <main class="page-content">
-        <section class="section">
-            <div class="container">
-                <h2 id="account-title"></h2>
-                <div class="account-layout">
-                    <aside class="account-sidebar">
-                        <nav class="account-nav">
-                            <a class="account-nav-link active" data-section="dashboard"><i class="fas fa-th-large"></i> Resumen</a>
-                            <a class="account-nav-link" data-section="pedidos"><i class="fas fa-box"></i> Mis Pedidos</a>
-                            <a class="account-nav-link" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
-                        </nav>
-                    </aside>
-                    <div class="account-content">
-                        <div id="dashboard-section" class="account-section active">
-                            <h3>Resumen de Actividad</h3>
-                            <div class="dashboard-grid">
-                                </div>
-                        </div>
-                        <div id="pedidos-section" class="account-section">
-                            <h3>Historial de Pedidos</h3>
-                            <div class="order-list" id="order-history-container"></div>
-                        </div>
-                        <div id="perfil-section" class="account-section">
-                            <h3>Configuración de Perfil</h3>
-                            <form id="profileForm">
-                                <div class="form-grid">
-                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" disabled></div>
-                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" disabled></div>
-                                </div>
-                                <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email"></div>
-                                <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp"></div>
-                                <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
-                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                            </form>
-                        </div>
+<main class="page-content">
+    <section class="section">
+        <div class="container">
+            <h2 id="account-title"></h2>
+            <div class="account-layout">
+                <aside class="account-sidebar">
+                    <nav class="account-nav">
+                        <a class="account-nav-link active" data-section="dashboard"><i class="fas fa-th-large"></i> Resumen</a>
+                        <a class="account-nav-link" data-section="pedidos"><i class="fas fa-box"></i> Mis Pedidos</a>
+                        <a class="account-nav-link" data-section="direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a>
+                        <a class="account-nav-link" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+                    </nav>
+                </aside>
+                <div class="account-content">
+                    <div id="dashboard-section" class="account-section active">
+                        <h3>Resumen de Actividad</h3>
+                        <div class="dashboard-grid" id="dashboard-data"></div>
+                    </div>
+
+                    <div id="pedidos-section" class="account-section">
+                        <h3>Historial de Pedidos</h3>
+                        <div class="order-list" id="order-history-container"></div>
+                    </div>
+
+                    <div id="direcciones-section" class="account-section">
+                        <h3>Mis Direcciones</h3>
+                        <div id="address-list"></div>
+                    </div>
+
+                    <div id="perfil-section" class="account-section">
+                        <h3>Configuración de Perfil</h3>
+                        <form id="profileForm">
+                            <div class="form-grid">
+                                <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" disabled></div>
+                                <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" disabled></div>
+                            </div>
+                            <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email"></div>
+                            <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp"></div>
+                            <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </form>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
-    
-    <div id="notificationPopup"></div>
+        </div>
+    </section>
+</main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let userData = {};
-            const savedUser = JSON.parse(localStorage.getItem('greenhaulUser'));
+<div id="notificationPopup"></div>
 
-            if (!savedUser) {
-                window.location.href = 'login.html';
-                return;
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let userData = {};
+        const savedUser = JSON.parse(localStorage.getItem('greenhaulUser'));
+
+        if (!savedUser) {
+            window.location.href = 'login.html';
+            return;
+        }
+        userData = { ...savedUser };
+
+        const userNameSpan = document.getElementById('userName');
+        const accountTitle = document.getElementById('account-title');
+        const profileNameInput = document.getElementById('profile-name');
+        const profileLastnameInput = document.getElementById('profile-lastname');
+        const profileEmailInput = document.getElementById('profile-email');
+        const profileWhatsappInput = document.getElementById('profile-whatsapp');
+        const dashboardData = document.getElementById('dashboard-data');
+        const orderContainer = document.getElementById('order-history-container');
+        const addressList = document.getElementById('address-list');
+
+        function populateUI() {
+            userNameSpan.textContent = userData.name.split(' ')[0];
+            accountTitle.textContent = `Panel de Control de ${userData.name}`;
+
+            const nameParts = userData.name.split(' ');
+            const firstName = nameParts.slice(0, 2).join(' ');
+            const lastName = nameParts.slice(2).join(' ');
+
+            profileNameInput.value = firstName;
+            profileLastnameInput.value = lastName;
+            profileEmailInput.value = userData.email;
+            profileWhatsappInput.value = userData.whatsapp || '';
+
+            // Datos ficticios de ejemplo para el resumen
+            dashboardData.innerHTML = `
+                <div class="dashboard-card">
+                    <div class="card-header"><h4>Total de Pedidos</h4><i class="fas fa-box icon"></i></div>
+                    <div class="card-body"><span>${userData.orders?.length || 0}</span></div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-header"><h4>Último Pedido</h4><i class="fas fa-clock icon"></i></div>
+                    <div class="card-body"><span>${userData.orders?.[0]?.date || 'Sin registros'}</span></div>
+                </div>
+            `;
+
+            // Pedidos
+            if (userData.orders?.length > 0) {
+                orderContainer.innerHTML = userData.orders.map(order => `
+                    <div class="order-item">
+                        <div><strong>#${order.id}</strong></div>
+                        <div>${order.date}</div>
+                        <div>${order.total}</div>
+                        <div><span class="order-item-status status-${order.status.toLowerCase()}">${order.status}</span></div>
+                    </div>
+                `).join('');
+            } else {
+                orderContainer.innerHTML = '<p>No hay pedidos aún.</p>';
             }
-            userData = { ...savedUser };
 
-            const userNameSpan = document.getElementById('userName');
-            const accountTitle = document.getElementById('account-title');
-            const profileNameInput = document.getElementById('profile-name');
-            const profileLastnameInput = document.getElementById('profile-lastname');
-            const profileEmailInput = document.getElementById('profile-email');
-            const profileWhatsappInput = document.getElementById('profile-whatsapp');
-            
-            function populateUI() {
-                userNameSpan.textContent = userData.name.split(' ')[0];
-                accountTitle.textContent = `Panel de Control de ${userData.name}`;
-                
-                const nameParts = userData.name.split(' ');
-                const firstName = nameParts.slice(0, 2).join(' '); 
-                const lastName = nameParts.slice(2).join(' ');  
-                
-                profileNameInput.value = firstName;
-                profileLastnameInput.value = lastName;
-                profileEmailInput.value = userData.email;
-                profileWhatsappInput.value = userData.whatsapp || '';
+            // Direcciones
+            if (userData.addresses?.length > 0) {
+                addressList.innerHTML = userData.addresses.map(addr => `
+                    <div class="dashboard-card">
+                        <div class="card-header"><h4>${addr.alias || 'Dirección'}</h4><i class="fas fa-map-marker-alt icon"></i></div>
+                        <div class="card-body">${addr.street}, ${addr.city}, ${addr.state}</div>
+                    </div>
+                `).join('');
+            } else {
+                addressList.innerHTML = '<p>No hay direcciones registradas.</p>';
             }
+        }
 
-            const navLinks = document.querySelectorAll('.account-nav-link');
-            const sections = document.querySelectorAll('.account-section');
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    sections.forEach(s => s.classList.remove('active'));
-                    link.classList.add('active');
-                    document.getElementById(link.dataset.section + '-section').classList.add('active');
-                });
+        const navLinks = document.querySelectorAll('.account-nav-link');
+        const sections = document.querySelectorAll('.account-section');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                link.classList.add('active');
+                document.getElementById(link.dataset.section + '-section').classList.add('active');
             });
-
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    localStorage.removeItem('greenhaulUser');
-                    window.location.href = 'index.html';
-                });
-            }
-
-            const profileForm = document.getElementById('profileForm');
-            if (profileForm) {
-                profileForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    // ... (lógica fetch que ya funciona)
-                });
-            }
-
-            populateUI();
         });
-    </script>
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('greenhaulUser');
+                window.location.href = 'index.html';
+            });
+        }
+
+        const profileForm = document.getElementById('profileForm');
+        if (profileForm) {
+            profileForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                // Tu lógica fetch aquí si deseas guardar cambios en backend
+            });
+        }
+
+        populateUI();
+    });
+</script>
 </body>
 </html>
