@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proceder al Pago - GreenHaul</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Proceder al Pago - GreenHaul</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
         /* ===== ESTILOS BASE (Para consistencia) ===== */
@@ -31,18 +32,29 @@
         .btn-tertiary { background: none; border: none; color: var(--accent-red); font-weight: 500; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; }
         .btn-tertiary:hover { transform: scale(1.15); }
         
-        /* INICIO: Estilos del Header completo */
+        /* INICIO: Estilos del Header corregidos para centrar */
         .navbar { position: relative; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); }
         .navbar-content { display: flex; justify-content: space-between; align-items: center; }
         .logo img { height: 50px; }
-        .navbar-collapse { display: flex; align-items: center; gap: 30px; }
-        .nav-links-list { list-style: none; display: flex; gap: 30px; padding: 0; margin: 0; }
+        .navbar-collapse { 
+            display: flex; 
+            align-items: center; 
+            flex-grow: 1; /* Permite que este contenedor crezca */
+            justify-content: center; /* Centra el contenido (la lista) */
+        }
+        .nav-links-list { 
+            list-style: none; 
+            display: flex; 
+            gap: 40px; /* Aumentamos un poco el espacio */
+            padding: 0; 
+            margin: 0; 
+        }
         .nav-link { font-weight: 500; color: var(--color-text); text-decoration: none; }
         .navbar-right-items { display: flex; align-items: center; gap: 20px; }
         .navbar-user-actions { display: flex; align-items: center; gap: 15px; }
         .navbar-toggler { display: none; background: none; border: none; cursor: pointer; padding: 5px; }
         .toggler-icon { display: block; width: 22px; height: 2px; background-color: var(--color-dark); margin: 5px 0; transition: all 0.3s; }
-        /* FIN: Estilos del Header completo */
+        /* FIN: Estilos del Header corregidos */
 
         .footer { background-color: var(--color-dark); color: #aaa; padding: 40px 20px; text-align: center; margin-top: auto;}
         main { flex-grow: 1; padding: 80px 0; }
@@ -73,7 +85,6 @@
         @media(max-width: 992px) { 
             .payment-layout, .name-grid { grid-template-columns: 1fr; } 
             .summary-container { margin-top: 40px; }
-            /* INICIO: Media queries para el header responsivo */
             .navbar-toggler { display: block; }
             .navbar-content { flex-wrap: wrap; }
             .navbar-collapse {
@@ -82,6 +93,8 @@
                 width: 100%;
                 text-align: center;
                 gap: 0;
+                flex-grow: unset; /* Resetea el crecimiento en móvil */
+                justify-content: flex-start; /* Alinea al inicio en móvil */
             }
             .navbar-collapse.active { display: flex; }
             .nav-links-list { flex-direction: column; width: 100%; gap: 0; }
@@ -89,7 +102,6 @@
             .nav-links-list li:last-child { border-bottom: none; }
             .nav-link { padding: 15px; display: block; }
             .navbar-right-items { margin-top: 20px; }
-            /* FIN: Media queries para el header responsivo */
         }
     </style>
 </head>
@@ -113,69 +125,21 @@
                     <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
                     <li><a href="contacto.html" class="nav-link">Contacto</a></li>
                 </ul>
-                <div class="navbar-right-items">
-                    <div class="navbar-user-actions" id="navbarUserActions">
-                        <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
-                        <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
-                        <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-                    </div>
+            </div>
+            <div class="navbar-right-items">
+                <div class="navbar-user-actions" id="navbarUserActions">
+                    <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                    <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+                    <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
         </div>
     </header>
+
     <main class="page-content">
-        <div class="container">
-            <div class="section-title">
-                <h2>Finalizar Compra</h2>
-                <p>Estás a un solo paso de completar tu pedido.</p>
-            </div>
-
-            <div class="payment-layout">
-                <div class="form-container">
-                    <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
-                    <form id="paymentForm">
-                        <div class="name-grid">
-                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control" required></div>
-                            <div class="form-group"><label for="lastName1">Apellido Paterno</label><input type="text" id="lastName1" class="form-control" required></div>
-                            <div class="form-group"><label for="lastName2">Apellido Materno</label><input type="text" id="lastName2" class="form-control" required></div>
-                        </div>
-                        <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" id="cardNumber" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX" required></div>
-                        <div style="display: flex; gap: 20px;">
-                            <div class="form-group" style="flex: 1;"><label for="expiryDate">Expiración (MM/AA)</label><input type="text" id="expiryDate" class="form-control" placeholder="MM/AA" required></div>
-                            <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX" required></div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-submit">Pagar Ahora</button>
-                    </form>
-                </div>
-                <div class="summary-container">
-                    <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Pedido</h3>
-                    <ul class="order-summary-list" id="summaryItemsContainer"></ul>
-                    <ul class="summary-totals">
-                        <li><span>Subtotal:</span> <span id="summarySubtotal">$0.00</span></li>
-                        <li><span>Impuestos (16%):</span> <span id="summaryTaxes">$0.00</span></li>
-                        <li class="total"><span>Total:</span> <span id="summaryTotal">$0.00</span></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </main>
+       </main>
     
-    <div class="popup-overlay" id="orderSuccessPopup">
-        <div class="popup-card">
-            <div class="popup-icon"><i class="fas fa-check"></i></div>
-            <h2>¡Pedido Realizado!</h2>
-            <p class="message">Tu compra ha sido confirmada. Un asesor se comunicará por WhatsApp para dar seguimiento.</p>
-            <div class="order-details-box">
-                <p>Tu número de orden es:</p><strong id="orderId"></strong>
-            </div>
-            <div class="popup-actions">
-                <a href="cuenta.html" class="btn btn-secondary">Ir a Mis Pedidos</a>
-                <a href="index.html" class="btn btn-primary">Volver al Inicio</a>
-            </div>
-        </div>
-    </div>
-
-    <script>
+       <script>
         document.addEventListener('DOMContentLoaded', () => {
             
             // --- INICIO: Lógica para el header responsivo y estado de sesión ---
