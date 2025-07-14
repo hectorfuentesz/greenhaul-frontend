@@ -1,6 +1,6 @@
 /**
  * =================================================================
- * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA)
+ * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL CORREGIDA)
  * =================================================================
  */
 
@@ -33,8 +33,6 @@ function showNotification(message, type = 'success') {
 
 // --- 2. LÓGICA PRINCIPAL DEL SITIO ---
 document.addEventListener('DOMContentLoaded', () => {
-
-    console.log("DOM cargado. Ejecutando main.js... 🚀");
 
     /**
      * ===============================================
@@ -78,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * ===============================================
-     * MÓDULO DE SESIÓN DE USUARIO
+     * MÓDULO DE SESIÓN DE USUARIO (CORREGIDO Y COMPLETO)
      * ===============================================
      */
     const initUserSession = () => {
@@ -114,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     /**
      * ===============================================
-     * MÓDULO DEL CARRITO DE COMPRAS
+     * MÓDULO DEL CARRITO DE COMPRAS (CORREGIDO Y COMPLETO)
      * ===============================================
      */
      const initShoppingCart = () => {
@@ -127,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const emptyCartBtn = document.getElementById('emptyCartBtn');
         const proceedToCheckoutBtn = document.getElementById('proceedToCheckoutBtn');
 
-        if (!cartIcon || !cartModalOverlay) {
-            console.error("Error Crítico: No se encontró el ícono del carrito o el contenedor del modal. Verifica que el HTML del carrito exista en esta página.");
+        if (!cartIcon || !cartModalOverlay || !closeCartModalBtn) {
+            console.error("Error Crítico: No se encontraron los elementos del modal del carrito. Asegúrate que el HTML esté en la página y los IDs son correctos (cartIcon, cartModalOverlay, closeCartModalBtn).");
             return;
         }
 
@@ -174,8 +172,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const addCartModalEventListeners = () => {
             if (!cartItemsContainer) return;
-            cartItemsContainer.querySelectorAll('.remove-item-btn').forEach(b => b.onclick = e => removeCartItem(e.target.closest('.cart-item').dataset.productId));
-            cartItemsContainer.querySelectorAll('.cart-item-quantity').forEach(s => s.onchange = e => updateCartItemQuantity(e.target.closest('.cart-item').dataset.productId, parseInt(e.target.value, 10)));
+            cartItemsContainer.querySelectorAll('.remove-item-btn').forEach(b => {
+                b.addEventListener('click', (e) => removeCartItem(e.target.closest('.cart-item').dataset.productId));
+            });
+            cartItemsContainer.querySelectorAll('.cart-item-quantity').forEach(s => {
+                s.addEventListener('change', (e) => updateCartItemQuantity(e.target.closest('.cart-item').dataset.productId, parseInt(e.target.value, 10)));
+            });
         };
         
         const renderCartModal = () => {
@@ -230,41 +232,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     price: parseFloat(productCard.dataset.productPrice),
                     quantity: parseInt(quantitySelect.value, 10),
                 });
-                quantitySelect.value = ""; // Resetea el selector de cantidad
+                quantitySelect.value = "";
             });
         });
 
         cartIcon.addEventListener('click', e => {
             e.preventDefault();
-            console.log("Clic en el carrito detectado. Intentando abrir modal...");
             renderCartModal();
             cartModalOverlay.classList.add('active');
         });
 
-        if(closeCartModalBtn) {
-            closeCartModalBtn.addEventListener('click', () => cartModalOverlay.classList.remove('active'));
-        }
+        closeCartModalBtn.addEventListener('click', () => {
+            cartModalOverlay.classList.remove('active');
+        });
         
         cartModalOverlay.addEventListener('click', (e) => {
-            if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('active');
-        });
-        
-        if (emptyCartBtn) emptyCartBtn.addEventListener('click', () => {
-            cart = [];
-            saveCart();
-            renderCartModal();
-            updateCartCount();
-        });
-
-        if (proceedToCheckoutBtn) proceedToCheckoutBtn.addEventListener('click', e => {
-            if (cart.length === 0) {
-                e.preventDefault();
-                showNotification('Tu carrito está vacío.', 'error');
+            if (e.target === cartModalOverlay) {
+                cartModalOverlay.classList.remove('active');
             }
         });
         
+        if (emptyCartBtn) {
+            emptyCartBtn.addEventListener('click', () => {
+                cart = [];
+                saveCart();
+                renderCartModal();
+                updateCartCount();
+            });
+        }
+
+        if (proceedToCheckoutBtn) {
+            proceedToCheckoutBtn.addEventListener('click', e => {
+                if (cart.length === 0) {
+                    e.preventDefault();
+                    showNotification('Tu carrito está vacío.', 'error');
+                }
+            });
+        }
+        
         updateCartCount();
-        console.log("Módulo de Carrito inicializado correctamente. ✔️");
     };
 
     /**
@@ -276,7 +282,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const rentalDatesContainer = document.querySelector('.rental-dates-container');
         if (!rentalDatesContainer || typeof flatpickr === 'undefined') return;
 
-        const fechaEntregaPicker = flatpickr("#fecha-entrega", {
+        const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
+            locale: "es",
+            minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+
+        flatpickr("#fecha-entrega", {
             locale: "es",
             minDate: "today",
             altInput: true,
@@ -288,15 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
-        const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
-            locale: "es",
-            minDate: "today",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-        });
-        console.log("Módulo de Página de Productos inicializado correctamente. ✔️");
     };
     
     /**
@@ -305,9 +310,8 @@ document.addEventListener('DOMContentLoaded', () => {
      * ===============================================
      */
     const initCalculator = () => {
-        // Tu función de calculadora aquí...
+        // Tu lógica completa de la calculadora aquí...
     };
-
 
     /**
      * ===============================================
