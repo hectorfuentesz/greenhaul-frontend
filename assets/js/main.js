@@ -1,7 +1,7 @@
 /**
  * =================================================================
  * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL
- * (Versión con todas las funcionalidades integradas, depuradas y calculadora con pop-up de resultados)
+ * (Versión sin la calculadora, lista para su rediseño e integración)
  * =================================================================
  */
 
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cartItemsContainer.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
                 if (proceedToCheckoutBtn) proceedToCheckoutBtn.classList.add('disabled'); // Deshabilita el botón de proceder
             } else {
-                if (proceedToCheckoutBtn) proceedToCheckoutBtn.classList.remove('disabled'); // Habilita el botón de proceder
+                if (proceedToCheckoutBtn) proceed.classList.remove('disabled'); // Habilita el botón de proceder
                 cart.items.forEach(item => {
                     const price = typeof item.price === 'number' ? item.price : 0;
                     const quantity = typeof item.quantity === 'number' ? item.quantity : 1;
@@ -435,265 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Lógica de la CALCULADORA (integrada, corregida para navegación de pasos y cálculo de resultados en pop-up) ---
-    const initCalculator = () => {
-        // Obtener referencias a los elementos HTML clave de la calculadora
-        const steps = [
-            document.getElementById("calc-step-1"),
-            document.getElementById("calc-step-2"),
-            document.getElementById("calc-step-3"),
-        ];
-        const stepIndicators = [
-            document.getElementById("step-indicator-1"),
-            document.getElementById("step-indicator-2"),
-            document.getElementById("step-indicator-3"),
-        ];
-        const progressBar = document.getElementById("progressBar");
-        const calculateBtn = document.getElementById("calculateBtn");
-        const body = document.body; // Referencia al body para añadir el pop-up
-
-        // *** INICIO DE LA CORRECCIÓN: Depuración más explícita para la inicialización de la calculadora ***
-        // Verificamos individualmente la existencia de cada elemento clave
-        if (!steps[0]) {
-            console.error("Error: Elemento 'calc-step-1' no encontrado. La calculadora no se inicializará.");
-            return; // Salir si el elemento es nulo
-        }
-        if (!progressBar) {
-            console.error("Error: Elemento 'progressBar' no encontrado. La calculadora no se inicializará.");
-            return; // Salir si el elemento es nulo
-        }
-        if (!calculateBtn) {
-            console.error("Error: Elemento 'calculateBtn' no encontrado. La calculadora no se inicializará.");
-            return; // Salir si el elemento es nulo
-        }
-        // *** FIN DE LA CORRECCIÓN ***
-
-        let currentStep = 0; // Controla el paso actual de la calculadora (0, 1, 2)
-
-        // Actualiza la interfaz de usuario de la calculadora: 
-        // - Muestra el paso actual.
-        // - Resalta el indicador de paso.
-        // - Actualiza la barra de progreso.
-        function updateStepUI() {
-            steps.forEach((step, index) => {
-                step.classList.toggle("active", index === currentStep); // Controla la visibilidad de los pasos
-                stepIndicators[index].classList.toggle("active", index === currentStep); // Resalta el número de paso
-            });
-            // Calcula el porcentaje de avance de la barra de progreso
-            progressBar.style.width = ((currentStep / (steps.length - 1)) * 100) + "%";
-            
-            // Ocultar cualquier modal de resultado existente cuando se avanza de paso
-            const existingModal = document.getElementById('calculatorResultModalOverlay');
-            if (existingModal) {
-                existingModal.remove(); // Elimina el modal si ya existe y cambiamos de paso
-            }
-        }
-
-        // Valida que el usuario haya hecho una selección requerida en el paso actual.
-        function validateStep(stepIndex) {
-            if (stepIndex === 0) { // Validación para el Paso 1 (Tipo de hogar)
-                const homeType = document.querySelector('input[name="homeType"]:checked');
-                if (!homeType) {
-                    showNotification("Por favor, selecciona cómo es tu hogar para continuar.", 'error');
-                    return false;
-                }
-            } else if (stepIndex === 1) { // Validación para el Paso 2 (Cantidad de cosas)
-                const belongings = document.querySelector('input[name="belongings"]:checked');
-                if (!belongings) {
-                    showNotification("Por favor, selecciona cuántas cosas tienes para continuar.", 'error');
-                    return false;
-                }
-            }
-            return true; // Si la validación pasa, o si es el Paso 3 (no obligatorio para avanzar)
-        }
-
-        // Mueve la calculadora al siguiente paso, si el paso actual es válido.
-        function goToNextStep() {
-            if (!validateStep(currentStep)) return; // No avanzar si la validación falla
-            if (currentStep < steps.length - 1) { // Asegura que no se exceda el último paso
-                currentStep++;
-                updateStepUI(); // Actualiza la interfaz al siguiente paso
-            }
-        }
-
-        // Adjunta Event Listeners a los radio buttons para el avance automático de pasos.
-        // Esto solo aplica a los pasos 0 y 1, que son los que tienen radios y deben avanzar al siguiente paso.
-        steps.forEach((step, index) => {
-            if (index === 0 || index === 1) { // Aplica listeners solo al Paso 1 y Paso 2
-                const radios = step.querySelectorAll('input[type="radio"]');
-                radios.forEach((radio) => {
-                    radio.addEventListener("change", goToNextStep); // Llama a goToNextStep cuando se selecciona un radio
-                });
-            }
-        });
-
-        // Event Listener para el botón "Calcular mi Paquete" en el último paso.
-        calculateBtn.addEventListener("click", () => {
-            // Realiza una validación final para asegurarse de que los pasos obligatorios estén completos.
-            if (!validateStep(0) || !validateStep(1)) {
-                return; // Las notificaciones de error ya se mostrarán desde la función validateStep()
-            }
-
-            // Recopila los valores seleccionados por el usuario
-            const homeType = document.querySelector('input[name="homeType"]:checked')?.value || "";
-            const belongings = document.querySelector('input[name="belongings"]:checked')?.value || "";
-            // Recopila todos los valores de los checkboxes seleccionados en el Paso 3
-            const extras = Array.from(
-                document.querySelectorAll('input[name="extras"]:checked')
-            ).map((checkbox) => checkbox.value);
-
-            let totalEstimatedBoxes = 0; // Variable para el total de cajas estimado
-            let smallBoxes = 0;
-            let mediumBoxes = 0;
-            let largeBoxes = 0;
-            let extraLargeBoxes = 0; 
-
-            // --- Lógica de cálculo y desglose de cajas ---
-            // Definir paquetes base según el tipo de hogar con un desglose inicial
-            const packages = {
-                "studio": { total: 15, small: 5, medium: 7, large: 3, extraLarge: 0 },
-                "1br":    { total: 25, small: 8, medium: 12, large: 5, extraLarge: 0 },
-                "2br":    { total: 40, small: 10, medium: 20, large: 10, extraLarge: 0 },
-                "4br":    { total: 60, small: 15, medium: 30, large: 15, extraLarge: 0 }
-            };
-
-            let selectedPackage = packages[homeType] || { total: 0, small: 0, medium: 0, large: 0, extraLarge: 0 };
-            
-            smallBoxes = selectedPackage.small;
-            mediumBoxes = selectedPackage.medium;
-            largeBoxes = selectedPackage.large;
-            extraLargeBoxes = selectedPackage.extraLarge;
-
-            // Ajustar el desglose y el total según la cantidad de pertenencias
-            if (belongings === "normal") {
-                mediumBoxes += 3; 
-                largeBoxes += 2;
-            } else if (belongings === "many") {
-                mediumBoxes += 5;
-                largeBoxes += 7;
-                extraLargeBoxes += 3; 
-            }
-
-            // Añadir cajas adicionales por cada espacio extra seleccionado
-            if (extras.includes("office")) {
-                mediumBoxes += 3;
-                largeBoxes += 2;
-            }
-            if (extras.includes("storage")) {
-                mediumBoxes += 4;
-                largeBoxes += 4;
-                extraLargeBoxes += 2;
-            }
-            if (extras.includes("garage")) {
-                mediumBoxes += 5;
-                largeBoxes += 7;
-                extraLargeBoxes += 3;
-            }
-
-            // Asegurarse de que ninguna cantidad de cajas sea negativa
-            smallBoxes = Math.max(0, smallBoxes);
-            mediumBoxes = Math.max(0, mediumBoxes);
-            largeBoxes = Math.max(0, largeBoxes);
-            extraLargeBoxes = Math.max(0, extraLargeBoxes);
-            
-            // Recalcular el total exacto sumando las cajas desglosadas
-            totalEstimatedBoxes = smallBoxes + mediumBoxes + largeBoxes + extraLargeBoxes; 
-
-            // --- Fin de lógica de cálculo y desglose ---
-
-            // Prepara el texto para los espacios adicionales seleccionados (con traducción a español)
-            let extrasText = "";
-            if (extras.length > 0) {
-                const translatedExtras = extras.map(e => {
-                    if (e === 'office') return 'Oficina / Home Office';
-                    if (e === 'storage') return 'Bodega / Trastero';
-                    if (e === 'garage') return 'Garaje / Estacionamiento';
-                    return e; 
-                });
-                extrasText = `<p><strong>Espacios adicionales:</strong> ${translatedExtras.join(", ")}</p>`;
-            }
-
-            // Construir el HTML del desglose de cajas para el pop-up
-            let boxesBreakdownHtml = `
-                <h4>Desglose de cajas:</h4>
-                <ul>
-            `;
-            if (smallBoxes > 0) {
-                boxesBreakdownHtml += `<li>Cajas Pequeñas: <strong>${smallBoxes}</strong></li>`;
-            }
-            if (mediumBoxes > 0) {
-                boxesBreakdownHtml += `<li>Cajas Medianas: <strong>${mediumBoxes}</strong></li>`;
-            }
-            if (largeBoxes > 0) {
-                boxesBreakdownHtml += `<li>Cajas Grandes: <strong>${largeBoxes}</strong></li>`;
-            }
-            if (extraLargeBoxes > 0) {
-                boxesBreakdownHtml += `<li>Cajas Extra Grandes: <strong>${extraLargeBoxes}</strong></li>`;
-            }
-            boxesBreakdownHtml += `</ul>`;
-
-
-            // --- Creación y visualización del pop-up de resultados ---
-
-            // Eliminar cualquier modal anterior si existe
-            const existingModal = document.getElementById('calculatorResultModalOverlay');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            // ===> INSTRUCCIÓN PARA BREAKPOINT 1: Haz clic en el número de línea de la siguiente línea
-            const modalOverlay = document.createElement('div');
-            modalOverlay.id = 'calculatorResultModalOverlay';
-            modalOverlay.classList.add('cart-modal-overlay', 'active'); // Reutilizamos las clases CSS del carrito
-
-            modalOverlay.innerHTML = `
-                <div class="cart-modal">
-                    <div class="cart-modal-header">
-                        <h2>¡Tu Paquete Recomendado!</h2>
-                        <button class="close-modal-btn" id="closeCalcModalBtn" title="Cerrar">&times;</button>
-                    </div>
-                    <div class="cart-modal-body">
-                        <p>Basado en tus selecciones:</p>
-                        <ul>
-                            <li><strong>Tipo de hogar:</strong> ${homeType === 'studio' ? 'Estudio' : homeType === '1br' ? '1 Habitación' : homeType === '2br' ? '2-3 Habitaciones' : homeType === '4br' ? '4+ Habitaciones' : 'No especificado'}</li>
-                            <li><strong>Cantidad de cosas:</strong> ${belongings === 'minimal' ? 'Pocas (Minimalista)' : belongings === 'normal' ? 'Normal' : belongings === 'many' ? 'Muchas (Coleccionista)' : 'No especificado'}</li>
-                        </ul>
-                        ${extrasText}
-                        <p class="result-number">Total de cajas estimado: <strong>${totalEstimatedBoxes}</strong></p>
-                        ${boxesBreakdownHtml}
-                        <p class="modal-call-to-action">¡Contáctanos para un presupuesto más preciso o para elegir tu paquete!</p>
-                    </div>
-                    <div class="cart-modal-footer">
-                        <a href="contacto.html" class="btn btn-primary">Contactar</a>
-                    </div>
-                </div>
-            `;
-            // ===> INSTRUCCIÓN PARA BREAKPOINT 2: Haz clic en el número de línea de la siguiente línea
-            body.appendChild(modalOverlay); // Añadir el pop-up al body
-
-            // Añadir event listeners para cerrar el modal
-            const closeCalcModalBtn = document.getElementById('closeCalcModalBtn');
-            if (closeCalcModalBtn) {
-                closeCalcModalBtn.addEventListener('click', () => {
-                    modalOverlay.classList.remove('active');
-                    modalOverlay.remove(); // Eliminar el elemento del DOM al cerrar
-                });
-            }
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) {
-                    modalOverlay.classList.remove('active');
-                    modalOverlay.remove(); // Eliminar el elemento del DOM al hacer clic fuera
-                }
-            });
-
-            // Después de calcular y mostrar el pop-up, reiniciar la calculadora visualmente al paso 1
-            currentStep = 0;
-            updateStepUI(); 
-        });
-
-        // Inicializa la interfaz de usuario de la calculadora al cargar la página (muestra el primer paso activo).
-        updateStepUI(); 
-    };
+    // --- La función initCalculator ha sido eliminada para el rediseño ---
+    // const initCalculator = () => { ... } // Esto ya no está aquí
 
     // --- Llamadas a las funciones de inicialización (Se ejecutan cuando el DOM está listo) ---
     initGlobalElements();        // Inicializa el navbar y el año del footer
@@ -701,5 +444,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initUserSession();           // Gestiona la sesión de usuario
     initShoppingCart();          // Inicializa toda la lógica del carrito de compras
     initProductPageElements();   // Inicializa elementos específicos de la página de productos (ej. Flatpickr)
-    initCalculator();            // Inicializa la calculadora (solo si los elementos están presentes en la página)
+    // initCalculator();            // Esta llamada ha sido eliminada o comentada
 });
