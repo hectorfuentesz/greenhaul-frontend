@@ -1,7 +1,7 @@
 /**
  * =================================================================
  * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL
- * (Versión con todas las funcionalidades integradas y depuradas, incluyendo desglose de calculadora)
+ * (Versión con todas las funcionalidades integradas, depuradas y calculadora con pop-up de resultados)
  * =================================================================
  */
 
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 // Simulación de inicio de sesión: guarda un usuario de ejemplo. En un entorno real, esto vendría de un backend.
                 localStorage.setItem('greenhaulUser', JSON.stringify({ name: 'UsuarioEjemplo' }));
-                window.location.href = 'login.html'; // Redirigir a la página de login
+                window.location.href = 'login.html'; // Rediriger a la página de login
             });
         }
     };
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Lógica de la CALCULADORA (integrada, corregida para navegación de pasos y cálculo de resultados) ---
+    // --- Lógica de la CALCULADORA (integrada, corregida para navegación de pasos y cálculo de resultados en pop-up) ---
     const initCalculator = () => {
         // Obtener referencias a los elementos HTML clave de la calculadora
         const steps = [
@@ -450,11 +450,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         const progressBar = document.getElementById("progressBar");
         const calculateBtn = document.getElementById("calculateBtn");
-        const resultContainer = document.getElementById("calculatorResult");
+        const body = document.body; // Referencia al body para añadir el pop-up
 
         // Salir si no se encuentran todos los elementos esenciales de la calculadora en la página actual.
-        // Esto evita errores si el script se carga en una página sin calculadora.
-        if (!steps[0] || !progressBar || !calculateBtn || !resultContainer) {
+        if (!steps[0] || !progressBar || !calculateBtn) { // Ya no necesitamos resultContainer aquí
             console.log("Elementos de la calculadora no encontrados. 'initCalculator' no se inicializará en esta página.");
             return; 
         }
@@ -473,21 +472,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Calcula el porcentaje de avance de la barra de progreso
             progressBar.style.width = ((currentStep / (steps.length - 1)) * 100) + "%";
             
-            // Limpia el contenedor de resultados si el usuario cambia de paso después de ver un resultado.
-            // Esto evita que el resultado del cálculo anterior se quede visible al retroceder o avanzar.
-            if (resultContainer.innerHTML !== "" && currentStep !== (steps.length - 1)) { 
-                 resultContainer.innerHTML = ""; 
-            }
-
-            // Gestiona la visibilidad del recuadro de resultados
-            if (currentStep === 0 && resultContainer.innerHTML !== "") {
-                resultContainer.style.display = 'block'; // Mostrar el resultado si estamos en el paso 1 (reiniciado) y ya hay contenido
-            } else {
-                resultContainer.style.display = 'none'; // Ocultar si estamos en otro paso o no hay resultado
-                // Limpiar el contenido del resultado solo cuando se avanza de paso, no al reiniciar en el paso 0
-                if (currentStep !== 0) { 
-                    resultContainer.innerHTML = "";
-                }
+            // Ocultar cualquier modal de resultado existente cuando se avanza de paso
+            const existingModal = document.getElementById('calculatorResultModalOverlay');
+            if (existingModal) {
+                existingModal.remove(); // Elimina el modal si ya existe y cambiamos de paso
             }
         }
 
@@ -533,8 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateBtn.addEventListener("click", () => {
             // Realiza una validación final para asegurarse de que los pasos obligatorios estén completos.
             if (!validateStep(0) || !validateStep(1)) {
-                // Las notificaciones de error ya se mostrarán desde la función validateStep()
-                return; 
+                return; // Las notificaciones de error ya se mostrarán desde la función validateStep()
             }
 
             // Recopila los valores seleccionados por el usuario
@@ -616,12 +603,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 extrasText = `<p><strong>Espacios adicionales:</strong> ${translatedExtras.join(", ")}</p>`;
             }
 
-            // Construir el HTML del resultado con el desglose de cajas
+            // Construir el HTML del desglose de cajas para el pop-up
             let boxesBreakdownHtml = `
                 <h4>Desglose de cajas:</h4>
                 <ul>
             `;
-            // Solo añadir tipos de cajas al desglose si su cantidad es mayor que 0
             if (smallBoxes > 0) {
                 boxesBreakdownHtml += `<li>Cajas Pequeñas: <strong>${smallBoxes}</strong></li>`;
             }
@@ -637,32 +623,67 @@ document.addEventListener('DOMContentLoaded', () => {
             boxesBreakdownHtml += `</ul>`;
 
 
-            // --- Muestra el resultado final del cálculo en el contenedor de resultados de la calculadora ---
-            resultContainer.innerHTML = `
-                <h3>¡Tu paquete de cajas recomendado!</h3>
-                <p>Basado en tus selecciones:</p>
-                <ul>
-                    <li><strong>Tipo de hogar:</strong> ${homeType === 'studio' ? 'Estudio' : homeType === '1br' ? '1 Habitación' : homeType === '2br' ? '2-3 Habitaciones' : homeType === '4br' ? '4+ Habitaciones' : 'No especificado'}</li>
-                    <li><strong>Cantidad de cosas:</strong> ${belongings === 'minimal' ? 'Pocas (Minimalista)' : belongings === 'normal' ? 'Normal' : belongings === 'many' ? 'Muchas (Coleccionista)' : 'No especificado'}</li>
-                </ul>
-                ${extrasText}
-                <p class="result-number">Total de cajas estimado: <strong>${totalEstimatedBoxes}</strong></p>
-                ${boxesBreakdownHtml}
-                <p>¡Contáctanos para un presupuesto más preciso o para elegir tu paquete!</p>
-                <a href="contacto.html" class="btn btn-primary">Contactar</a>
-            `;
+            // --- Creación y visualización del pop-up de resultados ---
 
-            // Reinicia la calculadora al primer paso para una nueva consulta después de mostrar el resultado.
+            // Eliminar cualquier modal anterior si existe
+            const existingModal = document.getElementById('calculatorResultModalOverlay');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            const modalOverlay = document.createElement('div');
+            modalOverlay.id = 'calculatorResultModalOverlay';
+            modalOverlay.classList.add('cart-modal-overlay', 'active'); // Reutilizamos las clases CSS del carrito
+
+            modalOverlay.innerHTML = `
+                <div class="cart-modal">
+                    <div class="cart-modal-header">
+                        <h2>¡Tu Paquete Recomendado!</h2>
+                        <button class="close-modal-btn" id="closeCalcModalBtn" title="Cerrar">&times;</button>
+                    </div>
+                    <div class="cart-modal-body">
+                        <p>Basado en tus selecciones:</p>
+                        <ul>
+                            <li><strong>Tipo de hogar:</strong> ${homeType === 'studio' ? 'Estudio' : homeType === '1br' ? '1 Habitación' : homeType === '2br' ? '2-3 Habitaciones' : homeType === '4br' ? '4+ Habitaciones' : 'No especificado'}</li>
+                            <li><strong>Cantidad de cosas:</strong> ${belongings === 'minimal' ? 'Pocas (Minimalista)' : belongings === 'normal' ? 'Normal' : belongings === 'many' ? 'Muchas (Coleccionista)' : 'No especificado'}</li>
+                        </ul>
+                        ${extrasText}
+                        <p class="result-number">Total de cajas estimado: <strong>${totalEstimatedBoxes}</strong></p>
+                        ${boxesBreakdownHtml}
+                        <p class="modal-call-to-action">¡Contáctanos para un presupuesto más preciso o para elegir tu paquete!</p>
+                    </div>
+                    <div class="cart-modal-footer">
+                        <a href="contacto.html" class="btn btn-primary">Contactar</a>
+                    </div>
+                </div>
+            `;
+            body.appendChild(modalOverlay); // Añadir el pop-up al body
+
+            // Añadir event listeners para cerrar el modal
+            const closeCalcModalBtn = document.getElementById('closeCalcModalBtn');
+            if (closeCalcModalBtn) {
+                closeCalcModalBtn.addEventListener('click', () => {
+                    modalOverlay.classList.remove('active');
+                    modalOverlay.remove(); // Eliminar el elemento del DOM al cerrar
+                });
+            }
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    modalOverlay.classList.remove('active');
+                    modalOverlay.remove(); // Eliminar el elemento del DOM al hacer clic fuera
+                }
+            });
+
+            // Después de calcular y mostrar el pop-up, reiniciar la calculadora visualmente al paso 1
             currentStep = 0;
             updateStepUI(); 
         });
 
-        // Inicializa la interfaz de usuario de la calculadora al cargar la página (asegura que el primer paso esté activo visualmente).
+        // Inicializa la interfaz de usuario de la calculadora al cargar la página (muestra el primer paso activo).
         updateStepUI(); 
     };
 
     // --- Llamadas a las funciones de inicialización (Se ejecutan cuando el DOM está listo) ---
-    // Asegurarse de que todas las funciones están definidas antes de ser llamadas aquí.
     initGlobalElements();        // Inicializa el navbar y el año del footer
     initActiveNav();             // Marca el enlace de navegación activo
     initUserSession();           // Gestiona la sesión de usuario
