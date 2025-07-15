@@ -452,11 +452,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const calculateBtn = document.getElementById("calculateBtn");
         const body = document.body; // Referencia al body para añadir el pop-up
 
-        // Salir si no se encuentran todos los elementos esenciales de la calculadora en la página actual.
-        if (!steps[0] || !progressBar || !calculateBtn) { // Ya no necesitamos resultContainer aquí
-            console.log("Elementos de la calculadora no encontrados. 'initCalculator' no se inicializará en esta página.");
-            return; 
+        // *** INICIO DE LA CORRECCIÓN: Depuración más explícita para la inicialización de la calculadora ***
+        // Verificamos individualmente la existencia de cada elemento clave
+        if (!steps[0]) {
+            console.error("Error: Elemento 'calc-step-1' no encontrado. La calculadora no se inicializará.");
+            return; // Salir si el elemento es nulo
         }
+        if (!progressBar) {
+            console.error("Error: Elemento 'progressBar' no encontrado. La calculadora no se inicializará.");
+            return; // Salir si el elemento es nulo
+        }
+        if (!calculateBtn) {
+            console.error("Error: Elemento 'calculateBtn' no encontrado. La calculadora no se inicializará.");
+            return; // Salir si el elemento es nulo
+        }
+        // *** FIN DE LA CORRECCIÓN ***
 
         let currentStep = 0; // Controla el paso actual de la calculadora (0, 1, 2)
 

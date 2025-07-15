@@ -845,3 +845,56 @@ textarea.form-control { min-height: 150px; resize: vertical; }
     cursor: pointer;
     text-align: center;
 }
+
+/* ================================================= */
+/* ===== ESTILOS ESPECÍFICOS PARA MODAL CALCULADORA ===== */
+/* ================================================= */
+
+#calculatorResultModalOverlay {
+  /* Asegura que siempre esté encima de todo y cubra toda la pantalla */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo semi-transparente */
+  backdrop-filter: blur(5px); /* Efecto de desenfoque */
+  -webkit-backdrop-filter: blur(5px); /* Para compatibilidad con Safari */
+  
+  display: none; /* Oculto por defecto */
+  opacity: 0; /* Totalmente transparente por defecto */
+  
+  align-items: center; /* Centrar verticalmente el modal */
+  justify-content: center; /* Centrar horizontalmente el modal */
+  z-index: 1001; /* Asegura que esté por encima del navbar y otros elementos */
+  
+  transition: opacity 0.3s ease-in-out; /* Transición suave para la aparición */
+}
+
+/* Cuando se añade la clase 'active' por JavaScript */
+#calculatorResultModalOverlay.active {
+  display: flex; /* Muestra el overlay */
+  opacity: 1; /* Lo hace visible */
+}
+
+/* Estilos para el contenido interno del modal de la calculadora */
+#calculatorResultModalOverlay .cart-modal {
+  /* Reutiliza los estilos base del modal del carrito */
+  transform: scale(0.95); /* Pequeña escala inicial para el efecto de aparición */
+  transition: transform 0.3s ease-in-out; /* Transición para el efecto de escala */
+}
+
+#calculatorResultModalOverlay.active .cart-modal {
+  transform: scale(1); /* Escala normal al activarse */
+}
+
+/* Ajustes menores si el título o botones necesitan algo específico */
+#calculatorResultModalOverlay h2 {
+  color: var(--primary-solid); /* Por ejemplo, cambiar el color del título */
+}
+
+#calculatorResultModalOverlay .btn-primary {
+  /* Puedes ajustar estilos de botones dentro del modal si es necesario */
+  background: var(--gradient-primary);
+  color: white;
+}
