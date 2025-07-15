@@ -133,11 +133,59 @@ document.addEventListener('DOMContentLoaded', () => {
             addCartModalEventListeners();
         };
         
-        const updateCartModalTotals = () => { /* ... */ };
-        const removeCartItem = (id) => { /* ... */ };
-        const updateCartItemQuantity = (id, qty) => { /* ... */ };
-        const addCartModalEventListeners = () => { /* ... */ };
-        
+        // --- INICIO: FUNCIONES DEL CARRITO CORREGIDAS ---
+        const updateCartModalTotals = () => {
+            const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const taxes = subtotal * 0.16;
+            const total = subtotal + taxes;
+
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const taxesEl = document.getElementById('cartTaxes');
+            const totalEl = document.getElementById('cartTotal');
+            
+            if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            if (taxesEl) taxesEl.textContent = `$${taxes.toFixed(2)}`;
+            if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+        };
+
+        const removeCartItem = (id) => {
+            cart.items = cart.items.filter(item => item.id !== id);
+            if (cart.items.length === 0) {
+                cart.rentalDates = null; // Si el carrito está vacío, quitamos las fechas
+            }
+            saveCart();
+            renderCartModal();
+            updateCartCount();
+            showNotification('Ítem eliminado del carrito.', 'success');
+        };
+
+        const updateCartItemQuantity = (id, newQuantity) => {
+            const itemInCart = cart.items.find(item => item.id === id);
+            if (itemInCart) {
+                itemInCart.quantity = parseInt(newQuantity, 10);
+                saveCart();
+                renderCartModal();
+                updateCartCount();
+            }
+        };
+
+        const addCartModalEventListeners = () => {
+            document.querySelectorAll('.remove-item-btn').forEach(button => {
+                button.addEventListener('click', e => {
+                    const productId = e.target.closest('.cart-item').dataset.productId;
+                    removeCartItem(productId);
+                });
+            });
+
+            document.querySelectorAll('.cart-item-quantity').forEach(select => {
+                select.addEventListener('change', e => {
+                    const productId = e.target.closest('.cart-item').dataset.productId;
+                    updateCartItemQuantity(productId, e.target.value);
+                });
+            });
+        };
+        // --- FIN: FUNCIONES DEL CARRITO CORREGIDAS ---
+
         const addToCart = (product, rentalDates) => {
             if (cart.items.length === 0) cart.rentalDates = rentalDates;
             const itemInCart = cart.items.find(item => item.id === product.id);
@@ -227,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Llamadas a las funciones de inicialización
     initGlobalElements();
     initActiveNav();
     initUserSession();
