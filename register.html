@@ -83,14 +83,13 @@
       }
     }
 
-    /* POPUP ESTILO DEFINIDO */
     .cart-notification {
       position: fixed;
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%) translateY(100%);
       background-color: #222;
-      color: #ffffff; /* Texto siempre blanco */
+      color: #ffffff;
       padding: 18px 30px;
       border-radius: 16px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
@@ -188,7 +187,10 @@
         registerForm.addEventListener("submit", async (event) => {
           event.preventDefault();
 
-          const name = document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
+          // --- CAMBIO 1: Obtener nombre y apellido por separado ---
+          const name = document.getElementById("firstName").value;
+          const surname = document.getElementById("lastName").value; // Se obtiene el apellido
+          
           const email = document.getElementById("email").value;
           const password = document.getElementById("password").value;
           const confirmPassword = document.getElementById("confirmPassword").value;
@@ -209,7 +211,8 @@
             const response = await fetch(`${backendUrl}/api/register`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ name, email, password, whatsapp }),
+              // --- CAMBIO 2: Enviar el apellido (surname) en el cuerpo de la petición ---
+              body: JSON.stringify({ name, surname, email, password, whatsapp }),
             });
 
             const data = await response.json();

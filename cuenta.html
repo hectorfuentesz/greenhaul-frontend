@@ -170,8 +170,8 @@
                             <h3>Configuración de Perfil</h3>
                             <form id="profileForm">
                                 <div class="form-grid">
-                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control"></div>
-                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control"></div>
+                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control" disabled></div>
+                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control" disabled></div>
                                 </div>
                                 <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
                                 <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control"></div>
@@ -235,7 +235,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; <span id="current-year">2025</span> GreenHaul. Todos los derechos reservados.</p>
+            <p>&copy; 2025 GreenHaul. Todos los derechos reservados.</p>
         </div>
     </footer>
 
@@ -256,12 +256,14 @@
 
             function showNotification(message, isError = false) {
                 const popup = document.getElementById('notificationPopup');
+                if(!popup) return;
                 popup.textContent = message;
                 popup.className = 'show';
                 if (isError) popup.classList.add('error');
                 setTimeout(() => popup.className = '', 3000);
             }
 
+            // Lógica para cambiar entre pestañas (Resumen, Perfil, etc.)
             const navLinks = document.querySelectorAll('.account-nav-link');
             const sections = document.querySelectorAll('.account-section');
             navLinks.forEach(link => {
@@ -277,7 +279,14 @@
                 });
             });
 
-            // --- INICIO: LÓGICA DE PERFIL CORREGIDA ---
+            function populateUIHeaders() {
+                if(!userData || !userData.name) return;
+                const fullName = `${userData.name} ${userData.surname || ''}`.trim();
+                userNameSpan.textContent = userData.name.split(' ')[0];
+                accountTitle.textContent = `Panel de Control de ${fullName}`;
+            }
+
+            // --- LÓGICA DE PERFIL (VERSIÓN FINAL) ---
             const profileForm = document.getElementById('profileForm');
             const profileNameInput = document.getElementById('profile-name');
             const profileSurnameInput = document.getElementById('profile-lastname');
@@ -287,16 +296,15 @@
             function populateProfileForm() {
                 if (!userData) return;
                 profileNameInput.value = userData.name || '';
-                profileSurnameInput.value = userData.surname || ''; // Este campo necesita el backend actualizado
+                profileSurnameInput.value = userData.surname || ''; 
                 profileEmailInput.value = userData.email || '';
                 profileWhatsappInput.value = userData.whatsapp || '';
             }
 
+            // El formulario solo envía email y whatsapp
             profileForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const updatedData = {
-                    name: profileNameInput.value,
-                    surname: profileSurnameInput.value,
                     email: profileEmailInput.value,
                     whatsapp: profileWhatsappInput.value
                 };
@@ -307,40 +315,22 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(updatedData)
                     });
-
                     const result = await response.json();
-                    if (!response.ok) throw new Error(result.message || 'Error al actualizar');
-                    
+                    if (!response.ok) throw new Error(result.message);
+
                     localStorage.setItem('greenhaulUser', JSON.stringify(result.user));
                     userData = result.user;
 
                     showNotification('Perfil actualizado con éxito.');
-                    populateUIHeaders(); // Solo refresca los encabezados
-
                 } catch (error) {
                     showNotification(error.message, true);
                 }
             });
-            // --- FIN: LÓGICA DE PERFIL CORREGIDA ---
 
-            function populateUIHeaders() {
-                if (!userData || !userData.name) return;
-                userNameSpan.textContent = userData.name.split(' ')[0];
-                accountTitle.textContent = `Panel de Control de ${userData.name}`;
-            }
 
-            function initPage() {
-                populateUIHeaders();
-                populateProfileForm(); // Rellena el formulario al cargar la página
-                if(document.getElementById('direcciones-section').classList.contains('active')){
-                    loadAddresses();
-                }
-            }
-            
-            // --- LÓGICA DE DIRECCIONES (Tu código existente) ---
+            // --- LÓGICA DE DIRECCIONES (CÓDIGO COMPLETO) ---
             const addressModal = document.getElementById('addressModal');
             const addAddressBtn = document.getElementById('addAddressBtn');
-            // ... (el resto de tu código de direcciones no requiere cambios)
             const modalCloseBtn = document.getElementById('modalCloseBtn');
             const modalCancelBtn = document.getElementById('modalCancelBtn');
             const addressForm = document.getElementById('addressForm');
@@ -410,7 +400,7 @@
                     showNotification('Error al buscar la dirección.', true);
                 }
             }
-            geocodeBtn.addEventListener('click', updateMapFromAddress);
+            if(geocodeBtn) geocodeBtn.addEventListener('click', updateMapFromAddress);
 
             const openModal = () => {
                 addressModal.classList.add('show');
@@ -425,12 +415,12 @@
                 addressIdInput.value = '';
             };
 
-            addAddressBtn.addEventListener('click', () => {
+            if(addAddressBtn) addAddressBtn.addEventListener('click', () => {
                 modalTitle.textContent = 'Agregar Nueva Dirección';
                 openModal();
             });
-            modalCloseBtn.addEventListener('click', closeModal);
-            modalCancelBtn.addEventListener('click', closeModal);
+            if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+            if(modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
             
             async function loadAddresses() {
                 try {
@@ -459,7 +449,7 @@
                 }
             }
 
-            addressForm.addEventListener('submit', async (e) => {
+            if(addressForm) addressForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const addressId = addressIdInput.value;
                 const isUpdating = !!addressId;
@@ -484,7 +474,7 @@
                 }
             });
 
-            addressListContainer.addEventListener('click', async (e) => {
+            if(addressListContainer) addressListContainer.addEventListener('click', async (e) => {
                 const editBtn = e.target.closest('.edit-btn');
                 const deleteBtn = e.target.closest('.delete-btn');
                 if (editBtn) {
@@ -518,14 +508,17 @@
                 }
             });
 
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                localStorage.removeItem('greenhaulUser');
-                window.location.href = 'index.html';
-            });
+            if(document.getElementById('logoutBtn')) {
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    localStorage.removeItem('greenhaulUser');
+                    window.location.href = 'index.html';
+                });
+            }
             
-            // Llamada inicial para configurar la página
-            initPage();
+            // Llamada inicial para configurar toda la página
+            populateUIHeaders();
+            populateProfileForm();
         });
     </script>
-    </body>
+</body>
 </html>
