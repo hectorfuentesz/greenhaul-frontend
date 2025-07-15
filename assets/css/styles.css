@@ -238,7 +238,7 @@ span { color: var(--primary-solid); }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: 100%; 
     position: relative;
 }
 
@@ -657,8 +657,9 @@ textarea.form-control { min-height: 150px; resize: vertical; }
 .navbar-user-actions.visible {
   visibility: visible; /* Lo hace visible con una suave transición */
   opacity: 1;
+}
 
-  /* --- Estilos para el estado de carga de los botones --- */
+/* --- Estilos para el estado de carga de los botones --- */
 .btn.loading {
   pointer-events: none;
   position: relative;
@@ -684,8 +685,6 @@ textarea.form-control { min-height: 150px; resize: vertical; }
   to { transform: rotate(360deg); }
 }
 
-}
-
 /* =============================================== */
 /* ===== ESTILOS PARA EL MODAL DEL CARRITO ===== */
 /* =============================================== */
@@ -698,6 +697,7 @@ textarea.form-control { min-height: 150px; resize: vertical; }
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   
   /* Oculto por defecto */
   display: none;
@@ -851,50 +851,81 @@ textarea.form-control { min-height: 150px; resize: vertical; }
 /* ================================================= */
 
 #calculatorResultModalOverlay {
-  /* Asegura que siempre esté encima de todo y cubra toda la pantalla */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Fondo semi-transparente */
-  backdrop-filter: blur(5px); /* Efecto de desenfoque */
-  -webkit-backdrop-filter: blur(5px); /* Para compatibilidad con Safari */
-  
-  display: none; /* Oculto por defecto */
-  opacity: 0; /* Totalmente transparente por defecto */
-  
-  align-items: center; /* Centrar verticalmente el modal */
-  justify-content: center; /* Centrar horizontalmente el modal */
-  z-index: 1001; /* Asegura que esté por encima del navbar y otros elementos */
-  
-  transition: opacity 0.3s ease-in-out; /* Transición suave para la aparición */
+    /* Asegura que siempre esté encima de todo y cubra toda la pantalla */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo semi-transparente */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(5px); /* Para compatibilidad con Safari */
+    
+    display: none; /* Oculto por defecto, JS lo cambia a flex */
+    opacity: 0; /* Totalmente transparente por defecto, JS lo cambia a 1 */
+    
+    align-items: center; /* Centrar verticalmente el modal */
+    justify-content: center; /* Centrar horizontalmente el modal */
+    z-index: 2000; /* Asegura que esté por encima del navbar (z-index: 1000) y el modal del carrito (z-index: 1000) */
+    
+    transition: opacity 0.3s ease-in-out; /* Transición suave para la aparición */
 }
 
-/* Cuando se añade la clase 'active' por JavaScript */
+/* Regla clave que hace visible el modal cuando JS añade la clase .active */
 #calculatorResultModalOverlay.active {
-  display: flex; /* Muestra el overlay */
-  opacity: 1; /* Lo hace visible */
+    display: flex; /* Muestra el overlay */
+    opacity: 1; /* Lo hace visible */
 }
 
 /* Estilos para el contenido interno del modal de la calculadora */
+/* Reutiliza las clases .cart-modal del modal del carrito */
 #calculatorResultModalOverlay .cart-modal {
-  /* Reutiliza los estilos base del modal del carrito */
-  transform: scale(0.95); /* Pequeña escala inicial para el efecto de aparición */
-  transition: transform 0.3s ease-in-out; /* Transición para el efecto de escala */
+    background-color: white;
+    width: 90%;
+    max-width: 500px; /* Un poco más ancho para el contenido de la calculadora */
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    transform: scale(0.95); /* Pequeña escala inicial para el efecto de aparición */
+    transition: transform 0.3s ease-in-out; /* Transición para el efecto de escala */
 }
 
 #calculatorResultModalOverlay.active .cart-modal {
-  transform: scale(1); /* Escala normal al activarse */
+    transform: scale(1); /* Escala normal al activarse */
 }
 
-/* Ajustes menores si el título o botones necesitan algo específico */
-#calculatorResultModalOverlay h2 {
-  color: var(--primary-solid); /* Por ejemplo, cambiar el color del título */
+/* Estilos específicos para el contenido de la calculadora dentro del modal */
+#calculatorResultModalOverlay .cart-modal-body ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin-bottom: 20px;
 }
 
-#calculatorResultModalOverlay .btn-primary {
-  /* Puedes ajustar estilos de botones dentro del modal si es necesario */
-  background: var(--gradient-primary);
-  color: white;
+#calculatorResultModalOverlay .cart-modal-body ul li {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+#calculatorResultModalOverlay .cart-modal-body h4 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: var(--primary-solid);
+}
+
+#calculatorResultModalOverlay .result-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-green);
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+#calculatorResultModalOverlay .modal-call-to-action {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-top: 20px;
 }
