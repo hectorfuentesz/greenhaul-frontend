@@ -1,7 +1,7 @@
 /**
  * =================================================================
  * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL
- * (Versión con todas las funcionalidades integradas y depuradas)
+ * (Versión con todas las funcionalidades integradas y depuradas, incluyendo desglose de calculadora)
  * =================================================================
  */
 
@@ -14,8 +14,8 @@ function showNotification(message, type = 'success') {
     const messageElement = notificationElement.querySelector('#notificationText');
     const iconElement = notificationElement.querySelector('.notification-icon');
     
-    const iconClassSuccess = 'fas fa-check-circle'; // Icono para éxito
-    const iconClassError = 'fas fa-times-circle';   // Icono para error
+    const iconClassSuccess = 'fas fa-check-circle'; // Icono para éxito (FontAwesome)
+    const iconClassError = 'fas fa-times-circle';   // Icono para error (FontAwesome)
 
     if (messageElement) {
         messageElement.textContent = message;
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Guarda el estado actual del carrito en localStorage
         const saveCart = () => localStorage.setItem('shoppingCart', JSON.stringify(cart));
         
-        // Actualiza el número de ítems en el icono del carrito en el header
+        // Actualiza el número de ítems en el ícono del carrito en el header
         const updateCartCount = () => {
             const el = document.getElementById('cartCount');
             if (!el) return;
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
             updateCartModalTotals();      // Actualiza los totales después de renderizar los ítems
-            addCartModalEventListeners(); // Re-adjunta listeners a los elementos recién creados en el modal
+            addCartModalEventListeners(); // Re-adjunta listeners a los nuevos elementos del carrito
         };
         
         // Calcula y actualiza los subtotales, impuestos y total en el modal del carrito.
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Añade un producto al carrito. Maneja la lógica de fechas de alquiler y confirmación.
         const addToCart = (productToAdd, rentalDates = null) => {
-            // Si el carrito está vacío y se proporcionan fechas, las establece como las fechas de alquiler del carrito
+            // Si el carrito está vacío y se proporcionan fechas, establecerlas como las fechas de alquiler del carrito
             if (cart.items.length === 0 && rentalDates) {
                 cart.rentalDates = rentalDates;
             } 
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Si el carrito está vacío y no hay fechas, y existen los inputs de fecha en la página, notificar
             else if (cart.items.length === 0 && !rentalDates && document.getElementById('fecha-entrega')) {
                  showNotification('Por favor, selecciona las fechas de entrega y recolección para añadir productos.', 'error');
-                 return; // Sale si no hay fechas para el primer producto
+                 return;
             } 
             // Si hay ítems y no se proporcionan fechas, asume las fechas ya establecidas en el carrito
             else if (cart.items.length > 0 && !rentalDates) {
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fechaEntregaInput = document.getElementById('fecha-entrega');
         const fechaRecoleccionInput = document.getElementById('fecha-recoleccion');
 
-        // Solo inicializar Flatpickr si los elementos de input existen en el DOM y la librería 'flatpickr' está cargada
+        // Solo inicializar Flatpickr si los elementos de input existen y la librería 'flatpickr' está cargada
         if (typeof flatpickr !== 'undefined' && fechaEntregaInput && fechaRecoleccionInput) {
             const fechaRecoleccionPicker = flatpickr(fechaRecoleccionInput, {
                 locale: "es",           // Idioma español
@@ -495,8 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return false;
                 }
             }
-            // El Paso 3 tiene checkboxes (opcionales) y un botón de cálculo final, no requiere validación para "avanzar".
-            return true; 
+            return true; // Si la validación pasa, o si es el Paso 3 (no obligatorio para avanzar)
         }
 
         // Mueve la calculadora al siguiente paso, si el paso actual es válido.
@@ -523,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateBtn.addEventListener("click", () => {
             // Realiza una validación final para asegurarse de que los pasos obligatorios estén completos.
             if (!validateStep(0) || !validateStep(1)) {
-                // Las notificaciones de error ya se mostrarán dentro de la función validateStep()
+                // Las notificaciones de error ya se mostrarán desde la función validateStep()
                 return; 
             }
 
@@ -535,34 +534,64 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('input[name="extras"]:checked')
             ).map((checkbox) => checkbox.value);
 
-            let estimatedBoxes = 0; // Variable para almacenar la estimación de cajas
+            let totalEstimatedBoxes = 0; // Variable para el total de cajas estimado
+            let smallBoxes = 0;
+            let mediumBoxes = 0;
+            let largeBoxes = 0;
+            let extraLargeBoxes = 0; 
 
-            // --- Lógica de cálculo: Ajusta estos valores y la lógica según tus necesidades comerciales ---
-            // Valores base de cajas según el tipo de hogar
-            if (homeType === "studio") {
-                estimatedBoxes = 8; // Ej: Un estudio requiere 8 cajas base
-            } else if (homeType === "1br") {
-                estimatedBoxes = 15; // Ej: Una casa de 1 habitación requiere 15 cajas base
-            } else if (homeType === "2br") {
-                estimatedBoxes = 25; // Ej: Una casa de 2-3 habitaciones requiere 25 cajas base
-            } else if (homeType === "4br") {
-                estimatedBoxes = 40; // Ej: Una casa de 4+ habitaciones requiere 40 cajas base
-            }
+            // --- Lógica de cálculo y desglose de cajas ---
+            // Definir paquetes base según el tipo de hogar con un desglose inicial
+            const packages = {
+                "studio": { total: 15, small: 5, medium: 7, large: 3, extraLarge: 0 },
+                "1br":    { total: 25, small: 8, medium: 12, large: 5, extraLarge: 0 },
+                "2br":    { total: 40, small: 10, medium: 20, large: 10, extraLarge: 0 },
+                "4br":    { total: 60, small: 15, medium: 30, large: 15, extraLarge: 0 }
+            };
 
-            // Ajusta la estimación según la cantidad de pertenencias
+            let selectedPackage = packages[homeType] || { total: 0, small: 0, medium: 0, large: 0, extraLarge: 0 };
+            
+            smallBoxes = selectedPackage.small;
+            mediumBoxes = selectedPackage.medium;
+            largeBoxes = selectedPackage.large;
+            extraLargeBoxes = selectedPackage.extraLarge;
+
+            // Ajustar el desglose y el total según la cantidad de pertenencias
             if (belongings === "normal") {
-                estimatedBoxes += 5; // +5 cajas para cantidad "normal"
+                mediumBoxes += 3; 
+                largeBoxes += 2;
             } else if (belongings === "many") {
-                estimatedBoxes += 15; // +15 cajas para cantidad "muchas" (coleccionista)
+                mediumBoxes += 5;
+                largeBoxes += 7;
+                extraLargeBoxes += 3; 
             }
 
-            // Añade cajas adicionales por cada espacio extra seleccionado
-            if (extras.includes("office")) estimatedBoxes += 5;   // +5 cajas por oficina
-            if (extras.includes("storage")) estimatedBoxes += 10; // +10 cajas por bodega/trastero
-            if (extras.includes("garage")) estimatedBoxes += 15;  // +15 cajas por garaje
+            // Añadir cajas adicionales por cada espacio extra seleccionado
+            if (extras.includes("office")) {
+                mediumBoxes += 3;
+                largeBoxes += 2;
+            }
+            if (extras.includes("storage")) {
+                mediumBoxes += 4;
+                largeBoxes += 4;
+                extraLargeBoxes += 2;
+            }
+            if (extras.includes("garage")) {
+                mediumBoxes += 5;
+                largeBoxes += 7;
+                extraLargeBoxes += 3;
+            }
 
-            // Asegura que el número estimado de cajas sea siempre al menos un valor mínimo razonable (ej. 5 cajas)
-            estimatedBoxes = Math.max(estimatedBoxes, 5); 
+            // Asegurarse de que ninguna cantidad de cajas sea negativa
+            smallBoxes = Math.max(0, smallBoxes);
+            mediumBoxes = Math.max(0, mediumBoxes);
+            largeBoxes = Math.max(0, largeBoxes);
+            extraLargeBoxes = Math.max(0, extraLargeBoxes);
+            
+            // Recalcular el total exacto sumando las cajas desglosadas
+            totalEstimatedBoxes = smallBoxes + mediumBoxes + largeBoxes + extraLargeBoxes; 
+
+            // --- Fin de lógica de cálculo y desglose ---
 
             // Prepara el texto para los espacios adicionales seleccionados (con traducción a español)
             let extrasText = "";
@@ -571,21 +600,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (e === 'office') return 'Oficina / Home Office';
                     if (e === 'storage') return 'Bodega / Trastero';
                     if (e === 'garage') return 'Garaje / Estacionamiento';
-                    return e; // En caso de un valor no reconocido, se usa el valor original
+                    return e; 
                 });
                 extrasText = `<p><strong>Espacios adicionales:</strong> ${translatedExtras.join(", ")}</p>`;
             }
 
-            // Muestra el resultado final del cálculo en el contenedor de resultados de la calculadora
+            // Construir el HTML del resultado con el desglose de cajas
+            let boxesBreakdownHtml = `
+                <h4>Desglose de cajas:</h4>
+                <ul>
+            `;
+            // Solo añadir tipos de cajas al desglose si su cantidad es mayor que 0
+            if (smallBoxes > 0) {
+                boxesBreakdownHtml += `<li>Cajas Pequeñas: <strong>${smallBoxes}</strong></li>`;
+            }
+            if (mediumBoxes > 0) {
+                boxesBreakdownHtml += `<li>Cajas Medianas: <strong>${mediumBoxes}</strong></li>`;
+            }
+            if (largeBoxes > 0) {
+                boxesBreakdownHtml += `<li>Cajas Grandes: <strong>${largeBoxes}</strong></li>`;
+            }
+            if (extraLargeBoxes > 0) {
+                boxesBreakdownHtml += `<li>Cajas Extra Grandes: <strong>${extraLargeBoxes}</strong></li>`;
+            }
+            boxesBreakdownHtml += `</ul>`;
+
+
+            // --- Muestra el resultado final del cálculo en el contenedor de resultados de la calculadora ---
             resultContainer.innerHTML = `
-                <h3>¡Estimación de Cajas!</h3>
+                <h3>¡Tu paquete de cajas recomendado!</h3>
                 <p>Basado en tus selecciones:</p>
                 <ul>
                     <li><strong>Tipo de hogar:</strong> ${homeType === 'studio' ? 'Estudio' : homeType === '1br' ? '1 Habitación' : homeType === '2br' ? '2-3 Habitaciones' : homeType === '4br' ? '4+ Habitaciones' : 'No especificado'}</li>
                     <li><strong>Cantidad de cosas:</strong> ${belongings === 'minimal' ? 'Pocas (Minimalista)' : belongings === 'normal' ? 'Normal' : belongings === 'many' ? 'Muchas (Coleccionista)' : 'No especificado'}</li>
                 </ul>
                 ${extrasText}
-                <p class="result-number">Necesitarás aproximadamente: <strong>${estimatedBoxes} cajas</strong></p>
+                <p class="result-number">Total de cajas estimado: <strong>${totalEstimatedBoxes}</strong></p>
+                ${boxesBreakdownHtml}
                 <p>¡Contáctanos para un presupuesto más preciso o para elegir tu paquete!</p>
                 <a href="contacto.html" class="btn btn-primary">Contactar</a>
             `;
@@ -595,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStepUI(); 
         });
 
-        // Inicializa la interfaz de usuario de la calculadora al cargar la página (muestra el primer paso activo).
+        // Inicializa la interfaz de usuario de la calculadora al cargar la página (asegura que el primer paso esté activo visualmente).
         updateStepUI(); 
     };
 
