@@ -382,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Listener para el botón "Finalizar Compra"
-        if (proceedTo CheckoutBtn) {
+        if (proceedToCheckoutBtn) {
             proceedToCheckoutBtn.addEventListener('click', e => { 
                 if (cart.items.length === 0) { 
                     e.preventDefault(); // Prevenir la navegación si el carrito está vacío
@@ -642,4 +642,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>¡Tu paquete de cajas recomendado!</h3>
                 <p>Basado en tus selecciones:</p>
                 <ul>
-                    <li><strong>Tipo de hogar:</strong> ${homeType === 'studio' ? 'Estudio' : homeType === '1br' ? '1 Habitación' : homeType === '2br' ? '2-3 Habitaciones' : homeType === '4br
+                    <li><strong>Tipo de hogar:</strong> ${homeType === 'studio' ? 'Estudio' : homeType === '1br' ? '1 Habitación' : homeType === '2br' ? '2-3 Habitaciones' : homeType === '4br' ? '4+ Habitaciones' : 'No especificado'}</li>
+                    <li><strong>Cantidad de cosas:</strong> ${belongings === 'minimal' ? 'Pocas (Minimalista)' : belongings === 'normal' ? 'Normal' : belongings === 'many' ? 'Muchas (Coleccionista)' : 'No especificado'}</li>
+                </ul>
+                ${extrasText}
+                <p class="result-number">Total de cajas estimado: <strong>${totalEstimatedBoxes}</strong></p>
+                ${boxesBreakdownHtml}
+                <p>¡Contáctanos para un presupuesto más preciso o para elegir tu paquete!</p>
+                <a href="contacto.html" class="btn btn-primary">Contactar</a>
+            `;
+
+            // Reinicia la calculadora al primer paso para una nueva consulta después de mostrar el resultado.
+            currentStep = 0;
+            updateStepUI(); 
+        });
+
+        // Inicializa la interfaz de usuario de la calculadora al cargar la página (asegura que el primer paso esté activo visualmente).
+        updateStepUI(); 
+    };
+
+    // --- Llamadas a las funciones de inicialización (Se ejecutan cuando el DOM está listo) ---
+    // Asegurarse de que todas las funciones están definidas antes de ser llamadas aquí.
+    initGlobalElements();        // Inicializa el navbar y el año del footer
+    initActiveNav();             // Marca el enlace de navegación activo
+    initUserSession();           // Gestiona la sesión de usuario
+    initShoppingCart();          // Inicializa toda la lógica del carrito de compras
+    initProductPageElements();   // Inicializa elementos específicos de la página de productos (ej. Flatpickr)
+    initCalculator();            // Inicializa la calculadora (solo si los elementos están presentes en la página)
+});
