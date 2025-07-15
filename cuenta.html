@@ -170,8 +170,8 @@
                             <h3>Configuración de Perfil</h3>
                             <form id="profileForm">
                                 <div class="form-grid">
-                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control" disabled></div>
-                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control" disabled></div>
+                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control"></div>
+                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control"></div>
                                 </div>
                                 <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
                                 <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control"></div>
@@ -235,7 +235,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 GreenHaul. Todos los derechos reservados.</p>
+            <p>&copy; <span id="current-year">2025</span> GreenHaul. Todos los derechos reservados.</p>
         </div>
     </footer>
 
@@ -277,19 +277,70 @@
                 });
             });
 
-            function populateUI() {
+            // --- INICIO: LÓGICA DE PERFIL CORREGIDA ---
+            const profileForm = document.getElementById('profileForm');
+            const profileNameInput = document.getElementById('profile-name');
+            const profileSurnameInput = document.getElementById('profile-lastname');
+            const profileEmailInput = document.getElementById('profile-email');
+            const profileWhatsappInput = document.getElementById('profile-whatsapp');
+
+            function populateProfileForm() {
+                if (!userData) return;
+                profileNameInput.value = userData.name || '';
+                profileSurnameInput.value = userData.surname || ''; // Este campo necesita el backend actualizado
+                profileEmailInput.value = userData.email || '';
+                profileWhatsappInput.value = userData.whatsapp || '';
+            }
+
+            profileForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const updatedData = {
+                    name: profileNameInput.value,
+                    surname: profileSurnameInput.value,
+                    email: profileEmailInput.value,
+                    whatsapp: profileWhatsappInput.value
+                };
+
+                try {
+                    const response = await fetch(`${backendUrl}/api/users/${userData.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedData)
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || 'Error al actualizar');
+                    
+                    localStorage.setItem('greenhaulUser', JSON.stringify(result.user));
+                    userData = result.user;
+
+                    showNotification('Perfil actualizado con éxito.');
+                    populateUIHeaders(); // Solo refresca los encabezados
+
+                } catch (error) {
+                    showNotification(error.message, true);
+                }
+            });
+            // --- FIN: LÓGICA DE PERFIL CORREGIDA ---
+
+            function populateUIHeaders() {
+                if (!userData || !userData.name) return;
                 userNameSpan.textContent = userData.name.split(' ')[0];
                 accountTitle.textContent = `Panel de Control de ${userData.name}`;
             }
 
-            // --- LÓGICA DE PERFIL (Aquí iría la lógica del form de perfil si la necesitaras) ---
-            const profileForm = document.getElementById('profileForm');
-            // ... (Event listener y funciones de perfil)
-
-
-            // --- LÓGICA DE DIRECCIONES ---
+            function initPage() {
+                populateUIHeaders();
+                populateProfileForm(); // Rellena el formulario al cargar la página
+                if(document.getElementById('direcciones-section').classList.contains('active')){
+                    loadAddresses();
+                }
+            }
+            
+            // --- LÓGICA DE DIRECCIONES (Tu código existente) ---
             const addressModal = document.getElementById('addressModal');
             const addAddressBtn = document.getElementById('addAddressBtn');
+            // ... (el resto de tu código de direcciones no requiere cambios)
             const modalCloseBtn = document.getElementById('modalCloseBtn');
             const modalCancelBtn = document.getElementById('modalCancelBtn');
             const addressForm = document.getElementById('addressForm');
@@ -306,7 +357,7 @@
             let map, marker;
 
             function initMap() {
-                if(map) return;
+                if(map) { map.invalidateSize(); return; }
                 map = L.map('address-map').setView([19.4326, -99.1332], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -365,8 +416,7 @@
                 addressModal.classList.add('show');
                 setTimeout(() => {
                     initMap();
-                    map.invalidateSize();
-                }, 100);
+                }, 50);
             };
 
             const closeModal = () => {
@@ -472,9 +522,10 @@
                 localStorage.removeItem('greenhaulUser');
                 window.location.href = 'index.html';
             });
-
-            populateUI();
+            
+            // Llamada inicial para configurar la página
+            initPage();
         });
     </script>
-</body>
+    </body>
 </html>
