@@ -1,28 +1,28 @@
 /**
  * =================================================================
- * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA)
+ * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL
+ * (Versión con todas las funcionalidades integradas y depuradas)
  * =================================================================
  */
 
 // --- 1. FUNCIÓN GLOBAL DE NOTIFICACIÓN ---
+// Muestra mensajes temporales en la interfaz de usuario (ej. "Producto añadido").
 function showNotification(message, type = 'success') {
     const notificationElement = document.getElementById('cartNotification');
-    if (!notificationElement) return; // Asegurarse de que el elemento existe
+    if (!notificationElement) return; // Salir si el elemento de notificación no existe
     
     const messageElement = notificationElement.querySelector('#notificationText');
     const iconElement = notificationElement.querySelector('.notification-icon');
     
-    // Clases de FontAwesome para los íconos de notificación
-    const iconClassSuccess = 'fas fa-check-circle';
-    const iconClassError = 'fas fa-times-circle';
+    const iconClassSuccess = 'fas fa-check-circle'; // Icono para éxito
+    const iconClassError = 'fas fa-times-circle';   // Icono para error
 
     if (messageElement) {
         messageElement.textContent = message;
     }
 
     if (iconElement) {
-        // Reiniciar clases de ícono y añadir la correcta
-        iconElement.className = 'notification-icon'; 
+        iconElement.className = 'notification-icon'; // Resetear clases del icono
         if (type === 'success') {
             iconElement.classList.add(...iconClassSuccess.split(' '));
         } else if (type === 'error') {
@@ -30,9 +30,8 @@ function showNotification(message, type = 'success') {
         }
     }
     
-    // Reiniciar clases del contenedor de notificación y añadir las de estado
-    notificationElement.className = 'cart-notification'; 
-    notificationElement.classList.add(type, 'visible');
+    notificationElement.className = 'cart-notification'; // Resetear clases del contenedor
+    notificationElement.classList.add(type, 'visible'); // Añadir tipo y hacer visible
     
     // Ocultar la notificación después de 3 segundos
     setTimeout(() => {
@@ -40,17 +39,17 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// --- 2. LÓGICA PRINCIPAL DEL SITIO (se ejecuta cuando el DOM está completamente cargado) ---
+// --- 2. LÓGICA PRINCIPAL DEL SITIO (Se ejecuta cuando el DOM está completamente cargado) ---
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Inicializa elementos globales como el menú de navegación y el año del footer
+    // Inicializa elementos globales como el menú de navegación adaptable y el año actual del footer.
     const initGlobalElements = () => {
         const navbarToggler = document.getElementById('navbarToggler');
         const navbarCollapse = document.getElementById('navbarCollapse');
         if (navbarToggler && navbarCollapse) {
             navbarToggler.addEventListener('click', () => {
                 navbarCollapse.classList.toggle('active');
-                navbarToggler.classList.toggle('active'); // Para animar el ícono del toggler
+                navbarToggler.classList.toggle('active'); // Anima el icono de la hamburguesa
             });
         }
         const currentYearSpan = document.getElementById('current-year');
@@ -59,73 +58,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Marca el enlace de navegación activo basado en la URL actual
+    // Resalta el enlace de navegación que corresponde a la página actual.
     const initActiveNav = () => {
         const navLinks = document.querySelectorAll('.nav-links-list .nav-link');
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html'; // Obtiene el nombre del archivo actual
+        // Obtiene el nombre del archivo HTML actual (ej. 'index.html', 'productos.html')
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html'; 
         navLinks.forEach(link => {
             if (link.getAttribute('href') === currentPage) {
-                link.classList.add('active'); // Añadir clase 'active' al enlace actual
+                link.classList.add('active'); // Marca el enlace como activo
             } else {
-                link.classList.remove('active'); // Remover clase 'active' de otros enlaces
+                link.classList.remove('active'); // Desactiva otros enlaces
             }
         });
     };
 
-    // Gestiona el estado de la sesión de usuario (botón de login/logout/nombre de usuario)
+    // Gestiona el estado de la sesión de usuario (mostrar/ocultar botones de login/logout, nombre de usuario).
     const initUserSession = () => {
         const userActionsContainer = document.getElementById('navbarUserActions');
         const loginBtn = document.getElementById('loginBtn');
         const accountLink = document.getElementById('accountLink');
         const logoutBtn = document.getElementById('logoutBtn');
         const userNameSpan = document.getElementById('userName');
-        // Recuperar información de usuario del almacenamiento local
+        
+        // Recuperar información de usuario del almacenamiento local para persistencia de sesión
         const savedUser = JSON.parse(localStorage.getItem('greenhaulUser'));
 
         if (savedUser && savedUser.name) {
-            // Si hay un usuario logueado, ocultar login y mostrar información de cuenta
+            // Si hay un usuario logueado, ocultar login y mostrar opciones de cuenta
             if (loginBtn) loginBtn.style.display = 'none';
-            if (accountLink) accountLink.style.display = 'flex'; // Usar flex para alineación
+            if (accountLink) accountLink.style.display = 'flex'; 
             if (logoutBtn) logoutBtn.style.display = 'block';
-            if (userNameSpan) userNameSpan.textContent = savedUser.name.split(' ')[0]; // Mostrar solo el primer nombre
+            if (userNameSpan) userNameSpan.textContent = savedUser.name.split(' ')[0]; // Muestra solo el primer nombre
         } else {
             // Si no hay usuario logueado, mostrar el botón de login y ocultar el resto
-            if (loginBtn) loginBtn.style.display = 'flex'; // Asegurar que sea visible
+            if (loginBtn) loginBtn.style.display = 'flex'; // Asegura que el botón de login sea visible
             if (accountLink) accountLink.style.display = 'none';
             if (logoutBtn) logoutBtn.style.display = 'none';
         }
         
-        // Asegurar que el contenedor de acciones de usuario sea visible
+        // Asegura que el contenedor de acciones de usuario sea visible para que los elementos se muestren
         if (userActionsContainer) userActionsContainer.classList.add('visible');
 
         // Listener para el botón de cerrar sesión
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.removeItem('greenhaulUser'); // Eliminar usuario
+                localStorage.removeItem('greenhaulUser');    // Eliminar usuario de localStorage
                 localStorage.removeItem('shoppingCart'); // Limpiar carrito al cerrar sesión
-                alert('Has cerrado sesión.');
+                alert('Has cerrado sesión correctamente.');
                 window.location.href = 'index.html'; // Redirigir a la página de inicio
             });
         }
         
-        // Listener para el botón de iniciar sesión
+        // Listener para el botón de iniciar sesión (simulado)
         if (loginBtn) {
             loginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Simulación de inicio de sesión: guardar un usuario de ejemplo
+                // Simulación de inicio de sesión: guarda un usuario de ejemplo. En un entorno real, esto vendría de un backend.
                 localStorage.setItem('greenhaulUser', JSON.stringify({ name: 'UsuarioEjemplo' }));
                 window.location.href = 'login.html'; // Redirigir a la página de login
             });
         }
     };
     
-    // Gestiona toda la lógica del carrito de compras (añadir, eliminar, actualizar, modal)
+    // Gestiona toda la lógica del carrito de compras: añadir, eliminar, actualizar cantidades, abrir/cerrar modal, totales.
     const initShoppingCart = () => {
-        // Inicialización robusta del carrito para evitar 'undefined' en 'items'
+        // Inicialización robusta del carrito:
+        // Asegura que 'cart' sea un objeto y 'cart.items' siempre sea un array, incluso si localStorage está vacío o corrupto.
         let cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
         cart.items = Array.isArray(cart.items) ? cart.items : [];
-        cart.rentalDates = cart.rentalDates || null;
+        cart.rentalDates = cart.rentalDates || null; // Asegura que las fechas sean null si no están definidas
 
         const cartIcon = document.getElementById('cartIcon');
         const cartModalOverlay = document.getElementById('cartModalOverlay');
@@ -134,30 +136,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const emptyCartBtn = document.getElementById('emptyCartBtn');
         const proceedToCheckoutBtn = document.getElementById('proceedToCheckoutBtn');
 
-        if (!cartIcon || !cartModalOverlay || !closeCartModalBtn) return; // Salir si elementos clave no existen
+        if (!cartIcon || !cartModalOverlay || !closeCartModalBtn) return; // Salir si los elementos DOM clave no existen
 
+        // Guarda el estado actual del carrito en localStorage
         const saveCart = () => localStorage.setItem('shoppingCart', JSON.stringify(cart));
         
-        // Actualiza el contador de ítems en el ícono del carrito
+        // Actualiza el número de ítems en el icono del carrito en el header
         const updateCartCount = () => {
             const el = document.getElementById('cartCount');
             if (!el) return;
-            // Usar (cart.items || []) para asegurar que reduce siempre se llama en un array
+            // Suma la cantidad de todos los ítems en el carrito. Si cart.items es null/undefined, usa un array vacío.
             const total = (cart.items || []).reduce((sum, item) => sum + (item.quantity || 0), 0);
             el.textContent = total;
-            el.style.display = total > 0 ? 'flex' : 'none'; // Mostrar si hay ítems
+            el.style.display = total > 0 ? 'flex' : 'none'; // Muestra/oculta el contador
         };
 
-        // Renderiza el contenido del modal del carrito
+        // Renderiza (dibuja) el contenido del modal del carrito con los ítems actuales.
         const renderCartModal = () => {
             if (!cartItemsContainer) return;
-            cartItemsContainer.innerHTML = ''; // Limpiar contenido previo
+            cartItemsContainer.innerHTML = ''; // Limpiar contenido previo para re-dibujar
             
             const startDateEl = document.getElementById('cartStartDate');
             const endDateEl = document.getElementById('cartEndDate');
             const datesContainer = document.querySelector('.cart-rental-dates');
             
-            // Mostrar u ocultar las fechas de alquiler en el modal
+            // Muestra u oculta las fechas de alquiler en el modal del carrito
             if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end && startDateEl && endDateEl && datesContainer) {
                 startDateEl.textContent = cart.rentalDates.start;
                 endDateEl.textContent = cart.rentalDates.end;
@@ -168,13 +171,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (cart.items.length === 0) {
                 cartItemsContainer.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
-                if (proceedToCheckoutBtn) proceedToCheckoutBtn.classList.add('disabled'); // Deshabilitar si está vacío
+                if (proceedToCheckoutBtn) proceedToCheckoutBtn.classList.add('disabled'); // Deshabilita el botón de proceder
             } else {
-                if (proceedToCheckoutBtn) proceedToCheckoutBtn.classList.remove('disabled'); // Habilitar si hay ítems
+                if (proceedToCheckoutBtn) proceedToCheckoutBtn.classList.remove('disabled'); // Habilita el botón de proceder
                 cart.items.forEach(item => {
                     const price = typeof item.price === 'number' ? item.price : 0;
                     const quantity = typeof item.quantity === 'number' ? item.quantity : 1;
-                    // Genera opciones para el selector de cantidad (1 a 20)
+                    // Genera las opciones para el selector de cantidad (1 a 20)
                     let opts = Array.from({length: 20}, (_, i) => 
                         `<option value="${i + 1}" ${quantity === i + 1 ? 'selected' : ''}>${i + 1}</option>`
                     ).join('');
@@ -194,15 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 });
             }
-            updateCartModalTotals(); // Actualizar totales después de renderizar ítems
-            addCartModalEventListeners(); // Re-adjuntar listeners a los nuevos elementos del carrito
+            updateCartModalTotals();      // Actualiza los totales después de renderizar los ítems
+            addCartModalEventListeners(); // Re-adjunta listeners a los elementos recién creados en el modal
         };
         
-        // Actualiza los subtotales, impuestos y total en el modal del carrito
+        // Calcula y actualiza los subtotales, impuestos y total en el modal del carrito.
         const updateCartModalTotals = () => {
-            // Usar (cart.items || []) para asegurar que reduce siempre se llama en un array
             const subtotal = (cart.items || []).reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const taxes = subtotal * 0.16;
+            const taxes = subtotal * 0.16; // 16% de impuestos
             const total = subtotal + taxes;
 
             const subtotalEl = document.getElementById('cartSubtotal');
@@ -214,36 +216,36 @@ document.addEventListener('DOMContentLoaded', () => {
             if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
         };
 
-        // Elimina un ítem del carrito
+        // Elimina un ítem específico del carrito por su ID.
         const removeCartItem = (id) => {
             cart.items = cart.items.filter(item => item.id !== id);
             if (cart.items.length === 0) {
-                cart.rentalDates = null; // Si el carrito está vacío, se limpian las fechas
+                cart.rentalDates = null; // Si el carrito se vacía, también se limpian las fechas de alquiler
             }
             saveCart();
             renderCartModal();
             updateCartCount();
-            showNotification('Ítem eliminado del carrito.', 'error');
+            showNotification('Ítem eliminado del carrito.', 'error'); // Notificación de éxito para la eliminación
         };
 
-        // Actualiza la cantidad de un ítem en el carrito
+        // Actualiza la cantidad de un ítem específico en el carrito.
         const updateCartItemQuantity = (id, newQuantity) => {
             const itemInCart = cart.items.find(item => item.id === id);
             if (itemInCart) {
-                itemInCart.quantity = parseInt(newQuantity, 10);
+                itemInCart.quantity = parseInt(newQuantity, 10); // Asegura que la cantidad es un número entero
                 saveCart();
-                renderCartModal(); // Re-render para actualizar totales y opciones
+                renderCartModal(); // Re-render para reflejar el cambio en la cantidad y los totales
                 updateCartCount();
             }
         };
 
-        // Adjunta/Re-adjunta listeners a los botones y selects dentro del modal del carrito
+        // Adjunta/Re-adjunta los event listeners a los botones de eliminar y selects de cantidad dentro del modal.
         const addCartModalEventListeners = () => {
-            // Remover listeners existentes para evitar duplicados al re-renderizar el modal
+            // Es crucial remover los listeners antiguos para evitar duplicados al re-renderizar el modal
             document.querySelectorAll('.remove-item-btn').forEach(btn => btn.removeEventListener('click', handleRemoveClick));
             document.querySelectorAll('.cart-item-quantity').forEach(select => select.removeEventListener('change', handleQuantityChange));
 
-            // Adjuntar nuevos listeners
+            // Adjuntar nuevos listeners a los elementos actuales en el DOM
             document.querySelectorAll('.remove-item-btn').forEach(button => {
                 button.addEventListener('click', handleRemoveClick);
             });
@@ -253,68 +255,69 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
-        // Handler para el evento de clic en el botón de eliminar
+        // Handler para el evento de clic en el botón de eliminar ítem del carrito.
         const handleRemoveClick = (e) => {
             const productId = e.target.closest('.cart-item').dataset.productId;
             removeCartItem(productId);
         };
 
-        // Handler para el evento de cambio en la cantidad de un ítem
+        // Handler para el evento de cambio en la cantidad seleccionada para un ítem del carrito.
         const handleQuantityChange = (e) => {
             const productId = e.target.closest('.cart-item').dataset.productId;
             updateCartItemQuantity(productId, e.target.value);
         };
 
-        // Añade un producto al carrito
+        // Añade un producto al carrito. Maneja la lógica de fechas de alquiler y confirmación.
         const addToCart = (productToAdd, rentalDates = null) => {
-            // Si el carrito está vacío y se proporcionan fechas, establecerlas
+            // Si el carrito está vacío y se proporcionan fechas, las establece como las fechas de alquiler del carrito
             if (cart.items.length === 0 && rentalDates) {
                 cart.rentalDates = rentalDates;
             } 
-            // Si ya hay ítems y las fechas cambian, preguntar al usuario
+            // Si ya hay ítems y las nuevas fechas son diferentes, pide confirmación para vaciar el carrito
             else if (cart.items.length > 0 && rentalDates && 
                        (cart.rentalDates.start !== rentalDates.start || cart.rentalDates.end !== rentalDates.end)) {
-                if (!confirm('Has cambiado las fechas. ¿Deseas vaciar el carrito y empezar un nuevo pedido?')) {
-                    return; // No añadir el producto si el usuario cancela
+                if (!confirm('Has cambiado las fechas. ¿Deseas vaciar el carrito y empezar un nuevo pedido con estas nuevas fechas?')) {
+                    return; // Sale si el usuario cancela
                 }
-                clearCart(); // Vaciar el carrito si el usuario acepta
-                cart.rentalDates = rentalDates; // Establecer nuevas fechas
+                clearCart(); // Vacía el carrito
+                cart.rentalDates = rentalDates; // Establece las nuevas fechas
             } 
-            // Si el carrito está vacío y no hay fechas (y los inputs de fecha existen), notificar
+            // Si el carrito está vacío y no hay fechas, y existen los inputs de fecha en la página, notificar
             else if (cart.items.length === 0 && !rentalDates && document.getElementById('fecha-entrega')) {
                  showNotification('Por favor, selecciona las fechas de entrega y recolección para añadir productos.', 'error');
-                 return;
-            } else if (cart.items.length > 0 && !rentalDates) {
-                // Si ya hay ítems en el carrito pero el addToCart se llama sin fechas, usar las fechas existentes del carrito
+                 return; // Sale si no hay fechas para el primer producto
+            } 
+            // Si hay ítems y no se proporcionan fechas, asume las fechas ya establecidas en el carrito
+            else if (cart.items.length > 0 && !rentalDates) {
                 rentalDates = cart.rentalDates;
             }
 
-
+            // Busca si el producto ya existe en el carrito
             const itemInCart = cart.items.find(item => item.id === productToAdd.id);
             if (itemInCart) {
-                itemInCart.quantity += productToAdd.quantity;
+                itemInCart.quantity += productToAdd.quantity; // Si existe, solo actualiza la cantidad
             } else {
-                cart.items.push(productToAdd);
+                cart.items.push(productToAdd); // Si no, añade el nuevo producto al carrito
             }
             showNotification(`${productToAdd.name} añadido al carrito.`, 'success');
-            saveCart();
-            updateCartCount();
+            saveCart(); // Guarda el carrito actualizado
+            updateCartCount(); // Actualiza el contador visual
         };
 
-        // Vacía completamente el carrito
+        // Vacía completamente el carrito y resetea las fechas de alquiler.
         const clearCart = () => {
-            cart = { items: [], rentalDates: null };
+            cart = { items: [], rentalDates: null }; // Resetea el objeto carrito
             saveCart();
             renderCartModal();
             updateCartCount();
         };
 
-        // Event Listeners para los botones de añadir al carrito (ej. en la página de productos)
+        // Event Listeners para los botones "Añadir al carrito" (ej. en la página de productos).
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
             button.addEventListener('click', e => {
                 const productCard = e.target.closest('.product-card');
                 if (!productCard) {
-                    console.warn("Botón de añadir al carrito sin 'product-card' padre. Verifica la estructura HTML.");
+                    console.warn("Botón de añadir al carrito sin un elemento padre con clase 'product-card'. Verifica tu HTML.");
                     return;
                 }
 
@@ -322,10 +325,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const productName = productCard.querySelector('h3').textContent;
                 const productPrice = parseFloat(productCard.dataset.productPrice);
                 const quantitySelect = productCard.querySelector('.product-qty');
-                const quantity = parseInt(quantitySelect?.value || '1', 10); // Valor por defecto 1
+                const quantity = parseInt(quantitySelect?.value || '1', 10); // Obtiene la cantidad o 1 por defecto
 
                 if (isNaN(productPrice) || quantity <= 0) {
-                    showNotification('Error: precio o cantidad de producto inválido.', 'error');
+                    showNotification('Error: El precio o la cantidad del producto son inválidos.', 'error');
                     return;
                 }
                 
@@ -333,87 +336,83 @@ document.addEventListener('DOMContentLoaded', () => {
                 const endDateInput = document.getElementById('fecha-recoleccion');
                 let rentalDates = null;
 
-                // Capturar fechas solo si los inputs existen en la página
-                if (startDateInput && endDateInput) {
+                if (startDateInput && endDateInput) { // Si los campos de fecha están en esta página
                     if (!startDateInput.value || !endDateInput.value) {
                         showNotification('Por favor, selecciona las fechas de entrega y recolección.', 'error');
                         const rentalContainer = document.querySelector('.rental-dates-container');
                         if(rentalContainer) {
-                            // Si tienes una animación de "sacudir", actívala
-                            rentalContainer.classList.add('shake-animation');
+                            rentalContainer.classList.add('shake-animation'); // Aplica animación si existe
                             setTimeout(() => rentalContainer.classList.remove('shake-animation'), 500);
                         }
                         return;
                     }
                     rentalDates = { start: startDateInput.value, end: endDateInput.value };
                 } 
-                // Si no hay inputs de fecha y el carrito está vacío, no se puede añadir sin fechas
-                else if (cart.items.length === 0) {
-                     showNotification('No se pueden añadir productos sin fechas de alquiler. Las fechas deben definirse al menos con el primer producto añadido.', 'error');
+                else if (cart.items.length === 0) { // Si no hay campos de fecha y el carrito está vacío, no se puede añadir sin fechas
+                     showNotification('No se pueden añadir productos sin fechas de alquiler. Las fechas deben definirse al menos con el primer producto.', 'error');
                      return;
-                } else {
-                    // Si no hay inputs de fecha pero el carrito ya tiene elementos, usar las fechas existentes del carrito
+                } else { // Si no hay campos de fecha pero el carrito ya tiene ítems, usar las fechas existentes del carrito
                     rentalDates = cart.rentalDates;
                 }
 
                 addToCart({ id: productId, name: productName, price: productPrice, quantity: quantity }, rentalDates);
-                if(quantitySelect) quantitySelect.value = ""; // Limpiar la selección de cantidad
+                if(quantitySelect) quantitySelect.value = ""; // Limpia la selección de cantidad después de añadir
             });
         });
 
-        // Event listeners para abrir/cerrar el modal del carrito
+        // Listeners para abrir/cerrar el modal del carrito
         cartIcon.addEventListener('click', e => { 
             e.preventDefault(); 
-            renderCartModal(); // Renderiza el carrito cada vez que se abre para asegurar la frescura de los datos
-            cartModalOverlay.classList.add('active'); 
+            renderCartModal(); // Asegura que el carrito esté actualizado al abrirlo
+            cartModalOverlay.classList.add('active'); // Muestra el modal
         });
-        closeCartModalBtn.addEventListener('click', () => cartModalOverlay.classList.remove('active'));
+        closeCartModalBtn.addEventListener('click', () => cartModalOverlay.classList.remove('active')); // Cierra el modal con la X
         cartModalOverlay.addEventListener('click', e => { 
-            if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('active'); 
+            if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('active'); // Cierra el modal al hacer clic fuera
         });
 
-        // Event listener para vaciar el carrito
+        // Listener para el botón "Vaciar Carrito" en el modal
         if (emptyCartBtn) {
             emptyCartBtn.addEventListener('click', () => { 
-                if(confirm('¿Estás seguro de que quieres vaciar el carrito? Esta acción no se puede deshacer.')) {
+                if(confirm('¿Estás seguro de que quieres vaciar todo el carrito? Esta acción no se puede deshacer.')) {
                     clearCart(); 
-                    showNotification('Carrito vaciado.', 'success'); 
+                    showNotification('El carrito ha sido vaciado.', 'success'); 
                 }
             });
         }
         
-        // Event listener para proceder a la compra
+        // Listener para el botón "Finalizar Compra"
         if (proceedToCheckoutBtn) {
             proceedToCheckoutBtn.addEventListener('click', e => { 
                 if (cart.items.length === 0) { 
                     e.preventDefault(); // Prevenir la navegación si el carrito está vacío
                     showNotification('Tu carrito está vacío. Por favor, añade productos para continuar.', 'error'); 
                 } 
-                // Validar que las fechas de alquiler estén presentes antes de proceder
+                // Validar que las fechas de alquiler estén presentes antes de proceder a la compra
                 else if (!cart.rentalDates || !cart.rentalDates.start || !cart.rentalDates.end) {
                     e.preventDefault();
-                    showNotification('Faltan las fechas de entrega y recolección. Por favor, asegúrate de haberlas seleccionado.', 'error');
+                    showNotification('Faltan las fechas de entrega y recolección. Por favor, asegúrate de haberlas seleccionado para al menos un producto.', 'error');
                 }
-                saveCart(); // Asegurarse de que el carrito esté guardado antes de la navegación
+                saveCart(); // Asegurar que el carrito esté guardado antes de cualquier navegación
             });
         }
         
-        updateCartCount(); // Inicializa el conteo del carrito al cargar la página
+        updateCartCount(); // Inicializa el contador del carrito al cargar la página
     };
 
-    // Inicializa elementos específicos para la página de productos (ej. date pickers con Flatpickr)
+    // Inicializa elementos específicos de la página de productos, como los selectores de fecha (Flatpickr).
     const initProductPageElements = () => {
         const fechaEntregaInput = document.getElementById('fecha-entrega');
         const fechaRecoleccionInput = document.getElementById('fecha-recoleccion');
 
-        // Solo inicializar Flatpickr si los elementos de input existen y la librería está cargada
+        // Solo inicializar Flatpickr si los elementos de input existen en el DOM y la librería 'flatpickr' está cargada
         if (typeof flatpickr !== 'undefined' && fechaEntregaInput && fechaRecoleccionInput) {
             const fechaRecoleccionPicker = flatpickr(fechaRecoleccionInput, {
-                locale: "es", // Establecer idioma español
-                minDate: "today", // Fecha mínima es hoy
-                altInput: true, // Habilitar un input alternativo para formato de fecha amigable
-                altFormat: "F j, Y", // Formato de fecha alternativa (ej. Julio 15, 2025)
-                dateFormat: "Y-m-d", // Formato de fecha real para el valor del input
+                locale: "es",           // Idioma español
+                minDate: "today",       // Fecha mínima seleccionable es hoy
+                altInput: true,         // Habilita un input alternativo para un formato de fecha más amigable
+                altFormat: "F j, Y",    // Formato amigable (ej. "Julio 15, 2025")
+                dateFormat: "Y-m-d",    // Formato real para el valor del input (ej. "2025-07-15")
             });
 
             flatpickr(fechaEntregaInput, {
@@ -436,9 +435,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Lógica de la CALCULADORA (integrada y corregida para la navegación de pasos y cálculo) ---
+    // --- Lógica de la CALCULADORA (integrada, corregida para navegación de pasos y cálculo de resultados) ---
     const initCalculator = () => {
-        // Obtener referencias a los elementos HTML de la calculadora
+        // Obtener referencias a los elementos HTML clave de la calculadora
         const steps = [
             document.getElementById("calc-step-1"),
             document.getElementById("calc-step-2"),
@@ -453,29 +452,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const calculateBtn = document.getElementById("calculateBtn");
         const resultContainer = document.getElementById("calculatorResult");
 
-        // Salir si no se encuentran todos los elementos esenciales de la calculadora en la página actual
+        // Salir si no se encuentran todos los elementos esenciales de la calculadora en la página actual.
+        // Esto evita errores si el script se carga en una página sin calculadora.
         if (!steps[0] || !progressBar || !calculateBtn || !resultContainer) {
-            console.log("Elementos de la calculadora no encontrados. 'initCalculator' no se inicializará.");
+            console.log("Elementos de la calculadora no encontrados. 'initCalculator' no se inicializará en esta página.");
             return; 
         }
 
-        let currentStep = 0; // Variable para controlar el paso actual de la calculadora
+        let currentStep = 0; // Controla el paso actual de la calculadora (0, 1, 2)
 
-        // Actualiza la interfaz de usuario de la calculadora (pasos visibles, indicadores, barra de progreso)
+        // Actualiza la interfaz de usuario de la calculadora: 
+        // - Muestra el paso actual.
+        // - Resalta el indicador de paso.
+        // - Actualiza la barra de progreso.
         function updateStepUI() {
             steps.forEach((step, index) => {
-                step.classList.toggle("active", index === currentStep); // Activa/desactiva la visibilidad del paso
-                stepIndicators[index].classList.toggle("active", index === currentStep); // Activa/desactiva el indicador de paso
+                step.classList.toggle("active", index === currentStep); // Controla la visibilidad de los pasos
+                stepIndicators[index].classList.toggle("active", index === currentStep); // Resalta el número de paso
             });
-            // Calcula y actualiza el ancho de la barra de progreso
+            // Calcula el porcentaje de avance de la barra de progreso
             progressBar.style.width = ((currentStep / (steps.length - 1)) * 100) + "%";
-            // Limpia el contenedor de resultados si se cambia de paso y ya había un resultado visible
-            if (resultContainer.innerHTML !== "" && currentStep !== steps.length - 1) { 
+            
+            // Limpia el contenedor de resultados si el usuario cambia de paso después de ver un resultado.
+            // Esto evita que el resultado del cálculo anterior se quede visible al retroceder o avanzar.
+            if (resultContainer.innerHTML !== "" && currentStep !== (steps.length - 1)) { 
                  resultContainer.innerHTML = ""; 
             }
         }
 
-        // Valida que se haya seleccionado una opción en el paso actual antes de avanzar o calcular
+        // Valida que el usuario haya hecho una selección requerida en el paso actual.
         function validateStep(stepIndex) {
             if (stepIndex === 0) { // Validación para el Paso 1 (Tipo de hogar)
                 const homeType = document.querySelector('input[name="homeType"]:checked');
@@ -490,87 +495,88 @@ document.addEventListener('DOMContentLoaded', () => {
                     return false;
                 }
             }
-            return true; // Si la validación pasa, o si es el Paso 3 (no obligatorio para avanzar)
+            // El Paso 3 tiene checkboxes (opcionales) y un botón de cálculo final, no requiere validación para "avanzar".
+            return true; 
         }
 
-        // Avanza la calculadora al siguiente paso si la validación del paso actual es exitosa
+        // Mueve la calculadora al siguiente paso, si el paso actual es válido.
         function goToNextStep() {
             if (!validateStep(currentStep)) return; // No avanzar si la validación falla
-            if (currentStep < steps.length - 1) { // Asegurarse de no exceder el número de pasos
+            if (currentStep < steps.length - 1) { // Asegura que no se exceda el último paso
                 currentStep++;
-                updateStepUI(); // Actualizar la UI para mostrar el siguiente paso
+                updateStepUI(); // Actualiza la interfaz al siguiente paso
             }
         }
 
-        // Adjuntar Event Listeners para el avance automático de pasos (solo para radio buttons)
+        // Adjunta Event Listeners a los radio buttons para el avance automático de pasos.
+        // Esto solo aplica a los pasos 0 y 1, que son los que tienen radios y deben avanzar al siguiente paso.
         steps.forEach((step, index) => {
-            // Solo los pasos 0 y 1 tienen radio buttons que deben avanzar automáticamente
-            if (index === 0 || index === 1) { 
+            if (index === 0 || index === 1) { // Aplica listeners solo al Paso 1 y Paso 2
                 const radios = step.querySelectorAll('input[type="radio"]');
                 radios.forEach((radio) => {
-                    radio.addEventListener("change", goToNextStep); // Al cambiar la selección, ir al siguiente paso
+                    radio.addEventListener("change", goToNextStep); // Llama a goToNextStep cuando se selecciona un radio
                 });
             }
         });
 
-        // Event Listener para el botón "Calcular mi Paquete" en el último paso
+        // Event Listener para el botón "Calcular mi Paquete" en el último paso.
         calculateBtn.addEventListener("click", () => {
-            // Validar que los pasos 0 y 1 (obligatorios) estén completos antes de calcular
+            // Realiza una validación final para asegurarse de que los pasos obligatorios estén completos.
             if (!validateStep(0) || !validateStep(1)) {
-                return; // Las notificaciones de error se mostrarán desde validateStep()
+                // Las notificaciones de error ya se mostrarán dentro de la función validateStep()
+                return; 
             }
 
-            // Recopilar las selecciones del usuario
+            // Recopila los valores seleccionados por el usuario
             const homeType = document.querySelector('input[name="homeType"]:checked')?.value || "";
             const belongings = document.querySelector('input[name="belongings"]:checked')?.value || "";
-            // Obtener todos los valores de checkboxes seleccionados
+            // Recopila todos los valores de los checkboxes seleccionados en el Paso 3
             const extras = Array.from(
                 document.querySelectorAll('input[name="extras"]:checked')
             ).map((checkbox) => checkbox.value);
 
-            let estimatedBoxes = 0;
+            let estimatedBoxes = 0; // Variable para almacenar la estimación de cajas
 
-            // --- Lógica de cálculo de cajas (AJUSTA ESTOS VALORES según tus paquetes y lógica de negocio) ---
-            // Valores base según el tipo de hogar
+            // --- Lógica de cálculo: Ajusta estos valores y la lógica según tus necesidades comerciales ---
+            // Valores base de cajas según el tipo de hogar
             if (homeType === "studio") {
-                estimatedBoxes = 8; // Ejemplo: 8 cajas base para un estudio
+                estimatedBoxes = 8; // Ej: Un estudio requiere 8 cajas base
             } else if (homeType === "1br") {
-                estimatedBoxes = 15; // Ejemplo: 15 cajas base para 1 habitación
+                estimatedBoxes = 15; // Ej: Una casa de 1 habitación requiere 15 cajas base
             } else if (homeType === "2br") {
-                estimatedBoxes = 25; // Ejemplo: 25 cajas base para 2-3 habitaciones
+                estimatedBoxes = 25; // Ej: Una casa de 2-3 habitaciones requiere 25 cajas base
             } else if (homeType === "4br") {
-                estimatedBoxes = 40; // Ejemplo: 40 cajas base para 4+ habitaciones
+                estimatedBoxes = 40; // Ej: Una casa de 4+ habitaciones requiere 40 cajas base
             }
 
-            // Ajustar la estimación según la cantidad de pertenencias
+            // Ajusta la estimación según la cantidad de pertenencias
             if (belongings === "normal") {
-                estimatedBoxes += 5; // Añadir 5 cajas si la cantidad de cosas es "normal"
+                estimatedBoxes += 5; // +5 cajas para cantidad "normal"
             } else if (belongings === "many") {
-                estimatedBoxes += 15; // Añadir 15 cajas si la cantidad de cosas es "muchas"
+                estimatedBoxes += 15; // +15 cajas para cantidad "muchas" (coleccionista)
             }
 
-            // Añadir cajas adicionales si se seleccionan espacios extra
-            if (extras.includes("office")) estimatedBoxes += 5; // +5 cajas por una oficina
-            if (extras.includes("storage")) estimatedBoxes += 10; // +10 cajas por una bodega/trastero
-            if (extras.includes("garage")) estimatedBoxes += 15; // +15 cajas por un garaje
+            // Añade cajas adicionales por cada espacio extra seleccionado
+            if (extras.includes("office")) estimatedBoxes += 5;   // +5 cajas por oficina
+            if (extras.includes("storage")) estimatedBoxes += 10; // +10 cajas por bodega/trastero
+            if (extras.includes("garage")) estimatedBoxes += 15;  // +15 cajas por garaje
 
-            // Asegurarse de que el número estimado de cajas sea al menos un valor mínimo (ej. 5)
+            // Asegura que el número estimado de cajas sea siempre al menos un valor mínimo razonable (ej. 5 cajas)
             estimatedBoxes = Math.max(estimatedBoxes, 5); 
 
-            // Construir el texto para los espacios adicionales
+            // Prepara el texto para los espacios adicionales seleccionados (con traducción a español)
             let extrasText = "";
             if (extras.length > 0) {
-                // Traducir los valores internos de 'extras' a un texto más legible en español
                 const translatedExtras = extras.map(e => {
                     if (e === 'office') return 'Oficina / Home Office';
                     if (e === 'storage') return 'Bodega / Trastero';
                     if (e === 'garage') return 'Garaje / Estacionamiento';
-                    return e; // Fallback por si hay un valor no reconocido
+                    return e; // En caso de un valor no reconocido, se usa el valor original
                 });
                 extrasText = `<p><strong>Espacios adicionales:</strong> ${translatedExtras.join(", ")}</p>`;
             }
 
-            // --- Muestra el resultado final en el contenedor de resultados ---
+            // Muestra el resultado final del cálculo en el contenedor de resultados de la calculadora
             resultContainer.innerHTML = `
                 <h3>¡Estimación de Cajas!</h3>
                 <p>Basado en tus selecciones:</p>
@@ -584,23 +590,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="contacto.html" class="btn btn-primary">Contactar</a>
             `;
 
-            // Reiniciar la calculadora a la visualización del primer paso después de mostrar el resultado
-            // Esto la prepara para una nueva consulta.
+            // Reinicia la calculadora al primer paso para una nueva consulta después de mostrar el resultado.
             currentStep = 0;
             updateStepUI(); 
         });
 
-        // Inicializa la UI de la calculadora al cargar la página (asegura que el primer paso esté activo visualmente)
+        // Inicializa la interfaz de usuario de la calculadora al cargar la página (muestra el primer paso activo).
         updateStepUI(); 
     };
-    // --- FIN: Lógica de la CALCULADORA ---
 
-
-    // --- Llamadas a las funciones de inicialización (se ejecutan una vez que el DOM está listo) ---
-    initGlobalElements();
-    initActiveNav();
-    initUserSession();
-    initShoppingCart();
-    initProductPageElements(); // Se inicializa solo si los elementos de fecha están presentes
-    initCalculator(); // Se inicializa solo si los elementos de la calculadora están presentes
+    // --- Llamadas a las funciones de inicialización (Se ejecutan cuando el DOM está listo) ---
+    // Asegurarse de que todas las funciones están definidas antes de ser llamadas aquí.
+    initGlobalElements();        // Inicializa el navbar y el año del footer
+    initActiveNav();             // Marca el enlace de navegación activo
+    initUserSession();           // Gestiona la sesión de usuario
+    initShoppingCart();          // Inicializa toda la lógica del carrito de compras
+    initProductPageElements();   // Inicializa elementos específicos de la página de productos (ej. Flatpickr)
+    initCalculator();            // Inicializa la calculadora (solo si los elementos están presentes en la página)
 });
