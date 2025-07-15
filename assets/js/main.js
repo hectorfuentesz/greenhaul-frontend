@@ -641,6 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 existingModal.remove();
             }
 
+            // ===> INSTRUCCIÓN PARA BREAKPOINT 1: Haz clic en el número de línea de la siguiente línea
             const modalOverlay = document.createElement('div');
             modalOverlay.id = 'calculatorResultModalOverlay';
             modalOverlay.classList.add('cart-modal-overlay', 'active'); // Reutilizamos las clases CSS del carrito
@@ -667,6 +668,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
+            // ===> INSTRUCCIÓN PARA BREAKPOINT 2: Haz clic en el número de línea de la siguiente línea
             body.appendChild(modalOverlay); // Añadir el pop-up al body
 
             // Añadir event listeners para cerrar el modal
