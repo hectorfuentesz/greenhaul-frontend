@@ -40,6 +40,8 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
+
+
 // --- 2. LÓGICA PRINCIPAL DEL SITIO (Se ejecuta cuando el DOM está completamente cargado) ---
 document.addEventListener('DOMContentLoaded', () => {
 
