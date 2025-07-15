@@ -700,8 +700,259 @@ textarea.form-control { min-height: 150px; resize: vertical; }
   to { transform: rotate(360deg); }
 }
 
-/* =================================================
-   LA SECCIÓN DE ESTILOS DE LA CALCULADORA HA SIDO ELIMINADA.
-   LA REINTEGRAREMOS PASO A PASO EN UN NUEVO CICLO.
-   =================================================
-*/
+/* ===== Calculadora de Cajas ===== */
+.calculator-section {
+  background-color: #f0f4f8; /* Un fondo suave para la sección de la calculadora */
+  padding: 80px 0; /* Espaciado interno */
+}
+.calculator-box-interactive {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 30px 40px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.calculator-progress {
+  position: relative;
+  width: 80%;
+  margin: 0 auto 40px auto;
+  height: 4px;
+  background-color: #e0e0e0;
+}
+.progress-bar {
+  position: absolute;
+  height: 100%;
+  width: 0%; /* Inicia en 0% */
+  background: var(--gradient-primary);
+  border-radius: 4px;
+  transition: width 0.4s ease-in-out;
+}
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  top: -13px; /* Ajusta la posición de los indicadores de paso */
+}
+.progress-steps .step {
+  width: 30px;
+  height: 30px;
+  background-color: #e0e0e0;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: background-color 0.4s ease;
+  /* Animación de la barra de progreso */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra sutil para los círculos */
+}
+.progress-steps .step.active {
+  background: var(--primary-solid);
+  box-shadow: 0 4px 8px rgba(var(--primary-solid), 0.3);
+}
+
+.calculator-step {
+  display: none; /* Oculto por defecto, JavaScript lo hará visible */
+  animation: fadeIn 0.5s ease-in-out; /* Animación de entrada */
+}
+.calculator-step.active {
+  display: block; /* Muestra el paso actual */
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.calculator-step h4 {
+  font-size: 1.5rem;
+  color: var(--text-dark);
+  margin-bottom: 25px;
+}
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+.options-grid label, .options-grid-checkbox label {
+  cursor: pointer;
+}
+.options-grid input[type="radio"] {
+  display: none; /* Oculta el radio button nativo */
+}
+.options-grid input[type="radio"] + span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 2px solid var(--border);
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease-in-out;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  background-color: #f9f9f9; /* Fondo suave para las opciones */
+}
+.options-grid input[type="radio"] + span i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--primary-solid);
+}
+.options-grid input[type="radio"]:hover + span {
+  border-color: var(--primary-solid);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+}
+.options-grid input[type="radio"]:checked + span {
+  background-color: var(--primary-solid);
+  border-color: var(--primary-solid);
+  color: white;
+  box-shadow: 0 6px 15px rgba(var(--primary-solid), 0.4);
+}
+.options-grid input[type="radio"]:checked + span i {
+  color: white;
+}
+
+.options-grid-checkbox {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
+  max-width: 400px;
+  margin: 0 auto 30px auto; /* Centra el grupo de checkboxes */
+}
+.options-grid-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border: 2px solid var(--border);
+  border-radius: var(--border-radius);
+  width: 100%;
+  transition: all 0.2s ease-in-out;
+  background-color: #f9f9f9;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+.options-grid-checkbox label:hover {
+    border-color: var(--accent-green); /* Color de borde al pasar el mouse */
+    box-shadow: var(--shadow);
+}
+.options-grid-checkbox input[type="checkbox"] {
+  width: 1.2em;
+  height: 1.2em;
+  accent-color: var(--primary-solid); /* Color para el checkbox marcado */
+  min-width: 1.2em; /* Asegura un tamaño mínimo */
+  flex-shrink: 0; /* Evita que el checkbox se encoja */
+}
+.options-grid-checkbox input[type="checkbox"]:checked + span {
+  font-weight: bold;
+  color: var(--primary-solid); /* Texto más oscuro o con acento si está marcado */
+}
+.options-grid-checkbox input[type="checkbox"]:checked + span i {
+    color: var(--primary-solid); /* Icono con color primario si está marcado */
+}
+.options-grid-checkbox span i {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    transition: color 0.2s ease;
+}
+
+/* Estilos para el pop-up de resultados de la calculadora */
+#calculatorResultModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo semi-transparente */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(5px); /* Para compatibilidad con Safari */
+
+    display: none; /* Oculto por defecto, JavaScript lo cambia a flex */
+    opacity: 0; /* Totalmente transparente por defecto, JavaScript lo cambia a 1 */
+
+    align-items: center; /* Centrar verticalmente el modal */
+    justify-content: center; /* Centrar horizontalmente el modal */
+    z-index: 2000; /* Asegura que esté por encima de todos los demás elementos */
+
+    transition: opacity 0.3s ease-in-out; /* Transición suave para la aparición */
+}
+
+/* Regla clave que hace visible el modal cuando JS añade la clase .active */
+#calculatorResultModalOverlay.active {
+    display: flex; /* Muestra el overlay */
+    opacity: 1; /* Lo hace visible */
+}
+
+/* Estilos para el contenido interno del modal de la calculadora (reutiliza clases de .cart-modal) */
+#calculatorResultModalOverlay .cart-modal {
+    background-color: white;
+    width: 90%;
+    max-width: 500px; /* Un poco más ancho para el contenido de la calculadora */
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Asegura que no sea más alto que la ventana */
+    transform: scale(0.95); /* Pequeña escala inicial para el efecto de aparición */
+    transition: transform 0.3s ease-in-out; /* Transición para el efecto de escala */
+}
+
+#calculatorResultModalOverlay.active .cart-modal {
+    transform: scale(1); /* Escala normal al activarse */
+}
+
+/* Estilos específicos para el cuerpo del modal de resultados de la calculadora */
+#calculatorResultModalOverlay .cart-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+    flex-grow: 1;
+    text-align: center; /* Centra el texto dentro del body del modal */
+}
+
+#calculatorResultModalOverlay .cart-modal-body ul {
+    list-style: none; /* Elimina viñetas de lista */
+    padding: 0;
+    text-align: left; /* Alinea el texto de la lista a la izquierda */
+    margin: 15px auto; /* Centra la lista y le da margen */
+    max-width: 80%; /* Ancho máximo para la lista dentro del modal */
+}
+
+#calculatorResultModalOverlay .cart-modal-body ul li {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+#calculatorResultModalOverlay .cart-modal-body h4 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: var(--primary-solid);
+    font-size: 1.3rem;
+}
+
+#calculatorResultModalOverlay .result-number {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--accent-green); /* Color para resaltar el resultado final */
+    margin-top: 25px;
+    margin-bottom: 25px;
+    padding: 10px 0;
+    border-top: 1px dashed var(--border);
+    border-bottom: 1px dashed var(--border);
+}
+
+#calculatorResultModalOverlay .modal-call-to-action {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-top: 20px;
+    line-height: 1.5;
+}
+
+#calculatorResultModalOverlay .btn-primary {
+    margin-top: 20px; /* Margen para el botón de contacto */
+}
