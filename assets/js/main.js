@@ -1,7 +1,8 @@
 /**
  * =================================================================
  * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL
- * (Versión sin la calculadora, lista para su rediseño e integración)
+ * (Versión con todas las funcionalidades integradas, EXCEPTO la calculadora,
+ * lista para su rediseño e integración)
  * =================================================================
  */
 
@@ -173,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cartItemsContainer.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío.</p>';
                 if (proceedToCheckoutBtn) proceedToCheckoutBtn.classList.add('disabled'); // Deshabilita el botón de proceder
             } else {
-                if (proceedToCheckoutBtn) proceed.classList.remove('disabled'); // Habilita el botón de proceder
+                if (proceedToCheckoutBtn) proceedToCheckoutBtn.classList.remove('disabled'); // Habilita el botón de proceder
                 cart.items.forEach(item => {
                     const price = typeof item.price === 'number' ? item.price : 0;
                     const quantity = typeof item.quantity === 'number' ? item.quantity : 1;
@@ -435,8 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- La función initCalculator ha sido eliminada para el rediseño ---
-    // const initCalculator = () => { ... } // Esto ya no está aquí
+    // --- La función initCalculator ha sido eliminada para su rediseño posterior ---
 
     // --- Llamadas a las funciones de inicialización (Se ejecutan cuando el DOM está listo) ---
     initGlobalElements();        // Inicializa el navbar y el año del footer
@@ -444,5 +444,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initUserSession();           // Gestiona la sesión de usuario
     initShoppingCart();          // Inicializa toda la lógica del carrito de compras
     initProductPageElements();   // Inicializa elementos específicos de la página de productos (ej. Flatpickr)
-    // initCalculator();            // Esta llamada ha sido eliminada o comentada
+    // initCalculator();            // Esta llamada ha sido eliminada
 });
