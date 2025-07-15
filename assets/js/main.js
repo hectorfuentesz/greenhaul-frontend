@@ -1,6 +1,6 @@
 /**
  * =================================================================
- * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA CON FECHAS DE RENTA)
+ * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA)
  * =================================================================
  */
 
@@ -60,12 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const initActiveNav = () => {
         const navLinks = document.querySelectorAll('.nav-links-list .nav-link');
-        const currentPage = window.location.pathname.split('/').pop();
-
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        
         navLinks.forEach(link => {
             const linkPage = link.getAttribute('href');
             link.classList.remove('active');
-            if (linkPage === currentPage || (currentPage === '' && linkPage === 'index.html')) {
+            if (linkPage === currentPage) {
                 link.classList.add('active');
             }
         });
@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('greenhaulUser');
+                localStorage.removeItem('shoppingCart'); // Limpiar carrito al cerrar sesión
                 alert('Has cerrado sesión.');
                 window.location.href = 'index.html';
             });
@@ -124,7 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const emptyCartBtn = document.getElementById('emptyCartBtn');
         const proceedToCheckoutBtn = document.getElementById('proceedToCheckoutBtn');
 
-        if (!cartIcon || !cartModalOverlay || !closeCartModalBtn) return;
+        if (!cartIcon || !cartModalOverlay || !closeCartModalBtn) {
+            return;
+        }
 
         const saveCart = () => {
             localStorage.setItem('shoppingCart', JSON.stringify(cart));
@@ -136,6 +139,55 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalItems = cart.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
             cartCountEl.textContent = totalItems;
             cartCountEl.style.display = totalItems > 0 ? 'flex' : 'none';
+        };
+        
+        const updateCartModalTotals = () => {
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const taxesEl = document.getElementById('cartTaxes');
+            const totalEl = document.getElementById('cartTotal');
+            if (!subtotalEl || !taxesEl || !totalEl) return;
+
+            const subtotal = cart.items.reduce((sum, item) => {
+                const price = (typeof item.price === 'number') ? item.price : 0;
+                const quantity = (typeof item.quantity === 'number') ? item.quantity : 0;
+                return sum + (price * quantity);
+            }, 0);
+
+            const taxes = subtotal * 0.16;
+            const total = subtotal + taxes;
+            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            taxesEl.textContent = `$${taxes.toFixed(2)}`;
+            totalEl.textContent = `$${total.toFixed(2)}`;
+        };
+        
+        const removeCartItem = (productId) => {
+            cart.items = cart.items.filter(item => item.id !== productId);
+            if (cart.items.length === 0) {
+                cart.rentalDates = null;
+            }
+            saveCart();
+            renderCartModal();
+            updateCartCount();
+        };
+        
+        const updateCartItemQuantity = (productId, newQuantity) => {
+            const itemInCart = cart.items.find(item => item.id === productId);
+            if (itemInCart) {
+                itemInCart.quantity = newQuantity;
+                saveCart();
+                renderCartModal();
+                updateCartCount();
+            }
+        };
+
+        const addCartModalEventListeners = () => {
+            if (!cartItemsContainer) return;
+            cartItemsContainer.querySelectorAll('.remove-item-btn').forEach(b => {
+                b.addEventListener('click', (e) => removeCartItem(e.target.closest('.cart-item').dataset.productId));
+            });
+            cartItemsContainer.querySelectorAll('.cart-item-quantity').forEach(s => {
+                s.addEventListener('change', (e) => updateCartItemQuantity(e.target.closest('.cart-item').dataset.productId, parseInt(e.target.value, 10)));
+            });
         };
 
         const renderCartModal = () => {
@@ -160,60 +212,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 cart.items.forEach(item => {
                     const price = (typeof item.price === 'number') ? item.price : 0;
                     const quantity = (typeof item.quantity === 'number') ? item.quantity : 1;
-                    let opts = Array.from({length: 20}, (_, i) => `<option value="${i + 1}" ${quantity === i ? 'selected' : ''}>${i + 1}</option>`).join('');
-                    cartItemsContainer.innerHTML += `<div class="cart-item" data-product-id="${item.id}"><div class="cart-item-details"><h4>${item.name}</h4><p class="price">$${price.toFixed(2)} c/u</p></div><div class="cart-item-controls"><label for="cart-qty-${item.id}">Cant:</label><select id="cart-qty-${item.id}" class="cart-item-quantity">${opts}</select><button class="remove-item-btn" title="Eliminar">&times;</button></div></div>`;
+                    let opts = Array.from({length: 20}, (_, i) => `<option value="${i + 1}" ${quantity === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join('');
+                    cartItemsContainer.innerHTML += `
+                        <div class="cart-item" data-product-id="${item.id}">
+                            <div class="cart-item-details">
+                                <h4>${item.name}</h4>
+                                <p class="price">$${price.toFixed(2)} c/u</p>
+                            </div>
+                            <div class="cart-item-controls">
+                                <label for="cart-qty-${item.id}">Cant:</label>
+                                <select id="cart-qty-${item.id}" class="cart-item-quantity">${opts}</select>
+                                <button class="remove-item-btn" title="Eliminar">&times;</button>
+                            </div>
+                        </div>`;
                 });
             }
             updateCartModalTotals();
             addCartModalEventListeners();
-        };
-        
-        const updateCartModalTotals = () => {
-            const subtotalEl = document.getElementById('cartSubtotal');
-            const taxesEl = document.getElementById('cartTaxes');
-            const totalEl = document.getElementById('cartTotal');
-            if (!subtotalEl || !taxesEl || !totalEl) return;
-
-            const subtotal = cart.items.reduce((sum, item) => {
-                const price = (typeof item.price === 'number') ? item.price : 0;
-                const quantity = (typeof item.quantity === 'number') ? item.quantity : 0;
-                return sum + (price * quantity);
-            }, 0);
-
-            const taxes = subtotal * 0.16;
-            const total = subtotal + taxes;
-            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-            taxesEl.textContent = `$${taxes.toFixed(2)}`;
-            totalEl.textContent = `$${total.toFixed(2)}`;
-        };
-
-        const removeCartItem = (productId) => {
-            cart.items = cart.items.filter(item => item.id !== productId);
-            if (cart.items.length === 0) {
-                cart.rentalDates = null;
-            }
-            saveCart();
-            renderCartModal();
-            updateCartCount();
-        };
-        
-        const updateCartItemQuantity = (productId, newQuantity) => {
-            const itemInCart = cart.items.find(item => item.id === productId);
-            if (itemInCart) {
-                itemInCart.quantity = newQuantity;
-                saveCart();
-                renderCartModal();
-            }
-        };
-
-        const addCartModalEventListeners = () => {
-            if (!cartItemsContainer) return;
-            cartItemsContainer.querySelectorAll('.remove-item-btn').forEach(b => {
-                b.addEventListener('click', (e) => removeCartItem(e.target.closest('.cart-item').dataset.productId));
-            });
-            cartItemsContainer.querySelectorAll('.cart-item-quantity').forEach(s => {
-                s.addEventListener('change', (e) => updateCartItemQuantity(e.target.closest('.cart-item').dataset.productId, parseInt(e.target.value, 10)));
-            });
         };
 
         const addToCart = (product, rentalDates) => {
@@ -245,8 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!startDateInput.value || !endDateInput.value) {
                     showNotification('Por favor, selecciona las fechas de entrega y recolección.', 'error');
-                    startDateInput.parentElement.parentElement.parentElement.classList.add('shake-animation');
-                    setTimeout(() => startDateInput.parentElement.parentElement.parentElement.classList.remove('shake-animation'), 500);
+                    const rentalContainer = document.querySelector('.rental-dates-container');
+                    if(rentalContainer) {
+                        rentalContainer.classList.add('shake-animation');
+                        setTimeout(() => rentalContainer.classList.remove('shake-animation'), 500);
+                    }
                     return;
                 }
 
@@ -264,10 +282,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!quantitySelect || !quantitySelect.value) {
                     showNotification('Por favor, selecciona una cantidad.', 'error'); return;
                 }
+                const productPrice = parseFloat(productCard.dataset.productPrice);
+                if (isNaN(productPrice)) {
+                    return;
+                }
                 addToCart({
                     id: productCard.dataset.productId,
                     name: productCard.querySelector('h3').textContent,
-                    price: parseFloat(productCard.dataset.productPrice),
+                    price: productPrice,
                     quantity: parseInt(quantitySelect.value, 10),
                 }, newRentalDates);
                 quantitySelect.value = "";
@@ -280,8 +302,15 @@ document.addEventListener('DOMContentLoaded', () => {
             cartModalOverlay.classList.add('active');
         });
 
-        closeCartModalBtn.addEventListener('click', () => cartModalOverlay.classList.remove('active'));
-        cartModalOverlay.addEventListener('click', e => { if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('active'); });
+        closeCartModalBtn.addEventListener('click', () => {
+            cartModalOverlay.classList.remove('active');
+        });
+        
+        cartModalOverlay.addEventListener('click', (e) => {
+            if (e.target === cartModalOverlay) {
+                cartModalOverlay.classList.remove('active');
+            }
+        });
         
         if (emptyCartBtn) {
             emptyCartBtn.addEventListener('click', () => {
@@ -296,27 +325,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.preventDefault();
                     showNotification('Tu carrito está vacío.', 'error');
                 }
-                // Guardamos el carrito una última vez para asegurar que las fechas van en la orden
                 saveCart();
             });
         }
         
         updateCartCount();
-        renderCartModal(); // Para que las fechas se muestren al cargar la página si ya existen
+        if (cartModalOverlay) renderCartModal();
     };
 
     /**
      * ===============================================
-     * MÓDULO PARA LA PÁGINA DE PRODUCTOS
+     * MÓDULO PARA LA PÁGINA DE PRODUCTOS (CORREGIDO)
      * ===============================================
      */
     const initProductPageElements = () => {
         if (typeof flatpickr === 'undefined' || !document.getElementById('fecha-entrega')) return;
         
-        const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", { locale: "es", minDate: "today" });
+        const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
+            locale: "es",
+            minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+        });
+
         flatpickr("#fecha-entrega", {
             locale: "es",
             minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
             onChange: function(selectedDates, dateStr) {
                 if (fechaRecoleccionPicker) {
                     fechaRecoleccionPicker.set('minDate', dateStr);
@@ -325,7 +363,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
-    // Aquí puedes añadir tu función initCalculator si la tienes
+    // Aquí puedes añadir tu función initCalculator si la tienes...
+    const initCalculator = () => {};
+
 
     /**
      * ===============================================
@@ -336,5 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initActiveNav();
     initUserSession();
     initShoppingCart();
+    initCalculator();
     initProductPageElements();
 });
