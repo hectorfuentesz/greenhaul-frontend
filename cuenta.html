@@ -244,16 +244,21 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
-            if (!loggedInUser) {
+            // 1. Verificación y redirección si no hay usuario
+            if (!loggedInUser || !loggedInUser.id) { // Aseguramos que loggedInUser y su ID existan
+                console.warn("Usuario no autenticado o ID no encontrado en localStorage. Redirigiendo al login.");
+                // showNotification("Por favor, inicia sesión para acceder a tu cuenta.", true); // Si tu notificación funciona aquí
                 window.location.href = 'login.html';
                 return;
             }
+
             const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
-            let userData = { ...loggedInUser };
+            let userData = {}; // Inicializamos userData como un objeto vacío, se llenará con los datos del backend
 
             const userNameSpan = document.getElementById('userName');
             const accountTitle = document.getElementById('account-title');
-
+            
+            // Función de notificación (ya la tenías)
             function showNotification(message, isError = false) {
                 const popup = document.getElementById('notificationPopup');
                 if(!popup) return;
@@ -261,6 +266,37 @@
                 popup.className = 'show';
                 if (isError) popup.classList.add('error');
                 setTimeout(() => popup.className = '', 3000);
+            }
+
+            // --- NUEVA FUNCIÓN: Obtener datos del usuario desde el backend ---
+            async function fetchUserData(userId) {
+                try {
+                    const response = await fetch(`${backendUrl}/api/users/${userId}`);
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error('Usuario no encontrado en el servidor.');
+                        }
+                        throw new Error(`Error al cargar los datos del usuario: ${response.statusText}`);
+                    }
+                    const result = await response.json(); // Asumiendo que la respuesta es { user: {...} }
+                    
+                    // Actualizamos la variable global userData con los datos frescos del backend
+                    userData = result.user; 
+
+                    // También actualizamos localStorage para mantener la consistencia en otras páginas
+                    // Asegúrate de que tu backend envía `name` y `surname` como campos separados
+                    localStorage.setItem('greenhaulUser', JSON.stringify(userData)); 
+
+                    // Llamar a las funciones de actualización de UI después de obtener los datos
+                    populateUIHeaders(); 
+                    populateProfileForm(); 
+
+                } catch (error) {
+                    console.error("Error al obtener datos del usuario:", error);
+                    showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
+                    // Opcional: Si el error es grave (ej. usuario no existe), redirigir
+                    // setTimeout(() => window.location.href = 'login.html', 3000);
+                }
             }
 
             // Lógica para cambiar entre pestañas (Resumen, Perfil, etc.)
@@ -276,17 +312,20 @@
                     const targetSection = document.getElementById(`${sectionId}-section`);
                     if(targetSection) targetSection.classList.add('active');
                     if (sectionId === 'direcciones') loadAddresses();
+                    // Si se cambia a la sección de perfil, recargar los datos por si acaso
+                    if (sectionId === 'perfil') populateProfileForm();
                 });
             });
 
+            // Función para poblar los encabezados (nombre de usuario en navbar y título)
             function populateUIHeaders() {
                 if(!userData || !userData.name) return;
-                const fullName = `${userData.name} ${userData.surname || ''}`.trim();
-                userNameSpan.textContent = userData.name.split(' ')[0];
-                accountTitle.textContent = `Panel de Control de ${fullName}`;
+                const fullName = `${userData.name || ''} ${userData.surname || ''}`.trim(); // Usa name y surname
+                userNameSpan.textContent = userData.name ? userData.name.split(' ')[0] : 'Usuario'; // Muestra solo el primer nombre
+                accountTitle.textContent = `Panel de Control de ${fullName || 'Usuario'}`;
             }
 
-            // --- LÓGICA DE PERFIL (VERSIÓN FINAL) ---
+            // --- LÓGICA DE PERFIL (Carga de datos desde userData) ---
             const profileForm = document.getElementById('profileForm');
             const profileNameInput = document.getElementById('profile-name');
             const profileSurnameInput = document.getElementById('profile-lastname');
@@ -295,18 +334,26 @@
 
             function populateProfileForm() {
                 if (!userData) return;
-                profileNameInput.value = userData.name || '';
-                profileSurnameInput.value = userData.surname || ''; 
+                profileNameInput.value = userData.name || '';      // Carga el 'name'
+                profileSurnameInput.value = userData.surname || ''; // Carga el 'surname'
                 profileEmailInput.value = userData.email || '';
                 profileWhatsappInput.value = userData.whatsapp || '';
             }
 
-            // El formulario solo envía email y whatsapp
+            // El formulario solo envía email y whatsapp (ya lo tenías)
             profileForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                // Opcional: deshabilitar botón y mostrar spinner
+                const submitBtn = profileForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = true; 
+                submitBtn.textContent = 'Guardando...';
+
                 const updatedData = {
                     email: profileEmailInput.value,
-                    whatsapp: profileWhatsappInput.value
+                    whatsapp: profileWhatsappInput.value,
+                    // Si permites al usuario cambiar nombre y apellido, inclúyelos aquí:
+                    // name: profileNameInput.value, 
+                    // surname: profileSurnameInput.value
                 };
 
                 try {
@@ -316,19 +363,24 @@
                         body: JSON.stringify(updatedData)
                     });
                     const result = await response.json();
-                    if (!response.ok) throw new Error(result.message);
+                    if (!response.ok) throw new Error(result.message || 'Error al actualizar el perfil.');
 
-                    localStorage.setItem('greenhaulUser', JSON.stringify(result.user));
-                    userData = result.user;
+                    // Actualizar userData y localStorage con la respuesta del backend
+                    userData = result.user; // Asumiendo que el backend devuelve el usuario actualizado
+                    localStorage.setItem('greenhaulUser', JSON.stringify(userData));
 
                     showNotification('Perfil actualizado con éxito.');
+                    populateUIHeaders(); // Actualizar el nombre en el navbar si se cambia
                 } catch (error) {
                     showNotification(error.message, true);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Guardar Cambios';
                 }
             });
 
 
-            // --- LÓGICA DE DIRECCIONES (CÓDIGO COMPLETO) ---
+            // --- LÓGICA DE DIRECCIONES (CÓDIGO COMPLETO, sin cambios mayores) ---
             const addressModal = document.getElementById('addressModal');
             const addAddressBtn = document.getElementById('addAddressBtn');
             const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -347,8 +399,13 @@
             let map, marker;
 
             function initMap() {
-                if(map) { map.invalidateSize(); return; }
-                map = L.map('address-map').setView([19.4326, -99.1332], 13);
+                // Eliminar el mapa existente si ya está inicializado para evitar duplicados
+                if (map) {
+                    map.remove();
+                    map = null; // Reinicializar a null
+                }
+                
+                map = L.map('address-map').setView([19.4326, -99.1332], 13); // Centrado inicial en CDMX
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
@@ -358,6 +415,9 @@
                     const position = marker.getLatLng();
                     updateAddressFromMap(position.lat, position.lng);
                 });
+
+                // Invalidar tamaño del mapa después de que el modal se muestre para asegurar que se renderice correctamente
+                setTimeout(() => { if(map) map.invalidateSize(); }, 200);
             }
 
             async function updateAddressFromMap(lat, lng) {
@@ -374,6 +434,7 @@
                     }
                 } catch (error) {
                     showNotification('No se pudo obtener la dirección desde el mapa.', true);
+                    console.error("Error reverse geocoding:", error);
                 }
             }
             
@@ -398,21 +459,29 @@
                     }
                 } catch (error) {
                     showNotification('Error al buscar la dirección.', true);
+                    console.error("Error geocoding:", error);
                 }
             }
             if(geocodeBtn) geocodeBtn.addEventListener('click', updateMapFromAddress);
 
             const openModal = () => {
                 addressModal.classList.add('show');
+                // Inicializa el mapa solo cuando el modal esté visible para evitar problemas de renderizado
+                // Esto se hace con un pequeño retraso para asegurar que el DOM ha aplicado el "display: block"
                 setTimeout(() => {
                     initMap();
-                }, 50);
+                }, 50); 
             };
 
             const closeModal = () => {
                 addressModal.classList.remove('show');
                 addressForm.reset();
                 addressIdInput.value = '';
+                // Opcional: remover el mapa de Leaflet para liberar recursos
+                if(map) {
+                    map.remove();
+                    map = null;
+                }
             };
 
             if(addAddressBtn) addAddressBtn.addEventListener('click', () => {
@@ -424,6 +493,7 @@
             
             async function loadAddresses() {
                 try {
+                    // Asegúrate de que userData.id sea el ID real del usuario en tu backend
                     const response = await fetch(`${backendUrl}/api/users/${userData.id}/addresses`);
                     if (!response.ok) throw new Error('No se pudieron cargar las direcciones.');
                     const addresses = await response.json();
@@ -446,6 +516,7 @@
                     });
                 } catch (error) {
                     showNotification(error.message, true);
+                    console.error("Error loading addresses:", error);
                 }
             }
 
@@ -465,12 +536,13 @@
                 try {
                     const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addressData) });
                     const result = await response.json();
-                    if (!response.ok) throw new Error(result.message);
+                    if (!response.ok) throw new Error(result.message || 'Error al guardar la dirección.');
                     showNotification(result.message);
                     closeModal();
                     loadAddresses();
                 } catch (error) {
                     showNotification(error.message, true);
+                    console.error("Error saving address:", error);
                 }
             });
 
@@ -479,10 +551,11 @@
                 const deleteBtn = e.target.closest('.delete-btn');
                 if (editBtn) {
                     const id = editBtn.dataset.id;
-                    const response = await fetch(`${backendUrl}/api/users/${userData.id}/addresses`);
-                    const addresses = await response.json();
-                    const addressToEdit = addresses.find(addr => addr.id == id);
-                    if (addressToEdit) {
+                    try {
+                        const response = await fetch(`${backendUrl}/api/addresses/${id}`); // Fetch individual address by ID
+                        if (!response.ok) throw new Error('No se pudo cargar la dirección para editar.');
+                        const addressToEdit = await response.json(); // Asumiendo que la API devuelve solo la dirección
+
                         modalTitle.textContent = 'Editar Dirección';
                         addressIdInput.value = addressToEdit.id;
                         streetInput.value = addressToEdit.street;
@@ -490,34 +563,50 @@
                         stateInput.value = addressToEdit.state || '';
                         postalCodeInput.value = addressToEdit.postal_code || '';
                         openModal();
+                        // Opcional: Mover el marcador del mapa a la dirección editada
+                        // if (addressToEdit.latitude && addressToEdit.longitude) {
+                        //     const newPos = L.latLng(addressToEdit.latitude, addressToEdit.longitude);
+                        //     marker.setLatLng(newPos);
+                        //     map.setView(newPos, 16);
+                        // } else {
+                        //     updateMapFromAddress(); // Intentar geocodificar la dirección y ubicarla
+                        // }
+                    } catch (error) {
+                        showNotification(error.message, true);
+                        console.error("Error fetching address for edit:", error);
                     }
                 }
                 if (deleteBtn) {
                     const id = deleteBtn.dataset.id;
-                    if (confirm('¿Estás seguro de que quieres eliminar esta dirección?')) {
+                    if (confirm('¿Estás seguro de que quieres eliminar esta dirección? Esta acción no se puede deshacer.')) {
                         try {
                             const response = await fetch(`${backendUrl}/api/addresses/${id}`, { method: 'DELETE' });
-                            const result = await response.json();
-                            if (!response.ok) throw new Error(result.message);
-                            showNotification(result.message);
-                            loadAddresses();
+                            const result = await response.json(); // Asumiendo que devuelve un mensaje
+                            if (!response.ok) throw new Error(result.message || 'Error al eliminar la dirección.');
+                            showNotification(result.message || 'Dirección eliminada con éxito.');
+                            loadAddresses(); // Recargar la lista después de eliminar
                         } catch (error) {
                             showNotification(error.message, true);
+                            console.error("Error deleting address:", error);
                         }
                     }
                 }
             });
 
+            // Lógica para cerrar sesión
             if(document.getElementById('logoutBtn')) {
                 document.getElementById('logoutBtn').addEventListener('click', () => {
-                    localStorage.removeItem('greenhaulUser');
-                    window.location.href = 'index.html';
+                    localStorage.removeItem('greenhaulUser'); // Elimina los datos de usuario
+                    // Si usas tokens de autenticación (ej. JWT), también deberías eliminarlos aquí:
+                    // localStorage.removeItem('authToken'); 
+                    window.location.href = 'index.html'; // Redirige a la página principal
                 });
             }
             
-            // Llamada inicial para configurar toda la página
-            populateUIHeaders();
-            populateProfileForm();
+            // --- Llamada inicial para cargar los datos del usuario y configurar la página ---
+            // Esto se hace al final del DOMContentLoaded para asegurar que todos los elementos HTML estén disponibles
+            fetchUserData(loggedInUser.id);
+            // Las llamadas a populateUIHeaders() y populateProfileForm() se harán dentro de fetchUserData()
         });
     </script>
 </body>
