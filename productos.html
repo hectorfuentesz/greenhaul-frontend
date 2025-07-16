@@ -10,6 +10,44 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+<style>
+    /* Notificación discreta superior derecha/izquierda */
+    .popup-bar {
+      position: fixed;
+      top: 28px;
+      right: 28px;
+      min-width: 220px;
+      max-width: 330px;
+      background: var(--accent-green, #00b386);
+      color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+      padding: 15px 26px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      z-index: 3000;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-18px);
+      transition: opacity .3s, transform .3s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .popup-bar.popup-bar-error {
+      background: var(--accent-red, #e74c3c);
+    }
+    .popup-bar.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    @media(max-width: 700px){
+      .popup-bar {
+        top: 12px; right: 12px; left: 12px; min-width: unset; max-width: 99vw; font-size: 1rem;
+      }
+    }
+    </style>
 </head>
 <body>
 <header>
@@ -267,6 +305,31 @@ document.addEventListener('DOMContentLoaded', function() {
         dateFormat: "Y-m-d",
     });
 });
+ // --- NOTIFICACIÓN BAR ---
+    // Función para mostrar popup discreto
+    window.showPopupBar = function(message, type='success', duration=2000) {
+      const popupBar = document.getElementById('popupBar');
+      popupBar.textContent = message;
+      popupBar.className = 'popup-bar' + (type === 'error' ? ' popup-bar-error' : '');
+      popupBar.classList.add('visible');
+      setTimeout(() => {
+        popupBar.classList.remove('visible');
+      }, duration);
+    };
+
+    // Ejemplo de uso: en "Añadir al Carrito"
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const productCard = this.closest('.product-card');
+        const qtySelect = productCard.querySelector('.product-qty');
+        if (qtySelect && !qtySelect.value) {
+          showPopupBar('Por favor selecciona una cantidad.', 'error');
+        } else {
+          showPopupBar('Producto añadido correctamente', 'success');
+          // Aquí iría tu lógica de agregar al carrito
+        }
+      });
+    });
 </script>
 
 <script type="module" src="/assets/js/main.js"></script>

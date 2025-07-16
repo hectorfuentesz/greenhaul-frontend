@@ -10,34 +10,30 @@
 // Muestra mensajes temporales en la interfaz de usuario (ej. "Producto añadido").
 function showNotification(message, type = 'success') {
     const notificationElement = document.getElementById('cartNotification');
-    if (!notificationElement) return; // Salir si el elemento de notificación no existe
-    
+    if (!notificationElement) return;
+
     const messageElement = notificationElement.querySelector('#notificationText');
     const iconElement = notificationElement.querySelector('.notification-icon');
-    
-    const iconClassSuccess = 'fas fa-check-circle'; // Icono para éxito (FontAwesome)
-    const iconClassError = 'fas fa-times-circle';   // Icono para error (FontAwesome)
 
-    if (messageElement) {
-        messageElement.textContent = message;
-    }
+    // ===== ÍCONOS SVG MEJORADOS Y MÁS VISIBLES =====
+    const svgSuccess = '<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"></path></svg>';
+    const svgError = '<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"></path></svg>';
 
-    if (iconElement) {
-        iconElement.className = 'notification-icon'; // Resetear clases del icono
-        if (type === 'success') {
-            iconElement.classList.add(...iconClassSuccess.split(' '));
-        } else if (type === 'error') {
-            iconElement.classList.add(...iconClassError.split(' '));
-        }
+    let iconSVGContent = svgSuccess;
+    if (type === 'error') {
+        iconSVGContent = svgError;
     }
     
-    notificationElement.className = 'cart-notification'; // Resetear clases del contenedor
-    notificationElement.classList.add(type, 'visible'); // Añadir tipo y hacer visible
+    if (messageElement) messageElement.textContent = message;
+    if (iconElement) iconElement.innerHTML = iconSVGContent;
+
+    notificationElement.className = 'cart-notification'; // Resetea clases
+    notificationElement.classList.add(type, 'visible'); // Añade tipo y hace visible
     
     // Ocultar la notificación después de 3 segundos
     setTimeout(() => {
         notificationElement.classList.remove('visible');
-    }, 3000);
+    }, 1500);
 }
 
 
