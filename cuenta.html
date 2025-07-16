@@ -233,18 +233,28 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
-            if (!loggedInUser || !loggedInUser.id) {
-                window.location.href = 'login.html';
-                return;
-            }
-
+            // --- Variables principales ---
             const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+            const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
+            if (!loggedInUser || !loggedInUser.id) { window.location.href = 'login.html'; return; }
             let userData = {};
+            let map, marker;
 
-            const userNameSpan = document.getElementById('userName');
-            const accountTitle = document.getElementById('account-title');
+            // --- Elementos de dirección ---
+            const addressModal = document.getElementById('addressModal');
+            const addAddressBtn = document.getElementById('addAddressBtn');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalCancelBtn = document.getElementById('modalCancelBtn');
+            const addressForm = document.getElementById('addressForm');
+            const addressListContainer = document.getElementById('address-list-container');
+            const modalTitle = document.getElementById('modalTitle');
+            const addressIdInput = document.getElementById('addressId');
+            const streetInput = document.getElementById('address-street');
+            const cityInput = document.getElementById('address-city');
+            const stateInput = document.getElementById('address-state');
+            const postalCodeInput = document.getElementById('address-postal-code');
 
+            // --- Notificaciones ---
             function showNotification(message, isError = false) {
                 const popup = document.getElementById('notificationPopup');
                 if(!popup) return;
@@ -254,125 +264,25 @@
                 setTimeout(() => popup.className = '', 3000);
             }
 
-            async function fetchUserData(userId) {
-                try {
-                    const response = await fetch(`${backendUrl}/api/users/${userId}`);
-                    if (!response.ok) {
-                        if (response.status === 404) throw new Error('Usuario no encontrado en el servidor.');
-                        throw new Error(`Error al cargar los datos del usuario: ${response.statusText}`);
-                    }
-                    const result = await response.json();
-                    userData = result.user;
-                    localStorage.setItem('greenhaulUser', JSON.stringify(userData));
-                    populateUIHeaders();
-                    populateProfileForm();
-                } catch (error) {
-                    showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
-                }
-            }
-
-            const navLinks = document.querySelectorAll('.account-nav-link');
-            const sections = document.querySelectorAll('.account-section');
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const sectionId = link.dataset.section;
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    sections.forEach(s => s.classList.remove('active'));
-                    link.classList.add('active');
-                    const targetSection = document.getElementById(`${sectionId}-section`);
-                    if(targetSection) targetSection.classList.add('active');
-                    if (sectionId === 'direcciones') loadAddresses();
-                    if (sectionId === 'perfil') populateProfileForm();
-                });
-            });
-
-            function populateUIHeaders() {
-                if(!userData || !userData.name) return;
-                const fullName = `${userData.name || ''} ${userData.surname || ''}`.trim();
-                userNameSpan.textContent = userData.name ? userData.name.split(' ')[0] : 'Usuario';
-                accountTitle.textContent = `Panel de Control de ${fullName || 'Usuario'}`;
-            }
-
-            const profileForm = document.getElementById('profileForm');
-            const profileNameInput = document.getElementById('profile-name');
-            const profileSurnameInput = document.getElementById('profile-lastname');
-            const profileEmailInput = document.getElementById('profile-email');
-            const profileWhatsappInput = document.getElementById('profile-whatsapp');
-
-            function populateProfileForm() {
-                if (!userData) return;
-                profileNameInput.value = userData.name || '';
-                profileSurnameInput.value = userData.surname || '';
-                profileEmailInput.value = userData.email || '';
-                profileWhatsappInput.value = userData.whatsapp || '';
-            }
-
-            profileForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const submitBtn = profileForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = true; 
-                submitBtn.textContent = 'Guardando...';
-
-                const updatedData = {
-                    email: profileEmailInput.value,
-                    whatsapp: profileWhatsappInput.value,
-                };
-
-                try {
-                    const response = await fetch(`${backendUrl}/api/users/${userData.id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(updatedData)
-                    });
-                    const result = await response.json();
-                    if (!response.ok) throw new Error(result.message || 'Error al actualizar el perfil.');
-                    userData = result.user;
-                    localStorage.setItem('greenhaulUser', JSON.stringify(userData));
-                    showNotification('Perfil actualizado con éxito.');
-                    populateUIHeaders();
-                } catch (error) {
-                    showNotification(error.message, true);
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Guardar Cambios';
-                }
-            });
-
-            // --- DIRECCIONES ---
-            const addressModal = document.getElementById('addressModal');
-            const addAddressBtn = document.getElementById('addAddressBtn');
-            const modalCloseBtn = document.getElementById('modalCloseBtn');
-            const modalCancelBtn = document.getElementById('modalCancelBtn');
-            const addressForm = document.getElementById('addressForm');
-            const addressListContainer = document.getElementById('address-list-container');
-            const modalTitle = document.getElementById('modalTitle');
-            const addressIdInput = document.getElementById('addressId');
-
-            const streetInput = document.getElementById('address-street');
-            const cityInput = document.getElementById('address-city');
-            const stateInput = document.getElementById('address-state');
-            const postalCodeInput = document.getElementById('address-postal-code');
-
-            let map, marker;
-
-            function initMap() {
+            // --- MAPA ---
+            function initMap(lat=19.4326, lng=-99.1332) {
                 if (map) { map.remove(); map = null; }
-                map = L.map('address-map').setView([19.4326, -99.1332], 13);
+                map = L.map('address-map').setView([lat, lng], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
-                marker = L.marker([19.4326, -99.1332], { draggable: true }).addTo(map);
+                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
                 marker.on('dragend', function(event) {
-                    const position = marker.getLatLng();
-                    updateAddressFromMap(position.lat, position.lng);
+                    const pos = marker.getLatLng();
+                    reverseGeocode(pos.lat, pos.lng);
                 });
                 setTimeout(() => { if(map) map.invalidateSize(); }, 200);
             }
 
-            async function updateAddressFromMap(lat, lng) {
-                const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+            // --- Reverse geocoding: actualiza los campos al mover el pin ---
+            async function reverseGeocode(lat, lng) {
                 try {
+                    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
                     const response = await fetch(url);
                     const data = await response.json();
                     if (data && data.address) {
@@ -387,9 +297,36 @@
                 }
             }
 
-            const openModal = () => {
+            // --- Geocoding: mueve el pin cuando se escribe la dirección ---
+            async function geocodeAddress() {
+                const address = `${streetInput.value}, ${cityInput.value}, ${stateInput.value}`;
+                if (address.length < 7) return;
+                try {
+                    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+                    const response = await fetch(url);
+                    const results = await response.json();
+                    if (results && results.length > 0) {
+                        const { lat, lon } = results[0];
+                        const newPosition = L.latLng(lat, lon);
+                        marker.setLatLng(newPosition);
+                        map.setView(newPosition, 16);
+                    }
+                } catch (error) {
+                    showNotification('No se pudo ubicar la dirección en el mapa.', true);
+                }
+            }
+
+            // --- Dispara geocoding en los campos relevantes ---
+            [streetInput, cityInput, stateInput].forEach(input => {
+                input.addEventListener('blur', () => {
+                    geocodeAddress();
+                });
+            });
+
+            // --- Modal ---
+            const openModal = (lat=19.4326, lng=-99.1332) => {
                 addressModal.classList.add('show');
-                setTimeout(() => { initMap(); }, 50);
+                setTimeout(() => { initMap(lat, lng); }, 50);
             };
             const closeModal = () => {
                 addressModal.classList.remove('show');
@@ -405,6 +342,7 @@
             if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
             if(modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
 
+            // --- Guardar dirección ---
             if(addressForm) addressForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const addressId = addressIdInput.value;
@@ -417,7 +355,6 @@
                 };
                 const url = isUpdating ? `${backendUrl}/api/addresses/${addressId}` : `${backendUrl}/api/users/${userData.id}/addresses`;
                 const method = isUpdating ? 'PUT' : 'POST';
-
                 try {
                     const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addressData) });
                     const result = await response.json();
@@ -430,6 +367,7 @@
                 }
             });
 
+            // --- Lista de direcciones ---
             async function loadAddresses() {
                 try {
                     const response = await fetch(`${backendUrl}/api/users/${userData.id}/addresses`);
@@ -457,6 +395,7 @@
                 }
             }
 
+            // --- Editar y eliminar ---
             if(addressListContainer) addressListContainer.addEventListener('click', async (e) => {
                 const editBtn = e.target.closest('.edit-btn');
                 const deleteBtn = e.target.closest('.delete-btn');
@@ -472,6 +411,8 @@
                         cityInput.value = addressToEdit.city;
                         stateInput.value = addressToEdit.state || '';
                         postalCodeInput.value = addressToEdit.postal_code || '';
+                        // Geocoding para precargar la ubicación en el mapa
+                        geocodeAddress();
                         openModal();
                     } catch (error) {
                         showNotification(error.message, true);
@@ -493,6 +434,74 @@
                 }
             });
 
+            // --- Perfil y navegación igual que antes ---
+            const userNameSpan = document.getElementById('userName');
+            const accountTitle = document.getElementById('account-title');
+            function populateUIHeaders() {
+                if(!userData || !userData.name) return;
+                const fullName = `${userData.name || ''} ${userData.surname || ''}`.trim();
+                userNameSpan.textContent = userData.name ? userData.name.split(' ')[0] : 'Usuario';
+                accountTitle.textContent = `Panel de Control de ${fullName || 'Usuario'}`;
+            }
+            const profileForm = document.getElementById('profileForm');
+            const profileNameInput = document.getElementById('profile-name');
+            const profileSurnameInput = document.getElementById('profile-lastname');
+            const profileEmailInput = document.getElementById('profile-email');
+            const profileWhatsappInput = document.getElementById('profile-whatsapp');
+            function populateProfileForm() {
+                if (!userData) return;
+                profileNameInput.value = userData.name || '';
+                profileSurnameInput.value = userData.surname || '';
+                profileEmailInput.value = userData.email || '';
+                profileWhatsappInput.value = userData.whatsapp || '';
+            }
+            profileForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = profileForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = true; 
+                submitBtn.textContent = 'Guardando...';
+                const updatedData = {
+                    email: profileEmailInput.value,
+                    whatsapp: profileWhatsappInput.value,
+                };
+                try {
+                    const response = await fetch(`${backendUrl}/api/users/${userData.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedData)
+                    });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || 'Error al actualizar el perfil.');
+                    userData = result.user;
+                    localStorage.setItem('greenhaulUser', JSON.stringify(userData));
+                    showNotification('Perfil actualizado con éxito.');
+                    populateUIHeaders();
+                } catch (error) {
+                    showNotification(error.message, true);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Guardar Cambios';
+                }
+            });
+
+            // --- Tabs ---
+            const navLinks = document.querySelectorAll('.account-nav-link');
+            const sections = document.querySelectorAll('.account-section');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = link.dataset.section;
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    link.classList.add('active');
+                    const targetSection = document.getElementById(`${sectionId}-section`);
+                    if(targetSection) targetSection.classList.add('active');
+                    if (sectionId === 'direcciones') loadAddresses();
+                    if (sectionId === 'perfil') populateProfileForm();
+                });
+            });
+
+            // --- Cerrar sesión ---
             if(document.getElementById('logoutBtn')) {
                 document.getElementById('logoutBtn').addEventListener('click', () => {
                     localStorage.removeItem('greenhaulUser');
@@ -500,6 +509,20 @@
                 });
             }
 
+            // --- Inicialización ---
+            async function fetchUserData(userId) {
+                try {
+                    const response = await fetch(`${backendUrl}/api/users/${userId}`);
+                    if (!response.ok) throw new Error('Usuario no encontrado en el servidor.');
+                    const result = await response.json();
+                    userData = result.user;
+                    localStorage.setItem('greenhaulUser', JSON.stringify(userData));
+                    populateUIHeaders();
+                    populateProfileForm();
+                } catch (error) {
+                    showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
+                }
+            }
             fetchUserData(loggedInUser.id);
         });
     </script>
