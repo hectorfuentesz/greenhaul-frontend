@@ -88,7 +88,7 @@
         .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
         #address-map { height: 250px; width: 100%; border-radius: var(--border-radius); margin-top: 20px; border: 1px solid var(--border-color); z-index: 1;}
         .form-group-with-button { position: relative; }
-        #geocodeBtn { position: absolute; top: 50%; right: 10px; transform: translateY(25%); background: none; border: none; cursor: pointer; color: var(--primary-solid); font-size: 1.2rem; }
+        #geocodeBtn { display: none; }
         @media (max-width: 850px) {
             .navbar-content { flex-wrap: wrap; justify-content: center; gap: 15px; }
             .nav-links { order: 1; width: 100%; }
@@ -195,10 +195,9 @@
             </div>
             <form id="addressForm">
                 <input type="hidden" id="addressId">
-                <div class="form-group form-group-with-button">
+                <div class="form-group">
                     <label for="address-street">Calle y Número</label>
                     <input type="text" id="address-street" class="form-control" placeholder="Ej. Av. Insurgentes Sur 123" required>
-                    <button type="button" id="geocodeBtn" title="Ubicar en Mapa"><i class="fas fa-search-location"></i></button>
                 </div>
                 <div class="form-grid">
                     <div class="form-group">
@@ -214,9 +213,7 @@
                     <label for="address-postal-code">Código Postal</label>
                     <input type="text" id="address-postal-code" class="form-control">
                 </div>
-
                 <div id="address-map"></div>
-
                 <div class="modal-actions">
                     <button type="button" class="btn btn-outline" id="modalCancelBtn">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar Dirección</button>
@@ -233,25 +230,21 @@
         </div>
     </footer>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
-            // 1. Verificación y redirección si no hay usuario
             if (!loggedInUser || !loggedInUser.id) {
                 window.location.href = 'login.html';
                 return;
             }
 
             const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
-            let userData = {}; // Se llenará desde el backend
+            let userData = {};
 
-            // Elementos principales
             const userNameSpan = document.getElementById('userName');
             const accountTitle = document.getElementById('account-title');
 
-            // Notificaciones
             function showNotification(message, isError = false) {
                 const popup = document.getElementById('notificationPopup');
                 if(!popup) return;
@@ -261,7 +254,6 @@
                 setTimeout(() => popup.className = '', 3000);
             }
 
-            // --- Obtener datos del usuario desde el backend ---
             async function fetchUserData(userId) {
                 try {
                     const response = await fetch(`${backendUrl}/api/users/${userId}`);
@@ -279,7 +271,6 @@
                 }
             }
 
-            // Tabs
             const navLinks = document.querySelectorAll('.account-nav-link');
             const sections = document.querySelectorAll('.account-section');
             navLinks.forEach(link => {
@@ -296,7 +287,6 @@
                 });
             });
 
-            // Poblar encabezados
             function populateUIHeaders() {
                 if(!userData || !userData.name) return;
                 const fullName = `${userData.name || ''} ${userData.surname || ''}`.trim();
@@ -304,7 +294,6 @@
                 accountTitle.textContent = `Panel de Control de ${fullName || 'Usuario'}`;
             }
 
-            // --- Perfil ---
             const profileForm = document.getElementById('profileForm');
             const profileNameInput = document.getElementById('profile-name');
             const profileSurnameInput = document.getElementById('profile-lastname');
@@ -350,7 +339,7 @@
                 }
             });
 
-            // --- Direcciones ---
+            // --- DIRECCIONES ---
             const addressModal = document.getElementById('addressModal');
             const addAddressBtn = document.getElementById('addAddressBtn');
             const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -364,8 +353,7 @@
             const cityInput = document.getElementById('address-city');
             const stateInput = document.getElementById('address-state');
             const postalCodeInput = document.getElementById('address-postal-code');
-            const geocodeBtn = document.getElementById('geocodeBtn');
-            
+
             let map, marker;
 
             function initMap() {
@@ -398,34 +386,11 @@
                     showNotification('No se pudo obtener la dirección desde el mapa.', true);
                 }
             }
-            
-            async function updateMapFromAddress() {
-                const address = `${streetInput.value}, ${cityInput.value}, ${stateInput.value}`;
-                if (address.length < 10) { showNotification('Escribe una dirección más completa para buscar.', true); return; }
-                const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
-                try {
-                    const response = await fetch(url);
-                    const results = await response.json();
-                    if (results && results.length > 0) {
-                        const { lat, lon } = results[0];
-                        const newPosition = L.latLng(lat, lon);
-                        marker.setLatLng(newPosition);
-                        map.setView(newPosition, 16);
-                        showNotification('Dirección ubicada en el mapa.');
-                    } else {
-                        showNotification('No se pudo encontrar la dirección en el mapa.', true);
-                    }
-                } catch (error) {
-                    showNotification('Error al buscar la dirección.', true);
-                }
-            }
-            if(geocodeBtn) geocodeBtn.addEventListener('click', updateMapFromAddress);
 
             const openModal = () => {
                 addressModal.classList.add('show');
                 setTimeout(() => { initMap(); }, 50);
             };
-
             const closeModal = () => {
                 addressModal.classList.remove('show');
                 addressForm.reset();
@@ -439,7 +404,32 @@
             });
             if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
             if(modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
-            
+
+            if(addressForm) addressForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const addressId = addressIdInput.value;
+                const isUpdating = !!addressId;
+                const addressData = {
+                    street: streetInput.value,
+                    city: cityInput.value,
+                    state: stateInput.value,
+                    postal_code: postalCodeInput.value,
+                };
+                const url = isUpdating ? `${backendUrl}/api/addresses/${addressId}` : `${backendUrl}/api/users/${userData.id}/addresses`;
+                const method = isUpdating ? 'PUT' : 'POST';
+
+                try {
+                    const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addressData) });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || 'Error al guardar la dirección.');
+                    showNotification(result.message || 'Dirección guardada correctamente.');
+                    closeModal();
+                    await loadAddresses();
+                } catch (error) {
+                    showNotification(error.message, true);
+                }
+            });
+
             async function loadAddresses() {
                 try {
                     const response = await fetch(`${backendUrl}/api/users/${userData.id}/addresses`);
@@ -466,31 +456,6 @@
                     showNotification(error.message, true);
                 }
             }
-
-            if(addressForm) addressForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const addressId = addressIdInput.value;
-                const isUpdating = !!addressId;
-                const addressData = {
-                    street: streetInput.value,
-                    city: cityInput.value,
-                    state: stateInput.value,
-                    postal_code: postalCodeInput.value,
-                };
-                const url = isUpdating ? `${backendUrl}/api/addresses/${addressId}` : `${backendUrl}/api/users/${userData.id}/addresses`;
-                const method = isUpdating ? 'PUT' : 'POST';
-
-                try {
-                    const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addressData) });
-                    const result = await response.json();
-                    if (!response.ok) throw new Error(result.message || 'Error al guardar la dirección.');
-                    showNotification(result.message);
-                    closeModal();
-                    loadAddresses();
-                } catch (error) {
-                    showNotification(error.message, true);
-                }
-            });
 
             if(addressListContainer) addressListContainer.addEventListener('click', async (e) => {
                 const editBtn = e.target.closest('.edit-btn');
@@ -520,7 +485,7 @@
                             const result = await response.json();
                             if (!response.ok) throw new Error(result.message || 'Error al eliminar la dirección.');
                             showNotification(result.message || 'Dirección eliminada con éxito.');
-                            loadAddresses();
+                            await loadAddresses();
                         } catch (error) {
                             showNotification(error.message, true);
                         }
@@ -528,15 +493,13 @@
                 }
             });
 
-            // Cerrar sesión
             if(document.getElementById('logoutBtn')) {
                 document.getElementById('logoutBtn').addEventListener('click', () => {
                     localStorage.removeItem('greenhaulUser');
                     window.location.href = 'index.html';
                 });
             }
-            
-            // --- Llamada inicial para cargar los datos del usuario ---
+
             fetchUserData(loggedInUser.id);
         });
     </script>
