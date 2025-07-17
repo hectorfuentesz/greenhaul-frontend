@@ -7,281 +7,192 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css"> 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    
     <style>
         /*
-         * --- Variables CSS Globales ---
-         * Estas variables definen los colores principales de la marca GreenHaul,
-         * asegurando una consistencia visual en toda la aplicación.
-         *
-         * --primary-solid: Este es el color principal para acentos visuales y el inicio de nuestros degradados.
-         * Basado en la imagen compartida, es un tono azul verdoso vibrante.
-         *
-         * --secondary-solid: Este color complementa al primario y se usa en elementos interactivos
-         * o para un contraste suave, a menudo en gradientes.
-         * Es un azul claro/medio.
-         *
-         * --primary-blue: Un azul puro que será el color dominante para muchos elementos del dashboard,
-         * como botones, enlaces activos en el sidebar, y elementos visuales.
-         *
-         * --text-dark: Color estándar para textos oscuros, buscando legibilidad óptima.
-         *
-         * --text-light: Color para textos más claros o secundarios, útil en descripciones o subtítulos.
-         *
-         * --accent-red: Utilizado para mensajes de error, advertencias o acciones destructivas.
-         *
-         * --accent-green: Un verde vibrante para mensajes de éxito o elementos positivos.
-         *
-         * --gradient-primary: Define el degradado principal de la aplicación,
-         * yendo de nuestro `primary-solid` a `secondary-solid`. Este es el degradado del diseño que te gustó.
+         * --- Variables CSS Globales para el Dashboard y Módulos de Cuenta ---
+         * Estas variables son específicas para la sección "Mi Cuenta" y sus componentes,
+         * asegurando el degradado azul-verdoso que te gustó y los colores de los elementos internos.
          */
         :root {
-            --primary-solid: #4AB3C1; /* Azul verdoso vibrante (como en la imagen del degradado) */
-            --secondary-solid: #4a90e2; /* Azul medio (como en la imagen del degradado) */
-            --primary-blue: #4a90e2; /* Mismo azul para consistencia en elementos que son puramente azules */
-            --text-dark: #333;
-            --text-light: #666;
-            --accent-red: #e74c3c;
-            --accent-green: #2ecc71;
-            --gradient-primary: linear-gradient(120deg, var(--primary-solid) 0%, var(--secondary-solid) 100%);
+            /* Las variables de color primarias de styles.css ya están cargadas.
+             * Aquí definimos variables específicas para el look del dashboard si difieren
+             * o si necesitamos gradientes específicos para el dashboard.
+             */
+            --account-primary-solid: #4AB3C1; /* El azul verdoso vibrante para el dashboard */
+            --account-secondary-solid: #4a90e2; /* El azul para el dashboard */
+            --gradient-account-primary: linear-gradient(120deg, var(--account-primary-solid) 0%, var(--account-secondary-solid) 100%);
+            
+            /* Reusamos las variables de styles.css para texto, bordes, sombras donde sea posible */
+            --text-dark-account: #333; /* Ajustado por si el dark de styles.css es muy oscuro para aquí */
+            --text-light-account: #666;
+            --border-account: #e0e0e0;
+            --shadow-account: 0 4px 15px rgba(0,0,0,0.08);
+            --border-radius-account: 14px; /* Un poco más grande para las tarjetas del dashboard */
+            --widget-card-radius: 11px;
+            --form-control-border-focus: rgba(74,144,226,0.2);
         }
 
-        /*
-         * --- Estilos Generales de la Página y Animaciones ---
-         * Estos estilos establecen la base visual de la página, como el color de fondo del cuerpo
-         * y las animaciones de entrada para una experiencia de usuario más fluida.
-         */
-        body {
-            background: #f1f5f9; /* Fondo gris claro suave para toda la página */
-            font-family: 'Arial', sans-serif; /* Fuente base */
-            color: var(--text-dark); /* Color de texto predeterminado */
+        /* --- Estilos Generales de la Página 'Mi Cuenta' --- */
+        body { 
+            background: #f1f5f9; /* Fondo gris claro específico para esta página */
+            /* font-family, line-height, color var(--text) ya vienen de styles.css */
         }
 
-        /* Animación para que los elementos aparezcan suavemente */
+        /* Animaciones (si no están ya en styles.css, de lo contrario, elimínalas de aquí) */
         .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Animación para que los elementos se deslicen hacia arriba con un rebote */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
         .slide-up { animation: slideUp 0.7s cubic-bezier(.68,-0.55,.27,1.55); }
-        @keyframes slideUp {
-            0% { transform: translateY(60px); opacity: 0; }
-            60% { transform: translateY(-8px); opacity: 1; }
-            100% { transform: translateY(0); }
+        @keyframes slideUp { 0% { transform: translateY(60px); opacity: 0; } 60% { transform: translateY(-8px); opacity: 1; } 100% { transform: translateY(0); } }
+
+        /* --- Layout del Dashboard de la Cuenta --- */
+        .account-dashboard-container { 
+            max-width: 1280px; 
+            margin: 0 auto; 
+            padding: 0 15px; 
+        }
+        .account-dashboard-layout { 
+            display: grid; 
+            grid-template-columns: 300px 1fr; 
+            gap: 38px; 
+            align-items: flex-start; 
+            margin: 0 auto; 
+        }
+        @media (max-width: 900px) { 
+            .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } 
+            .account-sidebar { position: static; } 
         }
 
-        /*
-         * --- Layout del Dashboard de la Cuenta ---
-         * Define la estructura principal de la sección "Mi Cuenta", utilizando CSS Grid
-         * para organizar la barra lateral y el contenido principal.
-         */
-        .account-dashboard-container {
-            max-width: 1280px; /* Ancho máximo del contenedor principal */
-            margin: 0 auto; /* Centrar en la página */
-            padding: 0 15px; /* Relleno lateral */
+        /* --- Barra Lateral (Sidebar) de la Cuenta --- */
+        .account-sidebar { 
+            position: sticky; 
+            top: 110px; 
+            min-width: 220px; 
         }
-
-        .account-dashboard-layout {
-            display: grid; /* Usar CSS Grid */
-            grid-template-columns: 300px 1fr; /* Columna fija para sidebar, el resto para contenido */
-            gap: 38px; /* Espacio entre columnas */
-            align-items: flex-start; /* Alinear elementos al inicio de la cuadrícula */
-            margin: 0 auto; /* Asegurar centrado */
+        .user-card { 
+            background: var(--gradient-account-primary); 
+            color: #fff; 
+            border-radius: var(--border-radius-account); 
+            box-shadow: var(--shadow-account); 
+            text-align: center; 
+            padding: 36px 18px 24px 18px; 
+            margin-bottom: 28px; 
         }
-
-        /* Media query para pantallas más pequeñas (ej. tabletas y móviles) */
-        @media (max-width: 900px) {
-            .account-dashboard-layout {
-                grid-template-columns: 1fr; /* Una sola columna para móviles */
-                gap: 18px; /* Reducir espacio entre elementos */
-            }
-            .account-sidebar {
-                position: static; /* Quitar sticky en móviles para que fluya con el contenido */
-            }
+        .user-avatar { 
+            background: #fff; 
+            color: var(--account-secondary-solid); /* Azul para el ícono del avatar */
+            border-radius: 50%; 
+            width: 72px; height: 72px; 
+            font-size: 2.8rem; 
+            margin: 0 auto 18px auto; 
+            display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 4px 18px rgba(0,179,134,0.12); /* Sombra específica */
         }
+        .user-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -1px; }
+        .user-email { font-size: 1rem; opacity: 0.95; margin-bottom: 8px; }
 
-        /*
-         * --- Barra Lateral (Sidebar) de la Cuenta ---
-         * Contiene la tarjeta de usuario y la navegación principal del dashboard.
-         */
-        .account-sidebar {
-            position: sticky; /* Mantener la barra lateral visible al hacer scroll */
-            top: 110px; /* Distancia desde la parte superior de la ventana */
-            min-width: 220px; /* Ancho mínimo */
+        .account-nav { 
+            background: #fff; 
+            border-radius: var(--border-radius-account); 
+            box-shadow: var(--shadow-account); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 2px; 
+            padding: 15px 0; 
         }
-
-        /* Tarjeta de información del usuario */
-        .user-card {
-            background: var(--gradient-primary); /* Fondo con el degradado de la marca (azul-verdoso) */
-            color: #fff; /* Texto blanco */
-            border-radius: 14px; /* Bordes redondeados */
-            box-shadow: 0 8px 28px rgba(74,144,226,0.09); /* Sombra suave */
-            text-align: center; /* Centrar contenido */
-            padding: 36px 18px 24px 18px; /* Relleno */
-            margin-bottom: 28px; /* Espacio inferior */
-        }
-
-        /* Avatar del usuario */
-        .user-avatar {
-            background: #fff; /* Fondo blanco */
-            color: var(--primary-blue); /* Color del ícono del avatar (azul) */
-            border-radius: 50%; /* Circular */
-            width: 72px; height: 72px; /* Tamaño fijo */
-            font-size: 2.8rem; /* Tamaño del ícono */
-            margin: 0 auto 18px auto; /* Centrar y espacio inferior */
-            display: flex; align-items: center; justify-content: center; /* Centrar ícono */
-            box-shadow: 0 4px 18px rgba(0,179,134,0.12); /* Sombra */
-        }
-
-        .user-name {
-            font-size: 1.3rem;
-            font-weight: 700;
-            letter-spacing: -1px;
-        }
-
-        .user-email {
-            font-size: 1rem;
-            opacity: 0.95;
-            margin-bottom: 8px;
-        }
-
-        /* Navegación de la cuenta (enlaces de la barra lateral) */
-        .account-nav {
-            background: #fff; /* Fondo blanco */
-            border-radius: 12px; /* Bordes redondeados */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Sombra */
-            display: flex;
-            flex-direction: column; /* Apilar enlaces verticalmente */
-            gap: 2px; /* Pequeño espacio entre enlaces */
-            padding: 15px 0; /* Relleno vertical */
-        }
-
-        .account-nav-link {
-            padding: 15px 28px; /* Relleno para hacerlos clickeables */
-            border-radius: 10px; /* Bordes redondeados */
-            color: var(--text-dark); /* Color de texto normal */
-            font-weight: 500;
-            text-decoration: none; /* Sin subrayado */
-            display: flex;
-            align-items: center; /* Alinear ícono y texto */
-            gap: 18px; /* Espacio entre ícono y texto */
-            transition: all 0.2s ease-in-out; /* Transición suave al hover/activo */
-            cursor: pointer;
+        .account-nav-link { 
+            padding: 15px 28px; 
+            border-radius: 10px; 
+            color: var(--text-dark-account); 
+            font-weight: 500; 
+            text-decoration: none; 
+            display: flex; align-items: center; gap: 18px; 
+            transition: all 0.2s; 
+            cursor: pointer; 
             font-size: 1.08rem;
         }
-
-        .account-nav-link i {
-            width: 22px; /* Ancho fijo para íconos */
-            text-align: center;
-            font-size: 1.35rem;
-            color: var(--primary-blue); /* Color del ícono (azul) */
+        .account-nav-link i { 
+            width: 22px; 
+            text-align: center; 
+            font-size: 1.35rem; 
+            color: var(--account-secondary-solid); /* Azul para los íconos de navegación */
             opacity: 0.95;
         }
-
-        .account-nav-link:hover {
-            background: #f3f8fe; /* Fondo azul muy claro al pasar el mouse */
-            color: var(--primary-blue); /* Color de texto azul al pasar el mouse */
+        .account-nav-link:hover { 
+            background: #f3f8fe; /* Fondo azul claro al hover */
+            color: var(--account-secondary-solid); /* Color azul al hover */
         }
-
-        /* Estilo para el enlace de navegación activo */
-        .account-nav-link.active {
-            background: var(--gradient-primary); /* Fondo con degradado principal (azul-verdoso) */
-            color: #fff; /* Texto blanco */
-            font-weight: 700;
-            box-shadow: 0 6px 18px rgba(0,179,134,0.11); /* Sombra más pronunciada */
-            transform: scale(1.04); /* Ligeramente más grande */
+        .account-nav-link.active { 
+            background: var(--gradient-account-primary); 
+            color: #fff; 
+            font-weight: 700; 
+            box-shadow: 0 6px 18px rgba(0,179,134,0.11); 
+            transform: scale(1.04);
         }
+        .account-nav-link.active i { color: #fff; }
 
-        .account-nav-link.active i {
-            color: #fff; /* Ícono blanco en estado activo */
+        /* --- Contenido Principal de la Cuenta (secciones internas) --- */
+        .account-content { min-height: 500px; }
+        .account-section { 
+            display: none; 
+            background: #fff; 
+            padding: 38px 35px 30px 35px; 
+            border-radius: var(--border-radius-account); 
+            box-shadow: var(--shadow-account);
         }
+        .account-section.active { display: block; animation: fadeIn 0.45s; }
 
-        /*
-         * --- Contenido Principal de la Cuenta ---
-         * Área donde se muestran las diferentes secciones (Resumen, Pedidos, etc.).
-         */
-        .account-content {
-            min-height: 500px; /* Altura mínima para el contenido */
+        /* --- Dashboard (Sección de Resumen) --- */
+        .dashboard-widgets { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 30px; 
+            margin-bottom: 36px; 
         }
-
-        .account-section {
-            display: none; /* Ocultar por defecto */
-            background: #fff; /* Fondo blanco */
-            padding: 38px 35px 30px 35px; /* Relleno interno */
-            border-radius: 14px; /* Bordes redondeados */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Sombra */
+        .widget-card { 
+            background: #f8f9fa; 
+            border-radius: var(--widget-card-radius); 
+            box-shadow: 0 2px 10px rgba(0,179,134,0.09); /* Sombra específica */
+            text-align: center; 
+            padding: 28px 12px 22px 12px; 
+            transition: box-shadow 0.3s, transform 0.3s;
         }
-
-        .account-section.active {
-            display: block; /* Mostrar cuando está activa */
-            animation: fadeIn 0.45s forwards; /* Animación de entrada */
+        .widget-card:hover { 
+            box-shadow: 0 8px 24px rgba(0,179,134,0.19); 
+            transform: translateY(-7px) scale(1.04);
         }
-
-        /*
-         * --- Dashboard (Sección de Resumen) ---
-         * Contiene widgets de estadísticas, el gráfico y acciones rápidas.
-         */
-        .dashboard-widgets {
-            display: grid; /* Usar grid para los widgets */
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Columnas responsivas */
-            gap: 30px; /* Espacio entre widgets */
-            margin-bottom: 36px; /* Espacio inferior */
+        .widget-card .widget-icon { 
+            font-size: 2.6rem; 
+            margin-bottom: 10px; 
+            color: var(--account-secondary-solid); /* Azul para íconos de widgets */
         }
-
-        .widget-card {
-            background: #f8f9fa; /* Fondo gris muy claro */
-            border-radius: 11px; /* Bordes redondeados */
-            box-shadow: 0 2px 10px rgba(0,179,134,0.09); /* Sombra suave */
-            text-align: center; /* Centrar contenido */
-            padding: 28px 12px 22px 12px; /* Relleno */
-            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Transición al hover */
-        }
-
-        .widget-card:hover {
-            box-shadow: 0 8px 24px rgba(0,179,134,0.19); /* Sombra más pronunciada al hover */
-            transform: translateY(-7px) scale(1.04); /* Efecto de "levantar" */
-        }
-
-        .widget-card .widget-icon {
-            font-size: 2.6rem;
-            margin-bottom: 10px;
-            color: var(--primary-blue); /* Color del ícono del widget (azul) */
-        }
-
-        .widget-card .widget-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-blue); /* Color del valor numérico (azul) */
+        .widget-card .widget-value { 
+            font-size: 2rem; 
+            font-weight: 700; 
+            color: var(--account-secondary-solid); 
             margin-bottom: 4px;
         }
-
-        .widget-card .widget-label {
-            font-size: 1.08rem;
-            color: var(--text-dark);
+        .widget-card .widget-label { 
+            font-size: 1.08rem; 
+            color: var(--text-dark-account); 
             opacity: 0.7;
         }
-
-        /* Widget especial de ahorro con degradado */
-        .widget-card.ahorro {
-            background: var(--gradient-primary); /* Fondo con el degradado principal (azul-verdoso) */
-            color: #fff; /* Texto blanco */
+        .widget-card.ahorro { 
+            background: var(--gradient-account-primary);
+            color:#fff; 
         }
+        .widget-card.ahorro .widget-icon { color: #fff;}
 
-        .widget-card.ahorro .widget-icon {
-            color: #fff; /* Ícono blanco para el widget de ahorro */
-        }
-
-        /* Nuevo estilo para la tarjeta de impacto simple */
+        /* Tarjeta de Impacto Sostenible (reemplazo de gráfica) */
         .impact-card {
-            background: var(--gradient-primary); /* Fondo con degradado principal */
+            background: var(--gradient-account-primary); 
             color: #fff;
-            border-radius: 14px;
+            border-radius: var(--border-radius-account);
             box-shadow: 0 8px 28px rgba(74,144,226,0.09);
             text-align: center;
             padding: 30px 20px;
             margin-top: 40px;
-            max-width: 660px; /* Ancho similar al del gráfico anterior */
+            max-width: 660px;
             margin-left: auto;
             margin-right: auto;
             display: flex;
@@ -290,74 +201,21 @@
             justify-content: center;
             animation: fadeIn 0.5s ease-out;
         }
-        .impact-card .icon-large {
-            font-size: 4rem;
-            margin-bottom: 15px;
-            color: #fff;
-            opacity: 0.9;
-        }
-        .impact-card h4 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-        .impact-card p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 0;
-        }
+        .impact-card .icon-large { font-size: 4rem; margin-bottom: 15px; color: #fff; opacity: 0.9;}
+        .impact-card h4 { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 10px;}
+        .impact-card p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 0;}
 
         /* Acciones Rápidas en el Dashboard */
-        .quick-actions {
-            margin-top: 40px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Columnas responsivas */
-            gap: 20px;
-        }
-
-        .action-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-
-        .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-
-        .action-card .action-icon {
-            font-size: 3rem;
-            color: var(--secondary-solid); /* Color del ícono de acción (azul) */
-            margin-bottom: 15px;
-        }
-
-        .action-card h4 {
-            font-size: 1.25rem;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-        }
-
-        .action-card p {
-            font-size: 0.95rem;
-            color: var(--text-light);
-            margin-bottom: 15px;
-        }
-
-        .action-card .btn {
-            padding: 10px 20px;
-            font-size: 0.9rem;
-        }
+        .quick-actions { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;}
+        .action-card { background: #f8f9fa; border-radius: var(--border-radius-account); box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s ease;}
+        .action-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1);}
+        .action-card .action-icon { font-size: 3rem; color: var(--account-secondary-solid); margin-bottom: 15px;}
+        .action-card h4 { font-size: 1.25rem; margin-bottom: 10px; color: var(--text-dark-account);}
+        .action-card p { font-size: 0.95rem; color: var(--text-light-account); margin-bottom: 15px;}
+        /* El btn dentro de action-card usa el estilo global de .btn */
 
         /* Resumen de Pedidos Recientes en el Dashboard */
-        .recent-orders-summary {
-            margin-top: 40px;
-        }
-
+        .recent-orders-summary { margin-top: 40px; }
         .recent-orders-summary .order-item {
             background: #fff;
             border-radius: 9px;
@@ -367,737 +225,182 @@
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             align-items: center;
             gap: 10px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border-account);
             box-shadow: 0 1px 5px rgba(74,144,226,0.05);
         }
+        .recent-orders-summary .order-item strong { color: var(--account-secondary-solid); }
 
-        .recent-orders-summary .order-item strong {
-            color: var(--primary-blue); /* Color del texto "fuerte" en los pedidos (azul) */
-        }
-
-        /*
-         * --- Sección de Pedidos ---
-         * Muestra el historial completo de pedidos del usuario.
-         */
-        .order-list {
-            margin-top: 18px;
-        }
-
-        .order-list .order-item {
-            background: #f8f9fa;
-            border-radius: 9px;
-            margin-bottom: 16px;
-            padding: 20px 18px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            align-items: center;
-            gap: 12px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 2px 8px rgba(74,144,226,0.07);
+        /* --- Sección de Pedidos --- */
+        .order-list { margin-top: 18px; }
+        .order-list .order-item { 
+            background: #f8f9fa; 
+            border-radius: 9px; 
+            margin-bottom: 16px; 
+            padding: 20px 18px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+            align-items: center; 
+            gap: 12px; 
+            border: 1px solid var(--border-account); 
+            box-shadow: 0 2px 8px rgba(74,144,226,0.07); 
             transition: box-shadow 0.3s, transform 0.2s;
         }
-
-        .order-item:hover {
-            box-shadow: 0 8px 24px rgba(74,144,226,0.19);
+        .order-item:hover { 
+            box-shadow: 0 8px 24px rgba(74,144,226,0.19); 
             transform: translateY(-4px) scale(1.02);
         }
-
-        .order-item-status {
-            font-weight: bold;
-            padding: 5px 14px;
-            border-radius: 99px;
-            font-size: 0.97rem;
+        .order-item-status { 
+            font-weight: bold; 
+            padding: 5px 14px; 
+            border-radius: 99px; 
+            font-size: 0.97rem; 
             text-align: center;
         }
+        .status-completado { color: var(--accent-green); background: rgba(0,179,134,0.11);}
+        .status-activo { color: var(--primary-solid); background: rgba(74,144,226,0.11);}
 
-        .status-completado {
-            color: #008c6b;
-            background: rgba(0,179,134,0.11);
+        /* --- Estilos de Formularios (dentro de Perfil, Direcciones, Seguridad, Notificaciones) --- */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-dark-account);}
+        .form-control[disabled] { background: #e9ecef; cursor: not-allowed; }
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid var(--border-account); 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            font-family: inherit; 
+            color: var(--text-dark-account);
         }
-
-        .status-activo {
-            color: #3a7bcd;
-            background: rgba(74,144,226,0.11);
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+            outline: none; 
+            border-color: var(--account-secondary-solid); 
+            box-shadow: 0 0 0 3px var(--form-control-border-focus);
         }
-        
-        /*
-         * --- Sección de Perfil ---
-         * Formulario para que el usuario edite su información personal.
-         */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
+        /* Ajustes para checkboxes */
+        .account-section input[type="checkbox"] {
+            width: auto !important; /* Anula el 100% de .form-control */
+            margin-bottom: 0;
         }
-
-        .form-group {
-            margin-bottom: 20px;
+        .account-section label[for$="-notifications"] { /* Labels de checkboxes */
+            font-weight: normal;
+            margin-bottom: 0;
         }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-        }
-
-        .form-control:disabled {
-            background: #e9ecef;
-            cursor: not-allowed;
-        }
-
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            color: var(--text-dark);
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-blue); /* Borde azul al enfocar */
-            box-shadow: 0 0 0 3px rgba(74,144,226,0.2); /* Sombra de enfoque azul */
-        }
-        
-        /*
-         * --- Sección de Direcciones ---
-         * Muestra las direcciones guardadas por el usuario y permite añadir/editar.
-         */
-        .address-header {
+        .account-section .form-group.checkbox-group { /* Si usas un div para agrupar checkbox+label */
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
             gap: 15px;
-            flex-wrap: wrap;
         }
 
-        .address-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-            gap: 22px;
-        }
-
-        .address-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 22px;
-            border: 1px solid #e0e0e0;
-            display: flex;
-            flex-direction: column;
+        /* --- Sección de Direcciones --- */
+        .address-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 15px; flex-wrap: wrap;}
+        .address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
+        .address-card { 
+            background: #f8f9fa; 
+            border-radius: var(--border-radius-account); 
+            padding: 22px; 
+            border: 1px solid var(--border-account); 
+            display: flex; 
+            flex-direction: column; 
             box-shadow: 0 2px 9px rgba(0,179,134,0.07);
         }
-
-        .address-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
+        .address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .address-card-header h4 { 
+            color: var(--account-secondary-solid); 
+            font-size: 1.2rem; 
+            display: flex; align-items: center; gap: 10px; 
+        }
+        .address-card-body { flex-grow: 1; margin-bottom: 20px;}
+        .address-card-actions { display: flex; align-items: center; gap: 15px; }
+        .address-references-text { /* Estilo para las referencias en la tarjeta de dirección */
+            font-size:0.9em; 
+            color: var(--text-light-account); 
+            margin-top: 5px; /* Pequeño espacio para separarlo de otros detalles */
         }
 
-        .address-card-header h4 {
-            color: var(--primary-blue); /* Color del título de la dirección (azul) */
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        /* --- Modales de la Cuenta (Ej. Modal de Añadir/Editar Dirección) --- */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 10000; 
+            opacity: 0; visibility: hidden; 
+            transition: all 0.3s;
+        }
+        .modal-overlay.show { opacity: 1; visibility: visible;}
+        .modal-content { 
+            background: #fff; 
+            padding: 38px 28px; 
+            border-radius: var(--border-radius-account); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.11); 
+            width: 95%; max-width: 520px; 
+            transform: scale(0.93); 
+            transition: transform 0.3s;
+        }
+        .modal-overlay.show .modal-content { transform: scale(1);}
+        .modal-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid var(--border-account); 
+            padding-bottom: 15px; margin-bottom: 25px;
+        }
+        .modal-header h3 { margin: 0; font-weight: 700;}
+        .modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-dark-account);}
+        .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 18px;}
+        #address-map { 
+            height: 220px; width: 100%; 
+            border-radius: var(--border-radius-account); 
+            margin-top: 18px; 
+            border: 1px solid var(--border-account);
+        }
+        .modal-content p { /* Párrafo de instrucción del mapa en el modal */
+            font-size:0.85rem; 
+            color:var(--text-light-account); 
+            margin-top:10px;
         }
 
-        .address-card-body {
-            flex-grow: 1;
-            margin-bottom: 20px;
+        /* --- Responsive para secciones de cuenta y modales --- */
+        @media (max-width: 600px) { 
+            .account-section, .modal-content { padding: 25px 15px; } 
         }
 
-        .address-card-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        /* --- Estilos específicos de texto en el Dashboard --- */
+        #dashboard-section h3, #dashboard-section h4 { /* Títulos del dashboard */
+            color: var(--text); /* Mantener el color de texto general */
         }
-        
-        /*
-         * --- Modales Globales (Ej. Modal de Dirección) ---
-         * Estilos para las ventanas emergentes (modales) utilizadas en la aplicación.
-         */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6); /* Fondo semi-transparente oscuro */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000; /* Asegurar que esté por encima de otros elementos */
-            opacity: 0;
-            visibility: hidden; /* Oculto por defecto */
-            transition: all 0.3s ease-in-out; /* Transición suave al mostrar/ocultar */
+        #dashboard-section h3 span { /* Nombre del usuario en el título */
+            color: var(--primary-solid); /* Color primario de styles.css */
         }
-
-        .modal-overlay.show {
-            opacity: 1;
-            visibility: visible; /* Mostrar modal */
-        }
-
-        .modal-content {
-            background: #fff; /* Fondo blanco del contenido del modal */
-            padding: 38px 28px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.11); /* Sombra */
-            width: 95%; /* Ancho responsivo */
-            max-width: 520px; /* Ancho máximo */
-            transform: scale(0.93); /* Ligeramente encogido al inicio */
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .modal-overlay.show .modal-content {
-            transform: scale(1); /* Escalar a tamaño normal al mostrar */
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-            font-weight: 700;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--text-dark);
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 18px;
-        }
-
-        /* ¡IMPORTANTE! Mantenemos el CSS del mapa para que se vea */
-        #address-map { height: 220px; width: 100%; border-radius: 12px; margin-top: 18px; border: 1px solid #e0e0e0;}
-        
-        /*
-         * --- Notificaciones y Responsividad ---
-         * Estilos para las notificaciones emergentes y adaptaciones para diferentes tamaños de pantalla.
-         */
-        /* Media queries para responsividad */
-        @media (max-width: 900px) {
-            .account-dashboard-layout {
-                grid-template-columns: 1fr; /* Una sola columna para móviles */
-                gap: 18px;
-            }
-            .account-sidebar {
-                position: static; /* No sticky en móviles */
-            }
-            .form-grid {
-                grid-template-columns: 1fr; /* Formulario en una sola columna */
-            }
-        }
-
-        @media (max-width: 600px) {
-            .account-section, .modal-content {
-                padding: 25px 15px; /* Reducir relleno en pantallas muy pequeñas */
-            }
-        }
-
-        /* Estilo para el popup de notificación */
-        #notificationPopup {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--accent-green); /* Fondo verde para éxito */
-            color: #fff;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 10001;
-            opacity: 0;
-            transform: translateX(120%);
-            transition: all 0.4s ease-out;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        #notificationPopup.error {
-            background: var(--accent-red); /* Fondo rojo para errores */
-        }
-
-        #notificationPopup.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /*
-         * --- Estilos de Botones ---
-         * Define la apariencia y el comportamiento de los diferentes tipos de botones.
-         */
-        .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            white-space: nowrap; /* Evita que el texto del botón se rompa */
-        }
-
-        .btn-primary {
-            background: var(--primary-blue); /* Fondo azul para el botón principal */
-            color: #fff;
-            border: 1px solid var(--primary-blue);
-        }
-
-        .btn-primary:hover {
-            background: #3a7bcd; /* Tono de azul más oscuro al pasar el mouse */
-            border-color: #3a7bcd;
-            box-shadow: 0 4px 12px rgba(74,144,226,0.3); /* Sombra azul al pasar el mouse */
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary-blue); /* Texto azul para el botón outline */
-            border: 1px solid var(--primary-blue);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary-blue); /* Fondo azul al pasar el mouse */
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(74,144,226,0.3); /* Sombra azul al pasar el mouse */
-        }
-
-        .btn-tertiary {
-            background: none;
-            border: none;
+        #dashboard-section p { /* Párrafos en el dashboard */
             color: var(--text-light); /* Color de texto ligero */
-            font-size: 1.2rem;
-            padding: 8px;
+        }
+        #dashboard-section h4 { /* Subtítulos H4 */
+            margin-top:50px;
+        }
+        #dashboard-section > p:last-of-type { /* Mensaje final de agradecimiento */
+            text-align:center;
+            color:var(--text-light);
+            margin-top:22px;
         }
 
-        .btn-tertiary:hover {
-            color: var(--accent-red); /* Color rojo al pasar el mouse */
-            transform: scale(1.1); /* Ligeramente más grande */
-        }
-
-        /*
-         * --- Estilos de la Barra de Navegación (Header) - COLORES ORIGINALES ---
-         * Revertidos a los colores originales que son neutros.
-         */
-        .navbar {
-            background: #fff; /* Fondo blanco para la navbar original */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-        }
-
-        .navbar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .logo img {
-            height: 40px;
-            filter: none; /* Elimina el filtro blanco para el logo original */
-        }
-
-        .nav-links-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            gap: 25px;
-        }
-
-        .nav-link {
-            color: var(--text-dark); /* Color de texto oscuro para enlaces de la navbar (original) */
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 0;
-            position: relative;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary-solid); /* Subrayado con el color primario (azul verdoso del degradado) */
-            transition: width 0.3s ease;
-        }
-
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
-        }
-
-        .navbar-right-items {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .navbar-user-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .navbar-user-actions .nav-link {
-            font-weight: 600;
-            color: var(--primary-solid); /* "Hola, [Usuario]" con el color primario (azul verdoso) */
-        }
-        .navbar-user-actions .btn-outline { /* Botón de login en el header */
-            color: var(--primary-solid); /* Color de texto y borde primario (azul verdoso) */
-            border-color: var(--primary-solid);
-        }
-        .navbar-user-actions .btn-outline:hover {
-            background: var(--primary-solid);
-            color: #fff;
-        }
-
-        .nav-icons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-icon {
-            color: var(--text-dark); /* Íconos de navegación oscuros (original) */
-            font-size: 1.4rem;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .cart-count {
-            background: var(--accent-red);
-            color: #fff;
-            font-size: 0.75rem;
-            border-radius: 50%;
-            padding: 3px 7px;
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        /*
-         * --- Modal del Carrito de Compras ---
-         * Estilos para la ventana emergente del carrito de compras.
-         */
-        .cart-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: flex-end; /* Alinea el modal a la derecha */
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .cart-modal-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .cart-modal {
-            background: #fff;
-            width: 100%;
-            max-width: 400px; /* Ancho del carrito */
-            height: 100%;
-            transform: translateX(100%); /* Inicialmente fuera de la vista */
-            transition: transform 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-modal-overlay.show .cart-modal {
-            transform: translateX(0); /* Entra a la vista */
-        }
-
-        .cart-modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-modal-header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--primary-blue); /* Título del carrito en azul */
-        }
-
-        .close-modal-btn {
-            background: none;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            color: var(--text-dark);
-        }
-
-        .cart-modal-body {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto; /* Permite scroll si hay muchos ítems */
-        }
-
-        .cart-modal-footer {
-            padding: 20px;
+        /* Estilos para HRs */
+        hr {
+            border: 0;
             border-top: 1px solid #eee;
+            margin: 30px 0;
         }
 
-        .cart-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            gap: 15px;
+        /* Estilos para textos de funcionalidad no implementada */
+        #seguridad-section p:last-of-type, #notificaciones-section p:last-of-type {
+            font-size:0.9rem;
+            color:var(--text-light-account);
+            margin-top:10px;
+        }
+        #notificaciones-section .form-group label {
+            /* Asegura que los labels de los checkboxes no tengan el margen de un form-group normal si es necesario */
+            margin-bottom: 0; 
         }
 
-        .cart-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .cart-item-details {
-            flex-grow: 1;
-        }
-
-        .cart-item-details h4 {
-            margin: 0 0 5px 0;
-            font-size: 1.1rem;
-        }
-
-        .cart-item-details p {
-            margin: 0;
-            color: var(--text-light);
-        }
-
-        .cart-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .cart-item-actions button {
-            background: none;
-            border: 1px solid #ccc;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .cart-summary p,
-        .cart-summary h3 {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .cart-summary h3 {
-            font-size: 1.4rem;
-            color: var(--primary-blue); /* Total del carrito en azul */
-            margin-top: 15px;
-        }
-
-        .cart-footer-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-        
-        /* Notificación de carrito (cuando se añade un producto) */
-        .cart-notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #333;
-            color: #fff;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 10001;
-            opacity: 0;
-            transform: translateY(120%);
-            transition: all 0.4s ease-out;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .cart-notification.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .notification-icon-wrapper {
-            background: #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .notification-icon {
-            font-size: 1.5rem;
-            color: var(--primary-blue); /* Ícono de notificación en azul */
-        }
-
-        .notification-content p {
-            margin: 0;
-            font-size: 1rem;
-        }
-
-        /*
-         * --- Estilos del Pie de Página (Footer) - COLORES ORIGINALES ---
-         * Revertidos a los colores originales que son un gris muy oscuro.
-         */
-        .footer {
-            background: var(--text-dark); /* Fondo oscuro original para el footer */
-            color: #fff;
-            padding: 50px 0 20px;
-            margin-top: 50px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .footer-info h3,
-        .footer-links h3,
-        .footer-social-links h3 {
-            color: var(--primary-solid); /* Títulos del footer con el color primario (azul verdoso) */
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-        }
-
-        .footer-info p {
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .footer-info p i {
-            margin-right: 10px;
-            color: var(--secondary-solid); /* Íconos de contacto en el footer con el color secundario (azul) */
-        }
-
-        .footer-links ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-links ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links ul li a {
-            color: #ccc;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links ul li a:hover {
-            color: var(--primary-solid); /* Enlaces del footer con hover en color primario (azul verdoso) */
-        }
-
-        .social-icons-wrapper {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-icon {
-            color: #fff;
-            font-size: 1.5rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .social-icon:hover {
-            color: var(--primary-solid); /* Íconos sociales con hover en color primario (azul verdoso) */
-            transform: translateY(-3px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-
-        /* Media query para responsividad del footer y navbar */
-        @media (max-width: 768px) {
-            .navbar-content {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .nav-links-list {
-                width: 100%;
-                justify-content: center;
-                margin-top: 15px;
-                gap: 15px;
-            }
-            .navbar-right-items {
-                width: 100%;
-                justify-content: center;
-                margin-top: 15px;
-            }
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            .footer-links ul {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 10px;
-            }
-            .social-icons-wrapper {
-                justify-content: center;
-            }
-        }
     </style>
 </head>
 <body>
@@ -1105,25 +408,32 @@
     <nav class="navbar">
         <div class="container navbar-content">
             <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul"></a>
-            <ul class="nav-links-list">
-                <li><a href="index.html" class="nav-link">Inicio</a></li>
-                <li><a href="productos.html" class="nav-link">Productos</a></li>
-                <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-                <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-                <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-                <li><a href="cuenta.html" class="nav-link active">Mi Cuenta</a></li>
-            </ul>
-            <div class="navbar-right-items">
-                <div class="navbar-user-actions" id="navbarUserActions">
-                    <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
-                    <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
-                    <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-                </div>
-                <div class="nav-icons">
-                    <a href="#" class="nav-icon cart-icon" id="cartIcon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" id="cartCount">0</span>
-                    </a>
+            <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse" id="navbarCollapse">
+                <ul class="nav-links-list">
+                    <li><a href="index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="productos.html" class="nav-link">Productos</a></li>
+                    <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                    <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                    <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                    <li><a href="cuenta.html" class="nav-link active">Mi Cuenta</a></li>
+                </ul>
+                <div class="navbar-right-items">
+                    <div class="navbar-user-actions" id="navbarUserActions">
+                        <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
+                        <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
+                        <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                    <div class="nav-icons">
+                        <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1152,7 +462,7 @@
                 <div class="account-content">
                     <div id="dashboard-section" class="account-section active fade-in">
                         <h3>Bienvenido de Nuevo a GreenHaul, <span id="dashboardUserName"></span>!</h3>
-                        <p style="margin-bottom: 30px; color: var(--text-light);">Aquí tienes un resumen rápido de tu actividad y algunas acciones útiles.</p>
+                        <p>Aquí tienes un resumen rápido de tu actividad y algunas acciones útiles.</p>
                         
                         <h4>Tu Impacto y Actividad Reciente</h4>
                         <div class="dashboard-widgets">
@@ -1175,7 +485,7 @@
                                 <div class="widget-icon"><i class="fas fa-seedling"></i></div>
                                 <div class="widget-value" id="widgetAhorro">0 kg</div>
                                 <div class="widget-label">CO₂ Ahorrado</div>
-                                <div id="widgetAhorroEquivalente" style="font-size:1rem;opacity:0.9;margin-top:5px;"></div>
+                                <div id="widgetAhorroEquivalente"></div>
                             </div>
                         </div>
 
@@ -1185,11 +495,11 @@
                             <p>Cada mudanza y envío con GreenHaul contribuye a un futuro más verde.</p>
                             <p style="font-size:1.2rem; font-weight:bold; margin-top:10px;">¡Gracias por tu compromiso con el planeta!</p>
                         </div>
-                        <p style="text-align:center;color:#888;margin-top:22px;">
+                        <p>
                             Sigue contribuyendo a reducir la huella de carbono.
                         </p>
 
-                        <h4 style="margin-top:50px;">Acciones Rápidas</h4>
+                        <h4>Acciones Rápidas</h4>
                         <div class="quick-actions">
                             <div class="action-card slide-up">
                                 <div class="action-icon"><i class="fas fa-box-open"></i></div>
@@ -1211,7 +521,7 @@
                             </div>
                         </div>
 
-                        <h4 style="margin-top:50px;">Tus Últimos Pedidos</h4>
+                        <h4>Tus Últimos Pedidos</h4>
                         <div class="recent-orders-summary" id="recent-orders-summary-container">
                             <p>Cargando tus pedidos más recientes...</p>
                         </div>
@@ -1234,7 +544,7 @@
                             </div>
                             <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
                             <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control" placeholder="Ej. 5512345678"></div>
-                            <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
+                            <hr>
                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                         </form>
                     </div>
@@ -1249,7 +559,7 @@
 
                     <div id="seguridad-section" class="account-section">
                         <h3>Configuración de Seguridad</h3>
-                        <p style="margin-bottom: 25px; color: var(--text-light);">Administra tus credenciales y opciones de seguridad.</p>
+                        <p>Administra tus credenciales y opciones de seguridad.</p>
                         <form id="securityForm">
                             <h4>Cambiar Contraseña</h4>
                             <div class="form-group">
@@ -1266,34 +576,34 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
                         </form>
-                        <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
+                        <hr>
                         <h4>Autenticación de Dos Factores (2FA)</h4>
-                        <p style="margin-bottom: 15px; color: var(--text-light);">Añade una capa extra de seguridad a tu cuenta.</p>
+                        <p>Añade una capa extra de seguridad a tu cuenta.</p>
                         <button id="toggle2FABtn" class="btn btn-outline">
                             <i class="fas fa-toggle-off"></i> Habilitar 2FA (No funcional)
                         </button>
-                        <p style="font-size:0.9rem; color:#888; margin-top:10px;">
+                        <p>
                             *Esta funcionalidad aún no está implementada en el backend.
                         </p>
                     </div>
 
                     <div id="notificaciones-section" class="account-section">
                         <h3>Preferencias de Notificaciones</h3>
-                        <p style="margin-bottom: 25px; color: var(--text-light);">Controla cómo y cuándo recibes nuestras comunicaciones.</p>
+                        <p>Controla cómo y cuándo recibes nuestras comunicaciones.</p>
                         <form id="notificationsForm">
-                            <div class="form-group" style="display:flex; align-items:center; gap:15px;">
-                                <input type="checkbox" id="email-notifications" style="width:auto; margin-bottom:0;">
-                                <label for="email-notifications" style="margin-bottom:0; font-weight:normal;">Recibir notificaciones por correo electrónico</label>
+                            <div class="form-group">
+                                <input type="checkbox" id="email-notifications">
+                                <label for="email-notifications">Recibir notificaciones por correo electrónico</label>
                             </div>
-                            <div class="form-group" style="display:flex; align-items:center; gap:15px;">
-                                <input type="checkbox" id="whatsapp-notifications" style="width:auto; margin-bottom:0;">
-                                <label for="whatsapp-notifications" style="margin-bottom:0; font-weight:normal;">Recibir notificaciones por WhatsApp</label>
+                            <div class="form-group">
+                                <input type="checkbox" id="whatsapp-notifications">
+                                <label for="whatsapp-notifications">Recibir notificaciones por WhatsApp</label>
                             </div>
-                            <div class="form-group" style="display:flex; align-items:center; gap:15px;">
-                                <input type="checkbox" id="sms-notifications" style="width:auto; margin-bottom:0;">
-                                <label for="sms-notifications" style="margin-bottom:0; font-weight:normal;">Recibir notificaciones por SMS</label>
+                            <div class="form-group">
+                                <input type="checkbox" id="sms-notifications">
+                                <label for="sms-notifications">Recibir notificaciones por SMS</label>
                             </div>
-                            <p style="font-size:0.9rem; color:#888; margin-top:20px;">
+                            <p>
                                 *La funcionalidad de guardar las preferencias de notificación aún no está implementada.
                             </p>
                             <button type="submit" class="btn btn-primary" disabled>Guardar Preferencias</button>
@@ -1520,8 +830,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             widgetAhorro.textContent = stats.ahorro_kg_co2 + ' kg';
             widgetAhorroEquivalente.textContent =
                 `Equivale a ${stats.arboles_equivalentes} árboles 🌳 o ${stats.km_equivalentes} km en auto 🚗`;
-            // Ya no llamamos a renderAhorroChart aquí, ya que la gráfica fue eliminada.
-            // renderAhorroChart(stats.ahorro_historico); 
             displayRecentOrders(stats.recent_orders || []);
         } catch (e) {
             showNotification('No se pudieron cargar las estadísticas del dashboard. Carga parcial de la información.', true);
@@ -1530,51 +838,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             recentOrdersSummaryContainer.innerHTML = '<p>No se pudieron cargar los pedidos recientes.</p>';
         }
     }
-
-    // Eliminamos por completo la función renderAhorroChart ya que la gráfica fue eliminada.
-    /*
-    function renderAhorroChart(data) {
-        if (!data || !Array.isArray(data)) data = [];
-        const ctx = document.getElementById('ahorroChart').getContext('2d');
-        if (window.ahorroChartInstance) {
-            window.ahorroChartInstance.destroy();
-        }
-        window.ahorroChartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.map(x => x.fecha),
-                datasets: [{
-                    label: 'CO₂ Ahorrado (kg)',
-                    data: data.map(x => x.ahorro),
-                    fill: true,
-                    backgroundColor: 'rgba(74,144,226,0.07)',
-                    borderColor: '#4AB3C1', 
-                    tension: 0.3,
-                    pointBackgroundColor: '#4a90e2', 
-                    pointRadius: 5
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `CO₂ Ahorrado: ${context.raw} kg`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: { beginAtZero: true, ticks: { color: "#4a90e2", callback: function(value) { return value + ' kg'; }}},
-                    x: { ticks: { color: "#4a90e2" }}
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
-    */
 
     /**
      * Muestra un resumen de los últimos pedidos en el dashboard.
@@ -1588,7 +851,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         orders.slice(0, 3).forEach(order => { // Mostrar solo los 3 más recientes
             const estado = order.status === 'completado' ? 'Completado' : 'Activo';
-            recentOrdersSummaryContainer.innerHTML += `
+            orderHistoryContainer.innerHTML += `
                 <div class="order-item slide-up">
                     <div><strong>ID:</strong> ${order.id}</div>
                     <div><strong>Fecha:</strong> ${order.date}</div>
@@ -1682,15 +945,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const estado = order.status === 'completado' ? 'Completado' : 'Activo';
                 orderHistoryContainer.innerHTML += `
                     <div class="order-item slide-up">
-                        <div><strong>ID Pedido:</strong><br>${order.id}</div>
-                        <div><strong>Fecha:</strong><br>${order.date}</div>
-                        <div><strong>Total:</strong><br>$${order.total} MXN</div>
-                        <div><strong>Estado:</strong><br>
-                            <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-outline btn-sm" onclick="alert('Funcionalidad de ver detalles aún no implementada para el ID: ${order.id}')">Ver Detalles</button>
-                        </div>
+                        <div><strong>ID:</strong> ${order.id}</div>
+                        <div><strong>Fecha:</strong> ${order.date}</div>
+                        <div><strong>Total:</strong> $${order.total} MXN</div>
+                        <div><strong>Estado:</strong> <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span></div>
                     </div>`;
             });
         } catch (error) {
@@ -1977,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="address-card-body">
                         <p>${addr.street}, ${addr.neighborhood || ''}</p>
                         <p>${addr.city}, ${addr.state || ''} ${addr.postal_code || ''}</p>
-                        ${addr.references ? `<p style="font-size:0.9em; color:#666;">Ref: ${addr.references}</p>` : ''}
+                        ${addr.references ? `<p class="address-references-text">Ref: ${addr.references}</p>` : ''}
                     </div>
                     <div class="address-card-actions">
                         <button class="btn btn-outline edit-btn" data-id="${addr.id}">Editar</button>

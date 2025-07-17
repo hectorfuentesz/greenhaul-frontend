@@ -123,10 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Gestiona toda la lógica del carrito de compras: añadir, eliminar, actualizar cantidades, abrir/cerrar modal, totales.
     const initShoppingCart = () => {
         // Inicialización robusta del carrito:
-        // Asegura que 'cart' sea un objeto y 'cart.items' siempre sea un array, incluso si localStorage está vacío o corrupto.
+        // Asegura que 'cart' sea un objeto y 'cart.items' siempre sea un array.
+        // Asegura que cart.rentalDates y cart.totalDays estén bien inicializados.
         let cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
         cart.items = Array.isArray(cart.items) ? cart.items : [];
-        cart.rentalDates = cart.rentalDates || null; // Asegura que las fechas sean null si no están definidas
+        cart.rentalDates = cart.rentalDates || { start: null, end: null }; // Fechas de alquiler para todo el carrito
+        cart.totalDays = cart.totalDays || 0; // Total de días de alquiler para todo el carrito
 
         const cartIcon = document.getElementById('cartIcon');
         const cartModalOverlay = document.getElementById('cartModalOverlay');
@@ -140,11 +142,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // Guarda el estado actual del carrito en localStorage
         const saveCart = () => localStorage.setItem('shoppingCart', JSON.stringify(cart));
         
+        // Calcula la diferencia en días entre dos fechas (ignorando la hora)
+        const calculateDays = (startDate, endDate) => {
+            // Asegúrate de que las fechas sean válidas
+            if (!startDate || !endDate) return 0;
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            // Si la fecha de inicio es posterior a la de fin, devuelve 0 o maneja como error
+            if (start > end) {
+                console.warn("Fecha de inicio es posterior a la fecha de fin.");
+                return 0;
+            }
+            const diffTime = Math.abs(end.getTime() - start.getTime()); // Usar .getTime() para milisegundos
+            // Calcular días, y sumar 1 para incluir ambos días (inicio y fin)
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; 
+            return diffDays;
+        };
+
         // Actualiza el número de ítems en el ícono del carrito en el header
         const updateCartCount = () => {
             const el = document.getElementById('cartCount');
             if (!el) return;
-            // Suma la cantidad de todos los ítems en el carrito. Si cart.items es null/undefined, usa un array vacío.
             const total = (cart.items || []).reduce((sum, item) => sum + (item.quantity || 0), 0);
             el.textContent = total;
             el.style.display = total > 0 ? 'flex' : 'none'; // Muestra/oculta el contador
@@ -158,11 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const startDateEl = document.getElementById('cartStartDate');
             const endDateEl = document.getElementById('cartEndDate');
             const datesContainer = document.querySelector('.cart-rental-dates');
-            
+            const cartTotalDaysEl = document.getElementById('cartTotalDays'); 
+
             // Muestra u oculta las fechas de alquiler en el modal del carrito
-            if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end && startDateEl && endDateEl && datesContainer) {
-                startDateEl.textContent = cart.rentalDates.start;
-                endDateEl.textContent = cart.rentalDates.end;
+            if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end && datesContainer) {
+                if(startDateEl) startDateEl.textContent = cart.rentalDates.start;
+                if(endDateEl) endDateEl.textContent = cart.rentalDates.end;
+                if(cartTotalDaysEl) cartTotalDaysEl.textContent = cart.totalDays; // Mostrar total de días
                 datesContainer.style.display = 'block';
             } else if (datesContainer) {
                 datesContainer.style.display = 'none';
@@ -176,6 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 cart.items.forEach(item => {
                     const price = typeof item.price === 'number' ? item.price : 0;
                     const quantity = typeof item.quantity === 'number' ? item.quantity : 1;
+                    // Usa item.rentalDays si está definido, de lo contrario, usa cart.totalDays (para compatibilidad)
+                    const itemTotalDays = typeof item.rentalDays === 'number' && item.rentalDays > 0 ? item.rentalDays : cart.totalDays; 
+
                     // Genera las opciones para el selector de cantidad (1 a 20)
                     let opts = Array.from({length: 20}, (_, i) => 
                         `<option value="${i + 1}" ${quantity === i + 1 ? 'selected' : ''}>${i + 1}</option>`
@@ -185,7 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="cart-item" data-product-id="${item.id}">
                             <div class="cart-item-details">
                                 <h4>${item.name}</h4>
-                                <p class="price">$${price.toFixed(2)} c/u</p>
+                                <p class="price">$${price.toFixed(2)} c/u x ${itemTotalDays} días</p>
+                                <p class="item-subtotal">Subtotal Ítem: $${(price * quantity * itemTotalDays).toFixed(2)}</p>
                             </div>
                             <div class="cart-item-controls">
                                 <label for="cart-qty-${item.id}">Cant:</label>
@@ -202,7 +226,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Calcula y actualiza los subtotales, impuestos y total en el modal del carrito.
         const updateCartModalTotals = () => {
-            const subtotal = (cart.items || []).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            // Calcula el subtotal multiplicando precio * cantidad * días de alquiler por cada ítem
+            const subtotal = (cart.items || []).reduce((sum, item) => {
+                // Asegurarse de usar los días de renta del ítem, si no, los del carrito, si no, 1 día
+                const effectiveDays = typeof item.rentalDays === 'number' && item.rentalDays > 0 ? item.rentalDays : cart.totalDays;
+                return sum + (item.price * item.quantity * (effectiveDays || 1)); // Default a 1 si no hay días
+            }, 0);
+            
             const taxes = subtotal * 0.16; // 16% de impuestos
             const total = subtotal + taxes;
 
@@ -219,19 +249,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const removeCartItem = (id) => {
             cart.items = cart.items.filter(item => item.id !== id);
             if (cart.items.length === 0) {
-                cart.rentalDates = null; // Si el carrito se vacía, también se limpian las fechas de alquiler
+                cart.rentalDates = { start: null, end: null }; // Si el carrito se vacía, también se limpian las fechas de alquiler
+                cart.totalDays = 0;
             }
             saveCart();
             renderCartModal();
             updateCartCount();
-            showNotification('Ítem eliminado del carrito.', 'error'); // Notificación de éxito para la eliminación
+            showNotification('Ítem eliminado del carrito.', 'error');
         };
 
         // Actualiza la cantidad de un ítem específico en el carrito.
         const updateCartItemQuantity = (id, newQuantity) => {
             const itemInCart = cart.items.find(item => item.id === id);
             if (itemInCart) {
-                itemInCart.quantity = parseInt(newQuantity, 10); // Asegura que la cantidad es un número entero
+                itemInCart.quantity = parseInt(newQuantity, 10);
                 saveCart();
                 renderCartModal(); // Re-render para reflejar el cambio en la cantidad y los totales
                 updateCartCount();
@@ -241,15 +272,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Adjunta/Re-adjunta los event listeners a los botones de eliminar y selects de cantidad dentro del modal.
         const addCartModalEventListeners = () => {
             // Es crucial remover los listeners antiguos para evitar duplicados al re-renderizar el modal
-            document.querySelectorAll('.remove-item-btn').forEach(btn => btn.removeEventListener('click', handleRemoveClick));
-            document.querySelectorAll('.cart-item-quantity').forEach(select => select.removeEventListener('change', handleQuantityChange));
+            // Usamos un selector más específico para garantizar que solo seleccionamos los elementos dentro del cartItemsContainer.
+            cartItemsContainer.querySelectorAll('.remove-item-btn').forEach(btn => btn.removeEventListener('click', handleRemoveClick));
+            cartItemsContainer.querySelectorAll('.cart-item-quantity').forEach(select => select.removeEventListener('change', handleQuantityChange));
 
             // Adjuntar nuevos listeners a los elementos actuales en el DOM
-            document.querySelectorAll('.remove-item-btn').forEach(button => {
+            cartItemsContainer.querySelectorAll('.remove-item-btn').forEach(button => {
                 button.addEventListener('click', handleRemoveClick);
             });
 
-            document.querySelectorAll('.cart-item-quantity').forEach(select => {
+            cartItemsContainer.querySelectorAll('.cart-item-quantity').forEach(select => {
                 select.addEventListener('change', handleQuantityChange);
             });
         };
@@ -268,44 +300,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Añade un producto al carrito. Maneja la lógica de fechas de alquiler y confirmación.
         const addToCart = (productToAdd, rentalDates = null) => {
-            // Si el carrito está vacío y se proporcionan fechas, establecerlas como las fechas de alquiler del carrito
-            if (cart.items.length === 0 && rentalDates) {
-                cart.rentalDates = rentalDates;
-            } 
-            // Si ya hay ítems y las nuevas fechas son diferentes, pide confirmación para vaciar el carrito
-            else if (cart.items.length > 0 && rentalDates && 
-                       (cart.rentalDates.start !== rentalDates.start || cart.rentalDates.end !== rentalDates.end)) {
-                if (!confirm('Has cambiado las fechas. ¿Deseas vaciar el carrito y empezar un nuevo pedido con estas nuevas fechas?')) {
-                    return; // Sale si el usuario cancela
-                }
-                clearCart(); // Vacía el carrito
-                cart.rentalDates = rentalDates; // Establece las nuevas fechas
-            } 
-            // Si el carrito está vacío y no hay fechas, y existen los inputs de fecha en la página, notificar
-            else if (cart.items.length === 0 && !rentalDates && document.getElementById('fecha-entrega')) {
-                 showNotification('Por favor, selecciona las fechas de entrega y recolección para añadir productos.', 'error');
-                 return;
-            } 
-            // Si hay ítems y no se proporcionan fechas, asume las fechas ya establecidas en el carrito
-            else if (cart.items.length > 0 && !rentalDates) {
-                rentalDates = cart.rentalDates;
+            let currentRentalDays = 0;
+            if (rentalDates && rentalDates.start && rentalDates.end) {
+                currentRentalDays = calculateDays(rentalDates.start, rentalDates.end);
             }
 
-            // Busca si el producto ya existe en el carrito
+            // Lógica para manejar cuándo se establecen o cambian las fechas de alquiler para todo el carrito
+            if (cart.items.length === 0) {
+                // Si el carrito está vacío, las fechas deben venir del selector en la página de productos.
+                if (rentalDates && currentRentalDays > 0) {
+                    cart.rentalDates = rentalDates;
+                    cart.totalDays = currentRentalDays;
+                } else {
+                    showNotification('Por favor, selecciona las fechas de entrega y recolección para añadir el primer producto.', 'error');
+                    const rentalContainer = document.querySelector('.rental-dates-container');
+                    if(rentalContainer) { // Agrega un pequeño feedback visual si no hay fechas
+                        rentalContainer.classList.add('shake-animation');
+                        setTimeout(() => rentalContainer.classList.remove('shake-animation'), 500);
+                    }
+                    return; // No añadir el producto si el primer producto no tiene fechas
+                }
+            } else {
+                // Si el carrito tiene ítems, y se proporcionan fechas (desde el UI de productos, por ejemplo)
+                if (rentalDates && currentRentalDays > 0) {
+                    // Si las nuevas fechas son diferentes a las del carrito actual, pedir confirmación para vaciar.
+                    if (cart.rentalDates.start !== rentalDates.start || cart.rentalDates.end !== rentalDates.end) {
+                        const confirmMsg = `Las fechas de alquiler seleccionadas (${rentalDates.start} a ${rentalDates.end}, ${currentRentalDays} días) son diferentes a las de tu carrito actual (${cart.rentalDates.start} a ${cart.rentalDates.end}, ${cart.totalDays} días). ¿Deseas vaciar el carrito y empezar un nuevo pedido con estas nuevas fechas?`;
+                        if (!confirm(confirmMsg)) {
+                            return; // Sale si el usuario cancela
+                        }
+                        clearCart(); // Vacía el carrito
+                        cart.rentalDates = rentalDates; // Establece las nuevas fechas
+                        cart.totalDays = currentRentalDays;
+                    }
+                    // Si las fechas son las mismas, no hacer nada, se usa las fechas ya establecidas en el carrito.
+                } else { 
+                    // Si hay ítems en el carrito pero no se proporcionaron fechas (ej. añadiendo desde una página sin selector de fechas),
+                    // Y el carrito NO tiene fechas válidas (lo cual no debería pasar si el primer producto las tuvo), notificar.
+                    if (!cart.rentalDates || cart.totalDays === 0) {
+                        showNotification('No se pueden añadir productos. Las fechas de alquiler no están definidas para el carrito.', 'error');
+                        return;
+                    }
+                    // Si el carrito ya tiene fechas, y no se proporcionaron nuevas fechas, usa las fechas existentes del carrito.
+                    // No se necesita lógica explícita aquí, ya están en `cart.totalDays`.
+                }
+            }
+            
+            // Asegúrate de que el producto a añadir incluya los días de renta, que serán los `cart.totalDays` del carrito.
+            // Esto asegura que cada ítem en el carrito tenga la propiedad `rentalDays` para el cálculo individual.
             const itemInCart = cart.items.find(item => item.id === productToAdd.id);
             if (itemInCart) {
                 itemInCart.quantity += productToAdd.quantity; // Si existe, solo actualiza la cantidad
             } else {
-                cart.items.push(productToAdd); // Si no, añade el nuevo producto al carrito
+                cart.items.push({ 
+                    ...productToAdd, 
+                    rentalDays: cart.totalDays // Cada ítem ahora guarda los días de renta del pedido.
+                });
             }
-            showNotification(`${productToAdd.name} añadido al carrito.`, 'success');
+            showNotification(`${productToAdd.name} añadido al carrito por ${cart.totalDays} días.`, 'success');
             saveCart(); // Guarda el carrito actualizado
             updateCartCount(); // Actualiza el contador visual
         };
 
         // Vacía completamente el carrito y resetea las fechas de alquiler.
         const clearCart = () => {
-            cart = { items: [], rentalDates: null }; // Resetea el objeto carrito
+            cart = { items: [], rentalDates: { start: null, end: null }, totalDays: 0 }; // Resetea el objeto carrito
             saveCart();
             renderCartModal();
             updateCartCount();
@@ -324,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const productName = productCard.querySelector('h3').textContent;
                 const productPrice = parseFloat(productCard.dataset.productPrice);
                 const quantitySelect = productCard.querySelector('.product-qty');
-                const quantity = parseInt(quantitySelect?.value || '1', 10); // Obtiene la cantidad o 1 por defecto
+                const quantity = parseInt(quantitySelect?.value || '1', 10);
 
                 if (isNaN(productPrice) || quantity <= 0) {
                     showNotification('Error: El precio o la cantidad del producto son inválidos.', 'error');
@@ -335,27 +394,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const endDateInput = document.getElementById('fecha-recoleccion');
                 let rentalDates = null;
 
-                if (startDateInput && endDateInput) { // Si los campos de fecha están en esta página
+                // Obtiene las fechas de los inputs si existen en esta página.
+                if (startDateInput && endDateInput) {
                     if (!startDateInput.value || !endDateInput.value) {
                         showNotification('Por favor, selecciona las fechas de entrega y recolección.', 'error');
                         const rentalContainer = document.querySelector('.rental-dates-container');
-                        if(rentalContainer) {
-                            rentalContainer.classList.add('shake-animation'); // Aplica animación si existe
+                        if(rentalContainer) { // Aplica animación si existe
+                            rentalContainer.classList.add('shake-animation');
                             setTimeout(() => rentalContainer.classList.remove('shake-animation'), 500);
                         }
                         return;
                     }
                     rentalDates = { start: startDateInput.value, end: endDateInput.value };
                 } 
-                else if (cart.items.length === 0) { // Si no hay campos de fecha y el carrito está vacío, no se puede añadir sin fechas
-                     showNotification('No se pueden añadir productos sin fechas de alquiler. Las fechas deben definirse al menos con el primer producto.', 'error');
-                     return;
-                } else { // Si no hay campos de fecha pero el carrito ya tiene ítems, usar las fechas existentes del carrito
-                    rentalDates = cart.rentalDates;
-                }
+                // addToCart ahora maneja la lógica de cuándo no hay fechas en el input pero sí en el carrito.
 
                 addToCart({ id: productId, name: productName, price: productPrice, quantity: quantity }, rentalDates);
-                if(quantitySelect) quantitySelect.value = ""; // Limpia la selección de cantidad después de añadir
+                if(quantitySelect) quantitySelect.value = "1"; // Limpia la selección de cantidad a 1 después de añadir
             });
         });
 
@@ -383,14 +438,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Listener para el botón "Finalizar Compra"
         if (proceedToCheckoutBtn) {
             proceedToCheckoutBtn.addEventListener('click', e => { 
+                // Valida que el carrito no esté vacío y que las fechas de alquiler estén presentes y sean válidas.
                 if (cart.items.length === 0) { 
                     e.preventDefault(); // Prevenir la navegación si el carrito está vacío
                     showNotification('Tu carrito está vacío. Por favor, añade productos para continuar.', 'error'); 
                 } 
-                // Validar que las fechas de alquiler estén presentes antes de proceder a la compra
-                else if (!cart.rentalDates || !cart.rentalDates.start || !cart.rentalDates.end) {
+                else if (!cart.rentalDates || !cart.rentalDates.start || !cart.rentalDates.end || cart.totalDays === 0) {
                     e.preventDefault();
-                    showNotification('Faltan las fechas de entrega y recolección. Por favor, asegúrate de haberlas seleccionado para al menos un producto.', 'error');
+                    showNotification('Faltan las fechas de entrega y recolección. Por favor, asegúrate de haberlas seleccionado.', 'error');
                 }
                 saveCart(); // Asegurar que el carrito esté guardado antes de cualquier navegación
             });
@@ -405,6 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fechaRecoleccionInput = document.getElementById('fecha-recoleccion');
 
         // Solo inicializar Flatpickr si los elementos de input existen y la librería 'flatpickr' está cargada
+        // Asume que Flatpickr.js está importado en la página que lo necesite (ej. productos.html).
         if (typeof flatpickr !== 'undefined' && fechaEntregaInput && fechaRecoleccionInput) {
             const fechaRecoleccionPicker = flatpickr(fechaRecoleccionInput, {
                 locale: "es",           // Idioma español
