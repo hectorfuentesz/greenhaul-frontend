@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Cuenta - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css"> 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <style>
         /*
@@ -44,7 +44,7 @@
             --accent-green: #2ecc71;
             --gradient-primary: linear-gradient(120deg, var(--primary-solid) 0%, var(--secondary-solid) 100%);
         }
-    
+
         /*
          * --- Estilos Generales de la Página y Animaciones ---
          * Estos estilos establecen la base visual de la página, como el color de fondo del cuerpo
@@ -55,14 +55,14 @@
             font-family: 'Arial', sans-serif; /* Fuente base */
             color: var(--text-dark); /* Color de texto predeterminado */
         }
-    
+
         /* Animación para que los elementos aparezcan suavemente */
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-    
+
         /* Animación para que los elementos se deslicen hacia arriba con un rebote */
         .slide-up { animation: slideUp 0.7s cubic-bezier(.68,-0.55,.27,1.55); }
         @keyframes slideUp {
@@ -70,7 +70,7 @@
             60% { transform: translateY(-8px); opacity: 1; }
             100% { transform: translateY(0); }
         }
-    
+
         /*
          * --- Layout del Dashboard de la Cuenta ---
          * Define la estructura principal de la sección "Mi Cuenta", utilizando CSS Grid
@@ -81,7 +81,7 @@
             margin: 0 auto; /* Centrar en la página */
             padding: 0 15px; /* Relleno lateral */
         }
-    
+
         .account-dashboard-layout {
             display: grid; /* Usar CSS Grid */
             grid-template-columns: 300px 1fr; /* Columna fija para sidebar, el resto para contenido */
@@ -89,7 +89,7 @@
             align-items: flex-start; /* Alinear elementos al inicio de la cuadrícula */
             margin: 0 auto; /* Asegurar centrado */
         }
-    
+
         /* Media query para pantallas más pequeñas (ej. tabletas y móviles) */
         @media (max-width: 900px) {
             .account-dashboard-layout {
@@ -100,7 +100,7 @@
                 position: static; /* Quitar sticky en móviles para que fluya con el contenido */
             }
         }
-    
+
         /*
          * --- Barra Lateral (Sidebar) de la Cuenta ---
          * Contiene la tarjeta de usuario y la navegación principal del dashboard.
@@ -110,7 +110,7 @@
             top: 110px; /* Distancia desde la parte superior de la ventana */
             min-width: 220px; /* Ancho mínimo */
         }
-    
+
         /* Tarjeta de información del usuario */
         .user-card {
             background: var(--gradient-primary); /* Fondo con el degradado de la marca (azul-verdoso) */
@@ -121,7 +121,7 @@
             padding: 36px 18px 24px 18px; /* Relleno */
             margin-bottom: 28px; /* Espacio inferior */
         }
-    
+
         /* Avatar del usuario */
         .user-avatar {
             background: #fff; /* Fondo blanco */
@@ -133,19 +133,19 @@
             display: flex; align-items: center; justify-content: center; /* Centrar ícono */
             box-shadow: 0 4px 18px rgba(0,179,134,0.12); /* Sombra */
         }
-    
+
         .user-name {
             font-size: 1.3rem;
             font-weight: 700;
             letter-spacing: -1px;
         }
-    
+
         .user-email {
             font-size: 1rem;
             opacity: 0.95;
             margin-bottom: 8px;
         }
-    
+
         /* Navegación de la cuenta (enlaces de la barra lateral) */
         .account-nav {
             background: #fff; /* Fondo blanco */
@@ -156,7 +156,7 @@
             gap: 2px; /* Pequeño espacio entre enlaces */
             padding: 15px 0; /* Relleno vertical */
         }
-    
+
         .account-nav-link {
             padding: 15px 28px; /* Relleno para hacerlos clickeables */
             border-radius: 10px; /* Bordes redondeados */
@@ -170,7 +170,7 @@
             cursor: pointer;
             font-size: 1.08rem;
         }
-    
+
         .account-nav-link i {
             width: 22px; /* Ancho fijo para íconos */
             text-align: center;
@@ -178,12 +178,12 @@
             color: var(--primary-blue); /* Color del ícono (azul) */
             opacity: 0.95;
         }
-    
+
         .account-nav-link:hover {
             background: #f3f8fe; /* Fondo azul muy claro al pasar el mouse */
             color: var(--primary-blue); /* Color de texto azul al pasar el mouse */
         }
-    
+
         /* Estilo para el enlace de navegación activo */
         .account-nav-link.active {
             background: var(--gradient-primary); /* Fondo con degradado principal (azul-verdoso) */
@@ -192,11 +192,11 @@
             box-shadow: 0 6px 18px rgba(0,179,134,0.11); /* Sombra más pronunciada */
             transform: scale(1.04); /* Ligeramente más grande */
         }
-    
+
         .account-nav-link.active i {
             color: #fff; /* Ícono blanco en estado activo */
         }
-    
+
         /*
          * --- Contenido Principal de la Cuenta ---
          * Área donde se muestran las diferentes secciones (Resumen, Pedidos, etc.).
@@ -204,7 +204,7 @@
         .account-content {
             min-height: 500px; /* Altura mínima para el contenido */
         }
-    
+
         .account-section {
             display: none; /* Ocultar por defecto */
             background: #fff; /* Fondo blanco */
@@ -212,12 +212,12 @@
             border-radius: 14px; /* Bordes redondeados */
             box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Sombra */
         }
-    
+
         .account-section.active {
             display: block; /* Mostrar cuando está activa */
             animation: fadeIn 0.45s forwards; /* Animación de entrada */
         }
-    
+
         /*
          * --- Dashboard (Sección de Resumen) ---
          * Contiene widgets de estadísticas, el gráfico y acciones rápidas.
@@ -228,7 +228,7 @@
             gap: 30px; /* Espacio entre widgets */
             margin-bottom: 36px; /* Espacio inferior */
         }
-    
+
         .widget-card {
             background: #f8f9fa; /* Fondo gris muy claro */
             border-radius: 11px; /* Bordes redondeados */
@@ -237,41 +237,77 @@
             padding: 28px 12px 22px 12px; /* Relleno */
             transition: box-shadow 0.3s ease, transform 0.3s ease; /* Transición al hover */
         }
-    
+
         .widget-card:hover {
             box-shadow: 0 8px 24px rgba(0,179,134,0.19); /* Sombra más pronunciada al hover */
             transform: translateY(-7px) scale(1.04); /* Efecto de "levantar" */
         }
-    
+
         .widget-card .widget-icon {
             font-size: 2.6rem;
             margin-bottom: 10px;
             color: var(--primary-blue); /* Color del ícono del widget (azul) */
         }
-    
+
         .widget-card .widget-value {
             font-size: 2rem;
             font-weight: 700;
             color: var(--primary-blue); /* Color del valor numérico (azul) */
             margin-bottom: 4px;
         }
-    
+
         .widget-card .widget-label {
             font-size: 1.08rem;
             color: var(--text-dark);
             opacity: 0.7;
         }
-    
+
         /* Widget especial de ahorro con degradado */
         .widget-card.ahorro {
             background: var(--gradient-primary); /* Fondo con el degradado principal (azul-verdoso) */
             color: #fff; /* Texto blanco */
         }
-    
+
         .widget-card.ahorro .widget-icon {
             color: #fff; /* Ícono blanco para el widget de ahorro */
         }
-    
+
+        /* Nuevo estilo para la tarjeta de impacto simple */
+        .impact-card {
+            background: var(--gradient-primary); /* Fondo con degradado principal */
+            color: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 28px rgba(74,144,226,0.09);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+            max-width: 660px; /* Ancho similar al del gráfico anterior */
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .impact-card .icon-large {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: #fff;
+            opacity: 0.9;
+        }
+        .impact-card h4 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .impact-card p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
         /* Acciones Rápidas en el Dashboard */
         .quick-actions {
             margin-top: 40px;
@@ -279,7 +315,7 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Columnas responsivas */
             gap: 20px;
         }
-    
+
         .action-card {
             background: #f8f9fa;
             border-radius: 12px;
@@ -288,40 +324,40 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
         }
-    
+
         .action-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
-    
+
         .action-card .action-icon {
             font-size: 3rem;
             color: var(--secondary-solid); /* Color del ícono de acción (azul) */
             margin-bottom: 15px;
         }
-    
+
         .action-card h4 {
             font-size: 1.25rem;
             margin-bottom: 10px;
             color: var(--text-dark);
         }
-    
+
         .action-card p {
             font-size: 0.95rem;
             color: var(--text-light);
             margin-bottom: 15px;
         }
-    
+
         .action-card .btn {
             padding: 10px 20px;
             font-size: 0.9rem;
         }
-    
+
         /* Resumen de Pedidos Recientes en el Dashboard */
         .recent-orders-summary {
             margin-top: 40px;
         }
-    
+
         .recent-orders-summary .order-item {
             background: #fff;
             border-radius: 9px;
@@ -334,11 +370,11 @@
             border: 1px solid #e0e0e0;
             box-shadow: 0 1px 5px rgba(74,144,226,0.05);
         }
-    
+
         .recent-orders-summary .order-item strong {
             color: var(--primary-blue); /* Color del texto "fuerte" en los pedidos (azul) */
         }
-    
+
         /*
          * --- Sección de Pedidos ---
          * Muestra el historial completo de pedidos del usuario.
@@ -346,7 +382,7 @@
         .order-list {
             margin-top: 18px;
         }
-    
+
         .order-list .order-item {
             background: #f8f9fa;
             border-radius: 9px;
@@ -360,12 +396,12 @@
             box-shadow: 0 2px 8px rgba(74,144,226,0.07);
             transition: box-shadow 0.3s, transform 0.2s;
         }
-    
+
         .order-item:hover {
             box-shadow: 0 8px 24px rgba(74,144,226,0.19);
             transform: translateY(-4px) scale(1.02);
         }
-    
+
         .order-item-status {
             font-weight: bold;
             padding: 5px 14px;
@@ -373,12 +409,12 @@
             font-size: 0.97rem;
             text-align: center;
         }
-    
+
         .status-completado {
             color: #008c6b;
             background: rgba(0,179,134,0.11);
         }
-    
+
         .status-activo {
             color: #3a7bcd;
             background: rgba(74,144,226,0.11);
@@ -393,23 +429,23 @@
             grid-template-columns: 1fr 1fr;
             gap: 25px;
         }
-    
+
         .form-group {
             margin-bottom: 20px;
         }
-    
+
         .form-group label {
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
             color: var(--text-dark);
         }
-    
+
         .form-control:disabled {
             background: #e9ecef;
             cursor: not-allowed;
         }
-    
+
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
@@ -419,7 +455,7 @@
             font-family: inherit;
             color: var(--text-dark);
         }
-    
+
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--primary-blue); /* Borde azul al enfocar */
@@ -438,13 +474,13 @@
             gap: 15px;
             flex-wrap: wrap;
         }
-    
+
         .address-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
             gap: 22px;
         }
-    
+
         .address-card {
             background: #f8f9fa;
             border-radius: 12px;
@@ -454,14 +490,14 @@
             flex-direction: column;
             box-shadow: 0 2px 9px rgba(0,179,134,0.07);
         }
-    
+
         .address-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
         }
-    
+
         .address-card-header h4 {
             color: var(--primary-blue); /* Color del título de la dirección (azul) */
             font-size: 1.2rem;
@@ -469,12 +505,12 @@
             align-items: center;
             gap: 10px;
         }
-    
+
         .address-card-body {
             flex-grow: 1;
             margin-bottom: 20px;
         }
-    
+
         .address-card-actions {
             display: flex;
             align-items: center;
@@ -500,12 +536,12 @@
             visibility: hidden; /* Oculto por defecto */
             transition: all 0.3s ease-in-out; /* Transición suave al mostrar/ocultar */
         }
-    
+
         .modal-overlay.show {
             opacity: 1;
             visibility: visible; /* Mostrar modal */
         }
-    
+
         .modal-content {
             background: #fff; /* Fondo blanco del contenido del modal */
             padding: 38px 28px;
@@ -516,11 +552,11 @@
             transform: scale(0.93); /* Ligeramente encogido al inicio */
             transition: transform 0.3s ease-in-out;
         }
-    
+
         .modal-overlay.show .modal-content {
             transform: scale(1); /* Escalar a tamaño normal al mostrar */
         }
-    
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -529,12 +565,12 @@
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
-    
+
         .modal-header h3 {
             margin: 0;
             font-weight: 700;
         }
-    
+
         .modal-close {
             background: none;
             border: none;
@@ -542,21 +578,16 @@
             cursor: pointer;
             color: var(--text-dark);
         }
-    
+
         .modal-actions {
             display: flex;
             justify-content: flex-end;
             gap: 15px;
             margin-top: 18px;
         }
-    
-        #address-map {
-            height: 220px; /* Altura fija para el mapa en el modal */
-            width: 100%;
-            border-radius: 12px;
-            margin-top: 18px;
-            border: 1px solid #e0e0e0;
-        }
+
+        /* ¡IMPORTANTE! Mantenemos el CSS del mapa para que se vea */
+        #address-map { height: 220px; width: 100%; border-radius: 12px; margin-top: 18px; border: 1px solid #e0e0e0;}
         
         /*
          * --- Notificaciones y Responsividad ---
@@ -575,13 +606,13 @@
                 grid-template-columns: 1fr; /* Formulario en una sola columna */
             }
         }
-    
+
         @media (max-width: 600px) {
             .account-section, .modal-content {
                 padding: 25px 15px; /* Reducir relleno en pantallas muy pequeñas */
             }
         }
-    
+
         /* Estilo para el popup de notificación */
         #notificationPopup {
             position: fixed;
@@ -594,19 +625,22 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             z-index: 10001;
             opacity: 0;
-            transform: translateX(120%); /* Fuera de pantalla por defecto */
-            transition: all 0.4s ease-out; /* Transición suave */
+            transform: translateX(120%);
+            transition: all 0.4s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-    
+
         #notificationPopup.error {
             background: var(--accent-red); /* Fondo rojo para errores */
         }
-    
+
         #notificationPopup.show {
             opacity: 1;
-            transform: translateX(0); /* Entra a la pantalla */
+            transform: translateX(0);
         }
-    
+
         /*
          * --- Estilos de Botones ---
          * Define la apariencia y el comportamiento de los diferentes tipos de botones.
@@ -623,31 +657,31 @@
             text-decoration: none;
             white-space: nowrap; /* Evita que el texto del botón se rompa */
         }
-    
+
         .btn-primary {
             background: var(--primary-blue); /* Fondo azul para el botón principal */
             color: #fff;
             border: 1px solid var(--primary-blue);
         }
-    
+
         .btn-primary:hover {
             background: #3a7bcd; /* Tono de azul más oscuro al pasar el mouse */
             border-color: #3a7bcd;
             box-shadow: 0 4px 12px rgba(74,144,226,0.3); /* Sombra azul al pasar el mouse */
         }
-    
+
         .btn-outline {
             background: transparent;
             color: var(--primary-blue); /* Texto azul para el botón outline */
             border: 1px solid var(--primary-blue);
         }
-    
+
         .btn-outline:hover {
             background: var(--primary-blue); /* Fondo azul al pasar el mouse */
             color: #fff;
             box-shadow: 0 4px 12px rgba(74,144,226,0.3); /* Sombra azul al pasar el mouse */
         }
-    
+
         .btn-tertiary {
             background: none;
             border: none;
@@ -655,12 +689,12 @@
             font-size: 1.2rem;
             padding: 8px;
         }
-    
+
         .btn-tertiary:hover {
             color: var(--accent-red); /* Color rojo al pasar el mouse */
             transform: scale(1.1); /* Ligeramente más grande */
         }
-    
+
         /*
          * --- Estilos de la Barra de Navegación (Header) - COLORES ORIGINALES ---
          * Revertidos a los colores originales que son neutros.
@@ -673,7 +707,7 @@
             top: 0;
             z-index: 999;
         }
-    
+
         .navbar-content {
             display: flex;
             justify-content: space-between;
@@ -682,12 +716,12 @@
             margin: 0 auto;
             padding: 0 15px;
         }
-    
+
         .logo img {
             height: 40px;
             filter: none; /* Elimina el filtro blanco para el logo original */
         }
-    
+
         .nav-links-list {
             list-style: none;
             margin: 0;
@@ -695,7 +729,7 @@
             display: flex;
             gap: 25px;
         }
-    
+
         .nav-link {
             color: var(--text-dark); /* Color de texto oscuro para enlaces de la navbar (original) */
             text-decoration: none;
@@ -703,7 +737,7 @@
             padding: 8px 0;
             position: relative;
         }
-    
+
         .nav-link::after {
             content: '';
             position: absolute;
@@ -714,24 +748,24 @@
             background: var(--primary-solid); /* Subrayado con el color primario (azul verdoso del degradado) */
             transition: width 0.3s ease;
         }
-    
+
         .nav-link:hover::after,
         .nav-link.active::after {
             width: 100%;
         }
-    
+
         .navbar-right-items {
             display: flex;
             align-items: center;
             gap: 20px;
         }
-    
+
         .navbar-user-actions {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-    
+
         .navbar-user-actions .nav-link {
             font-weight: 600;
             color: var(--primary-solid); /* "Hola, [Usuario]" con el color primario (azul verdoso) */
@@ -744,19 +778,19 @@
             background: var(--primary-solid);
             color: #fff;
         }
-    
+
         .nav-icons {
             display: flex;
             gap: 15px;
         }
-    
+
         .nav-icon {
             color: var(--text-dark); /* Íconos de navegación oscuros (original) */
             font-size: 1.4rem;
             text-decoration: none;
             position: relative;
         }
-    
+
         .cart-count {
             background: var(--accent-red);
             color: #fff;
@@ -769,7 +803,7 @@
             min-width: 20px;
             text-align: center;
         }
-    
+
         /*
          * --- Modal del Carrito de Compras ---
          * Estilos para la ventana emergente del carrito de compras.
@@ -788,12 +822,12 @@
             visibility: hidden;
             transition: all 0.3s ease-in-out;
         }
-    
+
         .cart-modal-overlay.show {
             opacity: 1;
             visibility: visible;
         }
-    
+
         .cart-modal {
             background: #fff;
             width: 100%;
@@ -804,11 +838,11 @@
             display: flex;
             flex-direction: column;
         }
-    
+
         .cart-modal-overlay.show .cart-modal {
             transform: translateX(0); /* Entra a la vista */
         }
-    
+
         .cart-modal-header {
             padding: 20px;
             border-bottom: 1px solid #eee;
@@ -816,13 +850,13 @@
             justify-content: space-between;
             align-items: center;
         }
-    
+
         .cart-modal-header h2 {
             margin: 0;
             font-size: 1.5rem;
             color: var(--primary-blue); /* Título del carrito en azul */
         }
-    
+
         .close-modal-btn {
             background: none;
             border: none;
@@ -830,52 +864,52 @@
             cursor: pointer;
             color: var(--text-dark);
         }
-    
+
         .cart-modal-body {
             flex-grow: 1;
             padding: 20px;
             overflow-y: auto; /* Permite scroll si hay muchos ítems */
         }
-    
+
         .cart-modal-footer {
             padding: 20px;
             border-top: 1px solid #eee;
         }
-    
+
         .cart-item {
             display: flex;
             align-items: center;
             margin-bottom: 15px;
             gap: 15px;
         }
-    
+
         .cart-item img {
             width: 60px;
             height: 60px;
             object-fit: cover;
             border-radius: 8px;
         }
-    
+
         .cart-item-details {
             flex-grow: 1;
         }
-    
+
         .cart-item-details h4 {
             margin: 0 0 5px 0;
             font-size: 1.1rem;
         }
-    
+
         .cart-item-details p {
             margin: 0;
             color: var(--text-light);
         }
-    
+
         .cart-item-actions {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-    
+
         .cart-item-actions button {
             background: none;
             border: 1px solid #ccc;
@@ -883,7 +917,7 @@
             cursor: pointer;
             border-radius: 5px;
         }
-    
+
         .cart-summary p,
         .cart-summary h3 {
             display: flex;
@@ -891,13 +925,13 @@
             margin-bottom: 10px;
             font-size: 1.1rem;
         }
-    
+
         .cart-summary h3 {
             font-size: 1.4rem;
             color: var(--primary-blue); /* Total del carrito en azul */
             margin-top: 15px;
         }
-    
+
         .cart-footer-buttons {
             display: flex;
             gap: 15px;
@@ -923,12 +957,12 @@
             align-items: center;
             gap: 15px;
         }
-    
+
         .cart-notification.show {
             opacity: 1;
             transform: translateY(0);
         }
-    
+
         .notification-icon-wrapper {
             background: #fff;
             border-radius: 50%;
@@ -938,17 +972,17 @@
             align-items: center;
             justify-content: center;
         }
-    
+
         .notification-icon {
             font-size: 1.5rem;
             color: var(--primary-blue); /* Ícono de notificación en azul */
         }
-    
+
         .notification-content p {
             margin: 0;
             font-size: 1rem;
         }
-    
+
         /*
          * --- Estilos del Pie de Página (Footer) - COLORES ORIGINALES ---
          * Revertidos a los colores originales que son un gris muy oscuro.
@@ -959,7 +993,7 @@
             padding: 50px 0 20px;
             margin-top: 50px;
         }
-    
+
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -968,7 +1002,7 @@
             margin: 0 auto;
             padding: 0 15px;
         }
-    
+
         .footer-info h3,
         .footer-links h3,
         .footer-social-links h3 {
@@ -976,54 +1010,54 @@
             margin-bottom: 20px;
             font-size: 1.4rem;
         }
-    
+
         .footer-info p {
             margin-bottom: 10px;
             font-size: 0.95rem;
             line-height: 1.6;
         }
-    
+
         .footer-info p i {
             margin-right: 10px;
             color: var(--secondary-solid); /* Íconos de contacto en el footer con el color secundario (azul) */
         }
-    
+
         .footer-links ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-    
+
         .footer-links ul li {
             margin-bottom: 10px;
         }
-    
+
         .footer-links ul li a {
             color: #ccc;
             text-decoration: none;
             transition: color 0.3s ease;
         }
-    
+
         .footer-links ul li a:hover {
             color: var(--primary-solid); /* Enlaces del footer con hover en color primario (azul verdoso) */
         }
-    
+
         .social-icons-wrapper {
             display: flex;
             gap: 15px;
         }
-    
+
         .social-icon {
             color: #fff;
             font-size: 1.5rem;
             transition: color 0.3s ease, transform 0.3s ease;
         }
-    
+
         .social-icon:hover {
             color: var(--primary-solid); /* Íconos sociales con hover en color primario (azul verdoso) */
             transform: translateY(-3px);
         }
-    
+
         .footer-bottom {
             text-align: center;
             margin-top: 40px;
@@ -1032,7 +1066,7 @@
             font-size: 0.9rem;
             color: #aaa;
         }
-    
+
         /* Media query para responsividad del footer y navbar */
         @media (max-width: 768px) {
             .navbar-content {
@@ -1145,14 +1179,14 @@
                             </div>
                         </div>
 
-                        <div class="dashboard-graphs" style="margin-top:40px;">
-                            <div style="background:#fff;padding:30px 20px;border-radius:14px;box-shadow:0 4px 15px rgba(0,179,134,0.09);max-width:660px;margin:auto;">
-                                <h4 style="text-align:center;font-size:1.25rem;font-weight:600;color:var(--primary-blue);margin-bottom:18px;">Histórico de Ahorro Sostenible</h4>
-                                <canvas id="ahorroChart" height="180"></canvas>
-                            </div>
+                        <div class="impact-card">
+                            <div class="icon-large"><i class="fas fa-leaf"></i></div>
+                            <h4>¡Tu Impacto Sostenible Crece!</h4>
+                            <p>Cada mudanza y envío con GreenHaul contribuye a un futuro más verde.</p>
+                            <p style="font-size:1.2rem; font-weight:bold; margin-top:10px;">¡Gracias por tu compromiso con el planeta!</p>
                         </div>
                         <p style="text-align:center;color:#888;margin-top:22px;">
-                            ¡Gracias por hacer tu mudanza sostenible! Este es tu impacto ambiental con GreenHaul.
+                            Sigue contribuyendo a reducir la huella de carbono.
                         </p>
 
                         <h4 style="margin-top:50px;">Acciones Rápidas</h4>
@@ -1396,7 +1430,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     let userData = {}; // Objeto para almacenar los datos del usuario actual
-    let map, marker; // Variables para el mapa de Leaflet
+    let map, marker; // Mantenemos map y marker para la funcionalidad visual del mapa
 
     // --- Animación inicial de widgets y elementos ---
     document.querySelectorAll('.widget-card').forEach((el, i) => {
@@ -1411,7 +1445,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userCardEmail = document.getElementById('userCardEmail');
     const userNameSpan = document.getElementById('userName');
     const accountTitle = document.getElementById('account-title');
-    const dashboardUserName = document.getElementById('dashboardUserName'); // Nuevo elemento
+    const dashboardUserName = document.getElementById('dashboardUserName'); 
     const widgetPedidos = document.getElementById('widgetPedidos');
     const widgetCompletados = document.getElementById('widgetCompletados');
     const widgetDirecciones = document.getElementById('widgetDirecciones');
@@ -1420,7 +1454,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const navLinks = document.querySelectorAll('.account-nav-link');
     const sections = document.querySelectorAll('.account-section');
     const orderHistoryContainer = document.getElementById('order-history-container');
-    const recentOrdersSummaryContainer = document.getElementById('recent-orders-summary-container'); // Nuevo
+    const recentOrdersSummaryContainer = document.getElementById('recent-orders-summary-container');
     const profileForm = document.getElementById('profileForm');
     const profileNameInput = document.getElementById('profile-name');
     const profileLastNameInput = document.getElementById('profile-lastname');
@@ -1434,13 +1468,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const addressListContainer = document.getElementById('address-list-container');
     const modalTitle = document.getElementById('modalTitle');
     const addressIdInput = document.getElementById('addressId');
-    const addressNameInput = document.getElementById('address-name'); // Nuevo
+    const addressNameInput = document.getElementById('address-name'); 
     const streetInput = document.getElementById('address-street');
-    const neighborhoodInput = document.getElementById('address-neighborhood'); // Nuevo
+    const neighborhoodInput = document.getElementById('address-neighborhood'); 
     const cityInput = document.getElementById('address-city');
     const stateInput = document.getElementById('address-state');
     const postalCodeInput = document.getElementById('address-postal-code');
-    const referencesInput = document.getElementById('address-references'); // Nuevo
+    const referencesInput = document.getElementById('address-references'); 
     const notificationPopup = document.getElementById('notificationPopup');
     const logoutBtn = document.getElementById('logoutBtn');
 
@@ -1453,7 +1487,7 @@ document.addEventListener('DOMContentLoaded', async () => {
      */
     function showNotification(message, isError = false) {
         if (!notificationPopup) return;
-        notificationPopup.textContent = message;
+        notificationPopup.textContent = message; 
         notificationPopup.className = 'show' + (isError ? ' error' : '');
         setTimeout(() => notificationPopup.className = '', 3000);
     }
@@ -1486,7 +1520,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             widgetAhorro.textContent = stats.ahorro_kg_co2 + ' kg';
             widgetAhorroEquivalente.textContent =
                 `Equivale a ${stats.arboles_equivalentes} árboles 🌳 o ${stats.km_equivalentes} km en auto 🚗`;
-            renderAhorroChart(stats.ahorro_historico);
+            // Ya no llamamos a renderAhorroChart aquí, ya que la gráfica fue eliminada.
+            // renderAhorroChart(stats.ahorro_historico); 
             displayRecentOrders(stats.recent_orders || []);
         } catch (e) {
             showNotification('No se pudieron cargar las estadísticas del dashboard. Carga parcial de la información.', true);
@@ -1496,14 +1531,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    /**
-     * Renderiza el gráfico de ahorro de CO2.
-     * @param {Array<object>} data - Datos históricos de ahorro.
-     */
+    // Eliminamos por completo la función renderAhorroChart ya que la gráfica fue eliminada.
+    /*
     function renderAhorroChart(data) {
         if (!data || !Array.isArray(data)) data = [];
         const ctx = document.getElementById('ahorroChart').getContext('2d');
-        // Destruir instancia anterior si existe para evitar duplicados
         if (window.ahorroChartInstance) {
             window.ahorroChartInstance.destroy();
         }
@@ -1516,9 +1548,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     data: data.map(x => x.ahorro),
                     fill: true,
                     backgroundColor: 'rgba(74,144,226,0.07)',
-                    borderColor: '#4AB3C1', /* Usar primary-solid para el borde del gráfico */
+                    borderColor: '#4AB3C1', 
                     tension: 0.3,
-                    pointBackgroundColor: '#4a90e2', /* Usar secondary-solid para los puntos */
+                    pointBackgroundColor: '#4a90e2', 
                     pointRadius: 5
                 }]
             },
@@ -1542,6 +1574,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
+    */
 
     /**
      * Muestra un resumen de los últimos pedidos en el dashboard.
@@ -1585,22 +1618,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Cargar datos específicos para cada sección
         switch (sectionId) {
             case 'dashboard':
-                updateDashboardWidgetsFromBackend(); // Solo se intenta cargar el dashboard aquí
+                updateDashboardWidgetsFromBackend(); 
                 break;
             case 'pedidos':
-                loadOrders(); // Solo carga pedidos
+                loadOrders(); 
                 break;
             case 'perfil':
                 populateProfileForm();
                 break;
             case 'direcciones':
-                loadAddresses(); // Solo carga direcciones
+                loadAddresses(); 
                 break;
             case 'seguridad':
-                // No hay carga de datos de backend por ahora para seguridad, solo formulario
                 break;
             case 'notificaciones':
-                // No hay carga de datos de backend por ahora para notificaciones
                 break;
         }
     }
@@ -1620,7 +1651,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const targetSection = e.target.dataset.targetSection;
             if (targetSection) {
                 activateSection(targetSection);
-            } else if (e.target.href) { // Si es un enlace normal como "Agendar Ahora"
+            } else if (e.target.href) { 
                 window.location.href = e.target.href;
             }
         });
@@ -1652,8 +1683,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 orderHistoryContainer.innerHTML += `
                     <div class="order-item slide-up">
                         <div><strong>ID Pedido:</strong><br>${order.id}</div>
-                        <div><strong>Fecha:</strong><br>${new Date(order.date).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                        <div><strong>Total:</strong><br>$${parseFloat(order.total).toFixed(2)} MXN</div>
+                        <div><strong>Fecha:</strong><br>${order.date}</div>
+                        <div><strong>Total:</strong><br>$${order.total} MXN</div>
                         <div><strong>Estado:</strong><br>
                             <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span>
                         </div>
@@ -1703,10 +1734,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || 'Error al actualizar el perfil.');
 
-            userData = { ...loggedInUser, ...result.user }; // Actualizar userData con la respuesta del backend
-            localStorage.setItem('greenhaulUser', JSON.stringify(userData)); // Actualizar localStorage
+            userData = { ...loggedInUser, ...result.user }; 
+            localStorage.setItem('greenhaulUser', JSON.stringify(userData)); 
             showNotification('Perfil actualizado con éxito.');
-            updateSidebar(userData); // Actualizar la barra lateral
+            updateSidebar(userData); 
         } catch (error) {
             showNotification(error.message, true);
         } finally {
@@ -1715,7 +1746,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // --- Funciones para Direcciones (con mejoras en el mapa) ---
+    // --- Funciones para Direcciones (Mapa Restaurado, sin guardar Lat/Lng) ---
 
     /**
      * Inicializa o re-inicializa el mapa de Leaflet.
@@ -1747,7 +1778,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     /**
      * Realiza geocodificación inversa para obtener la dirección a partir de coordenadas.
-     * Mejora: Intenta extraer el número de calle de `house_number` y `road` o `display_name`.
+     * Esta función solo se usa para rellenar el formulario de forma visual, no para enviar al backend.
      * @param {number} lat - Latitud.
      * @param {number} lng - Longitud.
      */
@@ -1768,14 +1799,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (houseNumber) {
                     fullStreet += ` ${houseNumber}`;
                 } else if (data.display_name) {
-                    // Si house_number no está, intenta extraerlo de display_name
-                    // Regex para buscar un número al inicio o después de la calle
                     const streetRegex = new RegExp(`^${escapeRegExp(street)}\\s*(\\d+[A-Za-z]?)?\\b`, 'i');
                     const match = data.display_name.match(streetRegex);
                     if (match && match[1]) {
                         fullStreet = `${street} ${match[1]}`;
                     } else {
-                        // Intenta una búsqueda más genérica para el número si no se encontró con la calle
                         const genericNumberMatch = data.display_name.match(/\b(\d+[A-Za-z]?)\b/);
                         if (genericNumberMatch && street && !street.includes(genericNumberMatch[1])) {
                              fullStreet = `${street} ${genericNumberMatch[1]}`;
@@ -1806,9 +1834,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the matched substring
     }
 
-
     /**
      * Realiza geocodificación para ubicar una dirección en el mapa.
+     * Esta función solo se usa para rellenar el formulario de forma visual, no para enviar al backend.
      */
     async function geocodeAddress() {
         const address = `${streetInput.value}, ${neighborhoodInput.value}, ${cityInput.value}, ${stateInput.value}, ${postalCodeInput.value}`;
@@ -1824,8 +1852,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const newPosition = L.latLng(lat, lon);
                 marker.setLatLng(newPosition);
                 map.setView(newPosition, 16);
-                // Opcional: Re-reverse geocodificar para asegurar que los campos se llenen con la dirección exacta encontrada
-                // reverseGeocode(lat, lon); 
             } else {
                 showNotification('No se pudo ubicar la dirección en el mapa con los datos proporcionados.', true);
             }
@@ -1839,22 +1865,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         input.addEventListener('blur', () => { geocodeAddress(); });
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                e.preventDefault(); // Previene el envío del formulario
+                e.preventDefault(); 
                 geocodeAddress();
             }
         });
     });
 
     /**
-     * Abre el modal de dirección y, opcionalmente, lo inicializa para edición.
-     * @param {number} lat - Latitud para centrar el mapa.
-     * @param {number} lng - Longitud para centrar el mapa.
+     * Abre el modal de dirección y, opcionalmente, inicializa el mapa.
+     * @param {number} lat - Latitud inicial para el mapa (opcional).
+     * @param {number} lng - Longitud inicial para el mapa (opcional).
      */
     function openModal(lat = 19.4326, lng = -99.1332) {
         addressModal.classList.add('show');
-        setTimeout(() => {
-            initMap(lat, lng);
-        }, 50); // Pequeño retraso para asegurar que el modal esté visible antes de inicializar el mapa
+        // ¡IMPORTANTE! Se llama a initMap para mostrar el mapa.
+        setTimeout(() => { initMap(lat, lng); }, 50); 
     }
 
     /**
@@ -1864,6 +1889,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         addressModal.classList.remove('show');
         addressForm.reset();
         addressIdInput.value = '';
+        // ¡IMPORTANTE! Eliminar el mapa de Leaflet al cerrar el modal para liberar recursos.
         if (map) {
             map.remove();
             map = null;
@@ -1873,7 +1899,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Event listeners para el modal de dirección
     if (addAddressBtn) addAddressBtn.addEventListener('click', () => {
         modalTitle.textContent = 'Agregar Nueva Dirección';
-        openModal();
+        // Al agregar, el mapa se centra en CDMX por defecto
+        openModal(); 
     });
     if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
     if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
@@ -1888,16 +1915,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Guardando...';
 
+        // ¡IMPORTANTE! Solo incluimos los campos que queremos guardar en la DB.
+        // Latitud y longitud NO se envían al backend, aunque el mapa esté visible.
         const addressData = {
-            name: addressNameInput.value, // Nuevo campo
+            name: addressNameInput.value,
             street: streetInput.value,
-            neighborhood: neighborhoodInput.value, // Nuevo campo
+            neighborhood: neighborhoodInput.value,
             city: cityInput.value,
             state: stateInput.value,
             postal_code: postalCodeInput.value,
-            references: referencesInput.value, // Nuevo campo
-            latitude: marker ? marker.getLatLng().lat : null, // Guarda latitud y longitud
-            longitude: marker ? marker.getLatLng().lng : null,
+            references: referencesInput.value,
+            // latitude y longitude NO se incluyen aquí para el backend.
         };
 
         const url = isUpdating ? `${backendUrl}/api/addresses/${addressId}` : `${backendUrl}/api/users/${loggedInUser.id}/addresses`;
@@ -1932,11 +1960,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/addresses`);
             if (!response.ok) throw new Error('No se pudieron cargar las direcciones.');
             const addresses = await response.json();
-            addressListContainer.innerHTML = ''; // Limpiar contenedor
+            addressListContainer.innerHTML = ''; 
 
             if (addresses.length === 0) {
                 addressListContainer.innerHTML = '<p>Aún no tienes direcciones guardadas. ¡Agrega una para agilizar tus futuros servicios!</p>';
-                // No se llama updateDashboardWidgetsFromBackend aquí para evitar el error recurrente
                 return;
             }
 
@@ -1958,7 +1985,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>`;
                 addressListContainer.appendChild(card);
             });
-            // No se llama updateDashboardWidgetsFromBackend aquí para evitar el error recurrente
         } catch (error) {
             showNotification(error.message, true);
             addressListContainer.innerHTML = '<p>Error al cargar direcciones. Por favor, inténtalo de nuevo.</p>';
@@ -1979,22 +2005,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 modalTitle.textContent = 'Editar Dirección';
                 addressIdInput.value = addressToEdit.id;
-                addressNameInput.value = addressToEdit.name || ''; // Rellenar nuevo campo
+                addressNameInput.value = addressToEdit.name || ''; 
                 streetInput.value = addressToEdit.street || '';
-                neighborhoodInput.value = addressToEdit.neighborhood || ''; // Rellenar nuevo campo
+                neighborhoodInput.value = addressToEdit.neighborhood || ''; 
                 cityInput.value = addressToEdit.city || '';
                 stateInput.value = addressToEdit.state || '';
                 postalCodeInput.value = addressToEdit.postal_code || '';
-                referencesInput.value = addressToEdit.references || ''; // Rellenar nuevo campo
+                referencesInput.value = addressToEdit.references || ''; 
 
-                // Si hay lat/lng guardados, usar esos para el mapa
-                if (addressToEdit.latitude && addressToEdit.longitude) {
-                    openModal(addressToEdit.latitude, addressToEdit.longitude);
-                } else {
-                    // Si no, intentar geocodificar la dirección actual
-                    openModal(); // Abre el mapa en CDMX por defecto
-                    geocodeAddress(); // Intenta posicionar el marcador
-                }
+                // Al editar, si tenemos lat/lng del backend, inicializamos el mapa con ellos.
+                // Si el backend no los guarda, simplemente se usará la ubicación por defecto (CDMX).
+                openModal(addressToEdit.latitude, addressToEdit.longitude); 
 
             } catch (error) {
                 showNotification(error.message, true);
@@ -2009,7 +2030,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const result = await response.json();
                     if (!response.ok) throw new Error(result.message || 'Error al eliminar la dirección.');
                     showNotification(result.message || 'Dirección eliminada con éxito.');
-                    await loadAddresses(); // Recargar la lista de direcciones
+                    await loadAddresses(); 
                 } catch (error) {
                     showNotification(error.message, true);
                 }
@@ -2048,15 +2069,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // Aquí enviarías la solicitud al backend para cambiar la contraseña
-            // P.ej. POST /api/users/{userId}/change-password
+            // Simulación de una llamada al backend para cambiar contraseña
             try {
-                // Simulación de una llamada al backend
                 const response = await new Promise(resolve => setTimeout(() => {
-                    // Simular éxito o error según la lógica del backend
-                    // IMPORTANTE: En un entorno real, NO HARDCODEAR contraseñas así.
-                    // Esto es solo para fines de demostración en el frontend.
-                    if (currentPassword === "password_actual_valida") { // <-- PLACHOLDER: Reemplazar con validación real del backend
+                    // Placeholder: En una app real, esto sería una llamada PUT/POST al backend
+                    if (currentPassword === "password_actual_valida") { 
                         resolve({ ok: true, json: () => Promise.resolve({ message: 'Contraseña actualizada con éxito.' }) });
                     } else {
                         resolve({ ok: false, json: () => Promise.resolve({ message: 'Contraseña actual incorrecta.' }) });
@@ -2067,7 +2084,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (!response.ok) throw new Error(result.message || 'Error al cambiar la contraseña.');
 
                 showNotification(result.message);
-                securityForm.reset(); // Limpiar formulario
+                securityForm.reset(); 
             } catch (error) {
                 showNotification(error.message, true);
             } finally {
@@ -2085,18 +2102,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         notificationsForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showNotification('La funcionalidad de guardar preferencias de notificación aún no está implementada.', false);
-            // Aquí iría la lógica para enviar las preferencias al backend cuando esté disponible
-            // const emailEnabled = document.getElementById('email-notifications').checked;
-            // const whatsappEnabled = document.getElementById('whatsapp-notifications').checked;
-            // const smsEnabled = document.getElementById('sms-notifications').checked;
-            // console.log({ emailEnabled, whatsappEnabled, smsEnabled });
         });
     }
 
     if (toggle2FABtn) {
         toggle2FABtn.addEventListener('click', () => {
             showNotification('La autenticación de dos factores aún no está implementada.', false);
-            // Lógica para 2FA cuando esté disponible
         });
     }
 
@@ -2119,13 +2130,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             const response = await fetch(`${backendUrl}/api/users/${userId}`);
             if (!response.ok) throw new Error('Usuario no encontrado en el servidor.');
             const result = await response.json();
-            userData = result.user; // Almacena los datos completos
-            localStorage.setItem('greenhaulUser', JSON.stringify(userData)); // Actualiza el localStorage por si hay cambios
-            updateSidebar(userData); // Actualiza la barra lateral con los datos completos
-            activateSection('dashboard'); // Activa la sección de resumen por defecto y su lógica de carga
+            userData = result.user; 
+            localStorage.setItem('greenhaulUser', JSON.stringify(userData)); 
+            updateSidebar(userData); 
+            activateSection('dashboard'); 
         } catch (error) {
             showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
-            // Opcional: Redireccionar a login o mostrar un mensaje más severo si no se pueden cargar los datos
         }
     }
 
