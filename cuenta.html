@@ -8,104 +8,1062 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <style>
-        body { background: #f1f5f9; }
-        .fade-in { animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: none;} }
+        /*
+         * --- Variables CSS Globales ---
+         * Estas variables definen los colores principales de la marca GreenHaul,
+         * asegurando una consistencia visual en toda la aplicación.
+         *
+         * --primary-solid: Este es el color principal para acentos visuales y el inicio de nuestros degradados.
+         * Basado en la imagen compartida, es un tono azul verdoso vibrante.
+         *
+         * --secondary-solid: Este color complementa al primario y se usa en elementos interactivos
+         * o para un contraste suave, a menudo en gradientes.
+         * Es un azul claro/medio.
+         *
+         * --primary-blue: Un azul puro que será el color dominante para muchos elementos del dashboard,
+         * como botones, enlaces activos en el sidebar, y elementos visuales.
+         *
+         * --text-dark: Color estándar para textos oscuros, buscando legibilidad óptima.
+         *
+         * --text-light: Color para textos más claros o secundarios, útil en descripciones o subtítulos.
+         *
+         * --accent-red: Utilizado para mensajes de error, advertencias o acciones destructivas.
+         *
+         * --accent-green: Un verde vibrante para mensajes de éxito o elementos positivos.
+         *
+         * --gradient-primary: Define el degradado principal de la aplicación,
+         * yendo de nuestro `primary-solid` a `secondary-solid`. Este es el degradado del diseño que te gustó.
+         */
+        :root {
+            --primary-solid: #4AB3C1; /* Azul verdoso vibrante (como en la imagen del degradado) */
+            --secondary-solid: #4a90e2; /* Azul medio (como en la imagen del degradado) */
+            --primary-blue: #4a90e2; /* Mismo azul para consistencia en elementos que son puramente azules */
+            --text-dark: #333;
+            --text-light: #666;
+            --accent-red: #e74c3c;
+            --accent-green: #2ecc71;
+            --gradient-primary: linear-gradient(120deg, var(--primary-solid) 0%, var(--secondary-solid) 100%);
+        }
+    
+        /*
+         * --- Estilos Generales de la Página y Animaciones ---
+         * Estos estilos establecen la base visual de la página, como el color de fondo del cuerpo
+         * y las animaciones de entrada para una experiencia de usuario más fluida.
+         */
+        body {
+            background: #f1f5f9; /* Fondo gris claro suave para toda la página */
+            font-family: 'Arial', sans-serif; /* Fuente base */
+            color: var(--text-dark); /* Color de texto predeterminado */
+        }
+    
+        /* Animación para que los elementos aparezcan suavemente */
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    
+        /* Animación para que los elementos se deslicen hacia arriba con un rebote */
         .slide-up { animation: slideUp 0.7s cubic-bezier(.68,-0.55,.27,1.55); }
-        @keyframes slideUp { 0% { transform: translateY(60px); opacity: 0; } 60% { transform: translateY(-8px); opacity: 1; } 100% { transform: translateY(0); } }
-        .account-dashboard-container { max-width: 1280px; margin: 0 auto; padding: 0 15px; }
-        .account-dashboard-layout { display: grid; grid-template-columns: 300px 1fr; gap: 38px; align-items: flex-start; margin: 0 auto; }
-        @media (max-width: 900px) { .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } .account-sidebar { position: static; } }
-        .account-sidebar { position: sticky; top: 110px; min-width: 220px; }
-        .user-card { background: linear-gradient(120deg, #00b386 0%, #4a90e2 100%); color: #fff; border-radius: 14px; box-shadow: 0 8px 28px rgba(74,144,226,0.09); text-align: center; padding: 36px 18px 24px 18px; margin-bottom: 28px; }
-        .user-avatar { background: #fff; color: #00b386; border-radius: 50%; width: 72px; height: 72px; font-size: 2.8rem; margin: 0 auto 18px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(0,179,134,0.12);}
-        .user-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -1px; }
-        .user-email { font-size: 1rem; opacity: 0.95; margin-bottom: 8px; }
-        .account-nav { background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 2px; padding: 15px 0; }
-        .account-nav-link { padding: 15px 28px; border-radius: 10px; color: var(--text-dark); font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 18px; transition: all 0.2s; cursor: pointer; font-size: 1.08rem;}
-        .account-nav-link i { width: 22px; text-align: center; font-size: 1.35rem; color: var(--primary-solid); opacity: 0.95;}
-        .account-nav-link:hover { background: #f3f8fe; color: var(--primary-solid); }
-        .account-nav-link.active { background: linear-gradient(120deg, #00b386 0%, #4a90e2 100%); color: #fff; font-weight: 700; box-shadow: 0 6px 18px rgba(0,179,134,0.11); transform: scale(1.04);}
-        .account-nav-link.active i { color: #fff; }
-        .account-content { min-height: 500px; }
-        .account-section { display: none; background: #fff; padding: 38px 35px 30px 35px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);}
-        .account-section.active { display: block; animation: fadeIn 0.45s; }
-        .dashboard-widgets { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 30px; margin-bottom: 36px; }
-        .widget-card { background: #f8f9fa; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,179,134,0.09); text-align: center; padding: 32px 15px 26px 15px; transition: box-shadow 0.3s, transform 0.3s, background 0.3s; position: relative; overflow: hidden;}
-        .widget-card .widget-icon { font-size: 2.8rem; margin-bottom: 16px; color: var(--primary-solid); transition: color 0.35s, transform 0.3s;}
-        .widget-card .widget-value { font-size: 2.2rem; font-weight: 700; color: var(--primary-solid); margin-bottom: 8px; letter-spacing: -1px; transition: color 0.3s;}
-        .widget-card .widget-label { font-size: 1.08rem; color: var(--text-dark); opacity: 0.7; margin-bottom: 5px;}
-        .widget-card.ahorro { background: linear-gradient(120deg,#00b386 0%,#4a90e2 100%) !important; color:#fff; box-shadow: 0 10px 28px rgba(0,179,134,0.18);}
-        .widget-card.ahorro .widget-icon, .widget-card.ahorro .widget-value, .widget-card.ahorro .widget-label, .widget-card.ahorro #widgetAhorroEquivalente { color: #fff !important; text-shadow: 0 2px 8px rgba(0,0,0,0.14);}
-        .widget-card.ahorro .widget-icon { font-size: 2.8rem; transition: transform 0.3s;}
-        .widget-card.ahorro:hover .widget-icon { transform: scale(1.16) rotate(7deg);}
-        .widget-card.ahorro .widget-value { font-size:2.3rem; }
-        .widget-card.ahorro .widget-label { font-size:1.1rem; letter-spacing:0.2px; }
-        .widget-card.ahorro #widgetAhorroEquivalente { font-size:1rem; opacity:0.95; margin-top:5px; font-weight: 500;}
-        .widget-card.ahorro::after { content: ''; position: absolute; bottom: -10px; right: -10px; width: 80px; height: 80px; background: rgba(255,255,255,0.12); border-radius: 50%; z-index: 0; pointer-events: none;}
-        body { background: #f1f5f9; }
-        .fade-in { animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: none;} }
-        .slide-up { animation: slideUp 0.7s cubic-bezier(.68,-0.55,.27,1.55); }
-        @keyframes slideUp { 0% { transform: translateY(60px); opacity: 0; } 60% { transform: translateY(-8px); opacity: 1; } 100% { transform: translateY(0); } }
-        .account-dashboard-container { max-width: 1280px; margin: 0 auto; padding: 0 15px; }
-        .account-dashboard-layout { display: grid; grid-template-columns: 300px 1fr; gap: 38px; align-items: flex-start; margin: 0 auto; }
-        @media (max-width: 900px) { .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } .account-sidebar { position: static; } }
-        .account-sidebar { position: sticky; top: 110px; min-width: 220px; }
-        .user-card { background: linear-gradient(120deg, #00b386 0%, #4a90e2 100%); color: #fff; border-radius: 14px; box-shadow: 0 8px 28px rgba(74,144,226,0.09); text-align: center; padding: 36px 18px 24px 18px; margin-bottom: 28px; }
-        .user-avatar { background: #fff; color: #00b386; border-radius: 50%; width: 72px; height: 72px; font-size: 2.8rem; margin: 0 auto 18px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(0,179,134,0.12);}
-        .user-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -1px; }
-        .user-email { font-size: 1rem; opacity: 0.95; margin-bottom: 8px; }
-        .account-nav { background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 2px; padding: 15px 0; }
-        .account-nav-link { padding: 15px 28px; border-radius: 10px; color: var(--text-dark); font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 18px; transition: all 0.2s; cursor: pointer; font-size: 1.08rem;}
-        .account-nav-link i { width: 22px; text-align: center; font-size: 1.35rem; color: var(--primary-solid); opacity: 0.95;}
-        .account-nav-link:hover { background: #f3f8fe; color: var(--primary-solid); }
-        .account-nav-link.active { background: var(--gradient-primary); color: #fff; font-weight: 700; box-shadow: 0 6px 18px rgba(0,179,134,0.11); transform: scale(1.04);}
-        .account-nav-link.active i { color: #fff; }
-        .account-content { min-height: 500px; }
-        .account-section { display: none; background: #fff; padding: 38px 35px 30px 35px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);}
-        .account-section.active { display: block; animation: fadeIn 0.45s; }
-        .dashboard-widgets { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 30px; margin-bottom: 36px; }
-        .widget-card { background: #f8f9fa; border-radius: 11px; box-shadow: 0 2px 10px rgba(0,179,134,0.09); text-align: center; padding: 28px 12px 22px 12px; transition: box-shadow 0.3s, transform 0.3s;}
-        .widget-card:hover { box-shadow: 0 8px 24px rgba(0,179,134,0.19); transform: translateY(-7px) scale(1.04);}
-        .widget-card .widget-icon { font-size: 2.6rem; margin-bottom: 10px; color: var(--primary-solid);}
-        .widget-card .widget-value { font-size: 2rem; font-weight: 700; color: var(--primary-solid); margin-bottom: 4px;}
-        .widget-card .widget-label { font-size: 1.08rem; color: var(--text-dark); opacity: 0.7;}
-        /* Widget ahorro especial */
-        .widget-card.ahorro { background: linear-gradient(120deg,#00b386 0%,#4a90e2 100%);color:#fff; }
-        .widget-card.ahorro .widget-icon { color: #fff;}
-        .order-list { margin-top: 18px; }
-        .order-list .order-item { background: #f8f9fa; border-radius: 9px; margin-bottom: 16px; padding: 20px 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: center; gap: 12px; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(74,144,226,0.07); transition: box-shadow 0.3s, transform 0.2s;}
-        .order-item:hover { box-shadow: 0 8px 24px rgba(74,144,226,0.19); transform: translateY(-4px) scale(1.02);}
-        .order-item-status { font-weight: bold; padding: 5px 14px; border-radius: 99px; font-size: 0.97rem; text-align: center;}
-        .status-completado { color: #008c6b; background: rgba(0,179,134,0.11);}
-        .status-activo { color: #3a7bcd; background: rgba(74,144,226,0.11);}
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
-        .form-control[disabled] { background: #e9ecef; cursor: not-allowed; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit;}
-        .address-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 15px; flex-wrap: wrap;}
-        .address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
-        .address-card { background: #f8f9fa; border-radius: 12px; padding: 22px; border: 1px solid #e0e0e0; display: flex; flex-direction: column; box-shadow: 0 2px 9px rgba(0,179,134,0.07);}
-        .address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .address-card-header h4 { color: var(--primary-solid); font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-        .address-card-body { flex-grow: 1; margin-bottom: 20px;}
-        .address-card-actions { display: flex; align-items: center; gap: 15px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s;}
-        .modal-overlay.show { opacity: 1; visibility: visible;}
-        .modal-content { background: #fff; padding: 38px 28px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.11); width: 95%; max-width: 520px; transform: scale(0.93); transition: transform 0.3s;}
-        .modal-overlay.show .modal-content { transform: scale(1);}
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; padding-bottom: 15px; margin-bottom: 25px;}
-        .modal-header h3 { margin: 0; font-weight: 700;}
-        .modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-dark);}
-        .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 18px;}
-        #address-map { height: 220px; width: 100%; border-radius: 12px; margin-top: 18px; border: 1px solid #e0e0e0;}
-        @media (max-width: 900px) { .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } .account-sidebar { position: static; } }
-        @media (max-width: 600px) { .account-section, .modal-content { padding: 16px 5px; } }
-        #notificationPopup { position: fixed; top: 20px; right: 20px; background: var(--accent-green); color: #fff; padding: 15px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 10001; opacity: 0; transform: translateX(120%); transition: all 0.4s;}
-        #notificationPopup.error { background: var(--accent-red);}
-        #notificationPopup.show { opacity: 1; transform: translateX(0);}
+        @keyframes slideUp {
+            0% { transform: translateY(60px); opacity: 0; }
+            60% { transform: translateY(-8px); opacity: 1; }
+            100% { transform: translateY(0); }
+        }
+    
+        /*
+         * --- Layout del Dashboard de la Cuenta ---
+         * Define la estructura principal de la sección "Mi Cuenta", utilizando CSS Grid
+         * para organizar la barra lateral y el contenido principal.
+         */
+        .account-dashboard-container {
+            max-width: 1280px; /* Ancho máximo del contenedor principal */
+            margin: 0 auto; /* Centrar en la página */
+            padding: 0 15px; /* Relleno lateral */
+        }
+    
+        .account-dashboard-layout {
+            display: grid; /* Usar CSS Grid */
+            grid-template-columns: 300px 1fr; /* Columna fija para sidebar, el resto para contenido */
+            gap: 38px; /* Espacio entre columnas */
+            align-items: flex-start; /* Alinear elementos al inicio de la cuadrícula */
+            margin: 0 auto; /* Asegurar centrado */
+        }
+    
+        /* Media query para pantallas más pequeñas (ej. tabletas y móviles) */
+        @media (max-width: 900px) {
+            .account-dashboard-layout {
+                grid-template-columns: 1fr; /* Una sola columna para móviles */
+                gap: 18px; /* Reducir espacio entre elementos */
+            }
+            .account-sidebar {
+                position: static; /* Quitar sticky en móviles para que fluya con el contenido */
+            }
+        }
+    
+        /*
+         * --- Barra Lateral (Sidebar) de la Cuenta ---
+         * Contiene la tarjeta de usuario y la navegación principal del dashboard.
+         */
+        .account-sidebar {
+            position: sticky; /* Mantener la barra lateral visible al hacer scroll */
+            top: 110px; /* Distancia desde la parte superior de la ventana */
+            min-width: 220px; /* Ancho mínimo */
+        }
+    
+        /* Tarjeta de información del usuario */
+        .user-card {
+            background: var(--gradient-primary); /* Fondo con el degradado de la marca (azul-verdoso) */
+            color: #fff; /* Texto blanco */
+            border-radius: 14px; /* Bordes redondeados */
+            box-shadow: 0 8px 28px rgba(74,144,226,0.09); /* Sombra suave */
+            text-align: center; /* Centrar contenido */
+            padding: 36px 18px 24px 18px; /* Relleno */
+            margin-bottom: 28px; /* Espacio inferior */
+        }
+    
+        /* Avatar del usuario */
+        .user-avatar {
+            background: #fff; /* Fondo blanco */
+            color: var(--primary-blue); /* Color del ícono del avatar (azul) */
+            border-radius: 50%; /* Circular */
+            width: 72px; height: 72px; /* Tamaño fijo */
+            font-size: 2.8rem; /* Tamaño del ícono */
+            margin: 0 auto 18px auto; /* Centrar y espacio inferior */
+            display: flex; align-items: center; justify-content: center; /* Centrar ícono */
+            box-shadow: 0 4px 18px rgba(0,179,134,0.12); /* Sombra */
+        }
+    
+        .user-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+    
+        .user-email {
+            font-size: 1rem;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+    
+        /* Navegación de la cuenta (enlaces de la barra lateral) */
+        .account-nav {
+            background: #fff; /* Fondo blanco */
+            border-radius: 12px; /* Bordes redondeados */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Sombra */
+            display: flex;
+            flex-direction: column; /* Apilar enlaces verticalmente */
+            gap: 2px; /* Pequeño espacio entre enlaces */
+            padding: 15px 0; /* Relleno vertical */
+        }
+    
+        .account-nav-link {
+            padding: 15px 28px; /* Relleno para hacerlos clickeables */
+            border-radius: 10px; /* Bordes redondeados */
+            color: var(--text-dark); /* Color de texto normal */
+            font-weight: 500;
+            text-decoration: none; /* Sin subrayado */
+            display: flex;
+            align-items: center; /* Alinear ícono y texto */
+            gap: 18px; /* Espacio entre ícono y texto */
+            transition: all 0.2s ease-in-out; /* Transición suave al hover/activo */
+            cursor: pointer;
+            font-size: 1.08rem;
+        }
+    
+        .account-nav-link i {
+            width: 22px; /* Ancho fijo para íconos */
+            text-align: center;
+            font-size: 1.35rem;
+            color: var(--primary-blue); /* Color del ícono (azul) */
+            opacity: 0.95;
+        }
+    
+        .account-nav-link:hover {
+            background: #f3f8fe; /* Fondo azul muy claro al pasar el mouse */
+            color: var(--primary-blue); /* Color de texto azul al pasar el mouse */
+        }
+    
+        /* Estilo para el enlace de navegación activo */
+        .account-nav-link.active {
+            background: var(--gradient-primary); /* Fondo con degradado principal (azul-verdoso) */
+            color: #fff; /* Texto blanco */
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(0,179,134,0.11); /* Sombra más pronunciada */
+            transform: scale(1.04); /* Ligeramente más grande */
+        }
+    
+        .account-nav-link.active i {
+            color: #fff; /* Ícono blanco en estado activo */
+        }
+    
+        /*
+         * --- Contenido Principal de la Cuenta ---
+         * Área donde se muestran las diferentes secciones (Resumen, Pedidos, etc.).
+         */
+        .account-content {
+            min-height: 500px; /* Altura mínima para el contenido */
+        }
+    
+        .account-section {
+            display: none; /* Ocultar por defecto */
+            background: #fff; /* Fondo blanco */
+            padding: 38px 35px 30px 35px; /* Relleno interno */
+            border-radius: 14px; /* Bordes redondeados */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Sombra */
+        }
+    
+        .account-section.active {
+            display: block; /* Mostrar cuando está activa */
+            animation: fadeIn 0.45s forwards; /* Animación de entrada */
+        }
+    
+        /*
+         * --- Dashboard (Sección de Resumen) ---
+         * Contiene widgets de estadísticas, el gráfico y acciones rápidas.
+         */
+        .dashboard-widgets {
+            display: grid; /* Usar grid para los widgets */
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Columnas responsivas */
+            gap: 30px; /* Espacio entre widgets */
+            margin-bottom: 36px; /* Espacio inferior */
+        }
+    
+        .widget-card {
+            background: #f8f9fa; /* Fondo gris muy claro */
+            border-radius: 11px; /* Bordes redondeados */
+            box-shadow: 0 2px 10px rgba(0,179,134,0.09); /* Sombra suave */
+            text-align: center; /* Centrar contenido */
+            padding: 28px 12px 22px 12px; /* Relleno */
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Transición al hover */
+        }
+    
+        .widget-card:hover {
+            box-shadow: 0 8px 24px rgba(0,179,134,0.19); /* Sombra más pronunciada al hover */
+            transform: translateY(-7px) scale(1.04); /* Efecto de "levantar" */
+        }
+    
+        .widget-card .widget-icon {
+            font-size: 2.6rem;
+            margin-bottom: 10px;
+            color: var(--primary-blue); /* Color del ícono del widget (azul) */
+        }
+    
+        .widget-card .widget-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue); /* Color del valor numérico (azul) */
+            margin-bottom: 4px;
+        }
+    
+        .widget-card .widget-label {
+            font-size: 1.08rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+        }
+    
+        /* Widget especial de ahorro con degradado */
+        .widget-card.ahorro {
+            background: var(--gradient-primary); /* Fondo con el degradado principal (azul-verdoso) */
+            color: #fff; /* Texto blanco */
+        }
+    
+        .widget-card.ahorro .widget-icon {
+            color: #fff; /* Ícono blanco para el widget de ahorro */
+        }
+    
+        /* Acciones Rápidas en el Dashboard */
+        .quick-actions {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Columnas responsivas */
+            gap: 20px;
+        }
+    
+        .action-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+    
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+    
+        .action-card .action-icon {
+            font-size: 3rem;
+            color: var(--secondary-solid); /* Color del ícono de acción (azul) */
+            margin-bottom: 15px;
+        }
+    
+        .action-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+    
+        .action-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+    
+        .action-card .btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+    
+        /* Resumen de Pedidos Recientes en el Dashboard */
+        .recent-orders-summary {
+            margin-top: 40px;
+        }
+    
+        .recent-orders-summary .order-item {
+            background: #fff;
+            border-radius: 9px;
+            margin-bottom: 12px;
+            padding: 15px 18px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 5px rgba(74,144,226,0.05);
+        }
+    
+        .recent-orders-summary .order-item strong {
+            color: var(--primary-blue); /* Color del texto "fuerte" en los pedidos (azul) */
+        }
+    
+        /*
+         * --- Sección de Pedidos ---
+         * Muestra el historial completo de pedidos del usuario.
+         */
+        .order-list {
+            margin-top: 18px;
+        }
+    
+        .order-list .order-item {
+            background: #f8f9fa;
+            border-radius: 9px;
+            margin-bottom: 16px;
+            padding: 20px 18px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(74,144,226,0.07);
+            transition: box-shadow 0.3s, transform 0.2s;
+        }
+    
+        .order-item:hover {
+            box-shadow: 0 8px 24px rgba(74,144,226,0.19);
+            transform: translateY(-4px) scale(1.02);
+        }
+    
+        .order-item-status {
+            font-weight: bold;
+            padding: 5px 14px;
+            border-radius: 99px;
+            font-size: 0.97rem;
+            text-align: center;
+        }
+    
+        .status-completado {
+            color: #008c6b;
+            background: rgba(0,179,134,0.11);
+        }
+    
+        .status-activo {
+            color: #3a7bcd;
+            background: rgba(74,144,226,0.11);
+        }
+        
+        /*
+         * --- Sección de Perfil ---
+         * Formulario para que el usuario edite su información personal.
+         */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+    
+        .form-group {
+            margin-bottom: 20px;
+        }
+    
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+    
+        .form-control:disabled {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+    
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--text-dark);
+        }
+    
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue); /* Borde azul al enfocar */
+            box-shadow: 0 0 0 3px rgba(74,144,226,0.2); /* Sombra de enfoque azul */
+        }
+        
+        /*
+         * --- Sección de Direcciones ---
+         * Muestra las direcciones guardadas por el usuario y permite añadir/editar.
+         */
+        .address-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+    
+        .address-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 22px;
+        }
+    
+        .address-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 22px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 9px rgba(0,179,134,0.07);
+        }
+    
+        .address-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+    
+        .address-card-header h4 {
+            color: var(--primary-blue); /* Color del título de la dirección (azul) */
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        .address-card-body {
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+    
+        .address-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /*
+         * --- Modales Globales (Ej. Modal de Dirección) ---
+         * Estilos para las ventanas emergentes (modales) utilizadas en la aplicación.
+         */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6); /* Fondo semi-transparente oscuro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* Asegurar que esté por encima de otros elementos */
+            opacity: 0;
+            visibility: hidden; /* Oculto por defecto */
+            transition: all 0.3s ease-in-out; /* Transición suave al mostrar/ocultar */
+        }
+    
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible; /* Mostrar modal */
+        }
+    
+        .modal-content {
+            background: #fff; /* Fondo blanco del contenido del modal */
+            padding: 38px 28px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.11); /* Sombra */
+            width: 95%; /* Ancho responsivo */
+            max-width: 520px; /* Ancho máximo */
+            transform: scale(0.93); /* Ligeramente encogido al inicio */
+            transition: transform 0.3s ease-in-out;
+        }
+    
+        .modal-overlay.show .modal-content {
+            transform: scale(1); /* Escalar a tamaño normal al mostrar */
+        }
+    
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+    
+        .modal-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+    
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+    
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 18px;
+        }
+    
+        #address-map {
+            height: 220px; /* Altura fija para el mapa en el modal */
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 18px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        /*
+         * --- Notificaciones y Responsividad ---
+         * Estilos para las notificaciones emergentes y adaptaciones para diferentes tamaños de pantalla.
+         */
+        /* Media queries para responsividad */
+        @media (max-width: 900px) {
+            .account-dashboard-layout {
+                grid-template-columns: 1fr; /* Una sola columna para móviles */
+                gap: 18px;
+            }
+            .account-sidebar {
+                position: static; /* No sticky en móviles */
+            }
+            .form-grid {
+                grid-template-columns: 1fr; /* Formulario en una sola columna */
+            }
+        }
+    
+        @media (max-width: 600px) {
+            .account-section, .modal-content {
+                padding: 25px 15px; /* Reducir relleno en pantallas muy pequeñas */
+            }
+        }
+    
+        /* Estilo para el popup de notificación */
+        #notificationPopup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-green); /* Fondo verde para éxito */
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10001;
+            opacity: 0;
+            transform: translateX(120%); /* Fuera de pantalla por defecto */
+            transition: all 0.4s ease-out; /* Transición suave */
+        }
+    
+        #notificationPopup.error {
+            background: var(--accent-red); /* Fondo rojo para errores */
+        }
+    
+        #notificationPopup.show {
+            opacity: 1;
+            transform: translateX(0); /* Entra a la pantalla */
+        }
+    
+        /*
+         * --- Estilos de Botones ---
+         * Define la apariencia y el comportamiento de los diferentes tipos de botones.
+         */
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap; /* Evita que el texto del botón se rompa */
+        }
+    
+        .btn-primary {
+            background: var(--primary-blue); /* Fondo azul para el botón principal */
+            color: #fff;
+            border: 1px solid var(--primary-blue);
+        }
+    
+        .btn-primary:hover {
+            background: #3a7bcd; /* Tono de azul más oscuro al pasar el mouse */
+            border-color: #3a7bcd;
+            box-shadow: 0 4px 12px rgba(74,144,226,0.3); /* Sombra azul al pasar el mouse */
+        }
+    
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-blue); /* Texto azul para el botón outline */
+            border: 1px solid var(--primary-blue);
+        }
+    
+        .btn-outline:hover {
+            background: var(--primary-blue); /* Fondo azul al pasar el mouse */
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(74,144,226,0.3); /* Sombra azul al pasar el mouse */
+        }
+    
+        .btn-tertiary {
+            background: none;
+            border: none;
+            color: var(--text-light); /* Color de texto ligero */
+            font-size: 1.2rem;
+            padding: 8px;
+        }
+    
+        .btn-tertiary:hover {
+            color: var(--accent-red); /* Color rojo al pasar el mouse */
+            transform: scale(1.1); /* Ligeramente más grande */
+        }
+    
+        /*
+         * --- Estilos de la Barra de Navegación (Header) - COLORES ORIGINALES ---
+         * Revertidos a los colores originales que son neutros.
+         */
+        .navbar {
+            background: #fff; /* Fondo blanco para la navbar original */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+    
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+    
+        .logo img {
+            height: 40px;
+            filter: none; /* Elimina el filtro blanco para el logo original */
+        }
+    
+        .nav-links-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 25px;
+        }
+    
+        .nav-link {
+            color: var(--text-dark); /* Color de texto oscuro para enlaces de la navbar (original) */
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 0;
+            position: relative;
+        }
+    
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-solid); /* Subrayado con el color primario (azul verdoso del degradado) */
+            transition: width 0.3s ease;
+        }
+    
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+    
+        .navbar-right-items {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+    
+        .navbar-user-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        .navbar-user-actions .nav-link {
+            font-weight: 600;
+            color: var(--primary-solid); /* "Hola, [Usuario]" con el color primario (azul verdoso) */
+        }
+        .navbar-user-actions .btn-outline { /* Botón de login en el header */
+            color: var(--primary-solid); /* Color de texto y borde primario (azul verdoso) */
+            border-color: var(--primary-solid);
+        }
+        .navbar-user-actions .btn-outline:hover {
+            background: var(--primary-solid);
+            color: #fff;
+        }
+    
+        .nav-icons {
+            display: flex;
+            gap: 15px;
+        }
+    
+        .nav-icon {
+            color: var(--text-dark); /* Íconos de navegación oscuros (original) */
+            font-size: 1.4rem;
+            text-decoration: none;
+            position: relative;
+        }
+    
+        .cart-count {
+            background: var(--accent-red);
+            color: #fff;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            padding: 3px 7px;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            min-width: 20px;
+            text-align: center;
+        }
+    
+        /*
+         * --- Modal del Carrito de Compras ---
+         * Estilos para la ventana emergente del carrito de compras.
+         */
+        .cart-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: flex-end; /* Alinea el modal a la derecha */
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+    
+        .cart-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    
+        .cart-modal {
+            background: #fff;
+            width: 100%;
+            max-width: 400px; /* Ancho del carrito */
+            height: 100%;
+            transform: translateX(100%); /* Inicialmente fuera de la vista */
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .cart-modal-overlay.show .cart-modal {
+            transform: translateX(0); /* Entra a la vista */
+        }
+    
+        .cart-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        .cart-modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary-blue); /* Título del carrito en azul */
+        }
+    
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+    
+        .cart-modal-body {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto; /* Permite scroll si hay muchos ítems */
+        }
+    
+        .cart-modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+    
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+    
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+    
+        .cart-item-details {
+            flex-grow: 1;
+        }
+    
+        .cart-item-details h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+        }
+    
+        .cart-item-details p {
+            margin: 0;
+            color: var(--text-light);
+        }
+    
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        .cart-item-actions button {
+            background: none;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    
+        .cart-summary p,
+        .cart-summary h3 {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+    
+        .cart-summary h3 {
+            font-size: 1.4rem;
+            color: var(--primary-blue); /* Total del carrito en azul */
+            margin-top: 15px;
+        }
+    
+        .cart-footer-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        
+        /* Notificación de carrito (cuando se añade un producto) */
+        .cart-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10001;
+            opacity: 0;
+            transform: translateY(120%);
+            transition: all 0.4s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+    
+        .cart-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    
+        .notification-icon-wrapper {
+            background: #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .notification-icon {
+            font-size: 1.5rem;
+            color: var(--primary-blue); /* Ícono de notificación en azul */
+        }
+    
+        .notification-content p {
+            margin: 0;
+            font-size: 1rem;
+        }
+    
+        /*
+         * --- Estilos del Pie de Página (Footer) - COLORES ORIGINALES ---
+         * Revertidos a los colores originales que son un gris muy oscuro.
+         */
+        .footer {
+            background: var(--text-dark); /* Fondo oscuro original para el footer */
+            color: #fff;
+            padding: 50px 0 20px;
+            margin-top: 50px;
+        }
+    
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+    
+        .footer-info h3,
+        .footer-links h3,
+        .footer-social-links h3 {
+            color: var(--primary-solid); /* Títulos del footer con el color primario (azul verdoso) */
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+    
+        .footer-info p {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+    
+        .footer-info p i {
+            margin-right: 10px;
+            color: var(--secondary-solid); /* Íconos de contacto en el footer con el color secundario (azul) */
+        }
+    
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+    
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+    
+        .footer-links ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+    
+        .footer-links ul li a:hover {
+            color: var(--primary-solid); /* Enlaces del footer con hover en color primario (azul verdoso) */
+        }
+    
+        .social-icons-wrapper {
+            display: flex;
+            gap: 15px;
+        }
+    
+        .social-icon {
+            color: #fff;
+            font-size: 1.5rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+    
+        .social-icon:hover {
+            color: var(--primary-solid); /* Íconos sociales con hover en color primario (azul verdoso) */
+            transform: translateY(-3px);
+        }
+    
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+    
+        /* Media query para responsividad del footer y navbar */
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-links-list {
+                width: 100%;
+                justify-content: center;
+                margin-top: 15px;
+                gap: 15px;
+            }
+            .navbar-right-items {
+                width: 100%;
+                justify-content: center;
+                margin-top: 15px;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .footer-links ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .social-icons-wrapper {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -153,11 +1111,16 @@
                         <a class="account-nav-link" data-section="pedidos"><i class="fas fa-box"></i> Mis Pedidos</a>
                         <a class="account-nav-link" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
                         <a class="account-nav-link" data-section="direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a>
+                        <a class="account-nav-link" data-section="seguridad"><i class="fas fa-shield-alt"></i> Seguridad</a>
+                        <a class="account-nav-link" data-section="notificaciones"><i class="fas fa-bell"></i> Notificaciones</a>
                     </nav>
                 </aside>
                 <div class="account-content">
                     <div id="dashboard-section" class="account-section active fade-in">
-                        <h3>Resumen de Actividad</h3>
+                        <h3>Bienvenido de Nuevo a GreenHaul, <span id="dashboardUserName"></span>!</h3>
+                        <p style="margin-bottom: 30px; color: var(--text-light);">Aquí tienes un resumen rápido de tu actividad y algunas acciones útiles.</p>
+                        
+                        <h4>Tu Impacto y Actividad Reciente</h4>
                         <div class="dashboard-widgets">
                             <div class="widget-card slide-up">
                                 <div class="widget-icon"><i class="fas fa-box"></i></div>
@@ -181,20 +1144,53 @@
                                 <div id="widgetAhorroEquivalente" style="font-size:1rem;opacity:0.9;margin-top:5px;"></div>
                             </div>
                         </div>
+
                         <div class="dashboard-graphs" style="margin-top:40px;">
                             <div style="background:#fff;padding:30px 20px;border-radius:14px;box-shadow:0 4px 15px rgba(0,179,134,0.09);max-width:660px;margin:auto;">
-                                <h4 style="text-align:center;font-size:1.25rem;font-weight:600;color:var(--primary-solid);margin-bottom:18px;">Histórico de Ahorro Sostenible</h4>
+                                <h4 style="text-align:center;font-size:1.25rem;font-weight:600;color:var(--primary-blue);margin-bottom:18px;">Histórico de Ahorro Sostenible</h4>
                                 <canvas id="ahorroChart" height="180"></canvas>
                             </div>
                         </div>
                         <p style="text-align:center;color:#888;margin-top:22px;">
                             ¡Gracias por hacer tu mudanza sostenible! Este es tu impacto ambiental con GreenHaul.
                         </p>
+
+                        <h4 style="margin-top:50px;">Acciones Rápidas</h4>
+                        <div class="quick-actions">
+                            <div class="action-card slide-up">
+                                <div class="action-icon"><i class="fas fa-box-open"></i></div>
+                                <h4>Programar un Nuevo Servicio</h4>
+                                <p>Inicia una nueva solicitud de mudanza o envío.</p>
+                                <a href="servicios.html" class="btn btn-primary">Agendar Ahora</a>
+                            </div>
+                            <div class="action-card slide-up">
+                                <div class="action-icon"><i class="fas fa-user-edit"></i></div>
+                                <h4>Actualizar Mi Perfil</h4>
+                                <p>Modifica tu información personal o de contacto.</p>
+                                <button class="btn btn-outline" data-target-section="perfil">Editar Perfil</button>
+                            </div>
+                            <div class="action-card slide-up">
+                                <div class="action-icon"><i class="fas fa-map-marked-alt"></i></div>
+                                <h4>Gestionar Direcciones</h4>
+                                <p>Añade, edita o elimina tus direcciones guardadas.</p>
+                                <button class="btn btn-outline" data-target-section="direcciones">Mis Direcciones</button>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-top:50px;">Tus Últimos Pedidos</h4>
+                        <div class="recent-orders-summary" id="recent-orders-summary-container">
+                            <p>Cargando tus pedidos más recientes...</p>
+                        </div>
+                        <div style="text-align:center; margin-top:30px;">
+                            <button class="btn btn-primary" data-target-section="pedidos">Ver Todos Mis Pedidos</button>
+                        </div>
                     </div>
+
                     <div id="pedidos-section" class="account-section">
                         <h3>Historial de Pedidos</h3>
                         <div class="order-list" id="order-history-container"></div>
                     </div>
+
                     <div id="perfil-section" class="account-section">
                         <h3>Configuración de Perfil</h3>
                         <form id="profileForm" autocomplete="off">
@@ -203,11 +1199,12 @@
                                 <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control" disabled></div>
                             </div>
                             <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
-                            <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control"></div>
+                            <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control" placeholder="Ej. 5512345678"></div>
                             <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                         </form>
                     </div>
+
                     <div id="direcciones-section" class="account-section">
                         <div class="address-header">
                             <h3>Mis Direcciones</h3>
@@ -215,12 +1212,65 @@
                         </div>
                         <div class="address-list" id="address-list-container"></div>
                     </div>
+
+                    <div id="seguridad-section" class="account-section">
+                        <h3>Configuración de Seguridad</h3>
+                        <p style="margin-bottom: 25px; color: var(--text-light);">Administra tus credenciales y opciones de seguridad.</p>
+                        <form id="securityForm">
+                            <h4>Cambiar Contraseña</h4>
+                            <div class="form-group">
+                                <label for="current-password">Contraseña Actual</label>
+                                <input type="password" id="current-password" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">Nueva Contraseña</label>
+                                <input type="password" id="new-password" class="form-control" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-new-password">Confirmar Nueva Contraseña</label>
+                                <input type="password" id="confirm-new-password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
+                        </form>
+                        <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
+                        <h4>Autenticación de Dos Factores (2FA)</h4>
+                        <p style="margin-bottom: 15px; color: var(--text-light);">Añade una capa extra de seguridad a tu cuenta.</p>
+                        <button id="toggle2FABtn" class="btn btn-outline">
+                            <i class="fas fa-toggle-off"></i> Habilitar 2FA (No funcional)
+                        </button>
+                        <p style="font-size:0.9rem; color:#888; margin-top:10px;">
+                            *Esta funcionalidad aún no está implementada en el backend.
+                        </p>
+                    </div>
+
+                    <div id="notificaciones-section" class="account-section">
+                        <h3>Preferencias de Notificaciones</h3>
+                        <p style="margin-bottom: 25px; color: var(--text-light);">Controla cómo y cuándo recibes nuestras comunicaciones.</p>
+                        <form id="notificationsForm">
+                            <div class="form-group" style="display:flex; align-items:center; gap:15px;">
+                                <input type="checkbox" id="email-notifications" style="width:auto; margin-bottom:0;">
+                                <label for="email-notifications" style="margin-bottom:0; font-weight:normal;">Recibir notificaciones por correo electrónico</label>
+                            </div>
+                            <div class="form-group" style="display:flex; align-items:center; gap:15px;">
+                                <input type="checkbox" id="whatsapp-notifications" style="width:auto; margin-bottom:0;">
+                                <label for="whatsapp-notifications" style="margin-bottom:0; font-weight:normal;">Recibir notificaciones por WhatsApp</label>
+                            </div>
+                            <div class="form-group" style="display:flex; align-items:center; gap:15px;">
+                                <input type="checkbox" id="sms-notifications" style="width:auto; margin-bottom:0;">
+                                <label for="sms-notifications" style="margin-bottom:0; font-weight:normal;">Recibir notificaciones por SMS</label>
+                            </div>
+                            <p style="font-size:0.9rem; color:#888; margin-top:20px;">
+                                *La funcionalidad de guardar las preferencias de notificación aún no está implementada.
+                            </p>
+                            <button type="submit" class="btn btn-primary" disabled>Guardar Preferencias</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>
     </section>
 </main>
-<!-- MODAL DIRECCIÓN -->
 <div class="modal-overlay" id="addressModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -230,24 +1280,39 @@
         <form id="addressForm" autocomplete="off">
             <input type="hidden" id="addressId">
             <div class="form-group">
+                <label for="address-name">Nombre de la Dirección (ej. Casa, Oficina)</label>
+                <input type="text" id="address-name" class="form-control" placeholder="Ej. Mi Casa" required>
+            </div>
+            <div class="form-group">
                 <label for="address-street">Calle y Número</label>
                 <input type="text" id="address-street" class="form-control" placeholder="Ej. Av. Insurgentes Sur 123" required>
             </div>
             <div class="form-grid">
                 <div class="form-group">
+                    <label for="address-neighborhood">Colonia</label>
+                    <input type="text" id="address-neighborhood" class="form-control" placeholder="Ej. Roma Norte">
+                </div>
+                <div class="form-group">
                     <label for="address-city">Ciudad</label>
                     <input type="text" id="address-city" class="form-control" placeholder="Ej. Ciudad de México" required>
                 </div>
+            </div>
+            <div class="form-grid">
                 <div class="form-group">
                     <label for="address-state">Estado</label>
                     <input type="text" id="address-state" class="form-control" placeholder="Ej. CDMX">
                 </div>
+                <div class="form-group">
+                    <label for="address-postal-code">Código Postal</label>
+                    <input type="text" id="address-postal-code" class="form-control" placeholder="Ej. 03810">
+                </div>
             </div>
-             <div class="form-group">
-                <label for="address-postal-code">Código Postal</label>
-                <input type="text" id="address-postal-code" class="form-control">
+            <div class="form-group">
+                <label for="address-references">Referencias Adicionales</label>
+                <textarea id="address-references" class="form-control" rows="3" placeholder="Ej. Edificio blanco con portón verde, frente a un parque."></textarea>
             </div>
             <div id="address-map"></div>
+            <p style="font-size:0.85rem; color:#888; margin-top:10px;">Arrastra el marcador para ajustar la ubicación exacta.</p>
             <div class="modal-actions">
                 <button type="button" class="btn btn-outline" id="modalCancelBtn">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Guardar Dirección</button>
@@ -289,7 +1354,6 @@
         &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
     </div>
 </footer>
-<!-- Carrito de compras y notificaciones -->
 <div class="cart-modal-overlay" id="cartModalOverlay">
     <div class="cart-modal">
         <div class="cart-modal-header">
@@ -324,145 +1388,312 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Backend URL y elementos principales ---
     const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
     const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
-    if (!loggedInUser || !loggedInUser.id) { window.location.href = 'login.html'; return; }
-    let userData = {};
-    let map, marker;
 
-    // --- Animación de widgets ---
+    // Redireccionar si no hay usuario logueado
+    if (!loggedInUser || !loggedInUser.id) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    let userData = {}; // Objeto para almacenar los datos del usuario actual
+    let map, marker; // Variables para el mapa de Leaflet
+
+    // --- Animación inicial de widgets y elementos ---
     document.querySelectorAll('.widget-card').forEach((el, i) => {
         el.style.animationDelay = (i * 0.15) + 's';
     });
+    document.querySelectorAll('.action-card').forEach((el, i) => {
+        el.style.animationDelay = (i * 0.1) + 's';
+    });
 
-    // --- Sidebar usuario ---
-    function updateSidebar(user) {
-        document.getElementById('userCardName').textContent = user.name ?? 'Usuario';
-        document.getElementById('userCardEmail').textContent = user.email ?? '';
-        document.getElementById('userName').textContent = user.name ? user.name.split(' ')[0] : 'Usuario';
-        document.getElementById('account-title').textContent = `Panel de Control de ${user.name || 'Usuario'}`;
+    // --- Elementos del DOM ---
+    const userCardName = document.getElementById('userCardName');
+    const userCardEmail = document.getElementById('userCardEmail');
+    const userNameSpan = document.getElementById('userName');
+    const accountTitle = document.getElementById('account-title');
+    const dashboardUserName = document.getElementById('dashboardUserName'); // Nuevo elemento
+    const widgetPedidos = document.getElementById('widgetPedidos');
+    const widgetCompletados = document.getElementById('widgetCompletados');
+    const widgetDirecciones = document.getElementById('widgetDirecciones');
+    const widgetAhorro = document.getElementById('widgetAhorro');
+    const widgetAhorroEquivalente = document.getElementById('widgetAhorroEquivalente');
+    const navLinks = document.querySelectorAll('.account-nav-link');
+    const sections = document.querySelectorAll('.account-section');
+    const orderHistoryContainer = document.getElementById('order-history-container');
+    const recentOrdersSummaryContainer = document.getElementById('recent-orders-summary-container'); // Nuevo
+    const profileForm = document.getElementById('profileForm');
+    const profileNameInput = document.getElementById('profile-name');
+    const profileLastNameInput = document.getElementById('profile-lastname');
+    const profileEmailInput = document.getElementById('profile-email');
+    const profileWhatsappInput = document.getElementById('profile-whatsapp');
+    const addAddressBtn = document.getElementById('addAddressBtn');
+    const addressModal = document.getElementById('addressModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const addressForm = document.getElementById('addressForm');
+    const addressListContainer = document.getElementById('address-list-container');
+    const modalTitle = document.getElementById('modalTitle');
+    const addressIdInput = document.getElementById('addressId');
+    const addressNameInput = document.getElementById('address-name'); // Nuevo
+    const streetInput = document.getElementById('address-street');
+    const neighborhoodInput = document.getElementById('address-neighborhood'); // Nuevo
+    const cityInput = document.getElementById('address-city');
+    const stateInput = document.getElementById('address-state');
+    const postalCodeInput = document.getElementById('address-postal-code');
+    const referencesInput = document.getElementById('address-references'); // Nuevo
+    const notificationPopup = document.getElementById('notificationPopup');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // --- Funciones de Utilidad ---
+
+    /**
+     * Muestra una notificación emergente.
+     * @param {string} message - El mensaje a mostrar.
+     * @param {boolean} isError - Si es true, la notificación será de error.
+     */
+    function showNotification(message, isError = false) {
+        if (!notificationPopup) return;
+        notificationPopup.textContent = message;
+        notificationPopup.className = 'show' + (isError ? ' error' : '');
+        setTimeout(() => notificationPopup.className = '', 3000);
     }
 
-    // --- Dashboard widgets y ahorro ---
+    /**
+     * Actualiza la información del usuario en la barra lateral.
+     * @param {object} user - Objeto con los datos del usuario.
+     */
+    function updateSidebar(user) {
+        userCardName.textContent = user.name ?? 'Usuario';
+        userCardEmail.textContent = user.email ?? '';
+        userNameSpan.textContent = user.name ? user.name.split(' ')[0] : 'Usuario';
+        accountTitle.textContent = `Panel de Control de ${user.name || 'Usuario'}`;
+        dashboardUserName.textContent = user.name ? user.name.split(' ')[0] : 'Usuario';
+    }
+
+    // --- Funciones para el Dashboard (Resumen) ---
+
+    /**
+     * Actualiza los widgets del dashboard con datos del backend.
+     */
     async function updateDashboardWidgetsFromBackend() {
         try {
             const res = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/dashboard`);
+            if (!res.ok) throw new Error('Error al cargar estadísticas del dashboard.');
             const stats = await res.json();
-            document.getElementById('widgetPedidos').textContent = stats.pedidos_activos ?? 0;
-            document.getElementById('widgetCompletados').textContent = stats.pedidos_completados ?? 0;
-            document.getElementById('widgetDirecciones').textContent = stats.direcciones ?? 0;
-            document.getElementById('widgetAhorro').textContent = stats.ahorro_kg_co2 + ' kg';
-            document.getElementById('widgetAhorroEquivalente').textContent = 
+            widgetPedidos.textContent = stats.pedidos_activos ?? 0;
+            widgetCompletados.textContent = stats.pedidos_completados ?? 0;
+            widgetDirecciones.textContent = stats.direcciones ?? 0;
+            widgetAhorro.textContent = stats.ahorro_kg_co2 + ' kg';
+            widgetAhorroEquivalente.textContent =
                 `Equivale a ${stats.arboles_equivalentes} árboles 🌳 o ${stats.km_equivalentes} km en auto 🚗`;
             renderAhorroChart(stats.ahorro_historico);
+            displayRecentOrders(stats.recent_orders || []);
         } catch (e) {
-            document.getElementById('widgetAhorro').textContent = '0 kg';
-            document.getElementById('widgetAhorroEquivalente').textContent = '';
+            showNotification('No se pudieron cargar las estadísticas del dashboard. Carga parcial de la información.', true);
+            widgetAhorro.textContent = '0 kg';
+            widgetAhorroEquivalente.textContent = '';
+            recentOrdersSummaryContainer.innerHTML = '<p>No se pudieron cargar los pedidos recientes.</p>';
         }
     }
+
+    /**
+     * Renderiza el gráfico de ahorro de CO2.
+     * @param {Array<object>} data - Datos históricos de ahorro.
+     */
     function renderAhorroChart(data) {
         if (!data || !Array.isArray(data)) data = [];
         const ctx = document.getElementById('ahorroChart').getContext('2d');
-        new Chart(ctx, {
+        // Destruir instancia anterior si existe para evitar duplicados
+        if (window.ahorroChartInstance) {
+            window.ahorroChartInstance.destroy();
+        }
+        window.ahorroChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.map(x=>x.fecha),
+                labels: data.map(x => x.fecha),
                 datasets: [{
                     label: 'CO₂ Ahorrado (kg)',
-                    data: data.map(x=>x.ahorro),
+                    data: data.map(x => x.ahorro),
                     fill: true,
                     backgroundColor: 'rgba(74,144,226,0.07)',
-                    borderColor: '#00b386',
+                    borderColor: '#4AB3C1', /* Usar primary-solid para el borde del gráfico */
                     tension: 0.3,
-                    pointBackgroundColor: '#4a90e2',
+                    pointBackgroundColor: '#4a90e2', /* Usar secondary-solid para los puntos */
                     pointRadius: 5
                 }]
             },
             options: {
                 plugins: {
-                    legend: { display: false }
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `CO₂ Ahorrado: ${context.raw} kg`;
+                            }
+                        }
+                    }
                 },
                 scales: {
-                    y: { beginAtZero: true, ticks: { color: "#4a90e2" }},
+                    y: { beginAtZero: true, ticks: { color: "#4a90e2", callback: function(value) { return value + ' kg'; }}},
                     x: { ticks: { color: "#4a90e2" }}
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
     }
-    // --- Tabs funcionales ---
-    const navLinks = document.querySelectorAll('.account-nav-link');
-    const sections = document.querySelectorAll('.account-section');
+
+    /**
+     * Muestra un resumen de los últimos pedidos en el dashboard.
+     * @param {Array<object>} orders - Lista de objetos de pedido.
+     */
+    function displayRecentOrders(orders) {
+        recentOrdersSummaryContainer.innerHTML = '';
+        if (!orders || orders.length === 0) {
+            recentOrdersSummaryContainer.innerHTML = '<p>No hay pedidos recientes para mostrar.</p>';
+            return;
+        }
+        orders.slice(0, 3).forEach(order => { // Mostrar solo los 3 más recientes
+            const estado = order.status === 'completado' ? 'Completado' : 'Activo';
+            recentOrdersSummaryContainer.innerHTML += `
+                <div class="order-item slide-up">
+                    <div><strong>ID:</strong> ${order.id}</div>
+                    <div><strong>Fecha:</strong> ${order.date}</div>
+                    <div><strong>Total:</strong> $${parseFloat(order.total).toFixed(2)} MXN</div>
+                    <div><strong>Estado:</strong> <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span></div>
+                </div>`;
+        });
+    }
+
+    // --- Manejo de Pestañas (Secciones) ---
+
+    /**
+     * Activa la sección correspondiente y actualiza la navegación.
+     * @param {string} sectionId - El ID de la sección a activar (ej. 'dashboard', 'pedidos').
+     */
+    function activateSection(sectionId) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active', 'fade-in'));
+        
+        // Encuentra el enlace y la sección objetivo
+        const targetLink = document.querySelector(`.account-nav-link[data-section="${sectionId}"]`);
+        const targetSection = document.getElementById(`${sectionId}-section`);
+
+        if (targetLink) targetLink.classList.add('active');
+        if (targetSection) targetSection.classList.add('active', 'fade-in');
+
+        // Cargar datos específicos para cada sección
+        switch (sectionId) {
+            case 'dashboard':
+                updateDashboardWidgetsFromBackend(); // Solo se intenta cargar el dashboard aquí
+                break;
+            case 'pedidos':
+                loadOrders(); // Solo carga pedidos
+                break;
+            case 'perfil':
+                populateProfileForm();
+                break;
+            case 'direcciones':
+                loadAddresses(); // Solo carga direcciones
+                break;
+            case 'seguridad':
+                // No hay carga de datos de backend por ahora para seguridad, solo formulario
+                break;
+            case 'notificaciones':
+                // No hay carga de datos de backend por ahora para notificaciones
+                break;
+        }
+    }
+
+    // Event listeners para los enlaces de navegación de la barra lateral
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const sectionId = link.dataset.section;
-            navLinks.forEach(l => l.classList.remove('active'));
-            sections.forEach(s => s.classList.remove('active', 'fade-in'));
-            link.classList.add('active');
-            const targetSection = document.getElementById(`${sectionId}-section`);
-            if(targetSection) {
-                targetSection.classList.add('active', 'fade-in');
-            }
-            if (sectionId === 'dashboard') updateDashboardWidgetsFromBackend();
-            if (sectionId === 'pedidos') loadOrders();
-            if (sectionId === 'perfil') populateProfileForm();
-            if (sectionId === 'direcciones') loadAddresses();
+            activateSection(sectionId);
         });
     });
 
-    // --- Pedidos funcional ---
+    // Event listeners para los botones de "Acciones Rápidas" en el dashboard
+    document.querySelectorAll('.quick-actions .btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const targetSection = e.target.dataset.targetSection;
+            if (targetSection) {
+                activateSection(targetSection);
+            } else if (e.target.href) { // Si es un enlace normal como "Agendar Ahora"
+                window.location.href = e.target.href;
+            }
+        });
+    });
+    document.querySelector('.recent-orders-summary + div .btn').addEventListener('click', () => {
+        activateSection('pedidos');
+    });
+
+
+    // --- Funciones para Pedidos ---
+
+    /**
+     * Carga y muestra el historial de pedidos del usuario.
+     */
     async function loadOrders() {
-        const container = document.getElementById('order-history-container');
-        container.innerHTML = '<div class="order-item"><span>Cargando pedidos...</span></div>';
+        orderHistoryContainer.innerHTML = '<div class="order-item"><span>Cargando pedidos...</span></div>';
         try {
             const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/orders`);
+            if (!response.ok) throw new Error('Error al cargar pedidos.');
             const orders = await response.json();
-            container.innerHTML = '';
-            if (!orders || !orders.length) {
-                container.innerHTML = '<p>No tienes pedidos aún.</p>';
-                updateDashboardWidgetsFromBackend();
+            orderHistoryContainer.innerHTML = '';
+            if (!orders || orders.length === 0) {
+                orderHistoryContainer.innerHTML = '<p>No tienes pedidos aún. ¡Anímate a programar tu primera mudanza sostenible!</p>';
                 return;
             }
-            let activos = 0, completados = 0;
+            orders.sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordenar por fecha descendente
             orders.forEach(order => {
                 const estado = order.status === 'completado' ? 'Completado' : 'Activo';
-                if(order.status === 'completado') completados++; else activos++;
-                container.innerHTML += `
+                orderHistoryContainer.innerHTML += `
                     <div class="order-item slide-up">
                         <div><strong>ID Pedido:</strong><br>${order.id}</div>
-                        <div><strong>Fecha:</strong><br>${order.date}</div>
-                        <div><strong>Total:</strong><br>$${order.total} MXN</div>
+                        <div><strong>Fecha:</strong><br>${new Date(order.date).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                        <div><strong>Total:</strong><br>$${parseFloat(order.total).toFixed(2)} MXN</div>
                         <div><strong>Estado:</strong><br>
                             <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span>
                         </div>
+                        <div class="order-actions">
+                            <button class="btn btn-outline btn-sm" onclick="alert('Funcionalidad de ver detalles aún no implementada para el ID: ${order.id}')">Ver Detalles</button>
+                        </div>
                     </div>`;
             });
-            updateDashboardWidgetsFromBackend();
         } catch (error) {
-            container.innerHTML = '<p>Error al cargar pedidos.</p>';
+            showNotification(`Error al cargar pedidos: ${error.message}`, true);
+            orderHistoryContainer.innerHTML = '<p>Error al cargar pedidos. Por favor, inténtalo de nuevo más tarde.</p>';
         }
     }
 
-    // --- Perfil funcional ---
-    const profileForm = document.getElementById('profileForm');
-    const profileNameInput = document.getElementById('profile-name');
-    const profileSurnameInput = document.getElementById('profile-lastname');
-    const profileEmailInput = document.getElementById('profile-email');
-    const profileWhatsappInput = document.getElementById('profile-whatsapp');
+    // --- Funciones para Perfil ---
+
+    /**
+     * Rellena el formulario de perfil con los datos del usuario.
+     */
     function populateProfileForm() {
         if (!userData) return;
         profileNameInput.value = userData.name || '';
-        profileSurnameInput.value = userData.surname || '';
+        profileLastNameInput.value = userData.surname || '';
         profileEmailInput.value = userData.email || '';
         profileWhatsappInput.value = userData.whatsapp || '';
     }
+
+    // Event listener para el formulario de perfil
     profileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = profileForm.querySelector('button[type="submit"]');
-        submitBtn.disabled = true; 
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
         submitBtn.textContent = 'Guardando...';
+
         const updatedData = {
             email: profileEmailInput.value,
             whatsapp: profileWhatsappInput.value,
         };
+
         try {
             const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}`, {
                 method: 'PUT',
@@ -471,175 +1702,305 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || 'Error al actualizar el perfil.');
-            userData = result.user;
-            localStorage.setItem('greenhaulUser', JSON.stringify(userData));
+
+            userData = { ...loggedInUser, ...result.user }; // Actualizar userData con la respuesta del backend
+            localStorage.setItem('greenhaulUser', JSON.stringify(userData)); // Actualizar localStorage
             showNotification('Perfil actualizado con éxito.');
-            updateSidebar(userData);
+            updateSidebar(userData); // Actualizar la barra lateral
         } catch (error) {
             showNotification(error.message, true);
         } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Guardar Cambios';
+            submitBtn.textContent = originalBtnText;
         }
     });
 
-    // --- Mis Direcciones funcional con mapa ---
-    const addressModal = document.getElementById('addressModal');
-    const addAddressBtn = document.getElementById('addAddressBtn');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
-    const modalCancelBtn = document.getElementById('modalCancelBtn');
-    const addressForm = document.getElementById('addressForm');
-    const addressListContainer = document.getElementById('address-list-container');
-    const modalTitle = document.getElementById('modalTitle');
-    const addressIdInput = document.getElementById('addressId');
-    const streetInput = document.getElementById('address-street');
-    const cityInput = document.getElementById('address-city');
-    const stateInput = document.getElementById('address-state');
-    const postalCodeInput = document.getElementById('address-postal-code');
-    function showNotification(message, isError = false) {
-        const popup = document.getElementById('notificationPopup');
-        if(!popup) return;
-        popup.textContent = message;
-        popup.className = 'show' + (isError ? ' error' : '');
-        setTimeout(() => popup.className = '', 3000);
-    }
-    function initMap(lat=19.4326, lng=-99.1332) {
-        if (map) { map.remove(); map = null; }
+    // --- Funciones para Direcciones (con mejoras en el mapa) ---
+
+    /**
+     * Inicializa o re-inicializa el mapa de Leaflet.
+     * @param {number} lat - Latitud inicial.
+     * @param {number} lng - Longitud inicial.
+     */
+    function initMap(lat = 19.4326, lng = -99.1332) { // Coordenadas de CDMX por defecto
+        if (map) {
+            map.remove(); // Eliminar la instancia anterior del mapa si existe
+            map = null;
+        }
         map = L.map('address-map').setView([lat, lng], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
         marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
         marker.on('dragend', function(event) {
             const pos = marker.getLatLng();
             reverseGeocode(pos.lat, pos.lng);
         });
-        setTimeout(() => { if(map) map.invalidateSize(); }, 200);
+
+        // Asegurarse de que el mapa se renderice correctamente en el modal
+        setTimeout(() => {
+            if (map) map.invalidateSize();
+        }, 200);
     }
+
+    /**
+     * Realiza geocodificación inversa para obtener la dirección a partir de coordenadas.
+     * Mejora: Intenta extraer el número de calle de `house_number` y `road` o `display_name`.
+     * @param {number} lat - Latitud.
+     * @param {number} lng - Longitud.
+     */
     async function reverseGeocode(lat, lng) {
         try {
             const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
             const response = await fetch(url);
             const data = await response.json();
+
             if (data && data.address) {
                 const addr = data.address;
-                streetInput.value = `${addr.road || ''} ${addr.house_number || ''}`.trim();
+                let street = addr.road || '';
+                let houseNumber = addr.house_number || '';
+                let neighborhood = addr.suburb || addr.neighbourhood || '';
+
+                // Intentar obtener el número de casa de 'house_number' o de 'display_name'
+                let fullStreet = street.trim();
+                if (houseNumber) {
+                    fullStreet += ` ${houseNumber}`;
+                } else if (data.display_name) {
+                    // Si house_number no está, intenta extraerlo de display_name
+                    // Regex para buscar un número al inicio o después de la calle
+                    const streetRegex = new RegExp(`^${escapeRegExp(street)}\\s*(\\d+[A-Za-z]?)?\\b`, 'i');
+                    const match = data.display_name.match(streetRegex);
+                    if (match && match[1]) {
+                        fullStreet = `${street} ${match[1]}`;
+                    } else {
+                        // Intenta una búsqueda más genérica para el número si no se encontró con la calle
+                        const genericNumberMatch = data.display_name.match(/\b(\d+[A-Za-z]?)\b/);
+                        if (genericNumberMatch && street && !street.includes(genericNumberMatch[1])) {
+                             fullStreet = `${street} ${genericNumberMatch[1]}`;
+                        }
+                    }
+                }
+                
+                streetInput.value = fullStreet.trim();
+                neighborhoodInput.value = neighborhood;
                 cityInput.value = addr.city || addr.town || addr.village || '';
                 stateInput.value = addr.state || '';
                 postalCodeInput.value = addr.postcode || '';
+            } else {
+                streetInput.value = '';
+                neighborhoodInput.value = '';
+                cityInput.value = '';
+                stateInput.value = '';
+                postalCodeInput.value = '';
+                showNotification('No se pudo obtener la dirección desde el mapa.', true);
             }
         } catch (error) {
-            showNotification('No se pudo obtener la dirección desde el mapa.', true);
+            showNotification('Error de conexión al servicio de geocodificación inversa.', true);
         }
     }
+
+    // Helper para escapar caracteres especiales en una RegExp
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the matched substring
+    }
+
+
+    /**
+     * Realiza geocodificación para ubicar una dirección en el mapa.
+     */
     async function geocodeAddress() {
-        const address = `${streetInput.value}, ${cityInput.value}, ${stateInput.value}`;
-        if (address.length < 7) return;
+        const address = `${streetInput.value}, ${neighborhoodInput.value}, ${cityInput.value}, ${stateInput.value}, ${postalCodeInput.value}`;
+        if (address.trim().length < 10) return; // Mínimo de caracteres para una búsqueda efectiva
+
         try {
             const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
             const response = await fetch(url);
             const results = await response.json();
+
             if (results && results.length > 0) {
                 const { lat, lon } = results[0];
                 const newPosition = L.latLng(lat, lon);
                 marker.setLatLng(newPosition);
                 map.setView(newPosition, 16);
+                // Opcional: Re-reverse geocodificar para asegurar que los campos se llenen con la dirección exacta encontrada
+                // reverseGeocode(lat, lon); 
+            } else {
+                showNotification('No se pudo ubicar la dirección en el mapa con los datos proporcionados.', true);
             }
         } catch (error) {
-            showNotification('No se pudo ubicar la dirección en el mapa.', true);
+            showNotification('Error de conexión al servicio de geocodificación.', true);
         }
     }
-    [streetInput, cityInput, stateInput].forEach(input => {
+
+    // Event listeners para autocompletar el mapa al escribir la dirección
+    [streetInput, neighborhoodInput, cityInput, stateInput, postalCodeInput].forEach(input => {
         input.addEventListener('blur', () => { geocodeAddress(); });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Previene el envío del formulario
+                geocodeAddress();
+            }
+        });
     });
-    function openModal(lat=19.4326, lng=-99.1332) {
+
+    /**
+     * Abre el modal de dirección y, opcionalmente, lo inicializa para edición.
+     * @param {number} lat - Latitud para centrar el mapa.
+     * @param {number} lng - Longitud para centrar el mapa.
+     */
+    function openModal(lat = 19.4326, lng = -99.1332) {
         addressModal.classList.add('show');
-        setTimeout(() => { initMap(lat, lng); }, 50);
+        setTimeout(() => {
+            initMap(lat, lng);
+        }, 50); // Pequeño retraso para asegurar que el modal esté visible antes de inicializar el mapa
     }
+
+    /**
+     * Cierra el modal de dirección y limpia el formulario.
+     */
     function closeModal() {
         addressModal.classList.remove('show');
         addressForm.reset();
         addressIdInput.value = '';
-        if(map) { map.remove(); map = null; }
+        if (map) {
+            map.remove();
+            map = null;
+        }
     }
-    if(addAddressBtn) addAddressBtn.addEventListener('click', () => {
+
+    // Event listeners para el modal de dirección
+    if (addAddressBtn) addAddressBtn.addEventListener('click', () => {
         modalTitle.textContent = 'Agregar Nueva Dirección';
         openModal();
     });
-    if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
-    if(modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
-    if(addressForm) addressForm.addEventListener('submit', async (e) => {
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
+
+    // Envío del formulario de dirección (Agregar/Editar)
+    if (addressForm) addressForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const addressId = addressIdInput.value;
         const isUpdating = !!addressId;
+        const submitBtn = addressForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Guardando...';
+
         const addressData = {
+            name: addressNameInput.value, // Nuevo campo
             street: streetInput.value,
+            neighborhood: neighborhoodInput.value, // Nuevo campo
             city: cityInput.value,
             state: stateInput.value,
             postal_code: postalCodeInput.value,
+            references: referencesInput.value, // Nuevo campo
+            latitude: marker ? marker.getLatLng().lat : null, // Guarda latitud y longitud
+            longitude: marker ? marker.getLatLng().lng : null,
         };
+
         const url = isUpdating ? `${backendUrl}/api/addresses/${addressId}` : `${backendUrl}/api/users/${loggedInUser.id}/addresses`;
         const method = isUpdating ? 'PUT' : 'POST';
+
         try {
-            const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addressData) });
+            const response = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(addressData)
+            });
             const result = await response.json();
+
             if (!response.ok) throw new Error(result.message || 'Error al guardar la dirección.');
+
             showNotification(result.message || 'Dirección guardada correctamente.');
             closeModal();
-            await loadAddresses();
+            await loadAddresses(); // Recargar la lista de direcciones
         } catch (error) {
             showNotification(error.message, true);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
         }
     });
+
+    /**
+     * Carga y muestra la lista de direcciones del usuario.
+     */
     async function loadAddresses() {
         try {
             const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/addresses`);
             if (!response.ok) throw new Error('No se pudieron cargar las direcciones.');
             const addresses = await response.json();
-            addressListContainer.innerHTML = '';
+            addressListContainer.innerHTML = ''; // Limpiar contenedor
+
             if (addresses.length === 0) {
-                addressListContainer.innerHTML = '<p>Aún no tienes direcciones guardadas. ¡Agrega una!</p>';
-                updateDashboardWidgetsFromBackend();
+                addressListContainer.innerHTML = '<p>Aún no tienes direcciones guardadas. ¡Agrega una para agilizar tus futuros servicios!</p>';
+                // No se llama updateDashboardWidgetsFromBackend aquí para evitar el error recurrente
                 return;
             }
+
             addresses.forEach(addr => {
                 const card = document.createElement('div');
                 card.className = 'address-card slide-up';
                 card.innerHTML = `
-                    <div class="address-card-header"><h4><i class="fas fa-map-marker-alt"></i> ${addr.city}</h4></div>
-                    <div class="address-card-body"><p>${addr.street}, ${addr.state || ''}</p><p>${addr.postal_code || ''}</p></div>
+                    <div class="address-card-header">
+                        <h4><i class="fas fa-map-marker-alt"></i> ${addr.name || 'Dirección sin nombre'}</h4>
+                    </div>
+                    <div class="address-card-body">
+                        <p>${addr.street}, ${addr.neighborhood || ''}</p>
+                        <p>${addr.city}, ${addr.state || ''} ${addr.postal_code || ''}</p>
+                        ${addr.references ? `<p style="font-size:0.9em; color:#666;">Ref: ${addr.references}</p>` : ''}
+                    </div>
                     <div class="address-card-actions">
                         <button class="btn btn-outline edit-btn" data-id="${addr.id}">Editar</button>
                         <button class="btn-tertiary delete-btn" data-id="${addr.id}" title="Eliminar"><i class="fas fa-trash"></i></button>
                     </div>`;
                 addressListContainer.appendChild(card);
             });
-            updateDashboardWidgetsFromBackend();
+            // No se llama updateDashboardWidgetsFromBackend aquí para evitar el error recurrente
         } catch (error) {
             showNotification(error.message, true);
+            addressListContainer.innerHTML = '<p>Error al cargar direcciones. Por favor, inténtalo de nuevo.</p>';
         }
     }
-    if(addressListContainer) addressListContainer.addEventListener('click', async (e) => {
+
+    // Event listener para acciones en las tarjetas de dirección (Editar/Eliminar)
+    if (addressListContainer) addressListContainer.addEventListener('click', async (e) => {
         const editBtn = e.target.closest('.edit-btn');
         const deleteBtn = e.target.closest('.delete-btn');
+
         if (editBtn) {
             const id = editBtn.dataset.id;
             try {
                 const response = await fetch(`${backendUrl}/api/addresses/${id}`);
                 if (!response.ok) throw new Error('No se pudo cargar la dirección para editar.');
                 const addressToEdit = await response.json();
+
                 modalTitle.textContent = 'Editar Dirección';
                 addressIdInput.value = addressToEdit.id;
-                streetInput.value = addressToEdit.street;
-                cityInput.value = addressToEdit.city;
+                addressNameInput.value = addressToEdit.name || ''; // Rellenar nuevo campo
+                streetInput.value = addressToEdit.street || '';
+                neighborhoodInput.value = addressToEdit.neighborhood || ''; // Rellenar nuevo campo
+                cityInput.value = addressToEdit.city || '';
                 stateInput.value = addressToEdit.state || '';
                 postalCodeInput.value = addressToEdit.postal_code || '';
-                geocodeAddress();
-                openModal();
+                referencesInput.value = addressToEdit.references || ''; // Rellenar nuevo campo
+
+                // Si hay lat/lng guardados, usar esos para el mapa
+                if (addressToEdit.latitude && addressToEdit.longitude) {
+                    openModal(addressToEdit.latitude, addressToEdit.longitude);
+                } else {
+                    // Si no, intentar geocodificar la dirección actual
+                    openModal(); // Abre el mapa en CDMX por defecto
+                    geocodeAddress(); // Intenta posicionar el marcador
+                }
+
             } catch (error) {
                 showNotification(error.message, true);
             }
         }
+
         if (deleteBtn) {
             const id = deleteBtn.dataset.id;
             if (confirm('¿Estás seguro de que quieres eliminar esta dirección? Esta acción no se puede deshacer.')) {
@@ -648,7 +2009,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const result = await response.json();
                     if (!response.ok) throw new Error(result.message || 'Error al eliminar la dirección.');
                     showNotification(result.message || 'Dirección eliminada con éxito.');
-                    await loadAddresses();
+                    await loadAddresses(); // Recargar la lista de direcciones
                 } catch (error) {
                     showNotification(error.message, true);
                 }
@@ -656,35 +2017,120 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    // --- Funciones para Seguridad (Nueva Sección) ---
+    const securityForm = document.getElementById('securityForm');
+    const currentPasswordInput = document.getElementById('current-password');
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmNewPasswordInput = document.getElementById('confirm-new-password');
+
+    if (securityForm) {
+        securityForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = securityForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Actualizando...';
+
+            const currentPassword = currentPasswordInput.value;
+            const newPassword = newPasswordInput.value;
+            const confirmNewPassword = confirmNewPasswordInput.value;
+
+            if (newPassword !== confirmNewPassword) {
+                showNotification('Las nuevas contraseñas no coinciden.', true);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                return;
+            }
+            if (newPassword.length < 6) {
+                showNotification('La nueva contraseña debe tener al menos 6 caracteres.', true);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                return;
+            }
+
+            // Aquí enviarías la solicitud al backend para cambiar la contraseña
+            // P.ej. POST /api/users/{userId}/change-password
+            try {
+                // Simulación de una llamada al backend
+                const response = await new Promise(resolve => setTimeout(() => {
+                    // Simular éxito o error según la lógica del backend
+                    // IMPORTANTE: En un entorno real, NO HARDCODEAR contraseñas así.
+                    // Esto es solo para fines de demostración en el frontend.
+                    if (currentPassword === "password_actual_valida") { // <-- PLACHOLDER: Reemplazar con validación real del backend
+                        resolve({ ok: true, json: () => Promise.resolve({ message: 'Contraseña actualizada con éxito.' }) });
+                    } else {
+                        resolve({ ok: false, json: () => Promise.resolve({ message: 'Contraseña actual incorrecta.' }) });
+                    }
+                }, 1000));
+
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.message || 'Error al cambiar la contraseña.');
+
+                showNotification(result.message);
+                securityForm.reset(); // Limpiar formulario
+            } catch (error) {
+                showNotification(error.message, true);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+    }
+
+    // --- Funciones para Notificaciones (Nueva Sección) ---
+    const notificationsForm = document.getElementById('notificationsForm');
+    const toggle2FABtn = document.getElementById('toggle2FABtn');
+
+    if (notificationsForm) {
+        notificationsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showNotification('La funcionalidad de guardar preferencias de notificación aún no está implementada.', false);
+            // Aquí iría la lógica para enviar las preferencias al backend cuando esté disponible
+            // const emailEnabled = document.getElementById('email-notifications').checked;
+            // const whatsappEnabled = document.getElementById('whatsapp-notifications').checked;
+            // const smsEnabled = document.getElementById('sms-notifications').checked;
+            // console.log({ emailEnabled, whatsappEnabled, smsEnabled });
+        });
+    }
+
+    if (toggle2FABtn) {
+        toggle2FABtn.addEventListener('click', () => {
+            showNotification('La autenticación de dos factores aún no está implementada.', false);
+            // Lógica para 2FA cuando esté disponible
+        });
+    }
+
     // --- Cerrar sesión ---
-    if(document.getElementById('logoutBtn')) {
-        document.getElementById('logoutBtn').addEventListener('click', () => {
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('greenhaulUser');
             window.location.href = 'index.html';
         });
     }
 
-    // --- Inicialización de datos de usuario ---
+    // --- Inicialización de datos de usuario y carga inicial ---
+
+    /**
+     * Carga los datos completos del usuario desde el backend al iniciar la página.
+     * @param {string} userId - ID del usuario logueado.
+     */
     async function fetchUserData(userId) {
         try {
             const response = await fetch(`${backendUrl}/api/users/${userId}`);
             if (!response.ok) throw new Error('Usuario no encontrado en el servidor.');
             const result = await response.json();
-            userData = result.user;
-            localStorage.setItem('greenhaulUser', JSON.stringify(userData));
-            updateSidebar(userData);
-            populateProfileForm();
-            loadOrders();
-            loadAddresses();
-            updateDashboardWidgetsFromBackend();
+            userData = result.user; // Almacena los datos completos
+            localStorage.setItem('greenhaulUser', JSON.stringify(userData)); // Actualiza el localStorage por si hay cambios
+            updateSidebar(userData); // Actualiza la barra lateral con los datos completos
+            activateSection('dashboard'); // Activa la sección de resumen por defecto y su lógica de carga
         } catch (error) {
             showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
+            // Opcional: Redireccionar a login o mostrar un mensaje más severo si no se pueden cargar los datos
         }
     }
-    fetchUserData(loggedInUser.id);
 
-    // --- Animación inicial ---
-    sections.forEach(section => section.classList.add('fade-in'));
+    // Llamada inicial para cargar los datos del usuario y activar la primera sección
+    fetchUserData(loggedInUser.id);
 });
 </script>
 </body>
