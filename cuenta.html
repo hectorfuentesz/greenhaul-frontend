@@ -1,530 +1,719 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Cuenta - GreenHaul</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-    <style>
-        :root {
-            --primary-solid: #4a90e2; --accent-green: #00b386; --gradient-primary: linear-gradient(to right, #00b386, #4a90e2);
-            --gradient-primary-hover: linear-gradient(to right, #008c6b, #3a7bcd);
-            --color-dark: #2c3e50; --color-light: #f8f9fa; --color-text: #555;
-            --color-white: #ffffff; --accent-orange: #ff9900; --accent-red: #e74c3c;
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08); --border-radius: 12px; --border-color: #e0e0e0;
-            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-main); color: var(--color-text); background-color: var(--color-light); line-height: 1.7; display: flex; flex-direction: column; min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .section { padding: 80px 0; }
-        h2 { font-size: 2.8rem; text-align: center; color: var(--color-dark); margin-bottom: 60px; font-weight: 700;}
-        h3 { font-size: 1.8rem; color: var(--color-dark); margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        h4 { font-size: 1.1rem; color: var(--color-text); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
-        .btn { display: inline-block; padding: 12px 28px; border-radius: 999px; font-weight: 600; text-align: center; border: none; cursor: pointer; text-decoration: none; transition: all 0.3s ease; }
-        .btn-primary { background-image: var(--gradient-primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .btn-primary:hover { background-image: var(--gradient-primary-hover); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-        .btn-outline { background-color: transparent; color: var(--primary-solid) !important; border-radius: 50px; text-decoration:none; padding: 8px 20px; border: 1px solid var(--primary-solid); }
-        .btn-outline:hover { background-color: var(--primary-solid); color: var(--color-white) !important; }
-        .btn-tertiary { background: none; border: none; color: var(--accent-red); font-weight: 500; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; }
-        .btn-tertiary:hover { transform: scale(1.15); }
-        .navbar { position: sticky; top: 0; padding: 15px 0; background-color: var(--color-white); border-bottom: 1px solid var(--border-color); z-index: 1000; }
-        .navbar-content { display: flex; justify-content: space-between; align-items: center; }
-        .logo { flex-shrink: 0; }
-        .logo img { height: 55px; }
-        .nav-links { flex-grow: 1; text-align: center; }
-        .nav-links-list { list-style: none; display: inline-flex; justify-content: center; gap: 40px; padding: 0; margin: 0; }
-        .nav-link { font-weight: 500; color: var(--color-text); text-decoration: none; }
-        .nav-link.active { color: var(--primary-solid); font-weight: 600; }
-        .navbar-right-items { display: flex; align-items: center; gap: 25px; }
-        .navbar-user-actions { display: flex; align-items: center; gap: 15px; }
-        .footer { background-color: var(--color-dark); color: #aaa; padding: 40px 20px; text-align: center; margin-top: auto;}
-        main { flex-grow: 1; padding-top: 80px; }
-        .account-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; align-items: flex-start; }
-        .account-sidebar { position: sticky; top: 120px; }
-        .account-nav { display: flex; flex-direction: column; gap: 8px; background-color: var(--color-white); border-radius: var(--border-radius); padding: 10px; box-shadow: var(--shadow); }
-        .account-nav-link { padding: 12px 20px; border-radius: 8px; color: var(--color-text); font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 15px; transition: all 0.2s ease; cursor: pointer; }
-        .account-nav-link i { width: 20px; text-align: center; color: var(--primary-solid); }
-        .account-nav-link:hover { background-color: #f0f0f0; transform: translateX(5px); }
-        .account-nav-link.active { background-image: var(--gradient-primary); color: var(--color-white); transform: translateX(0); box-shadow: 0 4px 10px rgba(0, 179, 134, 0.3); }
-        .account-nav-link.active i { color: var(--color-white); }
-        .account-content { min-height: 500px; }
-        .account-section { display: none; background-color: var(--color-white); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
-        .account-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .account-section > h3 { margin-top: 0; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
-        .form-control[disabled] { background-color: #e9ecef; cursor: not-allowed; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: inherit;}
-        #notificationPopup { position: fixed; top: 20px; right: 20px; background-color: var(--accent-green); color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 10001; opacity: 0; transform: translateX(120%); transition: all 0.4s ease; }
-        #notificationPopup.error { background-color: var(--accent-red); }
-        #notificationPopup.show { opacity: 1; transform: translateX(0); }
-        .order-list { margin-top: 30px; }
-        .order-list .order-item { background: var(--color-light); border-radius: 8px; margin-bottom: 15px; padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: center; gap: 20px; border: 1px solid var(--border-color); }
-        .order-item-status { font-weight: bold; padding: 5px 12px; border-radius: 99px; font-size: 0.8rem; text-align: center;}
-        .status-completado { color: #008c6b; background-color: rgba(0, 179, 134, 0.1); }
-        .status-activo { color: #3a7bcd; background-color: rgba(74, 144, 226, 0.1); }
-        .address-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
-        .address-header p { margin: 0; }
-        .address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .address-card { background: var(--color-light); border-radius: var(--border-radius); padding: 25px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
-        .address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .address-card-header h4 { text-transform: none; color: var(--color-dark); font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-        .address-card-body { flex-grow: 1; margin-bottom: 20px; }
-        .address-card-body p { margin-bottom: 5px; }
-        .address-card-actions { display: flex; align-items: center; gap: 15px; }
-        .address-card-actions .btn-outline { padding: 6px 18px; font-size: 0.9rem; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .modal-overlay.show { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--color-white); padding: 40px; border-radius: var(--border-radius); box-shadow: var(--shadow); width: 90%; max-width: 600px; transform: scale(0.9); transition: transform 0.3s ease; }
-        .modal-overlay.show .modal-content { transform: scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; }
-        .modal-header h3 { border: none; margin: 0; padding: 0; }
-        .modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--color-text); }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
-        #address-map { height: 250px; width: 100%; border-radius: var(--border-radius); margin-top: 20px; border: 1px solid var(--border-color); z-index: 1;}
-        .form-group-with-button { position: relative; }
-        #geocodeBtn { display: none; }
-        @media (max-width: 850px) {
-            .navbar-content { flex-wrap: wrap; justify-content: center; gap: 15px; }
-            .nav-links { order: 1; width: 100%; }
-            .account-layout { grid-template-columns: 1fr; }
-            .account-sidebar { position: static; }
-        }
-    </style>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mi Cuenta - GreenHaul</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="assets/css/styles.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+        <style>
+            body { background: #f1f5f9; }
+            .fade-in { animation: fadeIn 0.5s; }
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: none;} }
+            .slide-up { animation: slideUp 0.7s cubic-bezier(.68,-0.55,.27,1.55); }
+            @keyframes slideUp { 0% { transform: translateY(60px); opacity: 0; } 60% { transform: translateY(-8px); opacity: 1; } 100% { transform: translateY(0); } }
+            .account-dashboard-container { max-width: 1280px; margin: 0 auto; padding: 0 15px; }
+            .account-dashboard-layout { display: grid; grid-template-columns: 300px 1fr; gap: 38px; align-items: flex-start; margin: 0 auto; }
+            @media (max-width: 900px) { .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } .account-sidebar { position: static; } }
+            .account-sidebar { position: sticky; top: 110px; min-width: 220px; }
+            .user-card { background: linear-gradient(120deg, #00b386 0%, #4a90e2 100%); color: #fff; border-radius: 14px; box-shadow: 0 8px 28px rgba(74,144,226,0.09); text-align: center; padding: 36px 18px 24px 18px; margin-bottom: 28px; }
+            .user-avatar { background: #fff; color: #00b386; border-radius: 50%; width: 72px; height: 72px; font-size: 2.8rem; margin: 0 auto 18px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(0,179,134,0.12);}
+            .user-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -1px; }
+            .user-email { font-size: 1rem; opacity: 0.95; margin-bottom: 8px; }
+            .account-nav { background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 2px; padding: 15px 0; }
+            .account-nav-link { padding: 15px 28px; border-radius: 10px; color: var(--text-dark); font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 18px; transition: all 0.2s; cursor: pointer; font-size: 1.08rem;}
+            .account-nav-link i { width: 22px; text-align: center; font-size: 1.35rem; color: var(--primary-solid); opacity: 0.95;}
+            .account-nav-link:hover { background: #f3f8fe; color: var(--primary-solid); }
+            .account-nav-link.active { background: var(--gradient-primary); color: #fff; font-weight: 700; box-shadow: 0 6px 18px rgba(0,179,134,0.11); transform: scale(1.04);}
+            .account-nav-link.active i { color: #fff; }
+            .account-content { min-height: 500px; }
+            .account-section { display: none; background: #fff; padding: 38px 35px 30px 35px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);}
+            .account-section.active { display: block; animation: fadeIn 0.45s; }
+    
+            /* DASHBOARD WIDGETS INTERACTIVO Y COLORIDO */
+            .dashboard-widgets { 
+                display: grid; 
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+                gap: 30px; 
+                margin-bottom: 36px; 
+            }
+            .widget-card { 
+                background: #f8f9fa; 
+                border-radius: 15px; 
+                box-shadow: 0 2px 10px rgba(0,179,134,0.09); 
+                text-align: center; 
+                padding: 32px 15px 26px 15px; 
+                transition: box-shadow 0.3s, transform 0.3s, background 0.3s; 
+                position: relative;
+                overflow: hidden;
+            }
+            .widget-card .widget-icon { 
+                font-size: 2.8rem; 
+                margin-bottom: 16px; 
+                color: var(--primary-solid); 
+                transition: color 0.35s, transform 0.3s;
+            }
+            .widget-card .widget-value { 
+                font-size: 2.2rem; 
+                font-weight: 700; 
+                color: var(--primary-solid); 
+                margin-bottom: 8px; 
+                letter-spacing: -1px;
+                transition: color 0.3s;
+            }
+            .widget-card .widget-label { font-size: 1.08rem; color: var(--text-dark); opacity: 0.7; margin-bottom: 5px;}
+    
+            /* Widget especial ahorro CO2 */
+            .widget-card.ahorro { 
+                background: linear-gradient(120deg,#00b386 0%,#4a90e2 100%) !important; 
+                color:#fff; 
+                box-shadow: 0 10px 28px rgba(0,179,134,0.18);
+            }
+            .widget-card.ahorro .widget-icon, 
+            .widget-card.ahorro .widget-value,
+            .widget-card.ahorro .widget-label,
+            .widget-card.ahorro #widgetAhorroEquivalente {
+                color: #fff !important;
+                text-shadow: 0 2px 8px rgba(0,0,0,0.14);
+            }
+            .widget-card.ahorro .widget-icon { font-size: 2.8rem; transition: transform 0.3s;}
+            .widget-card.ahorro:hover .widget-icon { transform: scale(1.16) rotate(7deg);}
+            .widget-card.ahorro .widget-value { font-size:2.3rem; }
+            .widget-card.ahorro .widget-label { font-size:1.1rem; letter-spacing:0.2px; }
+            .widget-card.ahorro #widgetAhorroEquivalente { font-size:1rem; opacity:0.95; margin-top:5px; font-weight: 500;}
+            .widget-card.ahorro::after {
+                content: '';
+                position: absolute;
+                bottom: -10px; right: -10px;
+                width: 80px; height: 80px;
+                background: rgba(255,255,255,0.12);
+                border-radius: 50%;
+                z-index: 0;
+                pointer-events: none;
+            }
+            /* FIN WIDGET AHORRO */
+    
+            /* EFECTO HOVER EN LOS WIDGETS NORMALES */
+            .widget-card:not(.ahorro):hover {
+                box-shadow: 0 10px 28px rgba(0,179,134,0.16), 0 0 50px rgba(74,144,226,0.10);
+                background: linear-gradient(120deg,#00b386 0%, #4a90e2 100%);
+            }
+            .widget-card:not(.ahorro):hover .widget-icon,
+            .widget-card:not(.ahorro):hover .widget-value,
+            .widget-card:not(.ahorro):hover .widget-label {
+                color: #fff !important;
+                text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            .widget-card:not(.ahorro):hover .widget-icon {
+                transform: scale(1.18) rotate(-8deg);
+            }
+    
+            .dashboard-graphs { margin-top:40px; }
+            .dashboard-graphs > div { background:#fff; padding:30px 20px; border-radius:18px; box-shadow:0 4px 15px rgba(0,179,134,0.09); max-width:660px; margin:auto; }
+            .dashboard-graphs h4 { text-align:center; font-size:1.25rem; font-weight:600; color:var(--primary-solid); margin-bottom:18px;}
+    
+            .order-list { margin-top: 18px; }
+            .order-list .order-item { background: #f8f9fa; border-radius: 9px; margin-bottom: 16px; padding: 20px 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: center; gap: 12px; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(74,144,226,0.07); transition: box-shadow 0.3s, transform 0.2s;}
+            .order-item:hover { box-shadow: 0 8px 24px rgba(255,153,0,0.15); transform: scale(1.04);}
+            .order-item-status { font-weight: bold; padding: 5px 14px; border-radius: 99px; font-size: 0.97rem; text-align: center;}
+            .status-completado { color: #008c6b; background: rgba(0,179,134,0.11);}
+            .status-activo { color: #3a7bcd; background: rgba(74,144,226,0.11);}
+            .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+            .form-group { margin-bottom: 20px; }
+            .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
+            .form-control[disabled] { background: #e9ecef; cursor: not-allowed; }
+            .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit;}
+            .address-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 15px; flex-wrap: wrap;}
+            .address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
+            .address-card { background: #f8f9fa; border-radius: 12px; padding: 22px; border: 1px solid #e0e0e0; display: flex; flex-direction: column; box-shadow: 0 2px 9px rgba(0,179,134,0.07);}
+            .address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+            .address-card-header h4 { color: var(--primary-solid); font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+            .address-card-body { flex-grow: 1; margin-bottom: 20px;}
+            .address-card-actions { display: flex; align-items: center; gap: 15px; }
+            .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s;}
+            .modal-overlay.show { opacity: 1; visibility: visible;}
+            .modal-content { background: #fff; padding: 38px 28px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.11); width: 95%; max-width: 520px; transform: scale(0.93); transition: transform 0.3s;}
+            .modal-overlay.show .modal-content { transform: scale(1);}
+            .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; padding-bottom: 15px; margin-bottom: 25px;}
+            .modal-header h3 { margin: 0; font-weight: 700;}
+            .modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-dark);}
+            .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 18px;}
+            #address-map { height: 220px; width: 100%; border-radius: 12px; margin-top: 18px; border: 1px solid #e0e0e0;}
+            @media (max-width: 900px) { .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } .account-sidebar { position: static; } }
+            @media (max-width: 600px) { .account-section, .modal-content { padding: 16px 5px; } }
+            #notificationPopup { position: fixed; top: 20px; right: 20px; background: var(--accent-green); color: #fff; padding: 15px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 10001; opacity: 0; transform: translateX(120%); transition: all 0.4s;}
+            #notificationPopup.error { background: var(--accent-red);}
+            #notificationPopup.show { opacity: 1; transform: translateX(0);}
+        </style>
+    </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="container navbar-content">
-                <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;"></a>
-                <div class="nav-links">
-                    <ul class="nav-links-list">
-                        <li><a href="index.html" class="nav-link">Inicio</a></li>
-                        <li><a href="productos.html" class="nav-link">Productos</a></li>
-                        <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-                        <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-                        <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-                    </ul>
+<header>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul"></a>
+            <ul class="nav-links-list">
+                <li><a href="index.html" class="nav-link">Inicio</a></li>
+                <li><a href="productos.html" class="nav-link">Productos</a></li>
+                <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                <li><a href="cuenta.html" class="nav-link active">Mi Cuenta</a></li>
+            </ul>
+            <div class="navbar-right-items">
+                <div class="navbar-user-actions" id="navbarUserActions">
+                    <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
+                    <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
+                    <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
-                <div class="navbar-right-items">
-                    <div class="navbar-user-actions">
-                        <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
-                        <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
-                        <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                <div class="nav-icons">
+                    <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<main class="page-content">
+    <section class="section">
+        <div class="account-dashboard-container">
+            <h2 id="account-title"></h2>
+            <div class="account-dashboard-layout">
+                <aside class="account-sidebar">
+                    <div class="user-card" id="userCard">
+                        <div class="user-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
+                        <div class="user-name" id="userCardName">Usuario</div>
+                        <div class="user-email" id="userCardEmail"></div>
+                    </div>
+                    <nav class="account-nav">
+                        <a class="account-nav-link active" data-section="dashboard"><i class="fas fa-th-large"></i> Resumen</a>
+                        <a class="account-nav-link" data-section="pedidos"><i class="fas fa-box"></i> Mis Pedidos</a>
+                        <a class="account-nav-link" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+                        <a class="account-nav-link" data-section="direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a>
+                    </nav>
+                </aside>
+                <div class="account-content">
+                    <div id="dashboard-section" class="account-section active fade-in">
+                        <h3>Resumen de Actividad</h3>
+                        <div class="dashboard-widgets">
+                            <div class="widget-card slide-up">
+                                <div class="widget-icon"><i class="fas fa-box"></i></div>
+                                <div class="widget-value" id="widgetPedidos">0</div>
+                                <div class="widget-label">Pedidos Activos</div>
+                            </div>
+                            <div class="widget-card slide-up">
+                                <div class="widget-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="widget-value" id="widgetCompletados">0</div>
+                                <div class="widget-label">Pedidos Completados</div>
+                            </div>
+                            <div class="widget-card slide-up">
+                                <div class="widget-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="widget-value" id="widgetDirecciones">0</div>
+                                <div class="widget-label">Direcciones Guardadas</div>
+                            </div>
+                            <div class="widget-card slide-up ahorro">
+                                <div class="widget-icon ahorro-icon"><i class="fas fa-seedling"></i></div>
+                                <div class="widget-value ahorro-value" id="widgetAhorro">0 kg</div>
+                                <div class="widget-label">CO₂ Ahorrado</div>
+                                <div id="widgetAhorroEquivalente"></div>
+                            </div>
+                        </div>
+                        <div class="dashboard-graphs" style="margin-top:40px;">
+                            <div>
+                                <h4>Histórico de Ahorro Sostenible</h4>
+                                <canvas id="ahorroChart" height="180"></canvas>
+                            </div>
+                        </div>
+                        <p style="text-align:center;color:#888;margin-top:22px;">
+                            ¡Gracias por hacer tu mudanza sostenible! Este es tu impacto ambiental con GreenHaul.
+                        </p>
+                    </div>
+                    <div id="pedidos-section" class="account-section">
+                        <h3>Historial de Pedidos</h3>
+                        <div class="order-list" id="order-history-container"></div>
+                    </div>
+                    <div id="perfil-section" class="account-section">
+                        <h3>Configuración de Perfil</h3>
+                        <form id="profileForm" autocomplete="off">
+                            <div class="form-grid">
+                                <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control" disabled></div>
+                                <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control" disabled></div>
+                            </div>
+                            <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
+                            <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control"></div>
+                            <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </form>
+                    </div>
+                    <div id="direcciones-section" class="account-section">
+                        <div class="address-header">
+                            <h3>Mis Direcciones</h3>
+                            <button class="btn btn-primary" id="addAddressBtn">Agregar Nueva Dirección</button>
+                        </div>
+                        <div class="address-list" id="address-list-container"></div>
                     </div>
                 </div>
             </div>
-        </nav>
-    </header>
-
-    <main class="page-content">
-        <section class="section">
-            <div class="container">
-                <h2 id="account-title"></h2>
-                <div class="account-layout">
-                    <aside class="account-sidebar">
-                        <nav class="account-nav">
-                            <a class="account-nav-link active" data-section="dashboard"><i class="fas fa-th-large"></i> Resumen</a>
-                            <a class="account-nav-link" data-section="pedidos"><i class="fas fa-box"></i> Mis Pedidos</a>
-                            <a class="account-nav-link" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
-                            <a class="account-nav-link" data-section="direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a>
-                        </nav>
-                    </aside>
-                    <div class="account-content">
-                        <div id="dashboard-section" class="account-section active">
-                            <h3>Resumen de Actividad</h3>
-                             <p>Aquí verás un resumen rápido de tu cuenta. ¡Funcionalidad próxima!</p>
-                        </div>
-                        
-                        <div id="pedidos-section" class="account-section">
-                            <h3>Historial de Pedidos</h3>
-                            <p style="margin-bottom: 15px; color: var(--color-text);">Aquí verás el estado de tus alquileres pasados y actuales. <strong>¡Funcionalidad próxima!</strong></p>
-                            <div class="order-list" id="order-history-container">
-                                <div class="order-item">
-                                    <div><strong>ID Pedido:</strong><br>#GH-1025</div>
-                                    <div><strong>Fecha:</strong><br>14 Jul, 2025</div>
-                                    <div><strong>Total:</strong><br>$1,500.00 MXN</div>
-                                    <div><strong>Estado:</strong><br><span class="order-item-status status-activo">Activo</span></div>
-                                </div>
-                                <div class="order-item">
-                                    <div><strong>ID Pedido:</strong><br>#GH-1024</div>
-                                    <div><strong>Fecha:</strong><br>05 Jul, 2025</div>
-                                    <div><strong>Total:</strong><br>$1,250.00 MXN</div>
-                                    <div><strong>Estado:</strong><br><span class="order-item-status status-completado">Completado</span></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="perfil-section" class="account-section">
-                            <h3>Configuración de Perfil</h3>
-                            <form id="profileForm">
-                                <div class="form-grid">
-                                    <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control" disabled></div>
-                                    <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control" disabled></div>
-                                </div>
-                                <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
-                                <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control"></div>
-                                <hr style="border:0; border-top:1px solid #eee; margin:30px 0;">
-                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                            </form>
-                        </div>
-
-                        <div id="direcciones-section" class="account-section">
-                            <div class="address-header">
-                                <h3>Mis Direcciones</h3>
-                                <button class="btn btn-primary" id="addAddressBtn">Agregar Nueva Dirección</button>
-                            </div>
-                            <div class="address-list" id="address-list-container"></div>
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </section>
+</main>
+<!-- MODAL DIRECCIÓN -->
+<div class="modal-overlay" id="addressModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Agregar Nueva Dirección</h3>
+            <button class="modal-close" id="modalCloseBtn">&times;</button>
+        </div>
+        <form id="addressForm" autocomplete="off">
+            <input type="hidden" id="addressId">
+            <div class="form-group">
+                <label for="address-street">Calle y Número</label>
+                <input type="text" id="address-street" class="form-control" placeholder="Ej. Av. Insurgentes Sur 123" required>
             </div>
-        </section>
-    </main>
-
-    <div class="modal-overlay" id="addressModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Agregar Nueva Dirección</h3>
-                <button class="modal-close" id="modalCloseBtn">&times;</button>
-            </div>
-            <form id="addressForm">
-                <input type="hidden" id="addressId">
+            <div class="form-grid">
                 <div class="form-group">
-                    <label for="address-street">Calle y Número</label>
-                    <input type="text" id="address-street" class="form-control" placeholder="Ej. Av. Insurgentes Sur 123" required>
+                    <label for="address-city">Ciudad</label>
+                    <input type="text" id="address-city" class="form-control" placeholder="Ej. Ciudad de México" required>
                 </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="address-city">Ciudad</label>
-                        <input type="text" id="address-city" class="form-control" placeholder="Ej. Ciudad de México" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="address-state">Estado</label>
-                        <input type="text" id="address-state" class="form-control" placeholder="Ej. CDMX">
-                    </div>
+                <div class="form-group">
+                    <label for="address-state">Estado</label>
+                    <input type="text" id="address-state" class="form-control" placeholder="Ej. CDMX">
                 </div>
-                 <div class="form-group">
-                    <label for="address-postal-code">Código Postal</label>
-                    <input type="text" id="address-postal-code" class="form-control">
-                </div>
-                <div id="address-map"></div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-outline" id="modalCancelBtn">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Dirección</button>
-                </div>
-            </form>
+            </div>
+             <div class="form-group">
+                <label for="address-postal-code">Código Postal</label>
+                <input type="text" id="address-postal-code" class="form-control">
+            </div>
+            <div id="address-map"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="modalCancelBtn">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Dirección</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="notificationPopup"></div>
+<footer class="footer">
+    <div class="container footer-content">
+        <div class="footer-info">
+            <h3>greenhauL</h3>
+            <p>Mudanzas sostenibles, sin complicaciones.</p>
+            <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
+            <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
+        </div>
+        <div class="footer-links">
+            <h3>Enlaces Rápidos</h3>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="servicios.html">Servicios</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="cuenta.html">Mi Cuenta</a></li>
+            </ul>
+        </div>
+        <div class="footer-social-links">
+            <h3>Síguenos</h3>
+            <div class="social-icons-wrapper">
+                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
         </div>
     </div>
-    
-    <div id="notificationPopup"></div>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 GreenHaul. Todos los derechos reservados.</p>
+    <div class="footer-bottom">
+        &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+    </div>
+</footer>
+<!-- Carrito de compras y notificaciones -->
+<div class="cart-modal-overlay" id="cartModalOverlay">
+    <div class="cart-modal">
+        <div class="cart-modal-header">
+            <h2>Tu Carrito</h2>
+            <button class="close-modal-btn" id="closeCartModalBtn" title="Cerrar">&times;</button>
         </div>
-    </footer>
+        <div class="cart-modal-body" id="cartItemsContainer"></div>
+        <div class="cart-modal-footer">
+            <div class="cart-summary">
+                <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
+                <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
+                <h3>Total: <span id="cartTotal">$0.00</span></h3>
+            </div>
+            <div class="cart-footer-buttons">
+                <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
+                <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="cart-notification" id="cartNotification">
+    <div class="notification-content">
+        <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
+        <p id="notificationText"></p>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="assets/js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+    const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
+    if (!loggedInUser || !loggedInUser.id) { window.location.href = 'login.html'; return; }
+    let userData = {};
+    let map, marker;
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Variables principales ---
-            const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
-            const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
-            if (!loggedInUser || !loggedInUser.id) { window.location.href = 'login.html'; return; }
-            let userData = {};
-            let map, marker;
+    document.querySelectorAll('.widget-card').forEach((el, i) => {
+        el.style.animationDelay = (i * 0.15) + 's';
+    });
 
-            // --- Elementos de dirección ---
-            const addressModal = document.getElementById('addressModal');
-            const addAddressBtn = document.getElementById('addAddressBtn');
-            const modalCloseBtn = document.getElementById('modalCloseBtn');
-            const modalCancelBtn = document.getElementById('modalCancelBtn');
-            const addressForm = document.getElementById('addressForm');
-            const addressListContainer = document.getElementById('address-list-container');
-            const modalTitle = document.getElementById('modalTitle');
-            const addressIdInput = document.getElementById('addressId');
-            const streetInput = document.getElementById('address-street');
-            const cityInput = document.getElementById('address-city');
-            const stateInput = document.getElementById('address-state');
-            const postalCodeInput = document.getElementById('address-postal-code');
+    function updateSidebar(user) {
+        document.getElementById('userCardName').textContent = user.name ?? 'Usuario';
+        document.getElementById('userCardEmail').textContent = user.email ?? '';
+        document.getElementById('userName').textContent = user.name ? user.name.split(' ')[0] : 'Usuario';
+        document.getElementById('account-title').textContent = `Panel de Control de ${user.name || 'Usuario'}`;
+    }
 
-            // --- Notificaciones ---
-            function showNotification(message, isError = false) {
-                const popup = document.getElementById('notificationPopup');
-                if(!popup) return;
-                popup.textContent = message;
-                popup.className = 'show';
-                if (isError) popup.classList.add('error');
-                setTimeout(() => popup.className = '', 3000);
-            }
-
-            // --- MAPA ---
-            function initMap(lat=19.4326, lng=-99.1332) {
-                if (map) { map.remove(); map = null; }
-                map = L.map('address-map').setView([lat, lng], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-                marker.on('dragend', function(event) {
-                    const pos = marker.getLatLng();
-                    reverseGeocode(pos.lat, pos.lng);
-                });
-                setTimeout(() => { if(map) map.invalidateSize(); }, 200);
-            }
-
-            // --- Reverse geocoding: actualiza los campos al mover el pin ---
-            async function reverseGeocode(lat, lng) {
-                try {
-                    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    if (data && data.address) {
-                        const addr = data.address;
-                        streetInput.value = `${addr.road || ''} ${addr.house_number || ''}`.trim();
-                        cityInput.value = addr.city || addr.town || addr.village || '';
-                        stateInput.value = addr.state || '';
-                        postalCodeInput.value = addr.postcode || '';
-                    }
-                } catch (error) {
-                    showNotification('No se pudo obtener la dirección desde el mapa.', true);
+    async function updateDashboardWidgetsFromBackend() {
+        try {
+            const res = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/dashboard`);
+            const stats = await res.json();
+            document.getElementById('widgetPedidos').textContent = stats.pedidos_activos ?? 0;
+            document.getElementById('widgetCompletados').textContent = stats.pedidos_completados ?? 0;
+            document.getElementById('widgetDirecciones').textContent = stats.direcciones ?? 0;
+            document.getElementById('widgetAhorro').textContent = stats.ahorro_kg_co2 + ' kg';
+            document.getElementById('widgetAhorroEquivalente').textContent = 
+                `Equivale a ${stats.arboles_equivalentes} árboles 🌳 o ${stats.km_equivalentes} km en auto 🚗`;
+            renderAhorroChart(stats.ahorro_historico);
+        } catch (e) {
+            document.getElementById('widgetAhorro').textContent = '0 kg';
+            document.getElementById('widgetAhorroEquivalente').textContent = '';
+        }
+    }
+    function renderAhorroChart(data) {
+        if (!data || !Array.isArray(data)) data = [];
+        const ctx = document.getElementById('ahorroChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(x=>x.fecha),
+                datasets: [{
+                    label: 'CO₂ Ahorrado (kg)',
+                    data: data.map(x=>x.ahorro),
+                    fill: true,
+                    backgroundColor: 'rgba(74,144,226,0.07)',
+                    borderColor: '#00b386',
+                    tension: 0.3,
+                    pointBackgroundColor: '#4a90e2',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: "#4a90e2" }},
+                    x: { ticks: { color: "#4a90e2" }}
                 }
             }
-
-            // --- Geocoding: mueve el pin cuando se escribe la dirección ---
-            async function geocodeAddress() {
-                const address = `${streetInput.value}, ${cityInput.value}, ${stateInput.value}`;
-                if (address.length < 7) return;
-                try {
-                    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
-                    const response = await fetch(url);
-                    const results = await response.json();
-                    if (results && results.length > 0) {
-                        const { lat, lon } = results[0];
-                        const newPosition = L.latLng(lat, lon);
-                        marker.setLatLng(newPosition);
-                        map.setView(newPosition, 16);
-                    }
-                } catch (error) {
-                    showNotification('No se pudo ubicar la dirección en el mapa.', true);
-                }
+        });
+    }
+    const navLinks = document.querySelectorAll('.account-nav-link');
+    const sections = document.querySelectorAll('.account-section');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionId = link.dataset.section;
+            navLinks.forEach(l => l.classList.remove('active'));
+            sections.forEach(s => s.classList.remove('active', 'fade-in'));
+            link.classList.add('active');
+            const targetSection = document.getElementById(`${sectionId}-section`);
+            if(targetSection) {
+                targetSection.classList.add('active', 'fade-in');
             }
+            if (sectionId === 'dashboard') updateDashboardWidgetsFromBackend();
+            if (sectionId === 'pedidos') loadOrders();
+            if (sectionId === 'perfil') populateProfileForm();
+            if (sectionId === 'direcciones') loadAddresses();
+        });
+    });
 
-            // --- Dispara geocoding en los campos relevantes ---
-            [streetInput, cityInput, stateInput].forEach(input => {
-                input.addEventListener('blur', () => {
-                    geocodeAddress();
-                });
+    async function loadOrders() {
+        const container = document.getElementById('order-history-container');
+        container.innerHTML = '<div class="order-item"><span>Cargando pedidos...</span></div>';
+        try {
+            const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/orders`);
+            const orders = await response.json();
+            container.innerHTML = '';
+            if (!orders || !orders.length) {
+                container.innerHTML = '<p>No tienes pedidos aún.</p>';
+                updateDashboardWidgetsFromBackend();
+                return;
+            }
+            let activos = 0, completados = 0;
+            orders.forEach(order => {
+                const estado = order.status === 'completado' ? 'Completado' : 'Activo';
+                if(order.status === 'completado') completados++; else activos++;
+                container.innerHTML += `
+                    <div class="order-item slide-up">
+                        <div><strong>ID Pedido:</strong><br>${order.id}</div>
+                        <div><strong>Fecha:</strong><br>${order.date}</div>
+                        <div><strong>Total:</strong><br>$${order.total} MXN</div>
+                        <div><strong>Estado:</strong><br>
+                            <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span>
+                        </div>
+                    </div>`;
             });
+            updateDashboardWidgetsFromBackend();
+        } catch (error) {
+            container.innerHTML = '<p>Error al cargar pedidos.</p>';
+        }
+    }
 
-            // --- Modal ---
-            const openModal = (lat=19.4326, lng=-99.1332) => {
-                addressModal.classList.add('show');
-                setTimeout(() => { initMap(lat, lng); }, 50);
-            };
-            const closeModal = () => {
-                addressModal.classList.remove('show');
-                addressForm.reset();
-                addressIdInput.value = '';
-                if(map) { map.remove(); map = null; }
-            };
+    const profileForm = document.getElementById('profileForm');
+    const profileNameInput = document.getElementById('profile-name');
+    const profileSurnameInput = document.getElementById('profile-lastname');
+    const profileEmailInput = document.getElementById('profile-email');
+    const profileWhatsappInput = document.getElementById('profile-whatsapp');
+    function populateProfileForm() {
+        if (!userData) return;
+        profileNameInput.value = userData.name || '';
+        profileSurnameInput.value = userData.surname || '';
+        profileEmailInput.value = userData.email || '';
+        profileWhatsappInput.value = userData.whatsapp || '';
+    }
+    profileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = profileForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true; 
+        submitBtn.textContent = 'Guardando...';
+        const updatedData = {
+            email: profileEmailInput.value,
+            whatsapp: profileWhatsappInput.value,
+        };
+        try {
+            const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Error al actualizar el perfil.');
+            userData = result.user;
+            localStorage.setItem('greenhaulUser', JSON.stringify(userData));
+            showNotification('Perfil actualizado con éxito.');
+            updateSidebar(userData);
+        } catch (error) {
+            showNotification(error.message, true);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Guardar Cambios';
+        }
+    });
 
-            if(addAddressBtn) addAddressBtn.addEventListener('click', () => {
-                modalTitle.textContent = 'Agregar Nueva Dirección';
+    const addressModal = document.getElementById('addressModal');
+    const addAddressBtn = document.getElementById('addAddressBtn');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const addressForm = document.getElementById('addressForm');
+    const addressListContainer = document.getElementById('address-list-container');
+    const modalTitle = document.getElementById('modalTitle');
+    const addressIdInput = document.getElementById('addressId');
+    const streetInput = document.getElementById('address-street');
+    const cityInput = document.getElementById('address-city');
+    const stateInput = document.getElementById('address-state');
+    const postalCodeInput = document.getElementById('address-postal-code');
+    function showNotification(message, isError = false) {
+        const popup = document.getElementById('notificationPopup');
+        if(!popup) return;
+        popup.textContent = message;
+        popup.className = 'show' + (isError ? ' error' : '');
+        setTimeout(() => popup.className = '', 3000);
+    }
+    function initMap(lat=19.4326, lng=-99.1332) {
+        if (map) { map.remove(); map = null; }
+        map = L.map('address-map').setView([lat, lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+        marker.on('dragend', function(event) {
+            const pos = marker.getLatLng();
+            reverseGeocode(pos.lat, pos.lng);
+        });
+        setTimeout(() => { if(map) map.invalidateSize(); }, 200);
+    }
+    async function reverseGeocode(lat, lng) {
+        try {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data && data.address) {
+                const addr = data.address;
+                streetInput.value = `${addr.road || ''} ${addr.house_number || ''}`.trim();
+                cityInput.value = addr.city || addr.town || addr.village || '';
+                stateInput.value = addr.state || '';
+                postalCodeInput.value = addr.postcode || '';
+            }
+        } catch (error) {
+            showNotification('No se pudo obtener la dirección desde el mapa.', true);
+        }
+    }
+    async function geocodeAddress() {
+        const address = `${streetInput.value}, ${cityInput.value}, ${stateInput.value}`;
+        if (address.length < 7) return;
+        try {
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+            const response = await fetch(url);
+            const results = await response.json();
+            if (results && results.length > 0) {
+                const { lat, lon } = results[0];
+                const newPosition = L.latLng(lat, lon);
+                marker.setLatLng(newPosition);
+                map.setView(newPosition, 16);
+            }
+        } catch (error) {
+            showNotification('No se pudo ubicar la dirección en el mapa.', true);
+        }
+    }
+    [streetInput, cityInput, stateInput].forEach(input => {
+        input.addEventListener('blur', () => { geocodeAddress(); });
+    });
+    function openModal(lat=19.4326, lng=-99.1332) {
+        addressModal.classList.add('show');
+        setTimeout(() => { initMap(lat, lng); }, 50);
+    }
+    function closeModal() {
+        addressModal.classList.remove('show');
+        addressForm.reset();
+        addressIdInput.value = '';
+        if(map) { map.remove(); map = null; }
+    }
+    if(addAddressBtn) addAddressBtn.addEventListener('click', () => {
+        modalTitle.textContent = 'Agregar Nueva Dirección';
+        openModal();
+    });
+    if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    if(modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
+    if(addressForm) addressForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const addressId = addressIdInput.value;
+        const isUpdating = !!addressId;
+        const addressData = {
+            street: streetInput.value,
+            city: cityInput.value,
+            state: stateInput.value,
+            postal_code: postalCodeInput.value,
+        };
+        const url = isUpdating ? `${backendUrl}/api/addresses/${addressId}` : `${backendUrl}/api/users/${loggedInUser.id}/addresses`;
+        const method = isUpdating ? 'PUT' : 'POST';
+        try {
+            const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addressData) });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Error al guardar la dirección.');
+            showNotification(result.message || 'Dirección guardada correctamente.');
+            closeModal();
+            await loadAddresses();
+        } catch (error) {
+            showNotification(error.message, true);
+        }
+    });
+    async function loadAddresses() {
+        try {
+            const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/addresses`);
+            if (!response.ok) throw new Error('No se pudieron cargar las direcciones.');
+            const addresses = await response.json();
+            addressListContainer.innerHTML = '';
+            if (addresses.length === 0) {
+                addressListContainer.innerHTML = '<p>Aún no tienes direcciones guardadas. ¡Agrega una!</p>';
+                updateDashboardWidgetsFromBackend();
+                return;
+            }
+            addresses.forEach(addr => {
+                const card = document.createElement('div');
+                card.className = 'address-card slide-up';
+                card.innerHTML = `
+                    <div class="address-card-header"><h4><i class="fas fa-map-marker-alt"></i> ${addr.city}</h4></div>
+                    <div class="address-card-body"><p>${addr.street}, ${addr.state || ''}</p><p>${addr.postal_code || ''}</p></div>
+                    <div class="address-card-actions">
+                        <button class="btn btn-outline edit-btn" data-id="${addr.id}">Editar</button>
+                        <button class="btn-tertiary delete-btn" data-id="${addr.id}" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </div>`;
+                addressListContainer.appendChild(card);
+            });
+            updateDashboardWidgetsFromBackend();
+        } catch (error) {
+            showNotification(error.message, true);
+        }
+    }
+    if(addressListContainer) addressListContainer.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('.edit-btn');
+        const deleteBtn = e.target.closest('.delete-btn');
+        if (editBtn) {
+            const id = editBtn.dataset.id;
+            try {
+                const response = await fetch(`${backendUrl}/api/addresses/${id}`);
+                if (!response.ok) throw new Error('No se pudo cargar la dirección para editar.');
+                const addressToEdit = await response.json();
+                modalTitle.textContent = 'Editar Dirección';
+                addressIdInput.value = addressToEdit.id;
+                streetInput.value = addressToEdit.street;
+                cityInput.value = addressToEdit.city;
+                stateInput.value = addressToEdit.state || '';
+                postalCodeInput.value = addressToEdit.postal_code || '';
+                geocodeAddress();
                 openModal();
-            });
-            if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
-            if(modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
-
-            // --- Guardar dirección ---
-            if(addressForm) addressForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const addressId = addressIdInput.value;
-                const isUpdating = !!addressId;
-                const addressData = {
-                    street: streetInput.value,
-                    city: cityInput.value,
-                    state: stateInput.value,
-                    postal_code: postalCodeInput.value,
-                };
-                const url = isUpdating ? `${backendUrl}/api/addresses/${addressId}` : `${backendUrl}/api/users/${userData.id}/addresses`;
-                const method = isUpdating ? 'PUT' : 'POST';
+            } catch (error) {
+                showNotification(error.message, true);
+            }
+        }
+        if (deleteBtn) {
+            const id = deleteBtn.dataset.id;
+            if (confirm('¿Estás seguro de que quieres eliminar esta dirección? Esta acción no se puede deshacer.')) {
                 try {
-                    const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addressData) });
+                    const response = await fetch(`${backendUrl}/api/addresses/${id}`, { method: 'DELETE' });
                     const result = await response.json();
-                    if (!response.ok) throw new Error(result.message || 'Error al guardar la dirección.');
-                    showNotification(result.message || 'Dirección guardada correctamente.');
-                    closeModal();
+                    if (!response.ok) throw new Error(result.message || 'Error al eliminar la dirección.');
+                    showNotification(result.message || 'Dirección eliminada con éxito.');
                     await loadAddresses();
                 } catch (error) {
                     showNotification(error.message, true);
                 }
-            });
-
-            // --- Lista de direcciones ---
-            async function loadAddresses() {
-                try {
-                    const response = await fetch(`${backendUrl}/api/users/${userData.id}/addresses`);
-                    if (!response.ok) throw new Error('No se pudieron cargar las direcciones.');
-                    const addresses = await response.json();
-                    addressListContainer.innerHTML = '';
-                    if (addresses.length === 0) {
-                        addressListContainer.innerHTML = '<p>Aún no tienes direcciones guardadas. ¡Agrega una!</p>';
-                        return;
-                    }
-                    addresses.forEach(addr => {
-                        const card = document.createElement('div');
-                        card.className = 'address-card';
-                        card.innerHTML = `
-                            <div class="address-card-header"><h4><i class="fas fa-map-marker-alt"></i> ${addr.city}</h4></div>
-                            <div class="address-card-body"><p>${addr.street}, ${addr.state || ''}</p><p>${addr.postal_code || ''}</p></div>
-                            <div class="address-card-actions">
-                                <button class="btn btn-outline edit-btn" data-id="${addr.id}">Editar</button>
-                                <button class="btn-tertiary delete-btn" data-id="${addr.id}" title="Eliminar"><i class="fas fa-trash"></i></button>
-                            </div>`;
-                        addressListContainer.appendChild(card);
-                    });
-                } catch (error) {
-                    showNotification(error.message, true);
-                }
             }
+        }
+    });
 
-            // --- Editar y eliminar ---
-            if(addressListContainer) addressListContainer.addEventListener('click', async (e) => {
-                const editBtn = e.target.closest('.edit-btn');
-                const deleteBtn = e.target.closest('.delete-btn');
-                if (editBtn) {
-                    const id = editBtn.dataset.id;
-                    try {
-                        const response = await fetch(`${backendUrl}/api/addresses/${id}`);
-                        if (!response.ok) throw new Error('No se pudo cargar la dirección para editar.');
-                        const addressToEdit = await response.json();
-                        modalTitle.textContent = 'Editar Dirección';
-                        addressIdInput.value = addressToEdit.id;
-                        streetInput.value = addressToEdit.street;
-                        cityInput.value = addressToEdit.city;
-                        stateInput.value = addressToEdit.state || '';
-                        postalCodeInput.value = addressToEdit.postal_code || '';
-                        // Geocoding para precargar la ubicación en el mapa
-                        geocodeAddress();
-                        openModal();
-                    } catch (error) {
-                        showNotification(error.message, true);
-                    }
-                }
-                if (deleteBtn) {
-                    const id = deleteBtn.dataset.id;
-                    if (confirm('¿Estás seguro de que quieres eliminar esta dirección? Esta acción no se puede deshacer.')) {
-                        try {
-                            const response = await fetch(`${backendUrl}/api/addresses/${id}`, { method: 'DELETE' });
-                            const result = await response.json();
-                            if (!response.ok) throw new Error(result.message || 'Error al eliminar la dirección.');
-                            showNotification(result.message || 'Dirección eliminada con éxito.');
-                            await loadAddresses();
-                        } catch (error) {
-                            showNotification(error.message, true);
-                        }
-                    }
-                }
-            });
-
-            // --- Perfil y navegación igual que antes ---
-            const userNameSpan = document.getElementById('userName');
-            const accountTitle = document.getElementById('account-title');
-            function populateUIHeaders() {
-                if(!userData || !userData.name) return;
-                const fullName = `${userData.name || ''} ${userData.surname || ''}`.trim();
-                userNameSpan.textContent = userData.name ? userData.name.split(' ')[0] : 'Usuario';
-                accountTitle.textContent = `Panel de Control de ${fullName || 'Usuario'}`;
-            }
-            const profileForm = document.getElementById('profileForm');
-            const profileNameInput = document.getElementById('profile-name');
-            const profileSurnameInput = document.getElementById('profile-lastname');
-            const profileEmailInput = document.getElementById('profile-email');
-            const profileWhatsappInput = document.getElementById('profile-whatsapp');
-            function populateProfileForm() {
-                if (!userData) return;
-                profileNameInput.value = userData.name || '';
-                profileSurnameInput.value = userData.surname || '';
-                profileEmailInput.value = userData.email || '';
-                profileWhatsappInput.value = userData.whatsapp || '';
-            }
-            profileForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const submitBtn = profileForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = true; 
-                submitBtn.textContent = 'Guardando...';
-                const updatedData = {
-                    email: profileEmailInput.value,
-                    whatsapp: profileWhatsappInput.value,
-                };
-                try {
-                    const response = await fetch(`${backendUrl}/api/users/${userData.id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(updatedData)
-                    });
-                    const result = await response.json();
-                    if (!response.ok) throw new Error(result.message || 'Error al actualizar el perfil.');
-                    userData = result.user;
-                    localStorage.setItem('greenhaulUser', JSON.stringify(userData));
-                    showNotification('Perfil actualizado con éxito.');
-                    populateUIHeaders();
-                } catch (error) {
-                    showNotification(error.message, true);
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Guardar Cambios';
-                }
-            });
-
-            // --- Tabs ---
-            const navLinks = document.querySelectorAll('.account-nav-link');
-            const sections = document.querySelectorAll('.account-section');
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const sectionId = link.dataset.section;
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    sections.forEach(s => s.classList.remove('active'));
-                    link.classList.add('active');
-                    const targetSection = document.getElementById(`${sectionId}-section`);
-                    if(targetSection) targetSection.classList.add('active');
-                    if (sectionId === 'direcciones') loadAddresses();
-                    if (sectionId === 'perfil') populateProfileForm();
-                });
-            });
-
-            // --- Cerrar sesión ---
-            if(document.getElementById('logoutBtn')) {
-                document.getElementById('logoutBtn').addEventListener('click', () => {
-                    localStorage.removeItem('greenhaulUser');
-                    window.location.href = 'index.html';
-                });
-            }
-
-            // --- Inicialización ---
-            async function fetchUserData(userId) {
-                try {
-                    const response = await fetch(`${backendUrl}/api/users/${userId}`);
-                    if (!response.ok) throw new Error('Usuario no encontrado en el servidor.');
-                    const result = await response.json();
-                    userData = result.user;
-                    localStorage.setItem('greenhaulUser', JSON.stringify(userData));
-                    populateUIHeaders();
-                    populateProfileForm();
-                } catch (error) {
-                    showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
-                }
-            }
-            fetchUserData(loggedInUser.id);
+    if(document.getElementById('logoutBtn')) {
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('greenhaulUser');
+            window.location.href = 'index.html';
         });
-    </script>
+    }
+
+    async function fetchUserData(userId) {
+        try {
+            const response = await fetch(`${backendUrl}/api/users/${userId}`);
+            if (!response.ok) throw new Error('Usuario no encontrado en el servidor.');
+            const result = await response.json();
+            userData = result.user;
+            localStorage.setItem('greenhaulUser', JSON.stringify(userData));
+            updateSidebar(userData);
+            populateProfileForm();
+            loadOrders();
+            loadAddresses();
+            updateDashboardWidgetsFromBackend();
+        } catch (error) {
+            showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
+        }
+    }
+    fetchUserData(loggedInUser.id);
+
+    sections.forEach(section => section.classList.add('fade-in'));
+});
+</script>
 </body>
 </html>
