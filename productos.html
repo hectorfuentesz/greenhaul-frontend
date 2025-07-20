@@ -54,122 +54,127 @@
                     <h2>Nuestros <span class="highlight-sostenible">Productos</span></h2>
                     <p>Alquila nuestras cajas reutilizables y accesorios para una mudanza eficiente y ecológica.</p>
                 </div>
-                <div class="rental-dates-container">
+                <div class="rental-dates-container" style="margin-bottom: 2.5rem;">
                     <div class="section-subtitle">
                         <h3>1. Elige tu período de renta</h3>
-                        <p>Selecciona las fechas en que necesitas nuestros productos.</p>
+                        <p>Selecciona las fechas en que necesitas nuestros productos.<br>
+                        <span style="font-size:0.97em;color:var(--accent-purple);">Las fechas se guardan automáticamente.</span></p>
                     </div>
-                    <div class="date-fields">
+                    <div class="date-fields" style="display: flex; gap: 2rem; flex-wrap: wrap;">
                         <div class="form-group">
                             <label for="fecha-entrega"><i class="fas fa-calendar-alt"></i> Fecha de Entrega</label>
-                            <input type="date" id="fecha-entrega" name="fecha-entrega" class="form-control" placeholder="Selecciona una fecha...">
+                            <input type="date" id="fecha-entrega" name="fecha-entrega" class="form-control" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label for="fecha-recoleccion"><i class="fas fa-calendar-check"></i> Fecha de Recolección</label>
-                            <input type="date" id="fecha-recoleccion" name="fecha-recoleccion" class="form-control" placeholder="Selecciona una fecha...">
+                            <input type="date" id="fecha-recoleccion" name="fecha-recoleccion" class="form-control" autocomplete="off">
+                        </div>
+                    </div>
+                    <div id="dates-warning" style="color:var(--accent-red);margin-top:8px;display:none;"></div>
+                </div>
+                <div class="section-subtitle" style="margin-top:2rem;">
+                    <h3>2. Selecciona tus productos</h3>
+                </div>
+                <div class="product-grid" style="gap:2rem;">
+                    <!-- KIT PEQUEÑO -->
+                    <div class="product-card" data-product-id="kit-pequeno" data-product-price="550.00">
+                        <div class="badge best-value">Mejor Valor</div>
+                        <div class="product-image" style="font-size:2.5rem;">🏡</div>
+                        <div class="product-info">
+                            <h3>Kit Mudanza Pequeña</h3>
+                            <p class="description">Ideal para estudios o apartamentos de 1 habitación (aprox. 25 cajas).</p>
+                            <ul class="product-features">
+                                <li>15 cajas medianas y 10 grandes</li>
+                                <li>Cinta, marcadores y diablito</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-kit-pequeno">Cantidad:</label>
+                                <select id="qty-kit-pequeno" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <p class="price">$550.00 MXN <span>/semana</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- KIT MEDIANO -->
+                    <div class="product-card" data-product-id="kit-mediano" data-product-price="980.00">
+                        <div class="badge popular">Más Popular</div>
+                        <div class="product-image" style="font-size:2.5rem;">🏘️</div>
+                        <div class="product-info">
+                            <h3>Kit Mudanza Mediana</h3>
+                            <p class="description">Perfecto para casas o departamentos de 2 a 3 recámaras (aprox. 50 cajas).</p>
+                            <ul class="product-features">
+                                <li>30 cajas medianas y 20 grandes</li>
+                                <li>Cinta, marcadores y diablito reforzado</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-kit-mediano">Cantidad:</label>
+                                <select id="qty-kit-mediano" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+                            </div>
+                            <p class="price">$980.00 MXN <span>/semana</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- KIT GRANDE -->
+                    <div class="product-card" data-product-id="kit-grande" data-product-price="1600.00">
+                        <div class="badge"></div>
+                        <div class="product-image" style="font-size:2.5rem;">🏰</div>
+                        <div class="product-info">
+                            <h3>Kit Mudanza Grande</h3>
+                            <p class="description">Para casas grandes de 4+ recámaras o mudanzas completas (aprox. 80 cajas).</p>
+                            <ul class="product-features">
+                                <li>50 cajas medianas y 30 grandes</li>
+                                <li>Kit de embalaje y 2 diablitos</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-kit-grande">Cantidad:</label>
+                                <select id="qty-kit-grande" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
+                            <p class="price">$1,600.00 MXN <span>/semana</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- ACCESORIOS -->
+                    <div class="product-card" data-product-id="accesorios-pro" data-product-price="300.00">
+                        <div class="badge nuevo">Accesorios</div>
+                        <div class="product-image" style="font-size:2.5rem;">✨</div>
+                        <div class="product-info">
+                            <h3>Kit Protector de Frágiles</h3>
+                            <p class="description">Protege vajilla, vasos y objetos delicados con separadores ecológicos.</p>
+                            <ul class="product-features">
+                                <li>Separadores para 24 vasos</li>
+                                <li>Separadores para 12 platos</li>
+                                <li>Papel de embalaje ecológico</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-accesorios-pro">Cantidad:</label>
+                                <select id="qty-accesorios-pro" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </div>
+                            <p class="price">$300.00 MXN <span>/semana</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
                         </div>
                     </div>
                 </div>
-                <div class="product-grid">
-    <div class="product-card" data-product-id="kit-pequeno" data-product-price="550.00">
-        <div class="badge best-value">Mejor Valor</div>
-        <div class="product-image">🏡</div>
-        <div class="product-info">
-            <h3>Kit Mudanza Pequeña</h3>
-            <p class="description">Ideal para estudios o apartamentos de 1 habitación (aprox. 25 cajas).</p>
-            <ul class="product-features">
-                <li>15 cajas medianas y 10 grandes</li>
-                <li>Cinta, marcadores y diablito</li>
-            </ul>
-            <div class="quantity-control">
-                <label for="qty-kit-pequeno">Cantidad:</label>
-                <select id="qty-kit-pequeno" class="product-qty form-control">
-                    <option value="" disabled selected>Selecciona</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-            </div>
-            <p class="price">$550.00 MXN <span>/semana</span></p>
-            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
-        </div>
-    </div>
-
-    <div class="product-card" data-product-id="kit-mediano" data-product-price="980.00">
-        <div class="badge popular">Más Popular</div>
-        <div class="product-image">🏘️</div>
-        <div class="product-info">
-            <h3>Kit Mudanza Mediana</h3>
-            <p class="description">Perfecto para casas o departamentos de 2 a 3 recámaras (aprox. 50 cajas).</p>
-            <ul class="product-features">
-                <li>30 cajas medianas y 20 grandes</li>
-                <li>Cinta, marcadores y diablito reforzado</li>
-            </ul>
-            <div class="quantity-control">
-                <label for="qty-kit-mediano">Cantidad:</label>
-                <select id="qty-kit-mediano" class="product-qty form-control">
-                    <option value="" disabled selected>Selecciona</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                </select>
-            </div>
-            <p class="price">$980.00 MXN <span>/semana</span></p>
-            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
-        </div>
-    </div>
-
-    <div class="product-card" data-product-id="kit-grande" data-product-price="1600.00">
-        <div class="badge"></div>
-        <div class="product-image">🏰</div>
-        <div class="product-info">
-            <h3>Kit Mudanza Grande</h3>
-            <p class="description">Para casas grandes de 4+ recámaras o mudanzas completas (aprox. 80 cajas).</p>
-            <ul class="product-features">
-                <li>50 cajas medianas y 30 grandes</li>
-                <li>Kit de embalaje y 2 diablitos</li>
-            </ul>
-            <div class="quantity-control">
-                <label for="qty-kit-grande">Cantidad:</label>
-                <select id="qty-kit-grande" class="product-qty form-control">
-                    <option value="" disabled selected>Selecciona</option>
-                    <option value="1">1</option>
-                </select>
-            </div>
-            <p class="price">$1,600.00 MXN <span>/semana</span></p>
-            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
-        </div>
-    </div>
-    
-    <div class="product-card" data-product-id="accesorios-pro" data-product-price="300.00">
-        <div class="badge nuevo">Accesorios</div>
-        <div class="product-image">✨</div>
-        <div class="product-info">
-            <h3>Kit Protector de Frágiles</h3>
-            <p class="description">Protege tu vajilla, vasos y objetos delicados con nuestros separadores ecológicos.</p>
-            <ul class="product-features">
-                <li>Separadores para 24 vasos</li>
-                <li>Separadores para 12 platos</li>
-                <li>Papel de embalaje ecológico</li>
-            </ul>
-            <div class="quantity-control">
-                <label for="qty-accesorios-pro">Cantidad:</label>
-                <select id="qty-accesorios-pro" class="product-qty form-control">
-                    <option value="" disabled selected>Selecciona</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
-            </div>
-            <p class="price">$300.00 MXN <span>/semana</span></p>
-            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
-        </div>
-    </div>
-</div>
             </div>
         </section>
     </main>
-
     <div class="cart-modal-overlay" id="cartModalOverlay">
         <div class="cart-modal">
             <div class="cart-modal-header">
@@ -200,12 +205,74 @@
             <p id="notificationText"></p>
         </div>
     </div>
-    
     <footer class="footer">
-        </footer>
-        
+        <div class="container footer-content">
+            <div class="footer-info">
+                <h3>greenhauL</h3>
+                <p>Mudanzas sostenibles, sin complicaciones.</p>
+                <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
+                <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
+            </div>
+            <div class="footer-links">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="productos.html">Productos</a></li>
+                    <li><a href="servicios.html">Servicios</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="cuenta.html">Mi Cuenta</a></li>
+                </ul>
+            </div>
+            <div class="footer-social-links">
+                <h3>Síguenos</h3>
+                <div class="social-icons-wrapper">
+                    <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; <span id="current-year"></span> greenhauL. Todos los derechos reservados.
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script type="module" src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            function updateRentalDatesInCart() {
+                const startDateInput = document.getElementById('fecha-entrega');
+                const endDateInput = document.getElementById('fecha-recoleccion');
+                const start = startDateInput.value;
+                const end = endDateInput.value;
+                if (start && end) {
+                    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
+                    cart.rentalDates = { start, end };
+                    const startDate = new Date(start);
+                    const endDate = new Date(end);
+                    cart.totalDays = Math.max(Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)), 1);
+                    localStorage.setItem('shoppingCart', JSON.stringify(cart));
+                }
+            }
+            document.getElementById('fecha-entrega').addEventListener('change', updateRentalDatesInCart);
+            document.getElementById('fecha-recoleccion').addEventListener('change', updateRentalDatesInCart);
+
+            // Si ya hay fechas, rellena los inputs
+            const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
+            if (cart.rentalDates) {
+                document.getElementById('fecha-entrega').value = cart.rentalDates.start || '';
+                document.getElementById('fecha-recoleccion').value = cart.rentalDates.end || '';
+            }
+        });
+    </script>
 </body>
 </html>

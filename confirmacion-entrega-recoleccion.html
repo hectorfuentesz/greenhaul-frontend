@@ -9,234 +9,88 @@
     <link rel="stylesheet" href="assets/css/pages.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <style>
-        /* --- Variables CSS Globales --- */
-        :root {
-            --primary-solid: #4a90e2;
-            --primary-solid-dark: #3a7bcd;
-            --accent-green: #00b386;
-            --accent-green-dark: #008c6b;
-            --gradient-primary: linear-gradient(to right, var(--accent-green), var(--primary-solid));
-            --gradient-primary-hover: linear-gradient(to right, var(--accent-green-dark), var(--primary-solid-dark));
-            --secondary: #a0a4a8;
-            --accent-orange: #ff9900;
-            --accent-purple: #8a2be2;
-            --accent-red: #e74c3c;
-            --background: #ffffff;
-            --text: #333333;
-            --text-light: #666666;
-            --text-dark: #444444;
-            --border: #e0e0e0;
-            --border-focus: rgba(74, 144, 226, 0.4);
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
-            --border-radius: 12px;
-            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            --font-heading: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            --navbar-height-mobile: 90px;
-        }
-        *, *::before, *::after {box-sizing: border-box; margin: 0; padding: 0;}
-        html, body {height: 100%; overflow-x: hidden;}
-        body {
-            font-family: var(--font-main);
-            line-height: 1.6;
-            color: var(--text);
-            background-color: #f1f5f9;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        a {
-            color: var(--primary-solid);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        a:hover {color: var(--primary-solid-dark); opacity: 0.9;}
-        img {max-width: 100%; height: auto; display: block;}
-        h2, h3 {
-            font-family: var(--font-heading);
-            color: var(--text);
-            margin-bottom: 0.7em;
-            line-height: 1.25;
-            letter-spacing: -0.02em;
-        }
-        h2 {font-size: 2.5rem; font-weight: 700;}
-        h3 {font-size: 1.8rem; font-weight: 600;}
-        p {
-            font-size: 1.15rem;
-            line-height: 1.7;
-            margin-bottom: 1.5em;
-            color: var(--text-dark);
-        }
-        .page-content {padding-top: var(--navbar-height-mobile); flex-grow: 1;}
-        .section {padding: 50px 0;}
-        .container {max-width: 1200px; margin: 0 auto; padding: 0 20px;}
-        .section-title {text-align: center; margin-bottom: 40px;}
-        .section-title p {font-size: 1.2rem; color: var(--text-light); max-width: 700px; margin: 0 auto;}
-        .section-title p:last-of-type {font-size: 1.1em; color: var(--text-dark); margin-top: 15px; margin-bottom: 0;}
-        .section-title p:last-of-type span {color: var(--primary-solid); font-weight: bold;}
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin: 40px auto;
-        }
-        @media (max-width: 900px) {.contact-grid {grid-template-columns: 1fr; gap: 20px;}}
         .contact-form-container {
             background: #fff;
-            padding: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 32px rgba(74, 144, 226, 0.08);
+            padding: 32px 28px 22px 28px;
+            margin-bottom: 36px;
+            max-width: 520px;
+            margin-left: auto; margin-right: auto;
+            border: 1px solid #e6eaf1;
         }
         .contact-form-container h3 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 1.7rem;
             color: var(--primary-solid);
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--accent-green), var(--primary-solid));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 18px;
+            font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
         }
-        .contact-form-container .emoji {font-size: 1.8rem;}
-        .form-group {margin-bottom: 15px;}
         .form-group label {
-            display: block;
             font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-dark);
+            margin-bottom: 6px;
+            color: #1d3447;
+            letter-spacing: -0.01em;
         }
         .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-family: inherit;
-            color: var(--text);
-            box-sizing: border-box;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            padding: 14px 16px;
+            border-radius: 8px;
+            border: 1.5px solid #e1e5ec;
+            background-color: #f7fafc;
+            margin-bottom: 9px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-size: 1.06rem;
         }
         .form-control:focus {
-            outline: none;
             border-color: var(--primary-solid);
-            box-shadow: 0 0 0 3px var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(74,144,226,0.10);
+            background: #fff;
         }
-        textarea.form-control {resize: vertical; min-height: 80px;}
         select.form-control {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='%236e6e73'%3E%3Cpath%20d='M7%2010l5%205%205-5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 20px;
-            cursor: pointer;
+            background-color: #f7fafc;
         }
         .map-container {
-            height: 300px;
-            width: 100%;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border);
-            margin-top: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--primary-solid);
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.10);
+            margin: 24px 0 18px 0;
+            height: 280px;
+            overflow: hidden;
+            background: #f3f7fa;
+            position: relative;
         }
-        .map-instruction {font-size: 0.9rem; color: var(--text-light); margin-top: -10px; margin-bottom: 10px; text-align: center;}
-        .btn {
-            display: inline-block;
-            padding: 12px 28px;
-            border-radius: 999px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease, transform 0.2s ease-out, box-shadow 0.2s ease;
-            white-space: nowrap;
+        .map-instruction {
+            color: #4a90e2;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            margin-top: -2px;
+            font-style: italic;
         }
         .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(90deg, var(--accent-green), var(--primary-solid));
+            color: #fff;
+            font-weight: bold;
+            box-shadow: 0 4px 18px rgba(74, 144, 226, 0.10);
+            letter-spacing: 0.01em;
+            font-size: 1.1rem;
         }
         .btn-primary:hover {
-            background: var(--gradient-primary-hover);
-            color: white;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            transform: translateY(-5px) scale(1.03);
+            background: linear-gradient(90deg, var(--accent-green-dark), var(--primary-solid-dark));
+            transform: scale(1.03);
+            box-shadow: 0 8px 32px rgba(74, 144, 226, 0.17);
         }
-        .btn-big-cta {padding: 15px 30px; font-size: 1.2rem; border-radius: 999px;}
-        .cart-notification {
-            position: fixed;
-            left: 50%;
-            bottom: 42px;
-            transform: translateX(-50%) translateY(60px);
-            min-width: 220px;
-            max-width: 350px;
-            padding: 13px 28px;
-            border-radius: 99px;
-            font-size: 1.08rem;
-            font-weight: 600;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.13);
-            z-index: 3200;
-            color: #fff;
-            background: var(--accent-green);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .2s, transform .38s cubic-bezier(.68,-0.55,.27,1.55), background 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-align: center;
-        }
-        .cart-notification.error { background: var(--accent-red); }
-        .cart-notification.visible {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateX(-50%) translateY(0);
-            animation: popBottom .55s cubic-bezier(.68,-0.55,.27,1.55);
-        }
-        @keyframes popBottom {
-            0% { opacity: 0; transform: translateX(-50%) translateY(60px) scale(0.97);}
-            60% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.05);}
-            90% { opacity: 1; transform: translateX(-50%) translateY(0) scale(0.97);}
-            100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1);}
-        }
-        .cart-notification .notification-content {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            justify-content: center;
-        }
-        .cart-notification .notification-icon-wrapper {
-            width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center;
-        }
-        .cart-notification .notification-icon svg { width: 18px; height: 18px; stroke: var(--accent-green); }
-        .cart-notification.error .notification-icon svg { stroke: var(--accent-red); }
-        .cart-notification p { margin: 0; font-size: 1.08rem; color: #fff; font-weight: 600; letter-spacing: -0.01em; text-shadow: 0 2px 12px rgba(0,0,0,0.09); }
-        @media (max-width: 700px) {
-            .cart-notification {
-                bottom: 14px; min-width: unset; max-width: 95vw; font-size: 0.95rem; padding: 10px 12px;
+        @media (max-width: 900px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
             }
-        }
-        .shake-animation {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-            perspective: 1000px;
-        }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
-        .nav-link.active {color: var(--primary-solid);}
-        @media (max-width: 768px) {
-            .navbar-content { flex-wrap: wrap; justify-content: center; }
-            .nav-links-list { width: 100%; justify-content: center; margin-top: 15px; gap: 15px; }
-            .navbar-right-items { width: 100%; justify-content: center; margin-top: 15px; }
+            .contact-form-container {
+                margin-bottom: 30px;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -282,13 +136,14 @@
         <section class="section">
             <div class="container">
                 <div class="section-title">
-                    <h2>Direcciones de tu Mudanza <span class="emoji">🗺️</span></h2>
-                    <p>Confirma tus direcciones antes de proceder al pago.</p>
+                    <h2>Confirma tus <span class="highlight-sostenible">Direcciones</span> <span class="emoji">🗺️</span></h2>
+                    <p>Antes de continuar al pago, verifica y confirma tu dirección de <span style="font-weight:bold;color:var(--accent-green)">entrega</span> y <span style="font-weight:bold;color:var(--accent-orange)">recolección</span>.</p>
                     <p id="rentalDatesSummaryText">
                         Fechas de Alquiler: <span id="rentalDatesSummary">Cargando...</span>
                     </p>
                 </div>
-                <div class="contact-grid">
+                <div class="contact-grid" style="margin-top:2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                    <!-- Dirección de Entrega -->
                     <div class="contact-form-container">
                         <h3>Dirección de Entrega <span class="emoji">🏡</span></h3>
                         <div class="form-group" id="saved-delivery-addresses-container" style="display: none;">
@@ -297,8 +152,8 @@
                                 <option value="">-- Elige una dirección --</option>
                             </select>
                         </div>
-                        <p class="map-instruction">O arrastra el pin en el mapa para ajustar la ubicación.</p>
-                        <form id="deliveryAddressForm">
+                        <p class="map-instruction">Puedes arrastrar el pin en el mapa o completar los campos para ajustar la ubicación.</p>
+                        <form id="deliveryAddressForm" autocomplete="off">
                             <div class="form-group">
                                 <label for="deliveryAddressStreet">Calle y Número</label>
                                 <input type="text" id="deliveryAddressStreet" class="form-control" placeholder="Ej. Av. Insurgentes Sur 123" required>
@@ -327,6 +182,7 @@
                             <button type="submit" class="btn btn-primary" style="width:100%;">Confirmar Dirección</button>
                         </form>
                     </div>
+                    <!-- Dirección de Recolección -->
                     <div class="contact-form-container">
                         <h3>Dirección de Recolección <span class="emoji">🚚</span></h3>
                         <div class="form-group" id="saved-pickup-addresses-container" style="display: none;">
@@ -335,8 +191,8 @@
                                 <option value="">-- Elige una dirección --</option>
                             </select>
                         </div>
-                        <p class="map-instruction">O arrastra el pin en el mapa para ajustar la ubicación.</p>
-                        <form id="pickupAddressForm">
+                        <p class="map-instruction">Puedes arrastrar el pin en el mapa o completar los campos para ajustar la ubicación.</p>
+                        <form id="pickupAddressForm" autocomplete="off">
                             <div class="form-group">
                                 <label for="pickupAddressStreet">Calle y Número</label>
                                 <input type="text" id="pickupAddressStreet" class="form-control" placeholder="La dirección aparecerá aquí..." required>
@@ -402,9 +258,15 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+            &copy; <span id="current-year"></span> greenhauL. Todos los derechos reservados.
         </div>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+        });
+    </script>
     <div class="cart-notification" id="cartNotification">
         <div class="notification-content">
             <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
@@ -560,10 +422,15 @@
             input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); geocodeAddress(pickupInputElements, pickupMap, pickupMarker); } });
         });
 
+        // Mostrar fechas aunque no exista totalDays
         const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
         const rentalDatesSummaryEl = document.getElementById('rentalDatesSummary');
-        if (shoppingCart.rentalDates && shoppingCart.rentalDates.start && shoppingCart.rentalDates.end && shoppingCart.totalDays > 0) {
-            rentalDatesSummaryEl.textContent = `${shoppingCart.rentalDates.start} a ${shoppingCart.rentalDates.end} (${shoppingCart.totalDays} días)`;
+        if (shoppingCart.rentalDates && shoppingCart.rentalDates.start && shoppingCart.rentalDates.end) {
+            if (shoppingCart.totalDays) {
+                rentalDatesSummaryEl.textContent = `${shoppingCart.rentalDates.start} a ${shoppingCart.rentalDates.end} (${shoppingCart.totalDays} días)`;
+            } else {
+                rentalDatesSummaryEl.textContent = `${shoppingCart.rentalDates.start} a ${shoppingCart.rentalDates.end}`;
+            }
         } else {
             rentalDatesSummaryEl.textContent = 'No hay fechas de alquiler seleccionadas para tu pedido. Redirigiendo a la selección de productos...';
             setTimeout(() => { window.location.href = 'productos.html'; }, 3000);
