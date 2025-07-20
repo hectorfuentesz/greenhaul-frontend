@@ -4,63 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Direcciones - GreenHaul</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/pages.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-
     <style>
-        /*
-         * NOTA IMPORTANTE:
-         * Este bloque <style> ahora contiene todas las variables CSS globales y los estilos
-         * detallados para los elementos de formulario, botones, y la estructura de esta página.
-         * Esto garantiza que el formato se vea exactamente como se espera aquí,
-         * sin depender de la correcta aplicación de 'styles.css' para estas partes específicas.
-         */
-
-        /* --- Variables CSS Globales (Duplicadas aquí para auto-contención) --- */
+        /* --- Variables CSS Globales --- */
         :root {
-            --primary-solid: #4a90e2; /* Azul principal (original) */
-            --primary-solid-dark: #3a7bcd; /* Azul principal oscuro */
-            --accent-green: #00b386; /* Verde acento */
-            --accent-green-dark: #008c6b; /* Verde acento oscuro */
+            --primary-solid: #4a90e2;
+            --primary-solid-dark: #3a7bcd;
+            --accent-green: #00b386;
+            --accent-green-dark: #008c6b;
             --gradient-primary: linear-gradient(to right, var(--accent-green), var(--primary-solid));
             --gradient-primary-hover: linear-gradient(to right, var(--accent-green-dark), var(--primary-solid-dark));
-            --secondary: #a0a4a8; /* Gris secundario */
-            --accent-orange: #ff9900; /* Naranja acento */
-            --accent-purple: #8a2be2; /* Púrpura acento */
-            --accent-red: #e74c3c; /* Rojo acento */
-            --background: #ffffff; /* Fondo blanco */
-            --text: #333333; /* Color de texto principal */
-            --text-light: #666666; /* Color de texto más claro */
-            --text-dark: #444444; /* Color de texto ligeramente oscuro */
-            --border: #e0e0e0; /* Color de borde estándar */
-            --border-focus: rgba(74, 144, 226, 0.4); /* Color de borde al enfocar */
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra estándar */
-            --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12); /* Sombra al pasar el mouse */
-            --border-radius: 12px; /* Radio de borde global */
+            --secondary: #a0a4a8;
+            --accent-orange: #ff9900;
+            --accent-purple: #8a2be2;
+            --accent-red: #e74c3c;
+            --background: #ffffff;
+            --text: #333333;
+            --text-light: #666666;
+            --text-dark: #444444;
+            --border: #e0e0e0;
+            --border-focus: rgba(74, 144, 226, 0.4);
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
             --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
             --font-heading: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
             --navbar-height-mobile: 90px;
         }
-
-        /* --- Base & Resets mínimos (importante para elementos globales) --- */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        html, body {
-            height: 100%;
-            overflow-x: hidden;
-        }
+        *, *::before, *::after {box-sizing: border-box; margin: 0; padding: 0;}
+        html, body {height: 100%; overflow-x: hidden;}
         body {
             font-family: var(--font-main);
             line-height: 1.6;
             color: var(--text);
-            background-color: #f1f5f9; /* Usamos un gris claro específico para el fondo de esta página */
+            background-color: #f1f5f9;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -70,17 +50,8 @@
             text-decoration: none;
             transition: color 0.3s ease;
         }
-        a:hover {
-            color: var(--primary-solid-dark);
-            opacity: 0.9;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* --- Typography (solo los necesarios para los títulos de la sección) --- */
+        a:hover {color: var(--primary-solid-dark); opacity: 0.9;}
+        img {max-width: 100%; height: auto; display: block;}
         h2, h3 {
             font-family: var(--font-heading);
             color: var(--text);
@@ -88,120 +59,72 @@
             line-height: 1.25;
             letter-spacing: -0.02em;
         }
-        h2 { font-size: 2.5rem; font-weight: 700; } /* Ajustado para section-title */
-        h3 { font-size: 1.8rem; font-weight: 600; } /* Ajustado para contact-form-container h3 */
+        h2 {font-size: 2.5rem; font-weight: 700;}
+        h3 {font-size: 1.8rem; font-weight: 600;}
         p {
             font-size: 1.15rem;
             line-height: 1.7;
             margin-bottom: 1.5em;
             color: var(--text-dark);
         }
-
-        /* --- Layout & Sections (copiado de styles.css para asegurar el layout) --- */
-        .page-content {
-            padding-top: var(--navbar-height-mobile); /* Espacio para la navbar fija */
-            flex-grow: 1; /* Permite que el contenido ocupe el espacio restante */
-        }
-        .section { 
-            padding: 50px 0; /* Relleno para la sección principal de esta página */
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px; /* Reducido ligeramente para esta página */
-        }
-        .section-title p {
-            font-size: 1.2rem;
-            color: var(--text-light);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        /* Estilo específico para las fechas de alquiler */
-        .section-title p:last-of-type {
-            font-size: 1.1em;
-            color: var(--text-dark);
-            margin-top: 15px;
-            margin-bottom: 0;
-        }
-        .section-title p:last-of-type span {
-             color: var(--primary-solid); /* Color de las fechas */
-             font-weight: bold;
-        }
-
-        /* --- Grid de contacto/direcciones (dos columnas) --- */
+        .page-content {padding-top: var(--navbar-height-mobile); flex-grow: 1;}
+        .section {padding: 50px 0;}
+        .container {max-width: 1200px; margin: 0 auto; padding: 0 20px;}
+        .section-title {text-align: center; margin-bottom: 40px;}
+        .section-title p {font-size: 1.2rem; color: var(--text-light); max-width: 700px; margin: 0 auto;}
+        .section-title p:last-of-type {font-size: 1.1em; color: var(--text-dark); margin-top: 15px; margin-bottom: 0;}
+        .section-title p:last-of-type span {color: var(--primary-solid); font-weight: bold;}
         .contact-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Dos columnas para los formularios de dirección */
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin: 40px auto;
         }
-        @media (max-width: 900px) {
-            .contact-grid {
-                grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-                gap: 20px;
-            }
-        }
-
-        /* Contenedor individual del formulario/mapa */
+        @media (max-width: 900px) {.contact-grid {grid-template-columns: 1fr; gap: 20px;}}
         .contact-form-container {
             background: #fff;
             padding: 30px;
-            border-radius: var(--border-radius); /* Usamos la variable global de border-radius */
-            box-shadow: var(--shadow); /* Usamos la variable global de sombra */
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            gap: 20px; /* Espacio entre elementos internos */
+            gap: 20px;
         }
         .contact-form-container h3 {
             display: flex;
             align-items: center;
             gap: 10px;
-            color: var(--primary-solid); /* Color del título h3 de la dirección */
-            font-size: 1.5rem; /* Aseguramos el tamaño del h3 */
-            margin-bottom: 15px; /* Espacio debajo del título */
+            color: var(--primary-solid);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
         }
-        .contact-form-container .emoji {
-            font-size: 1.8rem; /* Tamaño del emoji */
-        }
-
-        /* --- Estilos de Formularios (Campos y Labels) - AUTOCONTENIDO --- */
-        .form-group {
-            margin-bottom: 15px; /* Espacio entre grupos de formulario */
-        }
+        .contact-form-container .emoji {font-size: 1.8rem;}
+        .form-group {margin-bottom: 15px;}
         .form-group label {
-            display: block; /* La etiqueta ocupa su propia línea */
-            font-weight: 600; /* Texto de la etiqueta en negrita */
-            margin-bottom: 8px; /* Espacio entre la etiqueta y el input */
-            color: var(--text-dark); /* Color de texto para la etiqueta */
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
         }
         .form-control {
-            width: 100%; /* El input ocupa todo el ancho disponible */
-            padding: 12px; /* Relleno dentro del input */
-            border: 1px solid var(--border); /* Borde estándar usando variable */
-            border-radius: var(--border-radius); /* Bordes redondeados usando variable */
-            font-size: 1rem; /* Tamaño de fuente */
-            font-family: inherit; /* Hereda la fuente del body */
-            color: var(--text); /* Color de texto del input */
-            box-sizing: border-box; /* Incluye padding y border en el width/height total */
-            transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--text);
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .form-control:focus {
-            outline: none; /* Elimina el contorno azul por defecto del navegador */
-            border-color: var(--primary-solid); /* Borde primario al enfocar */
-            box-shadow: 0 0 0 3px var(--border-focus); /* Sombra de enfoque usando variable */
+            outline: none;
+            border-color: var(--primary-solid);
+            box-shadow: 0 0 0 3px var(--border-focus);
         }
-        /* Estilo para textareas */
-        textarea.form-control {
-            resize: vertical; /* Permite redimensionar verticalmente */
-            min-height: 80px; /* Altura mínima para el textarea */
-        }
-        /* Estilo para el selector de direcciones guardadas */
+        textarea.form-control {resize: vertical; min-height: 80px;}
         select.form-control {
-            appearance: none; /* Elimina el estilo nativo del select */
+            appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='%236e6e73'%3E%3Cpath%20d='M7%2010l5%205%205-5z'/%3E%3C/svg%3E");
@@ -210,28 +133,18 @@
             background-size: 20px;
             cursor: pointer;
         }
-
-        /* --- Estilos del mapa --- */
         .map-container {
-            height: 300px; /* Altura fija para los mapas, CRUCIAL para que Leaflet se renderice */
+            height: 300px;
             width: 100%;
             border-radius: var(--border-radius);
             border: 1px solid var(--border);
             margin-top: 15px;
         }
-        .map-instruction {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-top: -10px; 
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        /* --- Estilos de Botones (Autocontenido para asegurar estilo) --- */
+        .map-instruction {font-size: 0.9rem; color: var(--text-light); margin-top: -10px; margin-bottom: 10px; text-align: center;}
         .btn {
             display: inline-block;
             padding: 12px 28px;
-            border-radius: 999px; /* Bordes muy redondeados para pill-shape */
+            border-radius: 999px;
             font-size: 1.05rem;
             font-weight: 600;
             text-align: center;
@@ -241,24 +154,17 @@
             white-space: nowrap;
         }
         .btn-primary {
-            background: var(--gradient-primary); /* Degradado primario */
+            background: var(--gradient-primary);
             color: white;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .btn-primary:hover {
-            background: var(--gradient-primary-hover); /* Degradado hover */
+            background: var(--gradient-primary-hover);
             color: white;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             transform: translateY(-5px) scale(1.03);
         }
-        .btn-big-cta {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border-radius: 999px; /* Asegura bordes redondeados también para el botón grande */
-        }
-        /* Los estilos para btn-outline, btn-secondary, btn-tertiary se mantienen en styles.css si no se usan aquí */
-
-        /* --- Notificación (Global, copiado de styles.css para asegurar funcionamiento visual) --- */
+        .btn-big-cta {padding: 15px 30px; font-size: 1.2rem; border-radius: 999px;}
         .cart-notification {
             position: fixed;
             left: 50%;
@@ -314,8 +220,6 @@
                 bottom: 14px; min-width: unset; max-width: 95vw; font-size: 0.95rem; padding: 10px 12px;
             }
         }
-
-        /* --- Animación para el "shake" de campos de formulario, si se usa (copiado de styles.css) --- */
         .shake-animation {
             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
             transform: translate3d(0, 0, 0);
@@ -328,17 +232,8 @@
             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
-
-        /* --- Estilos del Header (Navbar) - Se basa en styles.css para el resto --- */
-        /* Aseguramos la activacion del link de la pagina actual */
-        .nav-link.active {
-            color: var(--primary-solid); /* Usa el color primario de styles.css */
-        }
-        /* Nota: Los estilos completos de .navbar, .navbar-content, .logo, etc. se asumen de styles.css */
-
-        /* --- Media Queries (Ajustados para esta página si es necesario) --- */
+        .nav-link.active {color: var(--primary-solid);}
         @media (max-width: 768px) {
-            /* Navbar se adapta según styles.css */
             .navbar-content { flex-wrap: wrap; justify-content: center; }
             .nav-links-list { width: 100%; justify-content: center; margin-top: 15px; gap: 15px; }
             .navbar-right-items { width: 100%; justify-content: center; margin-top: 15px; }
@@ -383,7 +278,6 @@
             </div>
         </nav>
     </header>
-
     <main class="page-content">
         <section class="section">
             <div class="container">
@@ -397,7 +291,6 @@
                 <div class="contact-grid">
                     <div class="contact-form-container">
                         <h3>Dirección de Entrega <span class="emoji">🏡</span></h3>
-                        
                         <div class="form-group" id="saved-delivery-addresses-container" style="display: none;">
                             <label for="savedDeliveryAddress">Elige una de tus direcciones guardadas</label>
                             <select id="savedDeliveryAddress" class="form-control">
@@ -430,14 +323,12 @@
                                 <label for="deliveryAddressReferences">Referencias Adicionales</label>
                                 <textarea id="deliveryAddressReferences" class="form-control" rows="3" placeholder="Ej. Edificio blanco con portón verde, frente a un parque."></textarea>
                             </div>
-
                             <div class="map-container" id="deliveryMap"></div>
                             <button type="submit" class="btn btn-primary" style="width:100%;">Confirmar Dirección</button>
                         </form>
                     </div>
                     <div class="contact-form-container">
                         <h3>Dirección de Recolección <span class="emoji">🚚</span></h3>
-                        
                         <div class="form-group" id="saved-pickup-addresses-container" style="display: none;">
                             <label for="savedPickupAddress">Elige una de tus direcciones guardadas</label>
                             <select id="savedPickupAddress" class="form-control">
@@ -481,48 +372,49 @@
             </div>
         </section>
     </main>
-    
     <footer class="footer">
-       <div class="container footer-content">
-        <div class="footer-info">
-            <h3>greenhauL</h3>
-            <p>Mudanzas sostenibles, sin complicaciones.</p>
-            <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
-            <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
-            <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
-        </div>
-        <div class="footer-links">
-            <h3>Enlaces Rápidos</h3>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="productos.html">Productos</a></li>
-                <li><a href="servicios.html">Servicios</a></li>
-                <li><a href="nosotros.html">Nosotros</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
-                <li><a href="cuenta.html">Mi Cuenta</a></li>
-            </ul>
-        </div>
-        <div class="footer-social-links">
-            <h3>Síguenos</h3>
-            <div class="social-icons-wrapper">
-                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <div class="container footer-content">
+            <div class="footer-info">
+                <h3>greenhauL</h3>
+                <p>Mudanzas sostenibles, sin complicaciones.</p>
+                <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
+                <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
+            </div>
+            <div class="footer-links">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="productos.html">Productos</a></li>
+                    <li><a href="servicios.html">Servicios</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="cuenta.html">Mi Cuenta</a></li>
+                </ul>
+            </div>
+            <div class="footer-social-links">
+                <h3>Síguenos</h3>
+                <div class="social-icons-wrapper">
+                    <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="footer-bottom">
-        &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
-    </div>
+        <div class="footer-bottom">
+            &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+        </div>
     </footer>
-    
-    <div class="cart-notification" id="cartNotification"><div class="notification-content"><div class="notification-icon-wrapper"><span class="notification-icon"></span></div><p id="notificationText"></p></div></div>
-
+    <div class="cart-notification" id="cartNotification">
+        <div class="notification-content">
+            <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
+            <p id="notificationText"></p>
+        </div>
+    </div>
     <script src="assets/js/main.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- Elementos del DOM ---
         // Inputs de dirección de entrega
         const deliveryAddressStreetInput = document.getElementById('deliveryAddressStreet');
         const deliveryAddressNeighborhoodInput = document.getElementById('deliveryAddressNeighborhood');
@@ -530,7 +422,6 @@
         const deliveryAddressStateInput = document.getElementById('deliveryAddressState');
         const deliveryAddressPostalCodeInput = document.getElementById('deliveryAddressPostalCode');
         const deliveryAddressReferencesInput = document.getElementById('deliveryAddressReferences');
-
         // Inputs de dirección de recolección
         const pickupAddressStreetInput = document.getElementById('pickupAddressStreet');
         const pickupAddressNeighborhoodInput = document.getElementById('pickupAddressNeighborhood');
@@ -538,7 +429,6 @@
         const pickupAddressStateInput = document.getElementById('pickupAddressState');
         const pickupAddressPostalCodeInput = document.getElementById('pickupAddressPostalCode');
         const pickupAddressReferencesInput = document.getElementById('pickupAddressReferences');
-
         // Botones y formularios
         const deliveryAddressForm = document.getElementById('deliveryAddressForm');
         const pickupAddressForm = document.getElementById('pickupAddressForm');
@@ -546,45 +436,31 @@
 
         let isDeliveryAddressConfirmed = false;
         let isPickupAddressConfirmed = false;
-        const initialCoords = [19.4326, -99.1332]; // CDMX por defecto
-        const backendUrl = 'https://greenhaul-backend-production.up.railway.app'; // URL de tu backend
-        
-        let deliveryMap, deliveryMarker; // Variables para el mapa de entrega
-        let pickupMap, pickupMarker;     // Variables para el mapa de recolección
+        const initialCoords = [19.4326, -99.1332];
+        const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+        let deliveryMap, deliveryMarker;
+        let pickupMap, pickupMarker;
 
-        // Función para escapar caracteres especiales para usar en expresiones regulares
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
-
-        // Función para inicializar un mapa Leaflet
-        // Recibe el ID del contenedor del mapa, un objeto con los elementos input de la dirección,
-        // y un callback para el evento 'dragend' del marcador.
         function setupMap(mapId, inputElements, onDragEndCallback) {
-            const map = L.map(mapId).setView(initialCoords, 13); // Centra el mapa en las coordenadas iniciales
+            const map = L.map(mapId).setView(initialCoords, 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map); // Añade el mapa base de OpenStreetMap
-            const marker = L.marker(initialCoords, { draggable: true }).addTo(map); // Añade un marcador draggable
-            marker.on('dragend', onDragEndCallback); // Asocia el callback al arrastrar el marcador
-
-            // Es crucial invalidar el tamaño del mapa después de un breve retraso
-            // para asegurar que Leaflet lo renderice correctamente dentro de un contenedor que podría no tener tamaño al inicio.
+            }).addTo(map);
+            const marker = L.marker(initialCoords, { draggable: true }).addTo(map);
+            marker.on('dragend', onDragEndCallback);
             setTimeout(() => map.invalidateSize(), 400);
-            return { map, marker }; // Devuelve el objeto mapa y marcador
+            return { map, marker };
         }
-
-        // Función para hacer geocodificación inversa (coordenadas de lat/lng a dirección legible)
-        // Rellena los campos del formulario con la dirección encontrada.
         async function reverseGeocode(lat, lng, inputElements) {
-            // Muestra un mensaje de carga mientras se busca la dirección
             inputElements.street.value = "Buscando dirección...";
             inputElements.neighborhood.value = "";
             inputElements.city.value = "";
             inputElements.state.value = "";
             inputElements.postalCode.value = "";
-            inputElements.references.value = ""; // Las referencias no se autocompletan desde Nominatim.
-
+            inputElements.references.value = "";
             const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
             try {
                 const response = await fetch(url);
@@ -593,13 +469,11 @@
                     const addr = data.address;
                     let street = addr.road || '';
                     let houseNumber = addr.house_number || '';
-                    let neighborhood = addr.suburb || addr.neighbourhood || addr.city_district || ''; // Mejorar obtención de colonia
-                    
+                    let neighborhood = addr.suburb || addr.neighbourhood || addr.city_district || '';
                     let fullStreet = street.trim();
                     if (houseNumber) {
-                        fullStreet += ` ${houseNumber}`; // Añade el número de casa si existe
+                        fullStreet += ` ${houseNumber}`;
                     } else if (data.display_name) {
-                        // Intenta extraer el número de la calle del display_name si no hay house_number específico.
                         const streetRegex = new RegExp(`^${escapeRegExp(street)}\\s*(\\d+[A-Za-z]?)?\\b`, 'i');
                         const match = data.display_name.match(streetRegex);
                         if (match && match[1]) {
@@ -611,14 +485,11 @@
                             }
                         }
                     }
-                    
-                    // Rellena los inputs con la información obtenida
                     inputElements.street.value = fullStreet.trim();
                     inputElements.neighborhood.value = neighborhood;
                     inputElements.city.value = addr.city || addr.town || addr.village || '';
                     inputElements.state.value = addr.state || '';
                     inputElements.postalCode.value = addr.postcode || '';
-                    // inputElements.references se mantiene vacío o con lo que el usuario ponga.
                 } else {
                     inputElements.street.value = "Dirección no encontrada desde el mapa.";
                     inputElements.neighborhood.value = "";
@@ -632,15 +503,9 @@
                 showNotification('Error de conexión al servicio de geocodificación inversa.', 'error');
             }
         }
-
-        // Función para hacer geocodificación (dirección legible a coordenadas de lat/lng)
-        // Mueve el marcador del mapa a la ubicación de la dirección escrita.
         async function geocodeAddress(inputElements, map, marker) {
-            // Concatena todos los campos de dirección para formar una consulta de búsqueda
             const fullAddress = `${inputElements.street.value}, ${inputElements.neighborhood.value}, ${inputElements.city.value}, ${inputElements.state.value}, ${inputElements.postalCode.value}`;
-            // Valida que la dirección tenga una longitud mínima para una búsqueda efectiva
             if (fullAddress.trim().length < 10) return;
-
             const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullAddress)}&format=json&limit=1`;
             try {
                 const response = await fetch(url);
@@ -648,8 +513,8 @@
                 if (results && results.length > 0) {
                     const { lat, lon } = results[0];
                     const newPosition = L.latLng(lat, lon);
-                    marker.setLatLng(newPosition); // Mueve el marcador
-                    map.setView(newPosition, 16); // Centra el mapa en la nueva posición con un zoom apropiado
+                    marker.setLatLng(newPosition);
+                    map.setView(newPosition, 16);
                 } else {
                     showNotification('No se pudo ubicar la dirección en el mapa con los datos proporcionados.', 'error');
                 }
@@ -658,10 +523,6 @@
                 showNotification('Error de conexión al servicio de geocodificación.', 'error');
             }
         }
-
-        // --- Inicialización de mapas y marcadores ---
-        // Se definen los elementos de input para cada formulario de dirección.
-        // Esto permite pasar un objeto con referencias a los inputs a las funciones de mapa.
         const deliveryInputElements = {
             street: deliveryAddressStreetInput,
             neighborhood: deliveryAddressNeighborhoodInput,
@@ -671,7 +532,6 @@
             references: deliveryAddressReferencesInput
         };
         const deliveryMapObjects = setupMap('deliveryMap', deliveryInputElements, (e) => {
-            // Callback para el mapa de entrega: al arrastrar el marcador, se hace geocodificación inversa.
             reverseGeocode(e.target.getLatLng().lat, e.target.getLatLng().lng, deliveryInputElements);
         });
         deliveryMap = deliveryMapObjects.map;
@@ -686,15 +546,11 @@
             references: pickupAddressReferencesInput
         };
         const pickupMapObjects = setupMap('pickupMap', pickupInputElements, (e) => {
-            // Callback para el mapa de recolección: al arrastrar el marcador, se hace geocodificación inversa.
             reverseGeocode(e.target.getLatLng().lat, e.target.getLatLng().lng, pickupInputElements);
         });
         pickupMap = pickupMapObjects.map;
         pickupMarker = pickupMapObjects.marker;
 
-        // --- Listeners para geocodificación al cambiar los inputs de dirección ---
-        // Cuando el usuario deja un campo de dirección (blur) o presiona Enter, se intenta geocodificar.
-        // Esto mejora la experiencia al rellenar el mapa automáticamente.
         [deliveryAddressStreetInput, deliveryAddressNeighborhoodInput, deliveryAddressCityInput, deliveryAddressStateInput, deliveryAddressPostalCodeInput].forEach(input => {
             input.addEventListener('blur', () => geocodeAddress(deliveryInputElements, deliveryMap, deliveryMarker));
             input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); geocodeAddress(deliveryInputElements, deliveryMap, deliveryMarker); } });
@@ -704,31 +560,21 @@
             input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); geocodeAddress(pickupInputElements, pickupMap, pickupMarker); } });
         });
 
-        // --- Lógica para cargar y mostrar fechas de alquiler del carrito ---
-        // Recupera el carrito de localStorage para mostrar las fechas de alquiler seleccionadas previamente.
         const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
         const rentalDatesSummaryEl = document.getElementById('rentalDatesSummary');
-
         if (shoppingCart.rentalDates && shoppingCart.rentalDates.start && shoppingCart.rentalDates.end && shoppingCart.totalDays > 0) {
             rentalDatesSummaryEl.textContent = `${shoppingCart.rentalDates.start} a ${shoppingCart.rentalDates.end} (${shoppingCart.totalDays} días)`;
         } else {
             rentalDatesSummaryEl.textContent = 'No hay fechas de alquiler seleccionadas para tu pedido. Redirigiendo a la selección de productos...';
-            // Si no hay fechas válidas, redirige al usuario a la página de productos después de un retraso.
-            setTimeout(() => { window.location.href = 'productos.html'; }, 3000); 
+            setTimeout(() => { window.location.href = 'productos.html'; }, 3000);
         }
 
-        // --- Lógica para cargar y gestionar direcciones guardadas del usuario ---
         const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
-
         if (loggedInUser && loggedInUser.id) {
-            // Muestra los contenedores de los selectores de direcciones guardadas
             document.getElementById('saved-delivery-addresses-container').style.display = 'block';
             document.getElementById('saved-pickup-addresses-container').style.display = 'block';
-
             const deliverySelect = document.getElementById('savedDeliveryAddress');
             const pickupSelect = document.getElementById('savedPickupAddress');
-            
-            // Realiza la petición al backend para obtener las direcciones del usuario
             fetch(`${backendUrl}/api/users/${loggedInUser.id}/addresses`)
                 .then(response => {
                     if (!response.ok) throw new Error('Error al cargar direcciones guardadas.');
@@ -737,73 +583,52 @@
                 .then(addresses => {
                     if (addresses && addresses.length > 0) {
                         addresses.forEach(addr => {
-                            // Construye una cadena de texto legible para la opción del selector.
-                            // Utiliza 'addr.name' si está disponible, sino una combinación de calle, ciudad, etc.
                             const fullAddressText = `${addr.name ? addr.name + ' - ' : ''}${addr.street || ''}, ${addr.neighborhood ? addr.neighborhood + ', ' : ''}${addr.city || ''}, ${addr.state || ''} ${addr.postal_code || ''}`;
-                            
                             const option = document.createElement('option');
-                            // ¡IMPORTANTE! Guardamos el objeto completo de la dirección como un JSON string en el 'value' de la opción.
-                            // Esto nos permite acceder a todos los campos al seleccionarla.
-                            option.value = JSON.stringify(addr); 
-                            option.textContent = fullAddressText.trim(); // Asigna el texto legible a la opción
-
-                            // Clona la opción para añadirla a ambos selectores.
+                            option.value = JSON.stringify(addr);
+                            option.textContent = fullAddressText.trim();
                             deliverySelect.appendChild(option.cloneNode(true));
                             pickupSelect.appendChild(option);
                         });
                     } else {
-                        // Si no hay direcciones guardadas, ocultar los selectores.
                         document.getElementById('saved-delivery-addresses-container').style.display = 'none';
                         document.getElementById('saved-pickup-addresses-container').style.display = 'none';
-                        // showNotification('No tienes direcciones guardadas. Puedes añadirlas en "Mi Cuenta".', 'info'); // Ya no usar aquí
                     }
                 })
                 .catch(error => {
                     console.error("Error al cargar direcciones guardadas:", error);
-                    // showNotification(`Error al cargar direcciones: ${error.message}`, 'error'); // Ya no usar aquí
-                    // Ocultar los selectores en caso de error de carga.
                     document.getElementById('saved-delivery-addresses-container').style.display = 'none';
                     document.getElementById('saved-pickup-addresses-container').style.display = 'none';
                 });
-            
-            // Listener para el selector de direcciones de entrega guardadas
             deliverySelect.addEventListener('change', (e) => {
                 const selectedAddressJson = e.target.value;
                 if (selectedAddressJson) {
-                    const addr = JSON.parse(selectedAddressJson); // Parsea el JSON a un objeto JavaScript.
-                    // Rellena todos los campos del formulario de entrega con los datos de la dirección seleccionada.
+                    const addr = JSON.parse(selectedAddressJson);
                     deliveryAddressStreetInput.value = addr.street || '';
                     deliveryAddressNeighborhoodInput.value = addr.neighborhood || '';
                     deliveryAddressCityInput.value = addr.city || '';
                     deliveryAddressStateInput.value = addr.state || '';
                     deliveryAddressPostalCodeInput.value = addr.postal_code || '';
                     deliveryAddressReferencesInput.value = addr.references || '';
-                    
-                    // Centra el mapa usando latitud y longitud si están disponibles en la dirección guardada.
                     if (addr.latitude && addr.longitude) {
                         deliveryMarker.setLatLng([addr.latitude, addr.longitude]);
                         deliveryMap.setView([addr.latitude, addr.longitude], 16);
-                        deliveryMap.invalidateSize(); // Asegura el renderizado correcto del mapa.
+                        deliveryMap.invalidateSize();
                     } else {
-                        // Si no hay lat/lng guardados, intenta geocodificar la dirección completa.
                         geocodeAddress(deliveryInputElements, deliveryMap, deliveryMarker);
                     }
                 } else {
-                    // Si se elige la opción vacía "-- Elige una dirección --", se limpian los campos del formulario
                     deliveryAddressStreetInput.value = '';
                     deliveryAddressNeighborhoodInput.value = '';
                     deliveryAddressCityInput.value = '';
                     deliveryAddressStateInput.value = '';
                     deliveryAddressPostalCodeInput.value = '';
                     deliveryAddressReferencesInput.value = '';
-                    // Reiniciar el mapa a las coordenadas iniciales si se limpia la selección.
                     deliveryMarker.setLatLng(initialCoords);
                     deliveryMap.setView(initialCoords, 13);
                     deliveryMap.invalidateSize();
                 }
             });
-
-            // Listener para el selector de direcciones de recolección guardadas (funciona de forma similar al de entrega)
             pickupSelect.addEventListener('change', (e) => {
                 const selectedAddressJson = e.target.value;
                 if (selectedAddressJson) {
@@ -814,7 +639,6 @@
                     pickupAddressStateInput.value = addr.state || '';
                     pickupAddressPostalCodeInput.value = addr.postal_code || '';
                     pickupAddressReferencesInput.value = addr.references || '';
-                    
                     if (addr.latitude && addr.longitude) {
                         pickupMarker.setLatLng([addr.latitude, addr.longitude]);
                         pickupMap.setView([addr.latitude, addr.longitude], 16);
@@ -835,62 +659,57 @@
                 }
             });
         } else {
-            // Si no hay usuario logueado, ocultar los selectores de direcciones guardadas.
             document.getElementById('saved-delivery-addresses-container').style.display = 'none';
             document.getElementById('saved-pickup-addresses-container').style.display = 'none';
             showNotification('Inicia sesión para usar tus direcciones guardadas.', 'info');
         }
-        
-        // --- Manejo de la Confirmación de Direcciones ---
-        // Cuando se confirman las direcciones, se guarda el estado para el botón final.
+
         deliveryAddressForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Previene el envío por defecto del formulario.
+            e.preventDefault();
             isDeliveryAddressConfirmed = true;
             showNotification('Dirección de entrega confirmada.', 'success');
-            // Opcional: Aquí podrías guardar la dirección completa en localStorage para el pago
-            // Puedes guardar los datos del formulario aquí si los necesitas en la página de pago.
-            // Ejemplo de guardar en localStorage:
-            // localStorage.setItem('deliveryAddressDetails', JSON.stringify({
-            //    street: deliveryAddressStreetInput.value,
-            //    neighborhood: deliveryAddressNeighborhoodInput.value,
-            //    city: deliveryAddressCityInput.value,
-            //    state: deliveryAddressStateInput.value,
-            //    postal_code: deliveryAddressPostalCodeInput.value,
-            //    references: deliveryAddressReferencesInput.value,
-            //    latitude: deliveryMarker.getLatLng().lat, // Si el backend no los guarda, aún puedes usar el mapa visualmente y pasar las coordenadas
-            //    longitude: deliveryMarker.getLatLng().lng
-            // }));
         });
-
         pickupAddressForm.addEventListener('submit', (e) => {
             e.preventDefault();
             isPickupAddressConfirmed = true;
             showNotification('Dirección de recolección confirmada.', 'success');
-            // Opcional: Guardar la dirección de recolección en localStorage
-            // localStorage.setItem('pickupAddressDetails', JSON.stringify({
-            //     street: pickupAddressStreetInput.value,
-            //     neighborhood: pickupAddressNeighborhoodInput.value,
-            //     city: pickupAddressCityInput.value,
-            //     state: pickupAddressStateInput.value,
-            //     postal_code: pickupAddressPostalCodeInput.value,
-            //     references: pickupAddressReferencesInput.value,
-            //     latitude: pickupMarker.getLatLng().lat,
-            //     longitude: pickupMarker.getLatLng().lng
-            // }));
         });
 
-        // --- Botón "Continuar al Pago" ---
-        // Valida que ambas direcciones estén confirmadas antes de redirigir a la página de pago.
         finalizeOrderBtn.addEventListener('click', () => {
             if (!isDeliveryAddressConfirmed || !isPickupAddressConfirmed) {
                 showNotification('Por favor, confirma ambas direcciones antes de continuar al pago.', 'error');
                 return;
             }
-            // Aquí puedes añadir más validaciones o guardar las direcciones finales en localStorage
-            // o sessionStorage para ser usadas en la página de pago.
-            // Si el carrito se usa para guardar fechas, podrías considerar guardar las direcciones confirmadas también.
-
-            window.location.href = 'pago.html'; // Redirige a la página de pago.
+            // Guarda fechas en localStorage para pago.html
+            const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
+            if (shoppingCart.rentalDates && shoppingCart.rentalDates.start && shoppingCart.rentalDates.end) {
+                localStorage.setItem('greenhaulEntrega', shoppingCart.rentalDates.start);
+                localStorage.setItem('greenhaulRecoleccion', shoppingCart.rentalDates.end);
+            }
+            // Opcional: guarda también direcciones si lo necesitas en pago.html
+            /*
+            localStorage.setItem('deliveryAddressDetails', JSON.stringify({
+                street: deliveryAddressStreetInput.value,
+                neighborhood: deliveryAddressNeighborhoodInput.value,
+                city: deliveryAddressCityInput.value,
+                state: deliveryAddressStateInput.value,
+                postal_code: deliveryAddressPostalCodeInput.value,
+                references: deliveryAddressReferencesInput.value,
+                latitude: deliveryMarker.getLatLng().lat,
+                longitude: deliveryMarker.getLatLng().lng
+            }));
+            localStorage.setItem('pickupAddressDetails', JSON.stringify({
+                street: pickupAddressStreetInput.value,
+                neighborhood: pickupAddressNeighborhoodInput.value,
+                city: pickupAddressCityInput.value,
+                state: pickupAddressStateInput.value,
+                postal_code: pickupAddressPostalCodeInput.value,
+                references: pickupAddressReferencesInput.value,
+                latitude: pickupMarker.getLatLng().lat,
+                longitude: pickupMarker.getLatLng().lng
+            }));
+            */
+            window.location.href = 'pago.html';
         });
     });
     </script>
