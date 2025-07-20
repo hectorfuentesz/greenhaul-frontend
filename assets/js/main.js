@@ -135,10 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- INICIO: FUNCIONES DEL CARRITO CORREGIDAS ---
         const updateCartModalTotals = () => {
-            const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            // Calcula la cantidad de días de renta
+            let totalDays = 1;
+            if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
+                const startDate = new Date(cart.rentalDates.start);
+                const endDate = new Date(cart.rentalDates.end);
+                // +1 para incluir el día de entrega
+                totalDays = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)));
+            }
+        
+            const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity * totalDays), 0);
             const taxes = subtotal * 0.16;
             const total = subtotal + taxes;
-
+        
             const subtotalEl = document.getElementById('cartSubtotal');
             const taxesEl = document.getElementById('cartTaxes');
             const totalEl = document.getElementById('cartTotal');
