@@ -24,7 +24,9 @@
             color: var(--primary-solid);
             background: linear-gradient(90deg, var(--accent-green), var(--primary-solid));
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+    background-clip: text;            /* <-- Esta línea soluciona el warning */
+    -webkit-text-fill-color: transparent;
+    color: transparent;   
             margin-bottom: 18px;
             font-weight: 700;
             display: flex; align-items: center; gap: 8px;
