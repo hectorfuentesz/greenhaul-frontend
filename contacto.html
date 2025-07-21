@@ -148,7 +148,6 @@
                 padding: 20px 8px;
             }
         }
-        /* Mensaje de éxito/error */
         #contactSuccess, #contactError {
             display: none;
             margin-top: 18px;
@@ -165,6 +164,27 @@
             background: #fff1f0;
             color: #c0392b;
             border: 1px solid #e57373;
+        }
+        /* Toast Popup */
+        #toastPopup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            bottom: 40px;
+            transform: translateX(-50%);
+            background: #4a90e2;
+            color: #fff;
+            padding: 16px 36px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #toastPopup.show {
+            display: block;
+            opacity: 1;
         }
     </style>
 </head>
@@ -273,6 +293,9 @@
     </section>
 </main>
 
+<!-- Toast Popup -->
+<div id="toastPopup">¡Mensaje enviado! Nos contactaremos en breve.</div>
+
 <footer class="footer">
     <div class="container footer-content">
         <div class="footer-info">
@@ -305,7 +328,6 @@
         &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
     </div>
 </footer>
-<!-- Carrito de compras y notificaciones -->
 <div class="cart-modal-overlay" id="cartModalOverlay">
     <div class="cart-modal">
         <div class="cart-modal-header">
@@ -339,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('contactForm');
   const successMsg = document.getElementById('contactSuccess');
   const errorMsg = document.getElementById('contactError');
+  const toast = document.getElementById('toastPopup');
   if (!form) return;
 
   form.addEventListener('submit', async (e) => {
@@ -357,7 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // (Opcional) Validar email simple
     if (!/\S+@\S+\.\S+/.test(email)) {
       errorMsg.style.display = 'block';
       errorMsg.textContent = 'Por favor, ingresa un correo válido.';
@@ -365,7 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // URL del backend
     const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
 
     try {
@@ -376,10 +397,17 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || 'Error al enviar mensaje');
-      successMsg.style.display = 'block';
+      successMsg.style.display = 'none';
       errorMsg.style.display = 'none';
       form.reset();
-      setTimeout(() => { successMsg.style.display = 'none'; }, 5000);
+
+      // --- POPUP TOAST DISCRETO ---
+      toast.textContent = '¡Mensaje enviado! Nos contactaremos en breve.';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2800);
+
     } catch (err) {
       errorMsg.style.display = 'block';
       errorMsg.textContent = 'Hubo un error al enviar tu mensaje: ' + err.message;
