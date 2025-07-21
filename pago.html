@@ -290,7 +290,7 @@
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4); 
             });
 
-            // INTEGRACIÓN CONEKTA
+            // INTEGRACIÓN CONEKTA -- MODIFICADO PARA USAR LAS DIRECCIONES CORRECTAS
             paymentForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const payBtn = document.getElementById('payBtn');
@@ -314,23 +314,60 @@
                 }
                 // Tokenización con Conekta
                 Conekta.Token.create(paymentForm, function(token) {
-                    // El token ya está generado, aquí envías el token.id a tu backend junto con info del pedido
-                    // --> Aquí deberías hacer el fetch a tu backend con el token.id y los datos de la orden
-                    alert('Pago exitoso. Token generado: ' + token.id);
-                    // Ejemplo para mostrar el popup de orden exitosa
-                    const orderSuccessPopup = document.getElementById('orderSuccessPopup');
-                    const orderIdElement = document.getElementById('orderId');
-                    const copyBtn = document.getElementById('copyOrderIdBtn');
-                    orderIdElement.textContent = `GRNHL-TOKEN`;
-                    orderSuccessPopup.classList.add('active');
-                    if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
-                    localStorage.removeItem('shoppingCart');
-                    copyBtn.onclick = function() {
-                        navigator.clipboard.writeText(`GRNHL-TOKEN`).then(() => {
-                            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
-                            setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
-                        });
+                    // OBTIENE LOS IDS DE DIRECCIÓN DESDE LOCALSTORAGE
+                    const deliveryAddressId = localStorage.getItem('deliveryAddressId');
+                    const pickupAddressId = localStorage.getItem('pickupAddressId');
+
+                    // Construye los datos para enviar al backend
+                    const payload = {
+                        conektaToken: token.id,
+                        monto: finalTotalAmount,
+                        user_id: loggedInUser ? loggedInUser.id : null,
+                        email: loggedInUser ? loggedInUser.email : '',
+                        nombre: (document.getElementById('firstName').value + ' ' + document.getElementById('lastName1').value + ' ' + document.getElementById('lastName2').value).trim(),
+                        cartItems: shoppingCart.items,
+                        delivery_address_id: deliveryAddressId ? parseInt(deliveryAddressId, 10) : null,
+                        pickup_address_id: pickupAddressId ? parseInt(pickupAddressId, 10) : null,
+                        rentalDates: shoppingCart.rentalDates || null
                     };
+
+                    // DEBUG (opcional): console.log(payload);
+
+                    fetch(`${backendUrl}/api/pagos`, {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.order_folio) {
+                            // Éxito: muestra el popup con el folio real
+                            const orderSuccessPopup = document.getElementById('orderSuccessPopup');
+                            const orderIdElement = document.getElementById('orderId');
+                            const copyBtn = document.getElementById('copyOrderIdBtn');
+                            orderIdElement.textContent = data.order_folio;
+                            orderSuccessPopup.classList.add('active');
+                            if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
+                            localStorage.removeItem('shoppingCart');
+                            localStorage.removeItem('deliveryAddressId');
+                            localStorage.removeItem('pickupAddressId');
+                            copyBtn.onclick = function() {
+                                navigator.clipboard.writeText(data.order_folio).then(() => {
+                                    copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                                    setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
+                                });
+                            };
+                        } else {
+                            alert(data.message || 'Error al procesar el pago.');
+                        }
+                        payBtn.disabled = false;
+                        payBtn.textContent = 'Pagar Ahora';
+                    })
+                    .catch(err => {
+                        alert('Error de comunicación con el backend. Intenta de nuevo.');
+                        payBtn.disabled = false;
+                        payBtn.textContent = 'Pagar Ahora';
+                    });
                 }, function(response) {
                     let msg = "Error al procesar tarjeta.";
                     if(response && response.message_to_purchaser) msg = response.message_to_purchaser;
