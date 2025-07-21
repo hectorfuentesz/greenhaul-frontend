@@ -982,6 +982,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     fetchUserData(loggedInUser.id);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('contactForm');
+  if (!form) return;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const full_name = document.getElementById('contactName').value;
+    const email = document.getElementById('contactEmail').value;
+    const message = document.getElementById('contactMessage').value;
+    try {
+      const response = await fetch('https://greenhaul-backend-production.up.railway.app/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name, email, message })
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Error al enviar mensaje');
+      alert('¡Mensaje enviado correctamente!');
+      form.reset();
+    } catch (err) {
+      alert('Hubo un error al enviar tu mensaje: ' + err.message);
+    }
+  });
+});
+
 </script>
 </body>
 </html>
