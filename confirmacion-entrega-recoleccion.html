@@ -24,9 +24,9 @@
             color: var(--primary-solid);
             background: linear-gradient(90deg, var(--accent-green), var(--primary-solid));
             -webkit-background-clip: text;
-    background-clip: text;            /* <-- Esta línea soluciona el warning */
-    -webkit-text-fill-color: transparent;
-    color: transparent;   
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
             margin-bottom: 18px;
             font-weight: 700;
             display: flex; align-items: center; gap: 8px;
@@ -305,6 +305,10 @@
         let deliveryMap, deliveryMarker;
         let pickupMap, pickupMarker;
 
+        // Variables para guardar los IDs de las direcciones seleccionadas
+        let deliveryAddressId = null;
+        let pickupAddressId = null;
+
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
@@ -454,7 +458,7 @@
                         addresses.forEach(addr => {
                             const fullAddressText = `${addr.name ? addr.name + ' - ' : ''}${addr.street || ''}, ${addr.neighborhood ? addr.neighborhood + ', ' : ''}${addr.city || ''}, ${addr.state || ''} ${addr.postal_code || ''}`;
                             const option = document.createElement('option');
-                            option.value = JSON.stringify(addr);
+                            option.value = addr.id; // Usamos SOLO el id
                             option.textContent = fullAddressText.trim();
                             deliverySelect.appendChild(option.cloneNode(true));
                             pickupSelect.appendChild(option);
@@ -470,23 +474,29 @@
                     document.getElementById('saved-pickup-addresses-container').style.display = 'none';
                 });
             deliverySelect.addEventListener('change', (e) => {
-                const selectedAddressJson = e.target.value;
-                if (selectedAddressJson) {
-                    const addr = JSON.parse(selectedAddressJson);
-                    deliveryAddressStreetInput.value = addr.street || '';
-                    deliveryAddressNeighborhoodInput.value = addr.neighborhood || '';
-                    deliveryAddressCityInput.value = addr.city || '';
-                    deliveryAddressStateInput.value = addr.state || '';
-                    deliveryAddressPostalCodeInput.value = addr.postal_code || '';
-                    deliveryAddressReferencesInput.value = addr.references || '';
-                    if (addr.latitude && addr.longitude) {
-                        deliveryMarker.setLatLng([addr.latitude, addr.longitude]);
-                        deliveryMap.setView([addr.latitude, addr.longitude], 16);
-                        deliveryMap.invalidateSize();
-                    } else {
-                        geocodeAddress(deliveryInputElements, deliveryMap, deliveryMarker);
-                    }
+                const selectedId = e.target.value;
+                if (selectedId) {
+                    deliveryAddressId = parseInt(selectedId, 10);
+                    // Busca la dirección seleccionada en la API para rellenar los campos y el mapa
+                    fetch(`${backendUrl}/api/addresses/${deliveryAddressId}`)
+                        .then(res => res.json())
+                        .then(addr => {
+                            deliveryAddressStreetInput.value = addr.street || '';
+                            deliveryAddressNeighborhoodInput.value = addr.neighborhood || '';
+                            deliveryAddressCityInput.value = addr.city || '';
+                            deliveryAddressStateInput.value = addr.state || '';
+                            deliveryAddressPostalCodeInput.value = addr.postal_code || '';
+                            deliveryAddressReferencesInput.value = addr.references || '';
+                            if (addr.latitude && addr.longitude) {
+                                deliveryMarker.setLatLng([addr.latitude, addr.longitude]);
+                                deliveryMap.setView([addr.latitude, addr.longitude], 16);
+                                deliveryMap.invalidateSize();
+                            } else {
+                                geocodeAddress(deliveryInputElements, deliveryMap, deliveryMarker);
+                            }
+                        });
                 } else {
+                    deliveryAddressId = null;
                     deliveryAddressStreetInput.value = '';
                     deliveryAddressNeighborhoodInput.value = '';
                     deliveryAddressCityInput.value = '';
@@ -499,23 +509,28 @@
                 }
             });
             pickupSelect.addEventListener('change', (e) => {
-                const selectedAddressJson = e.target.value;
-                if (selectedAddressJson) {
-                    const addr = JSON.parse(selectedAddressJson);
-                    pickupAddressStreetInput.value = addr.street || '';
-                    pickupAddressNeighborhoodInput.value = addr.neighborhood || '';
-                    pickupAddressCityInput.value = addr.city || '';
-                    pickupAddressStateInput.value = addr.state || '';
-                    pickupAddressPostalCodeInput.value = addr.postal_code || '';
-                    pickupAddressReferencesInput.value = addr.references || '';
-                    if (addr.latitude && addr.longitude) {
-                        pickupMarker.setLatLng([addr.latitude, addr.longitude]);
-                        pickupMap.setView([addr.latitude, addr.longitude], 16);
-                        pickupMap.invalidateSize();
-                    } else {
-                        geocodeAddress(pickupInputElements, pickupMap, pickupMarker);
-                    }
+                const selectedId = e.target.value;
+                if (selectedId) {
+                    pickupAddressId = parseInt(selectedId, 10);
+                    fetch(`${backendUrl}/api/addresses/${pickupAddressId}`)
+                        .then(res => res.json())
+                        .then(addr => {
+                            pickupAddressStreetInput.value = addr.street || '';
+                            pickupAddressNeighborhoodInput.value = addr.neighborhood || '';
+                            pickupAddressCityInput.value = addr.city || '';
+                            pickupAddressStateInput.value = addr.state || '';
+                            pickupAddressPostalCodeInput.value = addr.postal_code || '';
+                            pickupAddressReferencesInput.value = addr.references || '';
+                            if (addr.latitude && addr.longitude) {
+                                pickupMarker.setLatLng([addr.latitude, addr.longitude]);
+                                pickupMap.setView([addr.latitude, addr.longitude], 16);
+                                pickupMap.invalidateSize();
+                            } else {
+                                geocodeAddress(pickupInputElements, pickupMap, pickupMarker);
+                            }
+                        });
                 } else {
+                    pickupAddressId = null;
                     pickupAddressStreetInput.value = '';
                     pickupAddressNeighborhoodInput.value = '';
                     pickupAddressCityInput.value = '';
@@ -535,12 +550,24 @@
 
         deliveryAddressForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            if (!deliveryAddressId) {
+                showNotification('Selecciona una dirección de entrega guardada para continuar.', 'error');
+                isDeliveryAddressConfirmed = false;
+                return;
+            }
             isDeliveryAddressConfirmed = true;
+            localStorage.setItem('deliveryAddressId', deliveryAddressId);
             showNotification('Dirección de entrega confirmada.', 'success');
         });
         pickupAddressForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            if (!pickupAddressId) {
+                showNotification('Selecciona una dirección de recolección guardada para continuar.', 'error');
+                isPickupAddressConfirmed = false;
+                return;
+            }
             isPickupAddressConfirmed = true;
+            localStorage.setItem('pickupAddressId', pickupAddressId);
             showNotification('Dirección de recolección confirmada.', 'success');
         });
 
@@ -549,37 +576,28 @@
                 showNotification('Por favor, confirma ambas direcciones antes de continuar al pago.', 'error');
                 return;
             }
-            // Guarda fechas en localStorage para pago.html
+            // Guarda fechas y los IDs de dirección en localStorage para uso en pago.html
             const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
             if (shoppingCart.rentalDates && shoppingCart.rentalDates.start && shoppingCart.rentalDates.end) {
                 localStorage.setItem('greenhaulEntrega', shoppingCart.rentalDates.start);
                 localStorage.setItem('greenhaulRecoleccion', shoppingCart.rentalDates.end);
             }
-            // Opcional: guarda también direcciones si lo necesitas en pago.html
-            /*
-            localStorage.setItem('deliveryAddressDetails', JSON.stringify({
-                street: deliveryAddressStreetInput.value,
-                neighborhood: deliveryAddressNeighborhoodInput.value,
-                city: deliveryAddressCityInput.value,
-                state: deliveryAddressStateInput.value,
-                postal_code: deliveryAddressPostalCodeInput.value,
-                references: deliveryAddressReferencesInput.value,
-                latitude: deliveryMarker.getLatLng().lat,
-                longitude: deliveryMarker.getLatLng().lng
-            }));
-            localStorage.setItem('pickupAddressDetails', JSON.stringify({
-                street: pickupAddressStreetInput.value,
-                neighborhood: pickupAddressNeighborhoodInput.value,
-                city: pickupAddressCityInput.value,
-                state: pickupAddressStateInput.value,
-                postal_code: pickupAddressPostalCodeInput.value,
-                references: pickupAddressReferencesInput.value,
-                latitude: pickupMarker.getLatLng().lat,
-                longitude: pickupMarker.getLatLng().lng
-            }));
-            */
+            // Ya guardamos deliveryAddressId y pickupAddressId en los submit
             window.location.href = 'pago.html';
         });
+
+        // Función simple de notificación
+        window.showNotification = function (msg, type) {
+            const cartNotification = document.getElementById('cartNotification');
+            const notificationText = document.getElementById('notificationText');
+            notificationText.textContent = msg;
+            cartNotification.classList.remove('show', 'error', 'success', 'info');
+            if (type) cartNotification.classList.add(type);
+            cartNotification.classList.add('show');
+            setTimeout(() => {
+                cartNotification.classList.remove('show');
+            }, 3500);
+        };
     });
     </script>
 </body>

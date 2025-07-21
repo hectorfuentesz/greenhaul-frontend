@@ -521,8 +521,8 @@
     });
 
     const taxes = subtotal * 0.16;
-    const total = subtotal + taxes;
-    finalTotalAmount = total; 
+const total = subtotal;
+finalTotalAmount = total;
 
     subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
     taxesEl.textContent = `$${taxes.toFixed(2)}`;

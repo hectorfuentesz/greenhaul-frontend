@@ -135,27 +135,27 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- INICIO: FUNCIONES DEL CARRITO CORREGIDAS ---
         const updateCartModalTotals = () => {
-            // Calcula la cantidad de días de renta
-            let totalDays = 1;
-            if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
-                const startDate = new Date(cart.rentalDates.start);
-                const endDate = new Date(cart.rentalDates.end);
-                // +1 para incluir el día de entrega
-                totalDays = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)));
-            }
-        
-            const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity * totalDays), 0);
-            const taxes = subtotal * 0.16;
-            const total = subtotal + taxes;
-        
-            const subtotalEl = document.getElementById('cartSubtotal');
-            const taxesEl = document.getElementById('cartTaxes');
-            const totalEl = document.getElementById('cartTotal');
-            
-            if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-            if (taxesEl) taxesEl.textContent = `$${taxes.toFixed(2)}`;
-            if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
-        };
+    // Calcula la cantidad de días de renta
+    let totalDays = 1;
+    if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
+        const startDate = new Date(cart.rentalDates.start);
+        const endDate = new Date(cart.rentalDates.end);
+        // +1 para incluir el día de entrega
+        totalDays = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)));
+    }
+
+    const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity * totalDays), 0);
+    const taxes = subtotal * 0.16;
+const total = subtotal;
+
+    const subtotalEl = document.getElementById('cartSubtotal');
+    const taxesEl = document.getElementById('cartTaxes');
+    const totalEl = document.getElementById('cartTotal');
+    
+    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    if (taxesEl) taxesEl.textContent = `$${taxes.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+};
 
         const removeCartItem = (id) => {
             cart.items = cart.items.filter(item => item.id !== id);
@@ -255,6 +255,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (emptyCartBtn) emptyCartBtn.addEventListener('click', () => { clearCart(); showNotification('Carrito vaciado.', 'success'); });
         if (proceedToCheckoutBtn) {
             proceedToCheckoutBtn.addEventListener('click', e => {
+                // Checa sesión
+                const user = JSON.parse(localStorage.getItem('greenhaulUser'));
+                if (!user) {
+                    e.preventDefault();
+                    showNotification('Debes iniciar sesión para continuar con la compra.', 'error');
+                    // Opcional: Redirigir a login después de un breve tiempo
+                    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                    return;
+                }
+        
                 if (cart.items.length === 0) {
                     e.preventDefault();
                     showNotification('Tu carrito está vacío.', 'error');
