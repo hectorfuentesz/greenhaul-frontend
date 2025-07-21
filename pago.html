@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css"> 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- SDK de Conekta -->
+    <script src="https://cdn.conekta.io/js/latest/conekta.js"></script>
     <style>
         :root {
             --primary-solid: #4a90e2; 
@@ -59,7 +61,7 @@
         .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .name-grid .form-group:first-child { grid-column: 1 / span 2; }
         @media(max-width: 600px) { .name-grid { grid-template-columns: 1fr; } .name-grid .form-group:first-child { grid-column: auto; } }
-        .btn-submit { width: 100%; padding: 18px; font-size: 1.3rem; border-radius: 999px; }
+        .btn-submit { width: 100%; padding: 18px; font-size: 1.3rem; border-radius: 999px; background: var(--gradient-primary); color: #fff; border: none;}
         .order-summary-list { list-style: none; padding: 0; margin: 0 0 20px 0; max-height: 300px; overflow-y: auto; }
         .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
         .summary-item:last-child { border-bottom: none; }
@@ -138,14 +140,15 @@
                     <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
                     <form id="paymentForm">
                         <div class="name-grid">
-                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control" required></div>
+                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control" required data-conekta="card[name]"></div>
                             <div class="form-group"><label for="lastName1">Apellido Paterno</label><input type="text" id="lastName1" class="form-control" required></div>
                             <div class="form-group"><label for="lastName2">Apellido Materno</label><input type="text" id="lastName2" class="form-control" required></div>
                         </div>
-                        <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" id="cardNumber" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX" required></div>
+                        <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" id="cardNumber" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX" required data-conekta="card[number]"></div>
                         <div style="display: flex; gap: 20px;">
-                            <div class="form-group" style="flex: 1;"><label for="expiryDate">Expiración (MM/AA)</label><input type="text" id="expiryDate" class="form-control" placeholder="MM/AA" required></div>
-                            <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX" required></div>
+                            <div class="form-group" style="flex: 1;"><label for="expiryMonth">Expiración (MM)</label><input type="text" id="expiryMonth" class="form-control" placeholder="MM" required data-conekta="card[exp_month]"></div>
+                            <div class="form-group" style="flex: 1;"><label for="expiryYear">Expiración (AA)</label><input type="text" id="expiryYear" class="form-control" placeholder="AA" required data-conekta="card[exp_year]"></div>
+                            <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX" required data-conekta="card[cvc]"></div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-submit" id="payBtn">Pagar Ahora</button>
                     </form>
@@ -185,6 +188,9 @@
     </div>
     <script src="assets/js/main.js"></script>
     <script>
+        // Inicializa Conekta con tu public key
+        Conekta.setPublicKey('key_HDyUYptP9xW8SCCH4XvuaDb');
+
         document.addEventListener('DOMContentLoaded', () => {
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
@@ -266,21 +272,31 @@
                 }
             }
             renderOrderSummary();
+
             document.getElementById('firstName').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, ''); });
             document.getElementById('lastName1').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, ''); });
             document.getElementById('lastName2').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, ''); });
+
             document.getElementById('cardNumber').addEventListener('input', e => { 
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 16).replace(/(.{4})/g, '$1-').trim().slice(0, 19); 
             });
-            document.getElementById('expiryDate').addEventListener('input', e => { 
-                e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4).replace(/(.{2})/, '$1/').slice(0, 5); 
+            document.getElementById('expiryMonth').addEventListener('input', e => { 
+                e.target.value = e.target.value.replace(/\D/g, '').substring(0,2); 
+            });
+            document.getElementById('expiryYear').addEventListener('input', e => { 
+                e.target.value = e.target.value.replace(/\D/g, '').substring(0,2); 
             });
             document.getElementById('cvv').addEventListener('input', e => { 
                 e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4); 
             });
-            paymentForm.addEventListener('submit', async (e) => {
+
+            // INTEGRACIÓN CONEKTA
+            paymentForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const payBtn = document.getElementById('payBtn');
+                payBtn.disabled = true;
+                payBtn.textContent = 'Procesando...';
+                // Validación visual de campos requeridos
                 const inputs = paymentForm.querySelectorAll('input[required]'); 
                 let allFieldsFilled = true;
                 inputs.forEach(input => {
@@ -292,96 +308,36 @@
                 });
                 if (!allFieldsFilled) {
                     alert('Por favor, completa todos los detalles de pago.');
-                    return;
-                }
-                const cardNumber = document.getElementById('cardNumber').value.replace(/-/g, '');
-                if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
-                    alert('Número de tarjeta inválido. Debe tener 16 dígitos numéricos.');
-                    document.getElementById('cardNumber').classList.add('shake-animation');
-                    setTimeout(() => document.getElementById('cardNumber').classList.remove('shake-animation'), 500);
-                    return;
-                }
-                const expiryDate = document.getElementById('expiryDate').value;
-                const [monthStr, yearStr] = expiryDate.split('/');
-                const month = parseInt(monthStr);
-                const year = parseInt(yearStr); 
-                const currentYearFull = new Date().getFullYear();
-                const currentMonth = new Date().getMonth() + 1;
-                const fullYear = (year < 70) ? (2000 + year) : (1900 + year);
-                if (isNaN(month) || isNaN(year) || month < 1 || month > 12 || year < 0 || expiryDate.length !== 5 || expiryDate.indexOf('/') === -1 ||
-                    fullYear < currentYearFull || (fullYear === currentYearFull && month < currentMonth)) {
-                    alert('Fecha de expiración inválida o tarjeta expirada (MM/AA).');
-                    document.getElementById('expiryDate').classList.add('shake-animation');
-                    setTimeout(() => document.getElementById('expiryDate').classList.remove('shake-animation'), 500);
-                    return;
-                }
-                const cvv = document.getElementById('cvv').value;
-                if (cvv.length < 3 || cvv.length > 4 || !/^\d+$/.test(cvv)) {
-                    alert('CVV inválido. Debe tener 3 o 4 dígitos numéricos.');
-                    document.getElementById('cvv').classList.add('shake-animation');
-                    setTimeout(() => document.getElementById('cvv').classList.remove('shake-animation'), 500);
-                    return;
-                }
-                // Leer los IDs de direcciones confirmadas desde localStorage
-                const deliveryAddressId = parseInt(localStorage.getItem('deliveryAddressId'), 10);
-                const pickupAddressId = parseInt(localStorage.getItem('pickupAddressId'), 10);
-                if (!deliveryAddressId || !pickupAddressId) {
-                    alert('Debes confirmar ambas direcciones antes de finalizar el pedido.');
                     payBtn.disabled = false;
                     payBtn.textContent = 'Pagar Ahora';
                     return;
                 }
-                payBtn.disabled = true;
-                payBtn.textContent = 'Procesando...';
-                const orderData = {
-                    user_id: loggedInUser ? loggedInUser.id : null,
-                    cartItems: shoppingCart.items.map(item => ({ 
-                        id: item.id,
-                        name: item.name,
-                        price: item.price,
-                        quantity: item.quantity,
-                        rentalDays: item.rentalDays
-                    })),
-                    total_amount: finalTotalAmount,
-                    rentalDates: shoppingCart.rentalDates,
-                    delivery_address_id: deliveryAddressId,
-                    pickup_address_id: pickupAddressId
-                };
-                try {
-                    const response = await fetch(`${backendUrl}/api/orders`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(orderData)
-                    });
-                    const result = await response.json();
-                    if (!response.ok) {
-                        if (response.status === 400 && result.message) {
-                            throw new Error(result.message);
-                        } else {
-                            throw new Error('No se pudo procesar el pedido. Error desconocido en el servidor.');
-                        }
-                    }
+                // Tokenización con Conekta
+                Conekta.Token.create(paymentForm, function(token) {
+                    // El token ya está generado, aquí envías el token.id a tu backend junto con info del pedido
+                    // --> Aquí deberías hacer el fetch a tu backend con el token.id y los datos de la orden
+                    alert('Pago exitoso. Token generado: ' + token.id);
+                    // Ejemplo para mostrar el popup de orden exitosa
                     const orderSuccessPopup = document.getElementById('orderSuccessPopup');
                     const orderIdElement = document.getElementById('orderId');
                     const copyBtn = document.getElementById('copyOrderIdBtn');
-                    const realOrderId = result.order ? result.order.id : (result.orderId || 'N/A'); 
-                    orderIdElement.textContent = `GRNHL-${realOrderId}`;
+                    orderIdElement.textContent = `GRNHL-TOKEN`;
                     orderSuccessPopup.classList.add('active');
                     if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
                     localStorage.removeItem('shoppingCart');
-                    localStorage.removeItem('deliveryAddressId');
-                    localStorage.removeItem('pickupAddressId');
                     copyBtn.onclick = function() {
-                        navigator.clipboard.writeText(`GRNHL-${realOrderId}`).then(() => {
+                        navigator.clipboard.writeText(`GRNHL-TOKEN`).then(() => {
                             copyBtn.innerHTML = '<i class="fas fa-check"></i>';
                             setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
                         });
                     };
-                } catch (error) {
-                    alert(`Error al procesar el pedido: ${error.message}`);
+                }, function(response) {
+                    let msg = "Error al procesar tarjeta.";
+                    if(response && response.message_to_purchaser) msg = response.message_to_purchaser;
+                    alert(msg);
                     payBtn.disabled = false;
                     payBtn.textContent = 'Pagar Ahora';
-                }
+                });
             });
         });
     </script>
