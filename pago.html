@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Compra - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css"> 
+    <link rel="stylesheet" href="assets/css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <!-- SDK de Conekta -->
-    <script src="https://cdn.conekta.io/js/latest/conekta.js"></script>
+    <!-- SDK Mercado Pago Bricks -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <style>
         :root {
-            --primary-solid: #4a90e2; 
+            --primary-solid: #4a90e2;
             --primary-solid-dark: #3a7bcd;
             --accent-green: #00b386;
             --accent-green-dark: #008c6b;
             --gradient-primary: linear-gradient(to right, var(--accent-green), var(--primary-solid));
             --gradient-primary-hover: linear-gradient(to right, var(--accent-green-dark), var(--primary-solid-dark));
-            --secondary: #a0a4a8; 
+            --secondary: #a0a4a8;
             --accent-orange: #ff9900;
             --accent-red: #e74c3c;
-            --background: #ffffff; 
+            --background: #ffffff;
             --text: #333333;
             --text-light: #666666;
             --text-dark: #444444;
@@ -28,7 +28,7 @@
             --border-focus: rgba(74, 144, 226, 0.4);
             --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
-            --border-radius: 12px; 
+            --border-radius: 12px;
             --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             --font-heading: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             --navbar-height-mobile: 90px;
@@ -54,13 +54,6 @@
         @media(max-width: 992px) { .payment-layout { grid-template-columns: 1fr; gap: 30px; padding: 25px; } }
         .form-container, .summary-container { background-color: transparent; padding: 0; border-radius: var(--border-radius); box-shadow: none; }
         @media(max-width: 992px) { .summary-container { margin-top: 20px; } }
-        .form-group { margin-bottom: 20px; position: relative; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-dark); transition: all 0.2s ease; }
-        .form-control { width: 100%; padding: 14px 12px; border: 1px solid var(--border); border-radius: var(--border-radius); font-size: 1.05rem; font-family: var(--font-main); color: var(--text); background-color: var(--card-input-bg); box-sizing: border-box; transition: all 0.3s ease; }
-        .form-control:focus { outline: none; border-color: var(--primary-solid); box-shadow: var(--input-focus-shadow); }
-        .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .name-grid .form-group:first-child { grid-column: 1 / span 2; }
-        @media(max-width: 600px) { .name-grid { grid-template-columns: 1fr; } .name-grid .form-group:first-child { grid-column: auto; } }
         .btn-submit { width: 100%; padding: 18px; font-size: 1.3rem; border-radius: 999px; background: var(--gradient-primary); color: #fff; border: none;}
         .order-summary-list { list-style: none; padding: 0; margin: 0 0 20px 0; max-height: 300px; overflow-y: auto; }
         .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
@@ -96,6 +89,34 @@
             50% { transform: translateX(5px); }
             75% { transform: translateX(-5px); }
             100% { transform: translateX(0); }
+        }
+        /* Específico para el Brick de Mercado Pago */
+        #cardPaymentBrick_container {
+          min-height: 380px;
+          width: 100%;
+          display: block !important;
+          background: transparent;
+          overflow: visible !important;
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+        /* SUPERPONER NUESTRO BOTÓN SOBRE EL DE MERCADO PAGO */
+        .form-container {
+          position: relative;
+        }
+        #payBtn {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          bottom: 20px;
+          z-index: 10;
+          width: 90%;
+          pointer-events: auto;
+        }
+        /* Opcional: Oculta el botón azul de Mercado Pago si existe */
+        #cardPaymentBrick_container button {
+          opacity: 0 !important;
+          pointer-events: none !important;
         }
     </style>
 </head>
@@ -138,20 +159,9 @@
             <div class="payment-layout">
                 <div class="form-container">
                     <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
-                    <form id="paymentForm">
-                        <div class="name-grid">
-                            <div class="form-group"><label for="firstName">Nombre(s)</label><input type="text" id="firstName" class="form-control" required data-conekta="card[name]"></div>
-                            <div class="form-group"><label for="lastName1">Apellido Paterno</label><input type="text" id="lastName1" class="form-control" required></div>
-                            <div class="form-group"><label for="lastName2">Apellido Materno</label><input type="text" id="lastName2" class="form-control" required></div>
-                        </div>
-                        <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" id="cardNumber" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX" required data-conekta="card[number]"></div>
-                        <div style="display: flex; gap: 20px;">
-                            <div class="form-group" style="flex: 1;"><label for="expiryMonth">Expiración (MM)</label><input type="text" id="expiryMonth" class="form-control" placeholder="MM" required data-conekta="card[exp_month]"></div>
-                            <div class="form-group" style="flex: 1;"><label for="expiryYear">Expiración (AA)</label><input type="text" id="expiryYear" class="form-control" placeholder="AA" required data-conekta="card[exp_year]"></div>
-                            <div class="form-group" style="flex: 1;"><label for="cvv">CVV</label><input type="text" id="cvv" class="form-control" placeholder="XXX" required data-conekta="card[cvc]"></div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-submit" id="payBtn">Pagar Ahora</button>
-                    </form>
+                    <!-- Aquí va el Brick de Mercado Pago -->
+                    <div id="cardPaymentBrick_container"></div>
+                    <button id="payBtn" class="btn btn-primary btn-submit">Pagar Ahora</button>
                 </div>
                 <div class="summary-container">
                     <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Pedido</h3>
@@ -188,21 +198,18 @@
     </div>
     <script src="assets/js/main.js"></script>
     <script>
-        // Inicializa Conekta con tu public key
-        Conekta.setPublicKey('key_HDyUYptP9xW8SCCH4XvuaDb');
-
         document.addEventListener('DOMContentLoaded', () => {
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
-            if (navbarToggler && navbarCollapse) { 
-                navbarToggler.addEventListener('click', () => { navbarCollapse.classList.toggle('active'); }); 
+            if (navbarToggler && navbarCollapse) {
+                navbarToggler.addEventListener('click', () => { navbarCollapse.classList.toggle('active'); });
             }
             const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
             const loginBtn = document.getElementById('loginBtn');
             const accountLink = document.getElementById('accountLink');
             const logoutBtn = document.getElementById('logoutBtn');
             const userNameSpan = document.getElementById('userName');
-            const cartIcon = document.getElementById('cartIcon'); 
+            const cartIcon = document.getElementById('cartIcon');
             const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
             if (loggedInUser) {
                 if(loginBtn) loginBtn.style.display = 'none';
@@ -214,26 +221,25 @@
                 if(accountLink) accountLink.style.display = 'none';
                 if(logoutBtn) logoutBtn.style.display = 'none';
             }
-            if(logoutBtn) { 
-                logoutBtn.addEventListener('click', () => { 
-                    localStorage.removeItem('greenhaulUser'); 
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('greenhaulUser');
                     localStorage.removeItem('shoppingCart');
-                    window.location.href = 'index.html'; 
-                }); 
+                    window.location.href = 'index.html';
+                });
             }
             const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null, totalDays: 0 };
             const itemsContainer = document.getElementById('summaryItemsContainer');
             const subtotalEl = document.getElementById('summarySubtotal');
             const taxesEl = document.getElementById('summaryTaxes');
             const totalEl = document.getElementById('summaryTotal');
-            const paymentForm = document.getElementById('paymentForm');
-            let finalTotalAmount = 0; 
+            let finalTotalAmount = 0;
             function renderOrderSummary() {
                 if (!itemsContainer) return;
                 const payBtn = document.getElementById('payBtn');
                 if (!shoppingCart.items || shoppingCart.items.length === 0) {
                     itemsContainer.innerHTML = '<li>No hay productos en tu carrito.</li>';
-                    if(payBtn) payBtn.disabled = true; 
+                    if(payBtn) payBtn.disabled = true;
                     return;
                 }
                 let rentalDays = 1;
@@ -273,109 +279,105 @@
             }
             renderOrderSummary();
 
-            document.getElementById('firstName').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, ''); });
-            document.getElementById('lastName1').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, ''); });
-            document.getElementById('lastName2').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, ''); });
+            // --------- INTEGRACIÓN MERCADO PAGO BRICKS ---------
+            let brickController = null;
+            let paymentData = null;
+            // Inicializa Mercado Pago con tu PUBLIC KEY
+            const mp = new MercadoPago('APP_USR-23c6f09d-9b3a-43e2-9002-836348486fe8', { locale: 'es-MX' });
 
-            document.getElementById('cardNumber').addEventListener('input', e => { 
-                e.target.value = e.target.value.replace(/\D/g, '').substring(0, 16).replace(/(.{4})/g, '$1-').trim().slice(0, 19); 
-            });
-            document.getElementById('expiryMonth').addEventListener('input', e => { 
-                e.target.value = e.target.value.replace(/\D/g, '').substring(0,2); 
-            });
-            document.getElementById('expiryYear').addEventListener('input', e => { 
-                e.target.value = e.target.value.replace(/\D/g, '').substring(0,2); 
-            });
-            document.getElementById('cvv').addEventListener('input', e => { 
-                e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4); 
+            // Renderiza el Brick pago con tarjeta
+            mp.bricks().create("cardPayment", "cardPaymentBrick_container", {
+                initialization: {
+                    amount: finalTotalAmount || 100, // Monto total en MXN
+                    payer: {
+                        email: loggedInUser ? loggedInUser.email : "",
+                    }
+                },
+                customization: {
+                    paymentMethods: {
+                        creditCard: {
+                            renderButton: false // Oculta el botón azul de Mercado Pago si la opción es soportada
+                        }
+                    },
+                    visual: {
+                        style: {
+                            // Puedes personalizar aquí el estilo visual si lo deseas
+                        }
+                    }
+                },
+                callbacks: {
+                    onReady: () => {},
+                    onSubmit: (formData) => {
+                        // Recibe el token y los datos del formulario del Brick
+                        paymentData = formData;
+                    },
+                    onError: (error) => {
+                        alert("Error en el pago: " + (error.message || "Verifica los datos e intenta de nuevo."));
+                    }
+                }
+            }).then((controller) => {
+                brickController = controller;
             });
 
-            // INTEGRACIÓN CONEKTA -- MODIFICADO PARA USAR LAS DIRECCIONES CORRECTAS
-            paymentForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+            // Al hacer click en "Pagar Ahora", envía los datos al backend
+            document.getElementById('payBtn').addEventListener('click', async function() {
                 const payBtn = document.getElementById('payBtn');
                 payBtn.disabled = true;
                 payBtn.textContent = 'Procesando...';
-                // Validación visual de campos requeridos
-                const inputs = paymentForm.querySelectorAll('input[required]'); 
-                let allFieldsFilled = true;
-                inputs.forEach(input => {
-                    if (input.value.trim() === '') {
-                        allFieldsFilled = false;
-                        input.classList.add('shake-animation');
-                        setTimeout(() => input.classList.remove('shake-animation'), 500);
-                    }
-                });
-                if (!allFieldsFilled) {
-                    alert('Por favor, completa todos los detalles de pago.');
+                if (!paymentData || !paymentData.token) {
+                    alert("Completa los datos del pago antes de continuar.");
                     payBtn.disabled = false;
                     payBtn.textContent = 'Pagar Ahora';
                     return;
                 }
-                // Tokenización con Conekta
-                Conekta.Token.create(paymentForm, function(token) {
-                    // OBTIENE LOS IDS DE DIRECCIÓN DESDE LOCALSTORAGE
-                    const deliveryAddressId = localStorage.getItem('deliveryAddressId');
-                    const pickupAddressId = localStorage.getItem('pickupAddressId');
-
-                    // Construye los datos para enviar al backend
-                    const payload = {
-                        conektaToken: token.id,
-                        monto: finalTotalAmount,
-                        user_id: loggedInUser ? loggedInUser.id : null,
-                        email: loggedInUser ? loggedInUser.email : '',
-                        nombre: (document.getElementById('firstName').value + ' ' + document.getElementById('lastName1').value + ' ' + document.getElementById('lastName2').value).trim(),
-                        cartItems: shoppingCart.items,
-                        delivery_address_id: deliveryAddressId ? parseInt(deliveryAddressId, 10) : null,
-                        pickup_address_id: pickupAddressId ? parseInt(pickupAddressId, 10) : null,
-                        rentalDates: shoppingCart.rentalDates || null
-                    };
-
-                    // DEBUG (opcional): console.log(payload);
-
-                    fetch(`${backendUrl}/api/pagos`, {
+                const deliveryAddressId = localStorage.getItem('deliveryAddressId');
+                const pickupAddressId = localStorage.getItem('pickupAddressId');
+                const payload = {
+                    mercadoPagoToken: paymentData.token,
+                    monto: finalTotalAmount,
+                    user_id: loggedInUser ? loggedInUser.id : null,
+                    email: loggedInUser ? loggedInUser.email : '',
+                    nombre: loggedInUser ? loggedInUser.name : '',
+                    cartItems: shoppingCart.items,
+                    delivery_address_id: deliveryAddressId ? parseInt(deliveryAddressId, 10) : null,
+                    pickup_address_id: pickupAddressId ? parseInt(pickupAddressId, 10) : null,
+                    rentalDates: shoppingCart.rentalDates || null
+                };
+                try {
+                    const res = await fetch(`${backendUrl}/api/mercadopago`, {
                         method: 'POST',
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(payload)
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.order_folio) {
-                            // Éxito: muestra el popup con el folio real
-                            const orderSuccessPopup = document.getElementById('orderSuccessPopup');
-                            const orderIdElement = document.getElementById('orderId');
-                            const copyBtn = document.getElementById('copyOrderIdBtn');
-                            orderIdElement.textContent = data.order_folio;
-                            orderSuccessPopup.classList.add('active');
-                            if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
-                            localStorage.removeItem('shoppingCart');
-                            localStorage.removeItem('deliveryAddressId');
-                            localStorage.removeItem('pickupAddressId');
-                            copyBtn.onclick = function() {
-                                navigator.clipboard.writeText(data.order_folio).then(() => {
-                                    copyBtn.innerHTML = '<i class="fas fa-check"></i>';
-                                    setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
-                                });
-                            };
-                        } else {
-                            alert(data.message || 'Error al procesar el pago.');
-                        }
-                        payBtn.disabled = false;
-                        payBtn.textContent = 'Pagar Ahora';
-                    })
-                    .catch(err => {
-                        alert('Error de comunicación con el backend. Intenta de nuevo.');
-                        payBtn.disabled = false;
-                        payBtn.textContent = 'Pagar Ahora';
                     });
-                }, function(response) {
-                    let msg = "Error al procesar tarjeta.";
-                    if(response && response.message_to_purchaser) msg = response.message_to_purchaser;
-                    alert(msg);
+                    const data = await res.json();
+                    if (data.order_folio) {
+                        // Éxito: muestra el popup con el folio real
+                        const orderSuccessPopup = document.getElementById('orderSuccessPopup');
+                        const orderIdElement = document.getElementById('orderId');
+                        const copyBtn = document.getElementById('copyOrderIdBtn');
+                        orderIdElement.textContent = data.order_folio;
+                        orderSuccessPopup.classList.add('active');
+                        if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
+                        localStorage.removeItem('shoppingCart');
+                        localStorage.removeItem('deliveryAddressId');
+                        localStorage.removeItem('pickupAddressId');
+                        copyBtn.onclick = function() {
+                            navigator.clipboard.writeText(data.order_folio).then(() => {
+                                copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                                setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
+                            });
+                        };
+                    } else {
+                        alert(data.message || 'Error al procesar el pago.');
+                    }
+                } catch (err) {
+                    alert('Error de comunicación con el backend. Intenta de nuevo.');
+                } finally {
                     payBtn.disabled = false;
                     payBtn.textContent = 'Pagar Ahora';
-                });
+                }
             });
+            // ----------------------------------------------------
         });
     </script>
 </body>
