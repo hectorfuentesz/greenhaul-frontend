@@ -100,7 +100,6 @@
           padding-top: 10px;
           padding-bottom: 10px;
         }
-        /* SUPERPONER NUESTRO BOTÓN SOBRE EL DE MERCADO PAGO */
         .form-container {
           position: relative;
         }
@@ -114,10 +113,11 @@
           pointer-events: auto;
         }
         /* Opcional: Oculta el botón azul de Mercado Pago si existe */
-        #cardPaymentBrick_container button {
+        /* Para depuración, mostrar el botón del Brick, comenta la siguiente línea si necesitas probar el botón original */
+        /* #cardPaymentBrick_container button {
           opacity: 0 !important;
           pointer-events: none !important;
-        }
+        } */
     </style>
 </head>
 <body>
@@ -159,7 +159,6 @@
             <div class="payment-layout">
                 <div class="form-container">
                     <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
-                    <!-- Aquí va el Brick de Mercado Pago -->
                     <div id="cardPaymentBrick_container"></div>
                     <button id="payBtn" class="btn btn-primary btn-submit">Pagar Ahora</button>
                 </div>
@@ -282,48 +281,60 @@
             // --------- INTEGRACIÓN MERCADO PAGO BRICKS ---------
             let brickController = null;
             let paymentData = null;
-            // Inicializa Mercado Pago con tu PUBLIC KEY
             const mp = new MercadoPago('TEST-9fc6389c-411c-4e70-b4e0-5f0d058c795b', { locale: 'es-MX' });
 
-            // Renderiza el Brick pago con tarjeta
-            mp.bricks().create("cardPayment", "cardPaymentBrick_container", {
-                initialization: {
-                    amount: finalTotalAmount || 100, // Monto total en MXN
-                    payer: {
-                        email: loggedInUser ? loggedInUser.email : "",
-                    }
-                },
-                customization: {
-                    paymentMethods: {
-                        creditCard: {
-                            renderButton: false // Oculta el botón azul de Mercado Pago si la opción es soportada
-                        }
-                    },
-                    visual: {
-                        style: {
-                            // Puedes personalizar aquí el estilo visual si lo deseas
-                        }
-                    }
-                },
-                callbacks: {
-                    onReady: () => {},
-                    onSubmit: (formData) => {
-                        // Recibe el token y los datos del formulario del Brick
-                        paymentData = formData;
-                    },
-                    onError: (error) => {
-                        alert("Error en el pago: " + (error.message || "Verifica los datos e intenta de nuevo."));
-                    }
+            function mountBrick() {
+                if (brickController) {
+                    brickController.unmount();
+                    brickController = null;
                 }
-            }).then((controller) => {
-                brickController = controller;
-            });
+                mp.bricks().create("cardPayment", "cardPaymentBrick_container", {
+                    initialization: {
+                        amount: finalTotalAmount || 100,
+                        payer: {
+                            email: loggedInUser ? loggedInUser.email : "",
+                        }
+                    },
+                    customization: {
+                        paymentMethods: {
+                            creditCard: {
+                                renderButton: true // Muestra el botón del Brick para depurar
+                            }
+                        },
+                        visual: {
+                            style: {
+                                // Personalización visual opcional
+                            }
+                        }
+                    },
+                    callbacks: {
+                        onReady: () => {},
+                        onSubmit: (formData) => {
+                            paymentData = formData;
+                            console.log("paymentData:", paymentData); // Depuración, revisa el token
+                        },
+                        onError: (error) => {
+                            alert("Error en el pago: " + (error.message || "Verifica los datos e intenta de nuevo."));
+                        }
+                    }
+                }).then((controller) => {
+                    brickController = controller;
+                });
+            }
 
-            // Al hacer click en "Pagar Ahora", envía los datos al backend
+            // Monta el Brick por primera vez
+            mountBrick();
+
+            // Si el carrito puede cambiar, llama a mountBrick() después de recalcular el monto
+
+            // Botón de pago personalizado
             document.getElementById('payBtn').addEventListener('click', async function() {
                 const payBtn = document.getElementById('payBtn');
                 payBtn.disabled = true;
                 payBtn.textContent = 'Procesando...';
+
+                console.log("paymentData:", paymentData); // Depuración, revisa el token
+
                 if (!paymentData || !paymentData.token) {
                     alert("Completa los datos del pago antes de continuar.");
                     payBtn.disabled = false;
@@ -351,7 +362,6 @@
                     });
                     const data = await res.json();
                     if (data.order_folio) {
-                        // Éxito: muestra el popup con el folio real
                         const orderSuccessPopup = document.getElementById('orderSuccessPopup');
                         const orderIdElement = document.getElementById('orderId');
                         const copyBtn = document.getElementById('copyOrderIdBtn');
@@ -377,7 +387,6 @@
                     payBtn.textContent = 'Pagar Ahora';
                 }
             });
-            // ----------------------------------------------------
         });
     </script>
 </body>
