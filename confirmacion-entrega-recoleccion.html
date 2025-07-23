@@ -269,11 +269,11 @@
             const cartNotification = document.getElementById('cartNotification');
             const notificationText = document.getElementById('notificationText');
             notificationText.textContent = msg;
-            cartNotification.classList.remove('show', 'error', 'success', 'info');
+            cartNotification.classList.remove('visible', 'error', 'success', 'info');
             if (type) cartNotification.classList.add(type);
-            cartNotification.classList.add('show');
+            cartNotification.classList.add('visible');
             setTimeout(() => {
-                cartNotification.classList.remove('show');
+                cartNotification.classList.remove('visible');
             }, 3500);
         }
     </script>
