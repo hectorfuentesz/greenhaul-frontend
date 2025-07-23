@@ -68,36 +68,85 @@
         .summary-totals li.total span:last-child { color: var(--text); }
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .popup-overlay.active { opacity: 1; visibility: visible; }
-        .popup-card { background-color: var(--background); border-radius: var(--border-radius); box-shadow: 0 15px 40px rgba(0,0,0,0.3); width: 90%; max-width: 480px; text-align: center; padding: 40px 30px; transform: scale(0.9); opacity: 0; transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s; }
+        .popup-card { 
+            background-color: var(--background); border-radius: var(--border-radius); 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); width: 90%; max-width: 480px; text-align: center; 
+            padding: 40px 30px; transform: scale(0.9); opacity: 0; 
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s; 
+        }
         .popup-overlay.active .popup-card { transform: scale(1); opacity: 1; }
-        /* Personalización del botón del Brick MercadoPago */
-        #cardPaymentBrick_container button,
-        #cardPaymentBrick_container button span {
-            color: #fff !important;
-            font-weight: bold !important;
-            font-size: 1.3rem !important;
+        .popup-icon { width: 80px; height: 80px; margin: 0 auto 25px auto; background-image: var(--gradient-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+        /* Loader spinner */
+        .spinner {
+            margin: 0 auto 18px auto;
+            width: 60px;
+            height: 60px;
+            border: 6px solid #e0e0e0;
+            border-top: 6px solid #4a90e2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        #cardPaymentBrick_container button {
-            background: linear-gradient(to right, #00b386, #4a90e2) !important;
-            border-radius: 999px !important;
-            border: none !important;
-            width: 100% !important;
-            padding: 18px !important;
-            font-size: 1.3rem !important;
+        @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
         }
-        #cardPaymentBrick_container {
-          min-height: 380px;
-          width: 100%;
-          display: block !important;
-          background: transparent;
-          overflow: visible !important;
-          padding-top: 10px;
-          padding-bottom: 10px;
+        /* Procesando popup */
+        #processingPopup .popup-card {
+            min-height: 210px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .form-container {
-          position: relative;
+        #processingPopup .popup-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-solid);
+            margin-bottom: 12px;
+            margin-top: 8px;
         }
-        /* Header/navbar responsive */
+        #processingPopup .popup-message {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        #processingPopup .spinner {
+            margin-bottom: 18px;
+        }
+        /* Botones popup éxito */
+        .popup-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .btn.btn-secondary, .btn.btn-primary {
+            border-radius: 999px;
+            font-size: 1rem;
+            padding: 12px 28px;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn.btn-secondary {
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+        }
+        .btn.btn-primary {
+            background: var(--gradient-primary);
+            color: #fff;
+            border: none;
+        }
+        .copy-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            cursor: pointer;
+            margin-left: 8px;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .copy-btn:active { color: var(--accent-green);}
         @media(max-width: 992px) { .navbar-toggler { display: block; } .navbar-content { flex-wrap: wrap; } .navbar-collapse { display: none; flex-direction: column; width: 100%; text-align: center; gap: 0; flex-grow: unset; justify-content: flex-start; } .navbar-collapse.active { display: flex; } .nav-links-list { flex-direction: column; width: 100%; gap: 0; } .nav-links-list li { width: 100%; border-bottom: 1px solid var(--border); } .nav-links-list li:last-child { border-bottom: none; } .nav-link { padding: 15px; display: block; } .navbar-right-items { margin-top: 20px; } }
         @media(max-width: 768px) { h2 { font-size: 2.5rem; } h3 { font-size: 1.6rem; } .popup-card h2 { font-size: 1.8rem; } .order-id-wrapper strong { font-size: 1.5rem; } .btn-submit { font-size: 1rem; padding: 12px; } .summary-totals li.total { font-size: 1.3rem; } }
     </style>
@@ -155,15 +204,26 @@
             </div>
         </div>
     </main>
+
+    <!-- POPUP PROCESANDO -->
+    <div class="popup-overlay" id="processingPopup">
+        <div class="popup-card">
+            <div class="spinner"></div>
+            <div class="popup-title">Procesando Pago...</div>
+            <div class="popup-message">Por favor espera unos segundos mientras confirmamos tu pago.</div>
+        </div>
+    </div>
+
+    <!-- POPUP DE ÉXITO BONITO -->
     <div class="popup-overlay" id="orderSuccessPopup">
         <div class="popup-card">
             <div class="popup-icon"><i class="fas fa-check"></i></div>
-            <h2>¡Pedido Realizado!</h2>
+            <h2 style="font-size: 2.2rem; color: var(--primary-solid); margin-bottom: 15px;">¡Pedido Realizado!</h2>
             <p class="message">Tu compra ha sido confirmada. Un asesor se comunicará por WhatsApp para dar seguimiento.</p>
-            <div class="order-details-box">
-                <p>Tu número de orden es:</p>
-                <div class="order-id-wrapper">
-                    <strong id="orderId"></strong>
+            <div class="order-details-box" style="background: var(--payment-bg); border: 1px dashed var(--border); border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                <p style="margin:0; font-size: 0.95rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px;">Tu número de orden es:</p>
+                <div class="order-id-wrapper" style="display:flex;align-items:center;justify-content:center;gap:15px;margin-top:10px;">
+                    <strong id="orderId" style="font-size:2rem;color:var(--text);"></strong>
                     <button id="copyOrderIdBtn" class="copy-btn" title="Copiar al portapapeles">
                         <i class="far fa-copy"></i>
                     </button>
@@ -298,6 +358,8 @@
                         onReady: () => {},
                         onSubmit: async (formData) => {
                             paymentData = formData;
+                            // MOSTRAR POPUP PROCESANDO
+                            document.getElementById('processingPopup').classList.add('active');
                             const deliveryAddressId = localStorage.getItem('deliveryAddressId');
                             const pickupAddressId = localStorage.getItem('pickupAddressId');
                             const payload = {
@@ -318,6 +380,8 @@
                                     body: JSON.stringify(payload)
                                 });
                                 const data = await res.json();
+                                // OCULTAR POPUP PROCESANDO
+                                document.getElementById('processingPopup').classList.remove('active');
                                 if (data.order_folio) {
                                     const orderSuccessPopup = document.getElementById('orderSuccessPopup');
                                     const orderIdElement = document.getElementById('orderId');
@@ -341,10 +405,12 @@
                                     showErrorPopup(errorMsg);
                                 }
                             } catch (err) {
+                                document.getElementById('processingPopup').classList.remove('active');
                                 showErrorPopup('Error de comunicación con el backend. Intenta de nuevo.');
                             }
                         },
                         onError: (error) => {
+                            document.getElementById('processingPopup').classList.remove('active');
                             showErrorPopup("Error en el pago: " + (error.message || "Verifica los datos e intenta de nuevo."));
                         }
                     }
@@ -370,6 +436,7 @@
                 if (e.key === 'Escape') {
                     document.getElementById('orderSuccessPopup').classList.remove('active');
                     document.getElementById('errorPopup').classList.remove('active');
+                    document.getElementById('processingPopup').classList.remove('active');
                 }
             });
             document.getElementById('orderSuccessPopup').addEventListener('click', function(e) {
@@ -378,7 +445,9 @@
             document.getElementById('errorPopup').addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('active');
             });
-
+            document.getElementById('processingPopup').addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('active');
+            });
         });
     </script>
 </body>
