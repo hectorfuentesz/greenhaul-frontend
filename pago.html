@@ -85,8 +85,6 @@
             padding: 18px !important;
             font-size: 1.3rem !important;
         }
-        /* ... el resto del CSS igual ... */
-        /* Específico para el Brick de Mercado Pago */
         #cardPaymentBrick_container {
           min-height: 380px;
           width: 100%;
@@ -99,11 +97,40 @@
         .form-container {
           position: relative;
         }
+        /* Header/navbar responsive */
+        @media(max-width: 992px) { .navbar-toggler { display: block; } .navbar-content { flex-wrap: wrap; } .navbar-collapse { display: none; flex-direction: column; width: 100%; text-align: center; gap: 0; flex-grow: unset; justify-content: flex-start; } .navbar-collapse.active { display: flex; } .nav-links-list { flex-direction: column; width: 100%; gap: 0; } .nav-links-list li { width: 100%; border-bottom: 1px solid var(--border); } .nav-links-list li:last-child { border-bottom: none; } .nav-link { padding: 15px; display: block; } .navbar-right-items { margin-top: 20px; } }
+        @media(max-width: 768px) { h2 { font-size: 2.5rem; } h3 { font-size: 1.6rem; } .popup-card h2 { font-size: 1.8rem; } .order-id-wrapper strong { font-size: 1.5rem; } .btn-submit { font-size: 1rem; padding: 12px; } .summary-totals li.total { font-size: 1.3rem; } }
     </style>
 </head>
 <body>
     <header class="navbar">
-        <!-- ... HEADER SIN CAMBIOS ... -->
+        <div class="container navbar-content">
+            <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 48px;"></a>
+            <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation"><span class="toggler-icon"></span><span class="toggler-icon"></span><span class="toggler-icon"></span></button>
+            <div class="navbar-collapse" id="navbarCollapse">
+                <ul class="nav-links-list">
+                    <li><a href="index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="productos.html" class="nav-link">Productos</a></li>
+                    <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                    <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                    <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                    <li><a href="cuenta.html" class="nav-link">Mi Cuenta</a></li>
+                </ul>
+            </div>
+            <div class="navbar-right-items">
+                <div class="navbar-user-actions" id="navbarUserActions">
+                    <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                    <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+                    <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+                <div class="nav-icons">
+                    <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </header>
     <main class="page-content">
         <div class="container">
@@ -115,7 +142,6 @@
                 <div class="form-container">
                     <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
                     <div id="cardPaymentBrick_container"></div>
-                    <!-- El botón custom ha sido eliminado -->
                 </div>
                 <div class="summary-container">
                     <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Pedido</h3>
@@ -163,6 +189,7 @@
     <script src="assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Navbar y usuario
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
             if (navbarToggler && navbarCollapse) {
@@ -192,6 +219,7 @@
                     window.location.href = 'index.html';
                 });
             }
+            // Renderizar resumen de pedido
             const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null, totalDays: 0 };
             const itemsContainer = document.getElementById('summaryItemsContainer');
             const subtotalEl = document.getElementById('summarySubtotal');
