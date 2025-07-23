@@ -378,8 +378,21 @@
                             });
                         };
                     } else {
-                        alert(data.message || 'Error al procesar el pago.');
-                    }
+    // Si el backend envía status y status_detail, los mostramos
+    let errorMsg = data.message || 'Error al procesar el pago.';
+    if (data.status) {
+        errorMsg += `\nEstado: ${data.status}`;
+    }
+    if (data.status_detail) {
+        errorMsg += `\nMotivo: ${data.status_detail}`;
+    }
+    // Opcional: muestra el objeto completo para depuración
+    // console.log('MercadoPago:', data.mercado_pago);
+
+    alert(errorMsg);
+
+    // Opcional: también puedes mostrar un popup bonito en vez de alert
+}
                 } catch (err) {
                     alert('Error de comunicación con el backend. Intenta de nuevo.');
                 } finally {
