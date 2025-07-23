@@ -75,6 +75,7 @@
         #cardPaymentBrick_container button span {
             color: #fff !important;
             font-weight: bold !important;
+            font-size: 1.3rem !important;
         }
         #cardPaymentBrick_container button {
             background: linear-gradient(to right, #00b386, #4a90e2) !important;
@@ -114,7 +115,7 @@
                 <div class="form-container">
                     <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
                     <div id="cardPaymentBrick_container"></div>
-                    <!-- <button id="payBtn" class="btn btn-primary btn-submit">Pagar Ahora</button> -->
+                    <!-- El botón custom ha sido eliminado -->
                 </div>
                 <div class="summary-container">
                     <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Pedido</h3>
@@ -162,9 +163,84 @@
     <script src="assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ... JS original, solo elimina el evento del botón custom ...
-            // El resto de la lógica de pago queda igual, pero ahora el pago se dispara desde el Brick
-            // El resto del JS de popups y flujo permanece igual
+            const navbarToggler = document.getElementById('navbarToggler');
+            const navbarCollapse = document.getElementById('navbarCollapse');
+            if (navbarToggler && navbarCollapse) {
+                navbarToggler.addEventListener('click', () => { navbarCollapse.classList.toggle('active'); });
+            }
+            const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
+            const loginBtn = document.getElementById('loginBtn');
+            const accountLink = document.getElementById('accountLink');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userNameSpan = document.getElementById('userName');
+            const cartIcon = document.getElementById('cartIcon');
+            const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+            if (loggedInUser) {
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(accountLink) accountLink.style.display = 'flex';
+                if(logoutBtn) logoutBtn.style.display = 'block';
+                if(userNameSpan) userNameSpan.textContent = loggedInUser.name.split(' ')[0];
+            } else {
+                if(loginBtn) loginBtn.style.display = 'block';
+                if(accountLink) accountLink.style.display = 'none';
+                if(logoutBtn) logoutBtn.style.display = 'none';
+            }
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('greenhaulUser');
+                    localStorage.removeItem('shoppingCart');
+                    window.location.href = 'index.html';
+                });
+            }
+            const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null, totalDays: 0 };
+            const itemsContainer = document.getElementById('summaryItemsContainer');
+            const subtotalEl = document.getElementById('summarySubtotal');
+            const taxesEl = document.getElementById('summaryTaxes');
+            const totalEl = document.getElementById('summaryTotal');
+            let finalTotalAmount = 0;
+            function renderOrderSummary() {
+                if (!itemsContainer) return;
+                if (!shoppingCart.items || shoppingCart.items.length === 0) {
+                    itemsContainer.innerHTML = '<li>No hay productos en tu carrito.</li>';
+                    return;
+                }
+                let rentalDays = 1;
+                if (shoppingCart.rentalDates && shoppingCart.rentalDates.start && shoppingCart.rentalDates.end) {
+                    const startDate = new Date(shoppingCart.rentalDates.start);
+                    const endDate = new Date(shoppingCart.rentalDates.end);
+                    rentalDays = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)));
+                }
+                itemsContainer.innerHTML = '';
+                let subtotal = 0;
+                shoppingCart.items.forEach(item => {
+                    const itemQuantity = item.quantity || 1;
+                    const itemPrice = item.price || 0;
+                    const itemTotal = itemPrice * itemQuantity * rentalDays;
+                    subtotal += itemTotal;
+                    itemsContainer.innerHTML += `
+                        <li class="summary-item">
+                            <div>
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-qty">Cant: ${itemQuantity} x ${rentalDays} días</div>
+                            </div>
+                            <div class="item-price">$${itemTotal.toFixed(2)}</div>
+                        </li>`;
+                });
+                const taxes = subtotal * 0.16;
+                const total = subtotal;
+                finalTotalAmount = total;
+                subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+                taxesEl.textContent = `$${taxes.toFixed(2)}`;
+                totalEl.textContent = `$${total.toFixed(2)}`;
+                const cartCountEl = document.getElementById('cartCount');
+                if (cartCountEl) {
+                    const totalItemsInCart = shoppingCart.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+                    cartCountEl.textContent = totalItemsInCart;
+                    cartCountEl.style.display = totalItemsInCart > 0 ? 'flex' : 'none';
+                }
+            }
+            renderOrderSummary();
+
             // --------- INTEGRACIÓN MERCADO PAGO BRICKS ---------
             let brickController = null;
             let paymentData = null;
@@ -248,7 +324,33 @@
                     brickController = controller;
                 });
             }
-            // El resto del JS igual, no necesitas modificar nada más
+
+            mountBrick();
+
+            // ----------- POPUP DE ERROR -------------
+            function showErrorPopup(message) {
+                const errorPopup = document.getElementById('errorPopup');
+                const errorMsgEl = document.getElementById('errorMessage');
+                errorMsgEl.innerText = message;
+                errorPopup.classList.add('active');
+            }
+            document.getElementById('closeErrorPopupBtn').addEventListener('click', () => {
+                document.getElementById('errorPopup').classList.remove('active');
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.getElementById('orderSuccessPopup').classList.remove('active');
+                    document.getElementById('errorPopup').classList.remove('active');
+                }
+            });
+            document.getElementById('orderSuccessPopup').addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('active');
+            });
+            document.getElementById('errorPopup').addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('active');
+            });
+
         });
     </script>
 </body>
