@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <!-- SDK Mercado Pago Bricks -->
     <script src="https://sdk.mercadopago.com/js/v2"></script>
     <style>
         :root {
@@ -90,7 +89,6 @@
             0% { transform: rotate(0deg);}
             100% { transform: rotate(360deg);}
         }
-        /* Procesando popup */
         #processingPopup .popup-card {
             min-height: 210px;
             display: flex;
@@ -113,7 +111,6 @@
         #processingPopup .spinner {
             margin-bottom: 18px;
         }
-        /* Botones popup éxito */
         .popup-actions {
             display: flex;
             gap: 15px;
@@ -147,6 +144,23 @@
             transition: color 0.2s, transform 0.2s;
         }
         .copy-btn:active { color: var(--accent-green);}
+        /* Personalización del botón del Brick MercadoPago */
+        #cardPaymentBrick_container button,
+        #cardPaymentBrick_container button span {
+            background: linear-gradient(to right, #00b386, #4a90e2) !important;
+            color: #fff !important;
+            font-weight: bold !important;
+            font-size: 1.3rem !important;
+            border-radius: 999px !important;
+            border: none !important;
+            padding: 18px 0 !important;
+            width: 100% !important;
+            box-shadow: 0 3px 15px 0 rgba(74,144,226,0.12) !important;
+            transition: background 0.2s;
+        }
+        #cardPaymentBrick_container button:hover {
+            background: linear-gradient(to right, #00b386, #3a7bcd) !important;
+        }
         @media(max-width: 992px) { .navbar-toggler { display: block; } .navbar-content { flex-wrap: wrap; } .navbar-collapse { display: none; flex-direction: column; width: 100%; text-align: center; gap: 0; flex-grow: unset; justify-content: flex-start; } .navbar-collapse.active { display: flex; } .nav-links-list { flex-direction: column; width: 100%; gap: 0; } .nav-links-list li { width: 100%; border-bottom: 1px solid var(--border); } .nav-links-list li:last-child { border-bottom: none; } .nav-link { padding: 15px; display: block; } .navbar-right-items { margin-top: 20px; } }
         @media(max-width: 768px) { h2 { font-size: 2.5rem; } h3 { font-size: 1.6rem; } .popup-card h2 { font-size: 1.8rem; } .order-id-wrapper strong { font-size: 1.5rem; } .btn-submit { font-size: 1rem; padding: 12px; } .summary-totals li.total { font-size: 1.3rem; } }
     </style>
@@ -217,11 +231,11 @@
     <!-- POPUP DE ÉXITO BONITO -->
     <div class="popup-overlay" id="orderSuccessPopup">
         <div class="popup-card">
-            <div class="popup-icon"><i class="fas fa-check"></i></div>
+            <div class="popup-icon" style="background: linear-gradient(to right, #00b386, #4a90e2);"><i class="fas fa-check"></i></div>
             <h2 style="font-size: 2.2rem; color: var(--primary-solid); margin-bottom: 15px;">¡Pedido Realizado!</h2>
             <p class="message">Tu compra ha sido confirmada. Un asesor se comunicará por WhatsApp para dar seguimiento.</p>
             <div class="order-details-box" style="background: var(--payment-bg); border: 1px dashed var(--border); border-radius: 8px; padding: 20px; margin-bottom: 30px;">
-                <p style="margin:0; font-size: 0.95rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px;">Tu número de orden es:</p>
+                <p style="margin:0; font-size: 0.95rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px;">TU NÚMERO DE ORDEN ES:</p>
                 <div class="order-id-wrapper" style="display:flex;align-items:center;justify-content:center;gap:15px;margin-top:10px;">
                     <strong id="orderId" style="font-size:2rem;color:var(--text);"></strong>
                     <button id="copyOrderIdBtn" class="copy-btn" title="Copiar al portapapeles">
