@@ -4,11 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Nosotros - GreenHaul</title>
+    <!-- FontAwesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <!-- Estilos globales -->
     <link rel="stylesheet" href="assets/css/styles.css" />
     <link rel="stylesheet" href="assets/css/pages.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link rel="icon" type="image/x-icon" href="favicon.ico"/>
 </head>
 <body>
+    <!-- HEADER GLOBAL CON LÓGICA DE SESIÓN Y CARRITO -->
     <header>
         <nav class="navbar">
             <div class="container navbar-content">
@@ -48,6 +52,7 @@
             </div>
         </nav>
     </header>
+
     <main class="page-content">
         <!-- Hero Section Bonito -->
         <section class="hero" style="background: linear-gradient(90deg, #e0f7fa 0%, #f0fff5 100%);">
@@ -185,6 +190,7 @@
             </div>
         </section>
     </main>
+    <!-- FOOTER GLOBAL -->
     <footer class="footer">
         <div class="container footer-content">
             <div class="footer-info">
@@ -217,6 +223,7 @@
             &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
         </div>
     </footer>
+    <!-- MODAL DEL CARRITO Y NOTIFICACIÓN -->
     <div class="cart-modal-overlay" id="cartModalOverlay">
         <div class="cart-modal">
             <div class="cart-modal-header"><h2>Tu Carrito</h2><button class="close-modal-btn" id="closeCartModalBtn" title="Cerrar">&times;</button></div>
@@ -240,6 +247,7 @@
             <p id="notificationText"></p>
         </div>
     </div>
+    <!-- JAVASCRIPT PRINCIPAL PARA SESIÓN Y CARRITO -->
     <script src="assets/js/main.js"></script>
 </body>
 </html>
