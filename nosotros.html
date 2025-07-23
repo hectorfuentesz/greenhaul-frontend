@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosotros - La Revolución en Mudanzas | EcoBox</title>
+    <title>Nosotros - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/pages.css">
     
     <style>
-        /* ===== ANIMACIONES Y EFECTOS TECNOLÓGICOS ===== */
+        /* ===== ANIMACIONES Y EFECTOS ESPECÍFICOS PARA 'NOSOTROS' ===== */
         .tech-hero {
             position: relative;
             min-height: 100vh;
@@ -28,7 +28,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,0,0,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
             animation: gridMove 20s linear infinite;
         }
         
@@ -42,12 +42,14 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            z-index: 1;
         }
         
         .floating-element {
             position: absolute;
             opacity: 0.1;
             animation: float 15s infinite ease-in-out;
+            color: var(--primary-solid);
         }
         
         .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
@@ -59,7 +61,7 @@
             50% { transform: translateY(-20px) rotate(180deg); }
         }
         
-        .hero-content {
+        .tech-hero .hero-content {
             position: relative;
             z-index: 2;
             text-align: center;
@@ -134,17 +136,6 @@
             font-weight: 800;
             color: var(--accent-green);
             margin-bottom: 10px;
-            counter-reset: num var(--num);
-        }
-        
-        .stat-number::after {
-            content: counter(num);
-            animation: countUp 2s ease-out;
-        }
-        
-        @keyframes countUp {
-            from { --num: 0; }
-            to { --num: var(--target); }
         }
         
         .tech-timeline {
@@ -172,24 +163,17 @@
         .timeline-item {
             position: relative;
             margin-bottom: 50px;
+            width: 100%;
             opacity: 0;
-            transform: translateX(-50px);
-            transition: all 0.6s ease;
+            transform: translateY(50px);
+            transition: all 0.6s ease-out;
         }
         
         .timeline-item.visible {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateY(0);
         }
-        
-        .timeline-item:nth-child(even) {
-            transform: translateX(50px);
-        }
-        
-        .timeline-item:nth-child(even).visible {
-            transform: translateX(0);
-        }
-        
+
         .timeline-content {
             background: var(--background);
             padding: 30px;
@@ -201,11 +185,13 @@
         }
         
         .timeline-item:nth-child(odd) .timeline-content {
-            margin-left: 0;
+            float: left;
+            clear: both;
         }
         
         .timeline-item:nth-child(even) .timeline-content {
-            margin-left: 55%;
+            float: right;
+            clear: both;
         }
         
         .timeline-dot {
@@ -220,7 +206,7 @@
             border: 4px solid var(--background);
             box-shadow: 0 0 0 4px var(--accent-green);
         }
-        
+
         .innovation-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -238,21 +224,6 @@
             position: relative;
             overflow: hidden;
             border: 1px solid var(--border);
-        }
-        
-        .innovation-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .innovation-card:hover::before {
-            left: 100%;
         }
         
         .innovation-card:hover {
@@ -274,6 +245,13 @@
             color: var(--text-dark);
             padding: 100px 0;
         }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
         
         .team-card-enhanced {
             background: var(--background);
@@ -285,27 +263,6 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-        }
-        
-        .team-card-enhanced::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(74, 144, 226, 0.1), transparent);
-            animation: rotate 4s linear infinite;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .team-card-enhanced:hover::before {
-            opacity: 1;
-        }
-        
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
         }
         
         .team-card-enhanced:hover {
@@ -345,9 +302,17 @@
         /* Responsive */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.5rem; }
-            .timeline-line { display: none; }
-            .timeline-content { width: 100% !important; margin-left: 0 !important; }
-            .timeline-dot { display: none; }
+            .timeline-line, .timeline-dot { display: none; }
+            .timeline-item, .timeline-item:nth-child(even) {
+                width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .timeline-content {
+                width: 100%;
+                margin-left: 0 !important;
+                float: none;
+            }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
@@ -392,7 +357,6 @@
     </header>
 
     <main class="page-content">
-        <!-- Hero Section Tecnológico -->
         <section class="tech-hero">
             <div class="floating-elements">
                 <div class="floating-element"><i class="fas fa-cube" style="font-size: 3rem;"></i></div>
@@ -412,7 +376,6 @@
             </div>
         </section>
 
-        <!-- Estadísticas Impactantes -->
         <section class="stats-section">
             <div class="container">
                 <div class="section-title">
@@ -421,196 +384,65 @@
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-number" style="--target: 2500;">0</div>
+                        <div class="stat-number" data-target="2500">0</div>
                         <h4>Mudanzas Completadas</h4>
-                        <p>Familias satisfechas</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" style="--target: 45000;">0</div>
+                        <div class="stat-number" data-target="45000">0</div>
                         <h4>Cajas de Cartón Evitadas</h4>
-                        <p>Menos desperdicio</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" style="--target: 12;">0</div>
+                        <div class="stat-number" data-target="12">0</div>
                         <h4>Toneladas de Cartón Ahorradas</h4>
-                        <p>Impacto ambiental positivo</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" style="--target: 96;">0%</div>
+                        <div class="stat-number" data-target="96">0%</div>
                         <h4>Satisfacción del Cliente</h4>
-                        <p>Calificación promedio</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Timeline de Innovación -->
         <section class="tech-timeline">
             <div class="container">
                 <div class="section-title">
                     <h2>Nuestra Historia</h2>
-                    <p>Cómo nació EcoBox y hacia dónde vamos</p>
+                    <p>Cómo nació GreenHaul y hacia dónde vamos</p>
                 </div>
                 <div class="timeline-container">
                     <div class="timeline-line"></div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2022 - La Idea</h3>
-                            <p>Después de una mudanza frustrante llena de cajas rotas y desperdicio, decidimos que tenía que haber una mejor manera de hacer las cosas.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2023 - Primeras Cajas</h3>
-                            <p>Compramos nuestro primer lote de 500 cajas reutilizables y comenzamos a ofrecer el servicio a amigos y familiares en la CDMX.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2024 - Crecimiento</h3>
-                            <p>Expandimos nuestro inventario a 2,000 cajas y comenzamos a atender toda el área metropolitana con entregas programadas.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2024 - Plataforma Digital</h3>
-                            <p>Lanzamos nuestra página web para facilitar las reservas en línea y mejorar la experiencia del cliente.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2025 - Presente</h3>
-                            <p>Hoy contamos con más de 5,000 cajas en circulación y hemos ayudado a más de 2,500 familias con sus mudanzas.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2025 - Futuro</h3>
-                            <p>Planeamos expandirnos a Guadalajara y Monterrey, además de agregar servicios complementarios como embalaje profesional.</p>
-                        </div>
-                    </div>
+                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2022 - La Idea</h3><p>Decidimos que tenía que haber una mejor manera de hacer mudanzas después de una experiencia frustrante.</p></div></div>
+                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2023 - Primeras Cajas</h3><p>Comenzamos a ofrecer el servicio a amigos y familiares en la CDMX con nuestro primer lote de cajas.</p></div></div>
+                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2024 - Crecimiento</h3><p>Expandimos nuestro inventario y comenzamos a atender toda el área metropolitana con entregas programadas.</p></div></div>
+                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2025 - Presente y Futuro</h3><p>Hoy contamos con miles de cajas en circulación y planeamos expandirnos a otras ciudades.</p></div></div>
                 </div>
             </div>
         </section>
 
-        <!-- Cómo Funciona -->
         <section class="section" id="como-funciona">
             <div class="container">
                 <div class="section-title">
-                    <h2>¿Por Qué Elegir <span style="color: var(--accent-green);">EcoBox</span>?</h2>
+                    <h2>¿Por Qué Elegir <span style="color: var(--accent-green);">GreenHaul</span>?</h2>
                     <p>Las ventajas de nuestro servicio de renta de cajas</p>
                 </div>
                 <div class="innovation-grid">
-                    <div class="innovation-card">
-                        <div class="innovation-icon"><i class="fas fa-recycle"></i></div>
-                        <h3>100% Reutilizables</h3>
-                        <p>Nuestras cajas de plástico resistente se pueden usar cientos de veces, eliminando el desperdicio de cartón.</p>
-                    </div>
-                    
-                    <div class="innovation-card">
-                        <div class="innovation-icon"><i class="fas fa-shield-alt"></i></div>
-                        <h3>Súper Resistentes</h3>
-                        <p>Soportan hasta 30kg cada una y son impermeables. Tus pertenencias estarán más protegidas que en cartón.</p>
-                    </div>
-                    
-                    <div class="innovation-card">
-                        <div class="innovation-icon"><i class="fas fa-truck"></i></div>
-                        <h3>Entrega y Recolección</h3>
-                        <p>Te llevamos las cajas limpias a tu domicilio y las recogemos cuando termines. Sin complicaciones.</p>
-                    </div>
-                    
-                    <div class="innovation-card">
-                        <div class="innovation-icon"><i class="fas fa-dollar-sign"></i></div>
-                        <h3>Más Económico</h3>
-                        <p>Alquilar nuestras cajas cuesta menos que comprar cajas de cartón nuevas, y no tienes que deshacerte de ellas.</p>
-                    </div>
-                    
-                    <div class="innovation-card">
-                        <div class="innovation-icon"><i class="fas fa-clock"></i></div>
-                        <h3>Ahorra Tiempo</h3>
-                        <p>No pierdas tiempo buscando cajas en tiendas o armándolas. Las nuestras llegan listas para usar.</p>
-                    </div>
-                    
-                    <div class="innovation-card">
-                        <div class="innovation-icon"><i class="fas fa-leaf"></i></div>
-                        <h3>Cuida el Planeta</h3>
-                        <p>Cada mudanza con EcoBox evita el desperdicio de 15-20 cajas de cartón que irían directo a la basura.</p>
-                    </div>
+                    <div class="innovation-card"><div class="innovation-icon"><i class="fas fa-recycle"></i></div><h3>100% Reutilizables</h3><p>Nuestras cajas eliminan el desperdicio de cartón.</p></div>
+                    <div class="innovation-card"><div class="innovation-icon"><i class="fas fa-shield-alt"></i></div><h3>Súper Resistentes</h3><p>Protegen tus pertenencias mucho mejor que el cartón.</p></div>
+                    <div class="innovation-card"><div class="innovation-icon"><i class="fas fa-truck"></i></div><h3>Entrega y Recolección</h3><p>Te llevamos y recogemos las cajas en tu domicilio.</p></div>
                 </div>
             </div>
         </section>
 
-        <!-- Nuestro Equipo -->
         <section class="team-enhanced">
             <div class="container">
                 <div class="section-title">
                     <h2>Conoce a Nuestro Equipo</h2>
-                    <p>Las personas que hacen posible EcoBox</p>
+                    <p>Las personas que hacen posible GreenHaul</p>
                 </div>
                 <div class="team-grid">
-                    <div class="team-card-enhanced">
-                        <div class="team-photo-enhanced">
-                            <img src="https://i.pravatar.cc/150?img=11" alt="Dr. Juan Pérez">
-                        </div>
-                        <h4>Juan Pérez</h4>
-                        <p style="color: var(--accent-green); font-weight: 600;">Fundador & CEO</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Ingeniero Industrial con experiencia en logística. Fundó EcoBox después de su propia experiencia frustrante con mudanzas.</p>
-                        <div class="team-socials" style="margin-top: 15px;">
-                            <a href="#" style="color: var(--primary-solid);"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" style="color: var(--primary-solid);"><i class="fab fa-twitter"></i></a>
-                        </div>
-                    </div>
-                    
-                    <div class="team-card-enhanced">
-                        <div class="team-photo-enhanced">
-                            <img src="https://i.pravatar.cc/150?img=5" alt="Ana Gómez">
-                        </div>
-                        <h4>Ana Gómez</h4>
-                        <p style="color: var(--accent-green); font-weight: 600;">Directora de Operaciones</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Administradora de empresas especializada en logística. Se encarga de coordinar todas las entregas y recolecciones.</p>
-                        <div class="team-socials" style="margin-top: 15px;">
-                            <a href="#" style="color: var(--primary-solid);"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" style="color: var(--primary-solid);"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                    
-                    <div class="team-card-enhanced">
-                        <div class="team-photo-enhanced">
-                            <img src="https://i.pravatar.cc/150?img=8" alt="Carlos Ruiz">
-                        </div>
-                        <h4>Carlos Ruiz</h4>
-                        <p style="color: var(--accent-green); font-weight: 600;">Responsable de Flota</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Encargado del mantenimiento y limpieza de nuestras cajas. Se asegura de que lleguen en perfectas condiciones.</p>
-                        <div class="team-socials" style="margin-top: 15px;">
-                            <a href="#" style="color: var(--primary-solid);"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" style="color: var(--primary-solid);"><i class="fab fa-facebook"></i></a>
-                        </div>
-                    </div>
-                    
-                    <div class="team-card-enhanced">
-                        <div class="team-photo-enhanced">
-                            <img src="https://i.pravatar.cc/150?img=32" alt="Sofía López">
-                        </div>
-                        <h4>Sofía López</h4>
-                        <p style="color: var(--accent-green); font-weight: 600;">Atención al Cliente</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Comunicóloga especializada en servicio al cliente. Siempre disponible para resolver dudas y coordinar entregas.</p>
-                        <div class="team-socials" style="margin-top: 15px;">
-                            <a href="#" style="color: var(--primary-solid);"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" style="color: var(--primary-solid);"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
+                    <div class="team-card-enhanced"><div class="team-photo-enhanced"><img src="https://i.pravatar.cc/150?img=11" alt="Foto de Juan Pérez"></div><h4>Juan Pérez</h4><p style="color: var(--accent-green); font-weight: 600;">Fundador & CEO</p></div>
+                    <div class="team-card-enhanced"><div class="team-photo-enhanced"><img src="https://i.pravatar.cc/150?img=5" alt="Foto de Ana Gómez"></div><h4>Ana Gómez</h4><p style="color: var(--accent-green); font-weight: 600;">Directora de Operaciones</p></div>
+                    <div class="team-card-enhanced"><div class="team-photo-enhanced"><img src="https://i.pravatar.cc/150?img=8" alt="Foto de Carlos Ruiz"></div><h4>Carlos Ruiz</h4><p style="color: var(--accent-green); font-weight: 600;">Responsable de Flota</p></div>
                 </div>
             </div>
         </section>
@@ -623,7 +455,6 @@
                 <p>Mudanzas sostenibles, sin complicaciones.</p>
                 <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
                 <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
-                <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
             </div>
             <div class="footer-links">
                 <h3>Enlaces Rápidos</h3>
@@ -631,18 +462,13 @@
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="productos.html">Productos</a></li>
                     <li><a href="servicios.html">Servicios</a></li>
-                    <li><a href="nosotros.html">Nosotros</a></li>
                     <li><a href="contacto.html">Contacto</a></li>
                 </ul>
             </div>
             <div class="footer-social-links">
                 <h3>Síguenos</h3>
-                <div class="social-icons-wrapper">
-                    <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                </div>
+                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -659,91 +485,59 @@
             <div class="cart-modal-body" id="cartItemsContainer"></div>
             <div class="cart-modal-footer">
                 <div class="cart-summary">
-                    <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
-                    <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
-                    <h3>Total: <span id="cartTotal">$0.00</span></h3>
+                    <p>Subtotal: <span>$0.00</span></p>
+                    <p>Impuestos: <span>$0.00</span></p>
+                    <h3>Total: <span>$0.00</span></h3>
                 </div>
-                <div class="cart-footer-buttons">
-                    <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
-                    <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
-                </div>
+                <a href="pago.html" class="btn btn-primary">Finalizar Compra</a>
             </div>
         </div>
     </div>
     <div class="cart-notification" id="cartNotification">
         <div class="notification-content">
-            <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
+            <div class="notification-icon"></div>
             <p id="notificationText"></p>
         </div>
     </div>
 
-    <script src="assets/js/main.js"></script>
+    <script type="module" src="assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Animaciones de timeline
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            
-            const timelineObserver = new IntersectionObserver((entries) => {
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
                     }
                 });
-            }, { threshold: 0.3 });
-            
-            timelineItems.forEach(item => timelineObserver.observe(item));
-            
-            // Animación de contadores
-            const statNumbers = document.querySelectorAll('.stat-number');
-            
-            const statsObserver = new IntersectionObserver((entries) => {
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.timeline-item, .stat-card, .innovation-card, .team-card-enhanced').forEach(el => {
+                observer.observe(el);
+            });
+
+            const statsObserver = new IntersectionObserver((entries, obs) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const target = parseInt(entry.target.style.getPropertyValue('--target'));
-                        animateCounter(entry.target, target);
+                        const counter = entry.target;
+                        const target = +counter.dataset.target;
+                        const duration = 2000;
+                        let current = 0;
+                        const stepTime = 20;
+                        const increment = (target - current) / (duration / stepTime);
+
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                current = target;
+                                clearInterval(timer);
+                            }
+                            counter.textContent = Math.floor(current) + (counter.textContent.includes('%') ? '%' : '');
+                        }, stepTime);
+                        obs.unobserve(counter);
                     }
                 });
-            }, { threshold: 0.5 });
-            
-            statNumbers.forEach(stat => statsObserver.observe(stat));
-            
-            function animateCounter(element, target) {
-                let current = 0;
-                const increment = target / 100;
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(timer);
-                    }
-                    element.textContent = Math.floor(current) + (element.textContent.includes('%') ? '%' : '');
-                }, 20);
-            }
-            
-            // Efecto parallax suave
-            window.addEventListener('scroll', () => {
-                const scrolled = window.pageYOffset;
-                const parallaxElements = document.querySelectorAll('.floating-element');
-                
-                parallaxElements.forEach((element, index) => {
-                    const speed = 0.5 + (index * 0.1);
-                    element.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.1}deg)`;
-                });
-            });
-            
-            // Smooth scroll para enlaces internos
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
+            }, { threshold: 0.8 });
+            document.querySelectorAll('.stat-number').forEach(stat => statsObserver.observe(stat));
         });
     </script>
 </body>
