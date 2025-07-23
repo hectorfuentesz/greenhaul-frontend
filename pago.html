@@ -43,6 +43,17 @@
         .popup-card { background-color: var(--background); border-radius: var(--border-radius); box-shadow: 0 15px 40px rgba(0,0,0,0.3); width: 90%; max-width: 480px; text-align: center; padding: 40px 30px; transform: scale(0.9); opacity: 0; transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s; }
         .popup-overlay.active .popup-card { transform: scale(1); opacity: 1; }
         /* ... */
+        /* Personalización del botón de Mercado Pago Brick */
+        #cardPaymentBrick_container button {
+            background: var(--gradient-primary) !important;
+            color: #fff !important;
+            font-weight: bold !important;
+            font-size: 1.3rem !important;
+            border-radius: 999px !important;
+            border: none !important;
+            width: 100% !important;
+            padding: 18px !important;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +61,29 @@
         <!-- ... HEADER SIN CAMBIOS ... -->
     </header>
     <main class="page-content">
-        <!-- ... MAIN SIN CAMBIOS ... -->
+        <div class="container">
+            <div class="section-title">
+                <h2>Finalizar Compra</h2>
+                <p>Estás a un solo paso de completar tu pedido.</p>
+            </div>
+            <div class="payment-layout">
+                <div class="form-container">
+                    <h3><i class="fas fa-credit-card"></i> Detalles de Pago</h3>
+                    <div id="cardPaymentBrick_container"></div>
+                    <!-- <button id="payBtn" class="btn btn-primary btn-submit">Pagar Ahora</button> -->
+                    <!-- Se elimina el botón custom para evitar duplicidad -->
+                </div>
+                <div class="summary-container">
+                    <h3><i class="fas fa-shopping-cart"></i> Resumen de tu Pedido</h3>
+                    <ul class="order-summary-list" id="summaryItemsContainer"></ul>
+                    <ul class="summary-totals">
+                        <li><span>Subtotal:</span> <span id="summarySubtotal">$0.00</span></li>
+                        <li><span>Impuestos (16%):</span> <span id="summaryTaxes">$0.00</span></li>
+                        <li class="total"><span>Total:</span> <span id="summaryTotal">$0.00</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </main>
     <div class="popup-overlay" id="orderSuccessPopup">
         <div class="popup-card">
@@ -86,6 +119,7 @@
     <script src="assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // ... Todo el JS original de tu flujo, NO OMITO NADA ...
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
             if (navbarToggler && navbarCollapse) {
@@ -123,10 +157,10 @@
             let finalTotalAmount = 0;
             function renderOrderSummary() {
                 if (!itemsContainer) return;
-                const payBtn = document.getElementById('payBtn');
+                // const payBtn = document.getElementById('payBtn'); // Eliminado
                 if (!shoppingCart.items || shoppingCart.items.length === 0) {
                     itemsContainer.innerHTML = '<li>No hay productos en tu carrito.</li>';
-                    if(payBtn) payBtn.disabled = true;
+                    // if(payBtn) payBtn.disabled = true;
                     return;
                 }
                 let rentalDays = 1;
@@ -186,20 +220,68 @@
                     customization: {
                         paymentMethods: {
                             creditCard: {
-                                renderButton: true // Muestra el botón del Brick para depurar
+                                renderButton: true, // muestra botón del Brick
+                                buttonText: "Pagar Ahora", // Personaliza el texto
                             }
                         },
                         visual: {
                             style: {
-                                // Personalización visual opcional
+                                // Puedes agregar estilos aquí si el Brick lo permite
                             }
                         }
                     },
                     callbacks: {
                         onReady: () => {},
-                        onSubmit: (formData) => {
+                        onSubmit: async (formData) => {
                             paymentData = formData;
-                            console.log("paymentData:", paymentData); // Depuración, revisa el token
+                            // Aquí va tu lógica de pago y popups
+                            const deliveryAddressId = localStorage.getItem('deliveryAddressId');
+                            const pickupAddressId = localStorage.getItem('pickupAddressId');
+                            const payload = {
+                                mercadoPagoToken: paymentData.token,
+                                monto: finalTotalAmount,
+                                user_id: loggedInUser ? loggedInUser.id : null,
+                                email: loggedInUser ? loggedInUser.email : '',
+                                nombre: loggedInUser ? loggedInUser.name : '',
+                                cartItems: shoppingCart.items,
+                                delivery_address_id: deliveryAddressId ? parseInt(deliveryAddressId, 10) : null,
+                                pickup_address_id: pickupAddressId ? parseInt(pickupAddressId, 10) : null,
+                                rentalDates: shoppingCart.rentalDates || null
+                            };
+                            try {
+                                const res = await fetch(`${backendUrl}/api/mercadopago`, {
+                                    method: 'POST',
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify(payload)
+                                });
+                                const data = await res.json();
+                                console.log("Respuesta backend:", data);
+                                if (data.order_folio) {
+                                    const orderSuccessPopup = document.getElementById('orderSuccessPopup');
+                                    const orderIdElement = document.getElementById('orderId');
+                                    const copyBtn = document.getElementById('copyOrderIdBtn');
+                                    orderIdElement.textContent = data.order_folio;
+                                    orderSuccessPopup.classList.add('active');
+                                    if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
+                                    localStorage.removeItem('shoppingCart');
+                                    localStorage.removeItem('deliveryAddressId');
+                                    localStorage.removeItem('pickupAddressId');
+                                    copyBtn.onclick = function() {
+                                        navigator.clipboard.writeText(data.order_folio).then(() => {
+                                            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                                            setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
+                                        });
+                                    };
+                                } else {
+                                    let errorMsg = data.message || 'Error al procesar el pago.';
+                                    if (data.status) errorMsg += `\nEstado: ${data.status}`;
+                                    if (data.status_detail) errorMsg += `\nMotivo: ${data.status_detail}`;
+                                    showErrorPopup(errorMsg);
+                                }
+                            } catch (err) {
+                                showErrorPopup('Error de comunicación con el backend. Intenta de nuevo.');
+                            }
+                            // El Brick maneja los estados del botón, no necesitas cambiar textos ni deshabilitar
                         },
                         onError: (error) => {
                             showErrorPopup("Error en el pago: " + (error.message || "Verifica los datos e intenta de nuevo."));
@@ -212,8 +294,6 @@
 
             mountBrick();
 
-            // Si el carrito puede cambiar, llama a mountBrick() después de recalcular el monto
-
             // ----------- POPUP DE ERROR -------------
             function showErrorPopup(message) {
                 const errorPopup = document.getElementById('errorPopup');
@@ -223,75 +303,6 @@
             }
             document.getElementById('closeErrorPopupBtn').addEventListener('click', () => {
                 document.getElementById('errorPopup').classList.remove('active');
-            });
-
-            // Botón de pago personalizado
-            document.getElementById('payBtn').addEventListener('click', async function() {
-                const payBtn = document.getElementById('payBtn');
-                payBtn.disabled = true;
-                payBtn.textContent = 'Procesando...';
-
-                console.log("paymentData:", paymentData); // Depuración, revisa el token
-
-                if (!paymentData || !paymentData.token) {
-                    showErrorPopup("Completa los datos del pago antes de continuar.");
-                    payBtn.disabled = false;
-                    payBtn.textContent = 'Pagar Ahora';
-                    return;
-                }
-                const deliveryAddressId = localStorage.getItem('deliveryAddressId');
-                const pickupAddressId = localStorage.getItem('pickupAddressId');
-                const payload = {
-                    mercadoPagoToken: paymentData.token,
-                    monto: finalTotalAmount,
-                    user_id: loggedInUser ? loggedInUser.id : null,
-                    email: loggedInUser ? loggedInUser.email : '',
-                    nombre: loggedInUser ? loggedInUser.name : '',
-                    cartItems: shoppingCart.items,
-                    delivery_address_id: deliveryAddressId ? parseInt(deliveryAddressId, 10) : null,
-                    pickup_address_id: pickupAddressId ? parseInt(pickupAddressId, 10) : null,
-                    rentalDates: shoppingCart.rentalDates || null
-                };
-                try {
-                    const res = await fetch(`${backendUrl}/api/mercadopago`, {
-                        method: 'POST',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload)
-                    });
-                    const data = await res.json();
-                    console.log("Respuesta backend:", data);
-                    if (data.order_folio) {
-                        const orderSuccessPopup = document.getElementById('orderSuccessPopup');
-                        const orderIdElement = document.getElementById('orderId');
-                        const copyBtn = document.getElementById('copyOrderIdBtn');
-                        orderIdElement.textContent = data.order_folio;
-                        orderSuccessPopup.classList.add('active');
-                        if (typeof confetti === 'function') { confetti({ particleCount: 150, spread: 180, origin: { y: 0.6 } }); }
-                        localStorage.removeItem('shoppingCart');
-                        localStorage.removeItem('deliveryAddressId');
-                        localStorage.removeItem('pickupAddressId');
-                        copyBtn.onclick = function() {
-                            navigator.clipboard.writeText(data.order_folio).then(() => {
-                                copyBtn.innerHTML = '<i class="fas fa-check"></i>';
-                                setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
-                            });
-                        };
-                    } else {
-                        let errorMsg = data.message || 'Error al procesar el pago.';
-                        if (data.status) {
-                            errorMsg += `\nEstado: ${data.status}`;
-                        }
-                        if (data.status_detail) {
-                            errorMsg += `\nMotivo: ${data.status_detail}`;
-                        }
-                        showErrorPopup(errorMsg);
-                    }
-                } catch (err) {
-                    showErrorPopup('Error de comunicación con el backend. Intenta de nuevo.');
-                } finally {
-                    payBtn.disabled = false;
-                    payBtn.textContent = 'Pagar Ahora';
-                }
             });
 
             // Opcional: cerrar el popup de éxito al hacer click fuera o con Esc
