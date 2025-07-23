@@ -1,6 +1,6 @@
 /**
  * =================================================================
- * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA)
+ * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA Y CORREGIDA)
  * =================================================================
  */
 
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-     const initShoppingCart = () => {
+    const initShoppingCart = () => {
         let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null };
         const cartIcon = document.getElementById('cartIcon');
         const cartModalOverlay = document.getElementById('cartModalOverlay');
@@ -135,32 +135,31 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- INICIO: FUNCIONES DEL CARRITO CORREGIDAS ---
         const updateCartModalTotals = () => {
-    // Calcula la cantidad de días de renta
-    let totalDays = 1;
-    if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
-        const startDate = new Date(cart.rentalDates.start);
-        const endDate = new Date(cart.rentalDates.end);
-        // +1 para incluir el día de entrega
-        totalDays = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)));
-    }
+            // Calcula la cantidad de días de renta
+            let totalDays = 1;
+            if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
+                const startDate = new Date(cart.rentalDates.start);
+                const endDate = new Date(cart.rentalDates.end);
+                totalDays = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)));
+            }
 
-    const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity * totalDays), 0);
-    const taxes = subtotal * 0.16;
-const total = subtotal;
+            const subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity * totalDays), 0);
+            const taxes = subtotal * 0.16;
+            const total = subtotal;
 
-    const subtotalEl = document.getElementById('cartSubtotal');
-    const taxesEl = document.getElementById('cartTaxes');
-    const totalEl = document.getElementById('cartTotal');
-    
-    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-    if (taxesEl) taxesEl.textContent = `$${taxes.toFixed(2)}`;
-    if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
-};
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const taxesEl = document.getElementById('cartTaxes');
+            const totalEl = document.getElementById('cartTotal');
+            
+            if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            if (taxesEl) taxesEl.textContent = `$${taxes.toFixed(2)}`;
+            if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+        };
 
         const removeCartItem = (id) => {
             cart.items = cart.items.filter(item => item.id !== id);
             if (cart.items.length === 0) {
-                cart.rentalDates = null; // Si el carrito está vacío, quitamos las fechas
+                cart.rentalDates = null;
             }
             saveCart();
             renderCartModal();
@@ -181,14 +180,14 @@ const total = subtotal;
         const addCartModalEventListeners = () => {
             document.querySelectorAll('.remove-item-btn').forEach(button => {
                 button.addEventListener('click', e => {
-                    const productId = e.target.closest('.cart-item').dataset.productId;
+                    const productId = parseInt(e.target.closest('.cart-item').dataset.productId, 10);
                     removeCartItem(productId);
                 });
             });
 
             document.querySelectorAll('.cart-item-quantity').forEach(select => {
                 select.addEventListener('change', e => {
-                    const productId = e.target.closest('.cart-item').dataset.productId;
+                    const productId = parseInt(e.target.closest('.cart-item').dataset.productId, 10);
                     updateCartItemQuantity(productId, e.target.value);
                 });
             });
@@ -197,6 +196,12 @@ const total = subtotal;
 
         const addToCart = (product, rentalDates) => {
             cart.rentalDates = rentalDates;
+            // Aseguramos que el id sea numérico
+            product.id = parseInt(product.id, 10);
+            if (isNaN(product.id)) {
+                showNotification('Error: El producto no tiene un ID válido.', 'error');
+                return;
+            }
             const itemInCart = cart.items.find(item => item.id === product.id);
             if (itemInCart) {
                 itemInCart.quantity += product.quantity;
@@ -223,7 +228,7 @@ const total = subtotal;
                 if (!startDateInput.value || !endDateInput.value) {
                     showNotification('Por favor, selecciona las fechas de entrega y recolección.', 'error');
                     const rentalContainer = document.querySelector('.rental-dates-container');
-                    if(rentalContainer) {
+                    if (rentalContainer) {
                         rentalContainer.classList.add('shake-animation');
                         setTimeout(() => rentalContainer.classList.remove('shake-animation'), 500);
                     }
@@ -239,20 +244,44 @@ const total = subtotal;
                 const productCard = e.target.closest('.product-card');
                 const quantitySelect = productCard?.querySelector('.product-qty');
                 if (!quantitySelect || !quantitySelect.value) {
-                    showNotification('Por favor, selecciona una cantidad.', 'error'); return;
+                    showNotification('Por favor, selecciona una cantidad.', 'error');
+                    return;
                 }
                 const productPrice = parseFloat(productCard.dataset.productPrice);
-                if (isNaN(productPrice)) return;
-                
-                addToCart({ id: productCard.dataset.productId, name: productCard.querySelector('h3').textContent, price: productPrice, quantity: parseInt(quantitySelect.value, 10) }, newRentalDates);
+                if (isNaN(productPrice)) {
+                    showNotification('Error: El precio del producto no es válido.', 'error');
+                    return;
+                }
+
+                const productId = parseInt(productCard.dataset.productId, 10);
+                if (isNaN(productId)) {
+                    showNotification('Error: El producto no tiene un ID válido.', 'error');
+                    return;
+                }
+
+                addToCart({
+                    id: productId,
+                    name: productCard.querySelector('h3').textContent,
+                    price: productPrice,
+                    quantity: parseInt(quantitySelect.value, 10)
+                }, newRentalDates);
                 quantitySelect.value = "";
             });
         });
 
-        cartIcon.addEventListener('click', e => { e.preventDefault(); renderCartModal(); cartModalOverlay.classList.add('active'); });
+        cartIcon.addEventListener('click', e => {
+            e.preventDefault();
+            renderCartModal();
+            cartModalOverlay.classList.add('active');
+        });
         closeCartModalBtn.addEventListener('click', () => cartModalOverlay.classList.remove('active'));
-        cartModalOverlay.addEventListener('click', e => { if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('active'); });
-        if (emptyCartBtn) emptyCartBtn.addEventListener('click', () => { clearCart(); showNotification('Carrito vaciado.', 'success'); });
+        cartModalOverlay.addEventListener('click', e => {
+            if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('active');
+        });
+        if (emptyCartBtn) emptyCartBtn.addEventListener('click', () => {
+            clearCart();
+            showNotification('Carrito vaciado.', 'success');
+        });
         if (proceedToCheckoutBtn) {
             proceedToCheckoutBtn.addEventListener('click', e => {
                 // Checa sesión
@@ -260,11 +289,12 @@ const total = subtotal;
                 if (!user) {
                     e.preventDefault();
                     showNotification('Debes iniciar sesión para continuar con la compra.', 'error');
-                    // Opcional: Redirigir a login después de un breve tiempo
-                    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
                     return;
                 }
-        
+
                 if (cart.items.length === 0) {
                     e.preventDefault();
                     showNotification('Tu carrito está vacío.', 'error');
@@ -278,7 +308,7 @@ const total = subtotal;
                 saveCart();
             });
         }
-        
+
         updateCartCount();
         if (cartModalOverlay) renderCartModal();
     };
