@@ -5,22 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nosotros - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    
+
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/pages.css">
-    
+
     <style>
         /* ===== ANIMACIONES Y EFECTOS ESPECÍFICOS PARA 'NOSOTROS' ===== */
         .tech-hero {
             position: relative;
-            min-height: 100vh;
+            min-height: 60vh; /* Ajusta la altura según necesites */
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: var(--background);
             overflow: hidden;
+            padding-top: 80px; /* Espacio para el header fijo */
         }
-        
+
         .tech-hero::before {
             content: '';
             position: absolute;
@@ -31,12 +32,12 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,0,0,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
             animation: gridMove 20s linear infinite;
         }
-        
+
         @keyframes gridMove {
             0% { transform: translate(0, 0); }
             100% { transform: translate(10px, 10px); }
         }
-        
+
         .floating-elements {
             position: absolute;
             width: 100%;
@@ -44,23 +45,23 @@
             overflow: hidden;
             z-index: 1;
         }
-        
+
         .floating-element {
             position: absolute;
             opacity: 0.1;
             animation: float 15s infinite ease-in-out;
             color: var(--primary-solid);
         }
-        
+
         .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
         .floating-element:nth-child(2) { top: 60%; left: 80%; animation-delay: 5s; }
         .floating-element:nth-child(3) { top: 80%; left: 20%; animation-delay: 10s; }
-        
+
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(180deg); }
         }
-        
+
         .tech-hero .hero-content {
             position: relative;
             z-index: 2;
@@ -69,54 +70,54 @@
             max-width: 800px;
             padding: 0 20px;
         }
-        
+
         .hero-title {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 20px;
             opacity: 0;
             transform: translateY(50px);
             animation: slideUp 1s ease-out 0.5s forwards;
         }
-        
+
         .hero-subtitle {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 30px;
             opacity: 0;
             transform: translateY(30px);
             animation: slideUp 1s ease-out 1s forwards;
         }
-        
+
         .hero-description {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             line-height: 1.6;
             margin-bottom: 40px;
             opacity: 0;
             transform: translateY(30px);
             animation: slideUp 1s ease-out 1.5s forwards;
         }
-        
+
         @keyframes slideUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         .stats-section {
             background-color: #f8f9fa;
             color: var(--text-dark);
             padding: 80px 0;
             position: relative;
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 40px;
             margin-top: 40px;
         }
-        
+
         .stat-card {
             text-align: center;
             padding: 30px;
@@ -126,30 +127,30 @@
             border: 1px solid var(--border);
             transition: transform 0.3s ease;
         }
-        
+
         .stat-card:hover {
             transform: translateY(-10px);
         }
-        
+
         .stat-number {
             font-size: 3rem;
             font-weight: 800;
             color: var(--accent-green);
             margin-bottom: 10px;
         }
-        
+
         .tech-timeline {
             padding: 100px 0;
             background-color: var(--background);
             position: relative;
         }
-        
+
         .timeline-container {
             position: relative;
             max-width: 1000px;
             margin: 0 auto;
         }
-        
+
         .timeline-line {
             position: absolute;
             left: 50%;
@@ -159,7 +160,7 @@
             background: linear-gradient(to bottom, var(--primary-solid), var(--accent-green));
             transform: translateX(-50%);
         }
-        
+
         .timeline-item {
             position: relative;
             margin-bottom: 50px;
@@ -168,7 +169,7 @@
             transform: translateY(50px);
             transition: all 0.6s ease-out;
         }
-        
+
         .timeline-item.visible {
             opacity: 1;
             transform: translateY(0);
@@ -183,17 +184,17 @@
             position: relative;
             border: 1px solid var(--border);
         }
-        
+
         .timeline-item:nth-child(odd) .timeline-content {
             float: left;
             clear: both;
         }
-        
+
         .timeline-item:nth-child(even) .timeline-content {
             float: right;
             clear: both;
         }
-        
+
         .timeline-dot {
             position: absolute;
             left: 50%;
@@ -213,7 +214,7 @@
             gap: 30px;
             margin-top: 60px;
         }
-        
+
         .innovation-card {
             background: var(--background);
             border-radius: 20px;
@@ -225,12 +226,12 @@
             overflow: hidden;
             border: 1px solid var(--border);
         }
-        
+
         .innovation-card:hover {
             transform: translateY(-15px);
             box-shadow: var(--shadow-hover);
         }
-        
+
         .innovation-icon {
             font-size: 4rem;
             background: linear-gradient(45deg, var(--primary-solid), var(--accent-green));
@@ -239,7 +240,7 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
         }
-        
+
         .team-enhanced {
             background-color: #f8f9fa;
             color: var(--text-dark);
@@ -252,7 +253,7 @@
             gap: 30px;
             margin-top: 60px;
         }
-        
+
         .team-card-enhanced {
             background: var(--background);
             border: 1px solid var(--border);
@@ -264,11 +265,11 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .team-card-enhanced:hover {
             transform: translateY(-10px) scale(1.02);
         }
-        
+
         .team-photo-enhanced {
             width: 120px;
             height: 120px;
@@ -277,28 +278,28 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .team-photo-enhanced img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-        
+
         .team-card-enhanced:hover .team-photo-enhanced img {
             transform: scale(1.1);
         }
-        
+
         .pulse-animation {
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-        
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.5rem; }
@@ -334,7 +335,7 @@
                         <li><a href="index.html" class="nav-link">Inicio</a></li>
                         <li><a href="productos.html" class="nav-link">Productos</a></li>
                         <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-                        <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                        <li><a href="nosotros.html" class="nav-link active">Nosotros</a></li>
                         <li><a href="contacto.html" class="nav-link">Contacto</a></li>
                         <li><a href="faq.html" class="nav-link">Preguntas</a></li>
                     </ul>
@@ -364,71 +365,67 @@
                 <div class="floating-element"><i class="fas fa-rocket" style="font-size: 3.5rem;"></i></div>
             </div>
             <div class="hero-content">
-                <h1 class="hero-title">Renta de Cajas <span style="color: var(--accent-green);">Reutilizables</span></h1>
-                <p class="hero-subtitle">Mudanzas Más Fáciles + Planeta Más Limpio</p>
+                <h1 class="hero-title">Nuestra <span style="color: var(--accent-green);">Historia</span></h1>
+                <p class="hero-subtitle">Cómo nació GreenHaul y hacia dónde vamos</p>
                 <p class="hero-description">
-                    Somos una empresa mexicana dedicada al alquiler de cajas reutilizables para mudanzas. 
-                    Nuestra misión es hacer tu mudanza más fácil mientras cuidamos el medio ambiente.
+                    Descubre nuestro viaje hacia un futuro de mudanzas más sostenibles y eficientes.
                 </p>
-                <div style="opacity: 0; animation: slideUp 1s ease-out 2s forwards;">
-                    <a href="#como-funciona" class="btn btn-primary pulse-animation">Conoce Cómo Funciona</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="stats-section">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Nuestro Impacto Real</h2>
-                    <p>Números que demuestran el valor de nuestro servicio</p>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" data-target="2500">0</div>
-                        <h4>Mudanzas Completadas</h4>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" data-target="45000">0</div>
-                        <h4>Cajas de Cartón Evitadas</h4>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" data-target="12">0</div>
-                        <h4>Toneladas de Cartón Ahorradas</h4>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" data-target="96">0%</div>
-                        <h4>Satisfacción del Cliente</h4>
-                    </div>
-                </div>
             </div>
         </section>
 
         <section class="tech-timeline">
             <div class="container">
                 <div class="section-title">
-                    <h2>Nuestra Historia</h2>
-                    <p>Cómo nació GreenHaul y hacia dónde vamos</p>
+                    <h2>Momentos Clave</h2>
+                    <p>Hitos en la evolución de GreenHaul</p>
                 </div>
                 <div class="timeline-container">
                     <div class="timeline-line"></div>
-                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2022 - La Idea</h3><p>Decidimos que tenía que haber una mejor manera de hacer mudanzas después de una experiencia frustrante.</p></div></div>
-                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2023 - Primeras Cajas</h3><p>Comenzamos a ofrecer el servicio a amigos y familiares en la CDMX con nuestro primer lote de cajas.</p></div></div>
-                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2024 - Crecimiento</h3><p>Expandimos nuestro inventario y comenzamos a atender toda el área metropolitana con entregas programadas.</p></div></div>
-                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2025 - Presente y Futuro</h3><p>Hoy contamos con miles de cajas en circulación y planeamos expandirnos a otras ciudades.</p></div></div>
+                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2022 - La Idea</h3><p>Nace la visión de revolucionar las mudanzas con un enfoque sostenible y práctico.</p></div></div>
+                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2023 - Primeras Acciones</h3><p>Desarrollo de prototipos de nuestras cajas reutilizables y pruebas iniciales en la comunidad local.</p></div></div>
+                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2024 - Lanzamiento Oficial</h3><p>GreenHaul inicia sus operaciones formales, ofreciendo sus servicios a la Ciudad de México.</p></div></div>
+                    <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>2025 - Expansión y Futuro</h3><p>Planes de crecimiento a nuevas ciudades y la incorporación de tecnologías para mejorar la experiencia del cliente.</p></div></div>
                 </div>
             </div>
         </section>
 
-        <section class="section" id="como-funciona">
+        <section class="section" id="como-funciona" style="padding-top: 80px; padding-bottom: 80px;">
             <div class="container">
                 <div class="section-title">
                     <h2>¿Por Qué Elegir <span style="color: var(--accent-green);">GreenHaul</span>?</h2>
-                    <p>Las ventajas de nuestro servicio de renta de cajas</p>
+                    <p>Descubre las ventajas de una mudanza inteligente y ecológica.</p>
                 </div>
                 <div class="innovation-grid">
-                    <div class="innovation-card"><div class="innovation-icon"><i class="fas fa-recycle"></i></div><h3>100% Reutilizables</h3><p>Nuestras cajas eliminan el desperdicio de cartón.</p></div>
-                    <div class="innovation-card"><div class="innovation-icon"><i class="fas fa-shield-alt"></i></div><h3>Súper Resistentes</h3><p>Protegen tus pertenencias mucho mejor que el cartón.</p></div>
-                    <div class="innovation-card"><div class="innovation-icon"><i class="fas fa-truck"></i></div><h3>Entrega y Recolección</h3><p>Te llevamos y recogemos las cajas en tu domicilio.</p></div>
+                    <div class="innovation-card">
+                        <div class="innovation-icon"><i class="fas fa-recycle"></i></div>
+                        <h3>Reutilización Total</h3>
+                        <p>Nuestras cajas están diseñadas para ser utilizadas una y otra vez, reduciendo residuos.</p>
+                    </div>
+                    <div class="innovation-card">
+                        <div class="innovation-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3>Máxima Protección</h3>
+                        <p>Fabricadas con materiales resistentes para cuidar tus pertenencias durante el traslado.</p>
+                    </div>
+                    <div class="innovation-card">
+                        <div class="innovation-icon"><i class="fas fa-truck"></i></div>
+                        <h3>Comodidad Integral</h3>
+                        <p>Entregamos y recogemos las cajas en el lugar y horario que más te convenga.</p>
+                    </div>
+                    <div class="innovation-card">
+                        <div class="innovation-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <h3>Ahorro Inteligente</h3>
+                        <p>Una solución económica y sostenible en comparación con las cajas de cartón tradicionales.</p>
+                    </div>
+                    <div class="innovation-card">
+                        <div class="innovation-icon"><i class="fas fa-clock"></i></div>
+                        <h3>Eficiencia en el Proceso</h3>
+                        <p>Simplificamos tu mudanza para que sea rápida, fácil y sin complicaciones.</p>
+                    </div>
+                    <div class="innovation-card">
+                        <div class="innovation-icon"><i class="fas fa-leaf"></i></div>
+                        <h3>Compromiso Ecológico</h3>
+                        <p>Contribuye a un planeta más limpio eligiendo alternativas sostenibles.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -436,13 +433,14 @@
         <section class="team-enhanced">
             <div class="container">
                 <div class="section-title">
-                    <h2>Conoce a Nuestro Equipo</h2>
-                    <p>Las personas que hacen posible GreenHaul</p>
+                    <h2>Nuestro Equipo</h2>
+                    <p>Conoce a las personas detrás de GreenHaul.</p>
                 </div>
                 <div class="team-grid">
                     <div class="team-card-enhanced"><div class="team-photo-enhanced"><img src="https://i.pravatar.cc/150?img=11" alt="Foto de Juan Pérez"></div><h4>Juan Pérez</h4><p style="color: var(--accent-green); font-weight: 600;">Fundador & CEO</p></div>
                     <div class="team-card-enhanced"><div class="team-photo-enhanced"><img src="https://i.pravatar.cc/150?img=5" alt="Foto de Ana Gómez"></div><h4>Ana Gómez</h4><p style="color: var(--accent-green); font-weight: 600;">Directora de Operaciones</p></div>
                     <div class="team-card-enhanced"><div class="team-photo-enhanced"><img src="https://i.pravatar.cc/150?img=8" alt="Foto de Carlos Ruiz"></div><h4>Carlos Ruiz</h4><p style="color: var(--accent-green); font-weight: 600;">Responsable de Flota</p></div>
+                    <div class="team-card-enhanced"><div class="team-photo-enhanced"><img src="https://i.pravatar.cc/150?img=32" alt="Foto de Sofía López"></div><h4>Sofía López</h4><p style="color: var(--accent-green); font-weight: 600;">Atención al Cliente</p></div>
                 </div>
             </div>
         </section>
@@ -455,6 +453,7 @@
                 <p>Mudanzas sostenibles, sin complicaciones.</p>
                 <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
                 <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
             </div>
             <div class="footer-links">
                 <h3>Enlaces Rápidos</h3>
@@ -462,20 +461,24 @@
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="productos.html">Productos</a></li>
                     <li><a href="servicios.html">Servicios</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
                     <li><a href="contacto.html">Contacto</a></li>
                 </ul>
             </div>
             <div class="footer-social-links">
                 <h3>Síguenos</h3>
-                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <div class="social-icons-wrapper">
+                    <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
             </div>
         </div>
         <div class="footer-bottom">
             &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
         </div>
     </footer>
-    
+
     <div class="cart-modal-overlay" id="cartModalOverlay">
         <div class="cart-modal">
             <div class="cart-modal-header">
@@ -485,17 +488,20 @@
             <div class="cart-modal-body" id="cartItemsContainer"></div>
             <div class="cart-modal-footer">
                 <div class="cart-summary">
-                    <p>Subtotal: <span>$0.00</span></p>
-                    <p>Impuestos: <span>$0.00</span></p>
-                    <h3>Total: <span>$0.00</span></h3>
+                    <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
+                    <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
+                    <h3>Total: <span id="cartTotal">$0.00</span></h3>
                 </div>
-                <a href="pago.html" class="btn btn-primary">Finalizar Compra</a>
+                <div class="cart-footer-buttons">
+                    <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
+                    <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
+                </div>
             </div>
         </div>
     </div>
     <div class="cart-notification" id="cartNotification">
         <div class="notification-content">
-            <div class="notification-icon"></div>
+            <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
             <p id="notificationText"></p>
         </div>
     </div>
@@ -511,33 +517,9 @@
                 });
             }, { threshold: 0.1 });
 
-            document.querySelectorAll('.timeline-item, .stat-card, .innovation-card, .team-card-enhanced').forEach(el => {
+            document.querySelectorAll('.timeline-item, .innovation-card, .team-card-enhanced').forEach(el => {
                 observer.observe(el);
             });
-
-            const statsObserver = new IntersectionObserver((entries, obs) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const counter = entry.target;
-                        const target = +counter.dataset.target;
-                        const duration = 2000;
-                        let current = 0;
-                        const stepTime = 20;
-                        const increment = (target - current) / (duration / stepTime);
-
-                        const timer = setInterval(() => {
-                            current += increment;
-                            if (current >= target) {
-                                current = target;
-                                clearInterval(timer);
-                            }
-                            counter.textContent = Math.floor(current) + (counter.textContent.includes('%') ? '%' : '');
-                        }, stepTime);
-                        obs.unobserve(counter);
-                    }
-                });
-            }, { threshold: 0.8 });
-            document.querySelectorAll('.stat-number').forEach(stat => statsObserver.observe(stat));
         });
     </script>
 </body>
