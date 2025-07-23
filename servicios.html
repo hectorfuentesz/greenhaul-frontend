@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos - Mudanzas Sostenibles | greenhauL</title>
+    <title>Servicios - Mudanzas Sostenibles | greenhauL</title>
+    <!-- Íconos y estilos principales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/pages.css">
 </head>
 <body>
-    <!-- HEADER idéntico al index -->
     <header>
         <nav class="navbar">
             <div class="container navbar-content">
-                <a href="index.html" class="logo">
-                    <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
-                </a>
+            <a href="index.html" class="logo">
+            <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
+        </a>
                 <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
                     <span class="toggler-icon"></span>
                     <span class="toggler-icon"></span>
@@ -23,15 +22,15 @@
                 </button>
                 <div class="navbar-collapse" id="navbarCollapse">
                     <ul class="nav-links-list">
-                        <li><a href="index.html" class="nav-link">Inicio</a></li>
-                        <li><a href="productos.html" class="nav-link active">Productos</a></li>
+                        <li><a href="index.html" class="nav-link active">Inicio</a></li>
+                        <li><a href="productos.html" class="nav-link">Productos</a></li>
                         <li><a href="servicios.html" class="nav-link">Servicios</a></li>
                         <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
                         <li><a href="contacto.html" class="nav-link">Contacto</a></li>
                         <li><a href="faq.html" class="nav-link">Preguntas</a></li>
                     </ul>
                     <div class="navbar-right-items">
-                        <div class="navbar-user-actions" id="navbarUserActions">
+                    <div class="navbar-user-actions" id="navbarUserActions">
                             <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
                             <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
                             <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
@@ -48,173 +47,116 @@
         </nav>
     </header>
 
-    <main class="page-content">
-        <!-- Puedes poner aquí una intro similar al index si lo deseas -->
-        <section class="section">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Nuestros <span class="highlight-sostenible">Productos</span></h2>
-                    <p>Alquila nuestras cajas reutilizables y accesorios para una mudanza eficiente y ecológica.</p>
+<main class="page-content">
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nuestros <span class="highlight-sostenible">Servicios</span></h2>
+                <p>Soluciones adicionales para hacer tu mudanza aún más fácil y libre de estrés.</p>
+            </div>
+            <div class="services-grid">
+                <!-- Servicio 1 -->
+                <div class="service-card">
+                    <div class="service-icon" aria-label="Embalaje Profesional">🧳</div>
+                    <h3>Embalaje Profesional</h3>
+                    <p>Empacamos tus pertenencias rápido, eficiente y seguro. Olvídate del estrés y deja todo en manos expertas.</p>
+                    <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
                 </div>
-                <div class="rental-dates-container">
-                    <div class="section-subtitle">
-                        <h3>1. Elige tu período de renta</h3>
-                        <p>Selecciona las fechas en que necesitas nuestros productos.<br>Las fechas se guardan automáticamente.</p>
-                    </div>
-                    <div class="date-fields">
-                        <div class="form-group">
-                            <label for="fecha-entrega"><i class="fas fa-arrow-right"></i> Fecha de Entrega</label>
-                            <input type="text" class="form-control" id="fecha-entrega" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="fecha-recoleccion"><i class="fas fa-arrow-left"></i> Fecha de Recolección</label>
-                            <input type="text" class="form-control" id="fecha-recoleccion" readonly>
-                        </div>
-                    </div>
+                <!-- Servicio 2 -->
+                <div class="service-card">
+                    <div class="service-icon" aria-label="Montaje de Muebles">🛋️</div>
+                    <h3>Montaje de Muebles</h3>
+                    <p>Desarmamos y armamos tus muebles en el nuevo domicilio. ¡Tu mudanza lista y sin complicaciones!</p>
+                    <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
                 </div>
-                <!-- GRID de productos: Ejemplo estático, puedes generar dinámico desde tu backend -->
-                <div class="product-grid">
-                    <div class="product-card" data-product-id="1" data-product-price="35.00">
-                        <div class="product-image">📦</div>
-                        <div class="product-info">
-                            <h3>EcoBox Grande</h3>
-                            <p class="description">Caja resistente y reutilizable para mudanzas grandes.</p>
-                            <ul>
-                                <li>60L de capacidad</li>
-                                <li>Plástico reciclado</li>
-                                <li>Fácil de apilar</li>
-                            </ul>
-                            <div class="price">$35.00 <span>/semana</span></div>
-                            <div class="quantity-control">
-                                <label for="qty-1">Cantidad:</label>
-                                <select class="product-qty" id="qty-1">
-                                    <option value="" disabled selected>Selecciona</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-primary add-to-cart-btn">Agregar al carrito</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-product-id="2" data-product-price="25.00">
-                        <div class="product-image">📦</div>
-                        <div class="product-info">
-                            <h3>EcoBox Mediana</h3>
-                            <p class="description">Caja mediana para ropa, libros y objetos pequeños.</p>
-                            <ul>
-                                <li>40L de capacidad</li>
-                                <li>Material durable</li>
-                                <li>Ligera</li>
-                            </ul>
-                            <div class="price">$25.00 <span>/semana</span></div>
-                            <div class="quantity-control">
-                                <label for="qty-2">Cantidad:</label>
-                                <select class="product-qty" id="qty-2">
-                                    <option value="" disabled selected>Selecciona</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-primary add-to-cart-btn">Agregar al carrito</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-product-id="3" data-product-price="50.00">
-                        <div class="product-image">🧳</div>
-                        <div class="product-info">
-                            <h3>Carro de Mudanza</h3>
-                            <p class="description">Carro plegable para transportar tus cajas fácilmente.</p>
-                            <ul>
-                                <li>Capacidad 120kg</li>
-                                <li>Ruedas giratorias</li>
-                                <li>Plegable</li>
-                            </ul>
-                            <div class="price">$50.00 <span>/semana</span></div>
-                            <div class="quantity-control">
-                                <label for="qty-3">Cantidad:</label>
-                                <select class="product-qty" id="qty-3">
-                                    <option value="" disabled selected>Selecciona</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-primary add-to-cart-btn">Agregar al carrito</button>
-                        </div>
-                    </div>
-                    <!-- Puedes agregar más productos siguiendo este patrón -->
+                <!-- Servicio 3 -->
+                <div class="service-card">
+                    <div class="service-icon" aria-label="Almacenamiento Temporal">🏢</div>
+                    <h3>Almacenamiento Temporal</h3>
+                    <p>Bodegas seguras y accesibles para guardar tus pertenencias por semanas o meses si lo necesitas.</p>
+                    <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
+                </div>
+                <!-- Servicio 4 -->
+                <div class="service-card">
+                    <div class="service-icon" aria-label="Retiro de Sobrantes">♻️</div>
+                    <h3>Retiro de Sobrantes</h3>
+                    <p>Recogemos material de embalaje usado y artículos para donar o desechar de forma ecológica.</p>
+                    <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
+                </div>
+                <!-- Servicio 5 -->
+                <div class="service-card">
+                    <div class="service-icon" aria-label="Conexión de Aparatos">🔌</div>
+                    <h3>Conexión de Aparatos</h3>
+                    <p>Conectamos tus electrodomésticos esenciales (refrigerador, lavadora, etc.) en tu nuevo hogar.</p>
+                    <a href="contacto.html" class="btn btn-primary">Solicitar Cotización</a>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+</main>
 
-    <footer class="footer">
-        <div class="container footer-content">
-            <div class="footer-info">
-                <h3>greenhauL</h3>
-                <p>Mudanzas sostenibles, sin complicaciones.</p>
-                <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
-                <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
-                <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
-            </div>
-            <div class="footer-links">
-                <h3>Enlaces Rápidos</h3>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="productos.html">Productos</a></li>
-                    <li><a href="servicios.html">Servicios</a></li>
-                    <li><a href="nosotros.html">Nosotros</a></li>
-                    <li><a href="contacto.html">Contacto</a></li>
-                </ul>
-            </div>
-            <div class="footer-social-links">
-                <h3>Síguenos</h3>
-                <div class="social-icons-wrapper">
-                    <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                </div>
-            </div>
+<footer class="footer">
+    <div class="container footer-content">
+        <div class="footer-info">
+            <h3>greenhauL</h3>
+            <p>Mudanzas sostenibles, sin complicaciones.</p>
+            <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
+            <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
         </div>
-        <div class="footer-bottom">
-            &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+        <div class="footer-links">
+            <h3>Enlaces Rápidos</h3>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="servicios.html">Servicios</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
         </div>
-    </footer>
-    
-    <div class="cart-modal-overlay" id="cartModalOverlay">
-        <div class="cart-modal">
-            <div class="cart-modal-header">
-                <h2>Tu Carrito</h2>
-                <button class="close-modal-btn" id="closeCartModalBtn" title="Cerrar">&times;</button>
-            </div>
-            <div class="cart-modal-body" id="cartItemsContainer"></div>
-            <div class="cart-modal-footer">
-                <div class="cart-summary">
-                    <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
-                    <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
-                    <h3>Total: <span id="cartTotal">$0.00</span></h3>
-                </div>
-                <div class="cart-footer-buttons">
-                    <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
-                    <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
-                </div>
+        <div class="footer-social-links">
+            <h3>Síguenos</h3>
+            <div class="social-icons-wrapper">
+                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
             </div>
         </div>
     </div>
-    <div class="cart-notification" id="cartNotification">
-        <div class="notification-content">
-            <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
-            <p id="notificationText"></p>
+    <div class="footer-bottom">
+        &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+    </div>
+</footer>
+
+<!-- Modal del carrito y notificación -->
+<div class="cart-modal-overlay" id="cartModalOverlay">
+    <div class="cart-modal">
+        <div class="cart-modal-header">
+            <h2>Tu Carrito</h2>
+            <button class="close-modal-btn" id="closeCartModalBtn">&times;</button>
+        </div>
+        <div class="cart-modal-body" id="cartItemsContainer"></div>
+        <div class="cart-modal-footer">
+            <div class="cart-summary">
+                <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
+                <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
+                <h3>Total: <span id="cartTotal">$0.00</span></h3>
+            </div>
+            <div class="cart-footer-buttons">
+                <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
+                <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
+            </div>
         </div>
     </div>
-    
-    <script src="assets/js/main.js"></script>
-    <!-- Flatpickr para fechas, si lo usas en productos -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</div>
+<div class="cart-notification" id="cartNotification">
+    <div class="notification-content">
+        <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
+        <p id="notificationText"></p>
+    </div>
+</div>
+
+<!-- Script principal -->
+<script src="assets/js/main.js"></script>
 </body>
 </html>
