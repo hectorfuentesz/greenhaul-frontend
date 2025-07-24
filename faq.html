@@ -168,42 +168,60 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // Lógica para actualizar el estado de inicio de sesión en el header
+            /**
+             * LÓGICA PARA ACTUALIZAR EL ESTADO DE INICIO DE SESIÓN EN EL HEADER
+             * Revisa el localStorage para ver si hay un usuario y muestra/oculta los botones correspondientes.
+             */
             const loginBtn = document.getElementById('loginBtn');
             const accountLink = document.getElementById('accountLink');
             const userNameSpan = document.getElementById('userName');
             const logoutBtn = document.getElementById('logoutBtn');
 
             function updateLoginStatus() {
-                const loggedInUserStr = localStorage.getItem('loggedInUser');
-                if (loggedInUserStr) {
-                    const loggedInUser = JSON.parse(loggedInUserStr);
-                    if (loginBtn) loginBtn.style.display = 'none';
-                    if (accountLink) accountLink.style.display = 'inline';
-                    if (logoutBtn) logoutBtn.style.display = 'inline';
-                    if (userNameSpan) userNameSpan.textContent = loggedInUser.name;
-                } else {
+                try {
+                    const loggedInUserStr = localStorage.getItem('loggedInUser');
+                    if (loggedInUserStr) {
+                        const loggedInUser = JSON.parse(loggedInUserStr);
+                        if (loginBtn) loginBtn.style.display = 'none';
+                        if (accountLink) accountLink.style.display = 'inline';
+                        if (logoutBtn) logoutBtn.style.display = 'inline';
+                        if (userNameSpan) userNameSpan.textContent = loggedInUser.name;
+                    } else {
+                        if (loginBtn) loginBtn.style.display = 'inline';
+                        if (accountLink) accountLink.style.display = 'none';
+                        if (logoutBtn) logoutBtn.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error("Error al procesar los datos de inicio de sesión:", error);
+                    // Si hay un error (ej. JSON malformado), se muestra como no logueado.
                     if (loginBtn) loginBtn.style.display = 'inline';
                     if (accountLink) accountLink.style.display = 'none';
                     if (logoutBtn) logoutBtn.style.display = 'none';
                 }
             }
 
+            // Listener para el botón de cerrar sesión.
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     localStorage.removeItem('loggedInUser');
-                    updateLoginStatus();
+                    updateLoginStatus(); // Actualiza el header inmediatamente
+                    // Opcional: recargar la página para un reinicio completo del estado.
+                    // window.location.reload(); 
                 });
             }
             
+            // Se ejecuta la función al cargar la página para establecer el estado inicial.
             updateLoginStatus();
 
-            // Lógica para actualizar el año en el footer
+            /**
+             * LÓGICA PARA ACTUALIZAR EL AÑO EN EL FOOTER
+             * Pone el año actual en el pie de página para que no se tenga que actualizar manualmente.
+             */
             const yearSpan = document.getElementById('current-year');
             if (yearSpan) {
                 yearSpan.textContent = new Date().getFullYear();
             }
         });
     </script>
-    </body>
+</body>
 </html>
