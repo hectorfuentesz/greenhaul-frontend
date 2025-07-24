@@ -415,5 +415,37 @@ if (logoutBtn) {
   logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('user');
     location.reload();
+
+    /**
+     * =============================================================
+     * SECCIÓN 4: LÓGICA PARA LA PÁGINA DE PREGUNTAS FRECUENTES (FAQ)
+     * Se ejecuta solo si encuentra el contenedor de preguntas.
+     * =============================================================
+     */
+    const faqContainer = document.querySelector('.faq-container');
+
+    if (faqContainer) {
+        faqContainer.addEventListener('click', (e) => {
+            // Encuentra el elemento .faq-question más cercano al que se le hizo clic
+            const questionHeader = e.target.closest('.faq-question');
+
+            // Si no se hizo clic en una cabecera de pregunta, no hace nada
+            if (!questionHeader) return;
+
+            const faqItem = questionHeader.parentElement;
+            const isActive = faqItem.classList.contains('active');
+
+            // Cierra todos los demás items para que solo uno esté abierto a la vez
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Si el item no estaba activo, lo activa (abriendo la respuesta)
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+            // Si ya estaba activo, el bucle anterior ya lo cerró.
+        });
+    }
   });
 }
