@@ -6,6 +6,65 @@
     <title>Preguntas Frecuentes - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!-- INICIO: ESTILOS CSS AUTOCONTENIDOS PARA EL FAQ -->
+    <style>
+        .faq-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+        .faq-item {
+            background-color: #ffffff;
+            border: 1px solid #e7eaf3;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .faq-item:hover {
+            border-color: var(--accent-green);
+        }
+        .faq-question {
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .faq-question .icon {
+            font-size: 1.2rem;
+            color: var(--primary-solid);
+            transition: transform 0.3s ease-in-out;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        .faq-answer p {
+            padding: 0 25px 25px 25px;
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #555;
+            border-top: 1px solid #e7eaf3;
+            padding-top: 20px;
+        }
+        /* Estado activo cuando se hace clic */
+        .faq-item.active .faq-question .icon {
+            transform: rotate(45deg);
+            color: var(--accent-green);
+        }
+        .faq-item.active .faq-answer {
+            /* Se calcula la altura con JS para una animación perfecta */
+        }
+    </style>
+    <!-- FIN: ESTILOS CSS AUTOCONTENIDOS -->
 </head>
 <body>
     <header>
@@ -26,7 +85,7 @@
                         <li><a href="servicios.html" class="nav-link">Servicios</a></li>
                         <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
                         <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-                        <li><a href="faq.html" class="nav-link">Preguntas</a></li>
+                        <li><a href="faq.html" class="nav-link active">Preguntas</a></li>
                     </ul>
                     <div class="navbar-right-items">
                         <div class="navbar-user-actions" id="navbarUserActions">
@@ -160,6 +219,90 @@
         </div>
     </div>
 
+    <!-- Script principal para funcionalidades globales como el carrito -->
     <script type="module" src="assets/js/main.js"></script>
+
+    <!-- INICIO: SCRIPT AUTOCONTENIDO PARA ESTA PÁGINA -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /**
+             * LÓGICA 1: SESIÓN DE USUARIO EN EL HEADER
+             */
+            const loginBtn = document.getElementById('loginBtn');
+            const accountLink = document.getElementById('accountLink');
+            const userNameSpan = document.getElementById('userName');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            function updateUserLoginStatus() {
+                try {
+                    const loggedInUserStr = localStorage.getItem('greenhaulUser'); // Usamos una clave consistente
+                    if (loggedInUserStr) {
+                        const loggedInUser = JSON.parse(loggedInUserStr);
+                        if (loginBtn) loginBtn.style.display = 'none';
+                        if (accountLink) accountLink.style.display = 'flex';
+                        if (logoutBtn) logoutBtn.style.display = 'block';
+                        if (userNameSpan) userNameSpan.textContent = loggedInUser.name.split(' ')[0];
+                    } else {
+                        if (loginBtn) loginBtn.style.display = 'flex';
+                        if (accountLink) accountLink.style.display = 'none';
+                        if (logoutBtn) logoutBtn.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error("Error al leer datos de usuario:", error);
+                }
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('greenhaulUser');
+                    updateUserLoginStatus();
+                });
+            }
+            updateUserLoginStatus();
+
+            /**
+             * LÓGICA 2: AÑO ACTUAL EN EL FOOTER
+             */
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+
+            /**
+             * LÓGICA 3: ACORDEÓN DE PREGUNTAS FRECUENTES (FAQ)
+             */
+            const faqContainer = document.querySelector('.faq-container');
+            if (faqContainer) {
+                faqContainer.addEventListener('click', (e) => {
+                    const questionHeader = e.target.closest('.faq-question');
+                    if (!questionHeader) return;
+
+                    const currentItem = questionHeader.parentElement;
+                    const answer = currentItem.querySelector('.faq-answer');
+                    const isActive = currentItem.classList.contains('active');
+
+                    // Cierra todos los demás items
+                    document.querySelectorAll('.faq-item').forEach(item => {
+                        if (item !== currentItem) {
+                            item.classList.remove('active');
+                            item.querySelector('.faq-answer').style.maxHeight = null;
+                        }
+                    });
+
+                    // Abre o cierra el item actual
+                    if (isActive) {
+                        currentItem.classList.remove('active');
+                        answer.style.maxHeight = null;
+                    } else {
+                        currentItem.classList.add('active');
+                        // Calcula la altura necesaria para la animación
+                        answer.style.maxHeight = answer.scrollHeight + "px";
+                    }
+                });
+            }
+        });
+    </script>
+    <!-- FIN: SCRIPT AUTOCONTENIDO -->
 </body>
 </html>
