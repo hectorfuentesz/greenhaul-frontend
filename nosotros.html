@@ -3,20 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nosotros - GreenHaul</title>
-  <link rel="stylesheet" href="assets/css/styles.css"/>
-  <link rel="stylesheet" href="assets/css/pages.css"/>
-  <link rel="icon" href="assets/img/greenHaul-logo.svg" type="image/svg+xml"/>
-  <script defer src="assets/js/main.js"></script>
+  <title>Nosotros - Mudanzas Sostenibles | greenhauL</title>
+
+  <!-- Estilos e íconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
-
   <!-- HEADER -->
   <header>
     <nav class="navbar">
       <div class="container navbar-content">
         <a href="index.html" class="logo">
-          <img src="assets/img/Greenhaul-logo.svg" alt="GreenHaul Logo"/>
+          <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" />
         </a>
         <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
           <span class="toggler-icon"></span>
@@ -28,23 +27,21 @@
             <li><a href="index.html" class="nav-link">Inicio</a></li>
             <li><a href="productos.html" class="nav-link">Productos</a></li>
             <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-            <li><a href="faq.html" class="nav-link">Preguntas</a></li>
-            <li><a href="contacto.html" class="nav-link">Contacto</a></li>
             <li><a href="nosotros.html" class="nav-link active">Nosotros</a></li>
+            <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+            <li><a href="faq.html" class="nav-link">Preguntas</a></li>
           </ul>
           <div class="navbar-right-items">
+            <div class="navbar-user-actions" id="navbarUserActions">
+              <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+              <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+              <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
             <div class="nav-icons">
-              <a href="#" class="nav-icon" id="cartIcon">
+              <a href="#" class="nav-icon cart-icon" id="cartIcon">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="cart-count" id="cartCount">0</span>
               </a>
-            </div>
-            <div class="navbar-user-actions" id="navbarUserActions">
-              <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar sesión</a>
-              <a href="cuenta.html" class="btn btn-primary" id="accountLink" style="display:none;">
-                Hola, <span id="userName">Usuario</span>
-              </a>
-              <button class="btn btn-tertiary" id="logoutBtn" style="display:none;">Cerrar sesión</button>
             </div>
           </div>
         </div>
@@ -52,60 +49,83 @@
     </nav>
   </header>
 
+  <!-- CONTENIDO -->
   <main class="page-content">
     <section class="section">
       <div class="container">
         <div class="section-title">
-          <h1>Sobre <span>GreenHaul</span></h1>
+          <h2>Sobre <span class="highlight-sostenible">GreenHaul</span></h2>
           <p>Conoce quiénes somos, por qué existimos y qué nos motiva a transformar el mundo de las mudanzas.</p>
         </div>
-
-        <div class="about-intro-grid">
-          <div class="intro-card">
-            <div class="intro-icon"><i class="fas fa-recycle"></i></div>
+        <div class="features-grid">
+          <div class="feature-item">
             <h3>Sustentabilidad</h3>
-            <p>Estamos comprometidos con el medio ambiente. Nuestras cajas son reutilizables y reducen el uso de cartón desechable.</p>
+            <p>Estamos comprometidos con el medio ambiente. Nuestras cajas son reutilizables, resistentes y reducen significativamente los residuos de cartón.</p>
           </div>
-          <div class="intro-card">
-            <div class="intro-icon"><i class="fas fa-truck"></i></div>
+          <div class="feature-item">
             <h3>Logística Inteligente</h3>
-            <p>Ofrecemos soluciones modernas que hacen que tu mudanza sea más eficiente, rápida y sin complicaciones innecesarias.</p>
+            <p>Ofrecemos soluciones modernas que hacen que tu mudanza sea más eficiente, segura y puntual. Nuestro sistema te guía paso a paso.</p>
           </div>
-          <div class="intro-card">
-            <div class="intro-icon"><i class="fas fa-users"></i></div>
+          <div class="feature-item">
             <h3>Compromiso Social</h3>
-            <p>Trabajamos con comunidades locales y promovemos empleos verdes como parte de nuestra cadena de valor.</p>
+            <p>Trabajamos con comunidades locales y promovemos empleos verdes como parte de nuestra filosofía de responsabilidad social.</p>
           </div>
-        </div>
-
-        <div style="margin-top: 60px; text-align: center;">
-          <p style="font-size: 1.2rem; color: var(--text-light); max-width: 800px; margin: 0 auto;">
-            En GreenHaul creemos que una mudanza no debería generar toneladas de residuos. Queremos transformar la manera en que las personas se mueven, inspirando prácticas más limpias y eficientes. ¡Gracias por ser parte del cambio!
-          </p>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- CARRITO MODAL -->
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-info">
+        <h3>greenhauL</h3>
+        <p>Mudanzas sostenibles, sin complicaciones.</p>
+        <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
+        <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
+        <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
+      </div>
+      <div class="footer-links">
+        <h3>Enlaces Rápidos</h3>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="productos.html">Productos</a></li>
+          <li><a href="servicios.html">Servicios</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-social-links">
+        <h3>Síguenos</h3>
+        <div class="social-icons-wrapper">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <!-- MODAL DEL CARRITO -->
   <div class="cart-modal-overlay" id="cartModalOverlay">
     <div class="cart-modal">
       <div class="cart-modal-header">
         <h2>Tu Carrito</h2>
         <button class="close-modal-btn" id="closeCartModalBtn">&times;</button>
       </div>
-      <div class="cart-modal-body" id="cartItemsContainer">
-        <!-- Ítems del carrito se inyectan aquí -->
-      </div>
+      <div class="cart-modal-body" id="cartItemsContainer"></div>
       <div class="cart-modal-footer">
         <div class="cart-summary">
           <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
-          <p>IVA (16%): <span id="cartTaxes">$0.00</span></p>
+          <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
           <h3>Total: <span id="cartTotal">$0.00</span></h3>
         </div>
         <div class="cart-footer-buttons">
-          <button class="btn btn-secondary" id="emptyCartBtn">Vaciar Carrito</button>
-          <a href="pago.html" class="btn btn-primary" id="proceedToCheckoutBtn">Proceder al Pago</a>
+          <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
+          <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
         </div>
       </div>
     </div>
@@ -114,46 +134,12 @@
   <!-- NOTIFICACIÓN -->
   <div class="cart-notification" id="cartNotification">
     <div class="notification-content">
-      <div class="notification-icon-wrapper">
-        <div class="notification-icon"></div>
-      </div>
-      <p id="notificationText">Producto agregado al carrito</p>
+      <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
+      <p id="notificationText"></p>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <div class="footer-info">
-        <h3>GreenHaul</h3>
-        <p>Alquila cajas reutilizables y transforma tu mudanza en una experiencia ecológica.</p>
-        <p>contacto@greenhaul.com.mx</p>
-      </div>
-      <div class="footer-links">
-        <h3>Enlaces</h3>
-        <ul>
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="productos.html">Productos</a></li>
-          <li><a href="servicios.html">Servicios</a></li>
-          <li><a href="faq.html">Preguntas</a></li>
-          <li><a href="contacto.html">Contacto</a></li>
-        </ul>
-      </div>
-      <div class="footer-social-links">
-        <h3>Redes Sociales</h3>
-        <div class="social-icons-wrapper">
-          <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      &copy; <span id="current-year"></span> GreenHaul. Todos los derechos reservados.
-    </div>
-  </footer>
-
-  <!-- FontAwesome -->
-  <script src="https://kit.fontawesome.com/6ee5fcad84.js" crossorigin="anonymous"></script>
+  <!-- JS PRINCIPAL -->
+  <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>
