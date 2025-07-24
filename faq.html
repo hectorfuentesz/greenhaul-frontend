@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <!-- INICIO: ESTILOS CSS AUTOCONTENIDOS PARA EL FAQ -->
     <style>
         .faq-container {
             max-width: 850px;
@@ -60,12 +59,12 @@
             transform: rotate(45deg);
             color: var(--accent-green);
         }
-        .faq-item.active .faq-answer {
-            /* Se calcula la altura con JS para una animación perfecta */
-        }
+        
+        /* CORRECCIÓN: Se eliminó la regla de CSS vacía que causaba el error. */
+        /* La animación de altura ahora es manejada 100% por el JavaScript. */
+
     </style>
-    <!-- FIN: ESTILOS CSS AUTOCONTENIDOS -->
-</head>
+    </head>
 <body>
     <header>
         <nav class="navbar">
@@ -219,10 +218,8 @@
         </div>
     </div>
 
-    <!-- Script principal para funcionalidades globales como el carrito -->
     <script type="module" src="assets/js/main.js"></script>
 
-    <!-- INICIO: SCRIPT AUTOCONTENIDO PARA ESTA PÁGINA -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -303,6 +300,5 @@
             }
         });
     </script>
-    <!-- FIN: SCRIPT AUTOCONTENIDO -->
-</body>
+    </body>
 </html>
