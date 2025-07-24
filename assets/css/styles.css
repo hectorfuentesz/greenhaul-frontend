@@ -1818,3 +1818,71 @@ hr {
   font-weight: 500;
   font-size: 1.1em;
 }
+
+/* =================================================================== */
+/* ===== ESTILOS PARA EL ACORDEÓN DE PREGUNTAS FRECUENTES (FAQ) ===== */
+/* =================================================================== */
+
+.faq-container {
+  max-width: 850px;
+  margin: 40px auto;
+  padding: 0 15px;
+}
+
+.faq-item {
+  background-color: #ffffff;
+  border: 1px solid #e7eaf3;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.faq-question {
+  padding: 20px 25px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #2c3e50;
+  transition: background-color 0.3s;
+}
+
+.faq-question:hover {
+    background-color: #f8f9fa;
+}
+
+.faq-question .icon {
+  font-size: 1.2rem;
+  color: var(--primary-solid);
+  transition: transform 0.3s ease-in-out;
+}
+
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr; /* Inicia colapsado */
+  transition: grid-template-rows 0.4s ease-out;
+}
+
+.faq-answer p {
+  padding: 0 25px 25px 25px;
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #555;
+  overflow: hidden;
+  border-top: 1px solid #e7eaf3;
+  padding-top: 20px;
+}
+
+/* Estado activo cuando se hace clic */
+.faq-item.active .faq-question .icon {
+  transform: rotate(45deg);
+  color: var(--accent-green);
+}
+
+.faq-item.active .faq-answer {
+  grid-template-rows: 1fr; /* Expande el contenedor */
+}

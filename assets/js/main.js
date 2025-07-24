@@ -33,6 +33,32 @@ document.addEventListener('DOMContentLoaded', () => {
             navbarToggler.addEventListener('click', () => {
                 navbarCollapse.classList.toggle('active');
                 navbarToggler.classList.toggle('active');
+                /**
+     * =============================================================
+     * SECCIÓN 4: LÓGICA PARA LA PÁGINA DE PREGUNTAS FRECUENTES (FAQ)
+     * =============================================================
+     */
+    const faqContainer = document.querySelector('.faq-container');
+
+    if (faqContainer) {
+        const faqItems = faqContainer.querySelectorAll('.faq-item');
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                // Cierra cualquier otro item que esté abierto
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Abre o cierra el item actual
+                item.classList.toggle('active');
+            });
+        });
+    }
             });
         }
         const currentYearSpan = document.getElementById('current-year');
