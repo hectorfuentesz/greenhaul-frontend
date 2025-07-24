@@ -1633,234 +1633,188 @@ hr {
   }
 }
 
-/* ============================================= */
-/* ESTILOS PARA PÁGINA "NOSOTROS"         */
-/* ============================================= */
+/* ========================================================= */
+/* ESTILOS REDISEÑADOS PARA PÁGINA "NOSOTROS" (CON VARIABLES) */
+/* ========================================================= */
 
-/* --- Estructura y Espaciado General --- */
-/* Le damos un fondo gris claro a secciones alternas para separarlas visualmente */
-.section:nth-child(even) {
-  background-color: #f8f9fa; /* Un gris muy sutil */
+/* --- Estructura y Fondos --- */
+/* Usamos el color de fondo del dashboard para secciones alternas */
+.section-light-gray {
+  background-color: var(--dashboard-background, #f8f9fa);
 }
 
-/* Aumentamos el espaciado vertical para que la página respire */
-.section {
-  padding: 80px 0;
+/* --- 1. Sección Héroe --- */
+.section-hero {
+  /* Usamos un degradado sutil con tus colores para el fondo */
+  background: linear-gradient(to bottom, rgba(0, 179, 134, 0.1), rgba(74, 144, 226, 0.1));
+  color: var(--text);
+  padding: 80px 15px;
+}
+.hero-title {
+  font-size: 3.5em; /* Ligeramente ajustado para no ser tan grande como H1 global */
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.hero-subtitle {
+  font-size: 1.3em;
+  max-width: 700px;
+  margin: 0 auto;
+  color: var(--text-light);
 }
 
-.section-title {
-  margin-bottom: 40px; /* Más espacio debajo de los títulos */
-}
-
-/* --- 1. Sección: "Nuestro Impacto Real" --- */
+/* --- 2. Sección Impacto --- */
 .impacto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px; /* Espacio entre las tarjetas */
-  margin-top: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
 }
-
-.impacto-card { /* Renombramos los divs para darles estilo */
-  background-color: #ffffff;
+.impacto-card {
+  background-color: var(--background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
   padding: 30px 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.07);
-  text-align: center;
-  border-top: 4px solid #8BC34A; /* Un acento con el color de tu marca */
+  border-top: 4px solid var(--accent-green); /* Usamos tu verde de acento */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .impacto-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-hover);
 }
-
-.impacto-card .impacto-numero {
-  font-size: 3em; /* 48px */
-  font-weight: 700;
-  color: #333;
+.impacto-card i {
+  color: var(--accent-green);
+  margin-bottom: 15px;
+}
+.impacto-numero {
   display: block;
-  margin-bottom: 8px;
+  font-size: 2.8em;
+  font-weight: 700;
+  color: var(--text);
+}
+.impacto-texto {
+  font-size: 1.1em;
+  color: var(--text-light);
 }
 
-.impacto-card .impacto-texto {
-  font-size: 1em; /* 16px */
-  color: #666;
-  line-height: 1.4;
-}
-
-
-/* --- 2. Sección: "Nuestra Historia" (Timeline) --- */
+/* --- 3. Sección Historia (Timeline) --- */
 .timeline {
   position: relative;
   max-width: 800px;
   margin: 40px auto;
-  padding: 20px 0;
 }
-/* La línea vertical central */
 .timeline::after {
   content: '';
   position: absolute;
   width: 3px;
-  background-color: #8BC34A; /* Verde de tu marca */
+  background-color: var(--accent-green); /* Verde para la línea */
   top: 0;
   bottom: 0;
   left: 50%;
   margin-left: -1.5px;
 }
-
-/* Contenedor de cada item del timeline */
 .timeline-item {
   padding: 10px 40px;
   position: relative;
   width: 50%;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
-
-/* El círculo en la línea */
+.timeline-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 .timeline-item::after {
   content: '';
   position: absolute;
-  width: 20px;
-  height: 20px;
-  right: -10px;
-  background-color: white;
-  border: 4px solid #8BC34A;
+  width: 24px;
+  height: 24px;
+  background-color: var(--dashboard-background, #f8f9fa); /* Color del fondo de la sección */
+  border: 4px solid var(--accent-green);
   top: 25px;
   border-radius: 50%;
   z-index: 1;
 }
-
-/* Items a la izquierda */
-.timeline-item.left {
-  left: 0;
-}
-/* Items a la derecha */
-.timeline-item.right {
-  left: 50%;
-}
-
-/* Flechas para los contenedores */
-.timeline-item.left::before, .timeline-item.right::before {
-  content: " ";
-  height: 0;
-  position: absolute;
-  top: 30px;
-  width: 0;
-  z-index: 1;
-  border: medium solid white;
-}
-.timeline-item.left::before {
-  right: 30px;
-  border-width: 10px 0 10px 10px;
-  border-color: transparent transparent transparent white;
-}
-.timeline-item.right::before {
-  left: 30px;
-  border-width: 10px 10px 10px 0;
-  border-color: transparent white transparent transparent;
-}
-
-/* Ajustar posición de los círculos */
-.timeline-item.left::after {
-  right: -10px;
-}
-.timeline-item.right::after {
-  left: -10px;
-}
-
-/* Contenido de cada item */
+.timeline-item.left { left: 0; }
+.timeline-item.right { left: 50%; }
+.timeline-item.left::after { right: -12px; }
+.timeline-item.right::after { left: -12px; }
 .timeline-content {
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 25px;
+  background-color: var(--background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+.timeline-content h3 {
+  font-weight: 600;
+  font-size: 1.5rem; /* Ajustamos el tamaño a tus H3/H4 */
+  color: var(--primary-solid); /* Usamos tu azul primario */
+  margin-bottom: 8px;
 }
 
-.timeline-content h3 { /* El año */
-  font-weight: 700;
-  color: #8BC34A;
-  margin-bottom: 5px;
-}
-
-
-/* --- 3. Sección: "¿Por Qué Elegir greenhauL?" --- */
+/* --- 4. Sección "Por Qué Elegirnos" --- */
 .benefits-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
-  margin-top: 40px;
 }
-
 .benefit-card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  text-align: left;
-  transition: transform 0.3s ease;
+  background: var(--dashboard-background, #f8f9fa);
+  padding: 35px;
+  border-radius: var(--border-radius);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--border);
 }
-
 .benefit-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--primary-solid);
 }
-
+.benefit-icon {
+  font-size: 2.5em;
+  color: var(--accent-green);
+  margin-bottom: 20px;
+}
 .benefit-card h3 {
-  font-size: 1.4em;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
+  font-size: 1.6rem; /* Ajustado a tu escala tipográfica */
+  margin-bottom: 10px;
+  color: var(--text);
 }
-/* Espacio para un futuro ícono */
-.benefit-card h3::before {
-  /* content: '\f00c';  Ejemplo de icono FontAwesome */
-  /* font-family: 'Font Awesome 6 Free'; */
-  font-weight: 900;
-  color: #8BC34A;
-  margin-right: 10px;
-  font-size: 20px;
+.benefit-card p {
+  color: var(--text-light);
+  line-height: 1.6;
 }
-/* Asignar íconos específicos (se necesita FontAwesome) */
-.benefit-card:nth-child(1) h3::before { content: '\f021'; } /* Reutilizar */
-.benefit-card:nth-child(2) h3::before { content: '\f4d1'; } /* Uso */
-.benefit-card:nth-child(3) h3::before { content: '\f0c0'; } /* Apoyo */
-.benefit-card:nth-child(4) h3::before { content: '\f53f'; } /* Cajas */
 
-
-/* --- 4. Sección: "Conoce al Equipo" --- */
+/* --- 5. Sección Equipo --- */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 40px;
-  margin-top: 40px;
   max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 40px auto 0;
 }
-
 .team-member {
   text-align: center;
 }
-/* Estilo para la foto */
-.team-member .team-photo {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%; /* Foto circular */
-  background-color: #e0e0e0; /* Color de fondo si no hay imagen */
-  margin: 0 auto 20px auto;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  /* Aquí puedes poner un background-image con la foto */
-  /* background-image: url('../img/paola.jpg'); */
-  background-size: cover;
-  background-position: center;
+.team-photo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 20px;
+  border: 5px solid var(--background);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease;
 }
-
-.team-member h3 { /* Nombre */
-  margin-bottom: 5px;
-  font-size: 1.5em;
+.team-member:hover .team-photo {
+  transform: scale(1.05);
+}
+.team-member h3 {
+  font-size: 1.6rem; /* Ajustado */
   font-weight: 600;
+  margin-bottom: 5px;
 }
-
-.team-member p { /* Cargo */
-  color: #8BC34A;
+.team-member p {
+  color: var(--primary-solid); /* Títulos en azul primario */
   font-weight: 500;
+  font-size: 1.1em;
 }
