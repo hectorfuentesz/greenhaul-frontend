@@ -134,17 +134,6 @@
             font-weight: 800;
             color: var(--accent-green);
             margin-bottom: 10px;
-            counter-reset: num var(--num);
-        }
-        
-        .stat-number::after {
-            content: counter(num);
-            animation: countUp 2s ease-out;
-        }
-        
-        @keyframes countUp {
-            from { --num: 0; }
-            to { --num: var(--target); }
         }
         
         .tech-timeline {
@@ -419,22 +408,22 @@
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-number" style="--target: 2500;">0</div>
+                        <div class="stat-number" data-target="2500">0</div>
                         <h4>Mudanzas Completadas</h4>
                         <p>Familias satisfechas</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" style="--target: 45000;">0</div>
+                        <div class="stat-number" data-target="45000">0</div>
                         <h4>Cajas de Cartón Evitadas</h4>
                         <p>Menos desperdicio</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" style="--target: 12;">0</div>
+                        <div class="stat-number" data-target="12">0</div>
                         <h4>Toneladas de Cartón Ahorradas</h4>
                         <p>Impacto ambiental positivo</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" style="--target: 96;">0%</div>
+                        <div class="stat-number" data-target="96">0%</div>
                         <h4>Satisfacción del Cliente</h4>
                         <p>Calificación promedio</p>
                     </div>
@@ -557,7 +546,7 @@
                 <div class="team-grid">
                     <div class="team-card-enhanced">
                         <div class="team-photo-enhanced">
-                            <img src="https://i.pravatar.cc/150?img=11" alt="Dr. Juan Pérez">
+                            <img src="https://i.pravatar.cc/150?img=11" alt="Juan Pérez">
                         </div>
                         <h4>Juan Pérez</h4>
                         <p style="color: var(--accent-green); font-weight: 600;">Fundador & CEO</p>
@@ -677,9 +666,56 @@
         </div>
     </div>
 
-    <script src="assets/js/main.js"></script>
+    <script type="module" src="assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // ===================================================================
+            // INICIO: LÓGICA DE INICIO DE SESIÓN Y ACTUALIZACIÓN DEL HEADER
+            // ===================================================================
+            const loginBtn = document.getElementById('loginBtn');
+            const accountLink = document.getElementById('accountLink');
+            const userNameSpan = document.getElementById('userName');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            function updateLoginStatus() {
+                // Intenta obtener el usuario del localStorage
+                const loggedInUserStr = localStorage.getItem('loggedInUser');
+                
+                if (loggedInUserStr) {
+                    const loggedInUser = JSON.parse(loggedInUserStr);
+                    // Si hay un usuario, muestra su información
+                    if (loginBtn) loginBtn.style.display = 'none';
+                    if (accountLink) accountLink.style.display = 'inline'; // 'inline' o 'block' según tu CSS
+                    if (logoutBtn) logoutBtn.style.display = 'inline';
+                    if (userNameSpan) userNameSpan.textContent = loggedInUser.name;
+                } else {
+                    // Si no hay usuario, muestra el botón de Iniciar Sesión
+                    if (loginBtn) loginBtn.style.display = 'inline';
+                    if (accountLink) accountLink.style.display = 'none';
+                    if (logoutBtn) logoutBtn.style.display = 'none';
+                }
+            }
+
+            // Añade un listener al botón de logout
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    // Borra al usuario del localStorage
+                    localStorage.removeItem('loggedInUser');
+                    // Actualiza el header inmediatamente
+                    updateLoginStatus();
+                    // Opcional: redirigir a la página de inicio o login
+                    // window.location.href = 'index.html'; 
+                });
+            }
+
+            // Llama a la función para establecer el estado inicial del header
+            updateLoginStatus();
+            // ===================================================================
+            // FIN: LÓGICA DE INICIO DE SESIÓN
+            // ===================================================================
+
+
             // Script para actualizar el año en el footer
             const yearSpan = document.getElementById('current-year');
             if (yearSpan) yearSpan.textContent = new Date().getFullYear();
@@ -703,19 +739,24 @@
             const statsObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const target = parseInt(entry.target.style.getPropertyValue('--target'));
-                        animateCounter(entry.target, target);
-                        observer.unobserve(entry.target); // Dejar de observar una vez que la animación comienza
+                        const element = entry.target;
+                        const target = parseInt(element.getAttribute('data-target'));
+                        const isPercent = element.textContent.includes('%');
+                        animateCounter(element, target, isPercent);
+                        observer.unobserve(element); // Dejar de observar una vez que la animación comienza
                     }
                 });
             }, { threshold: 0.5 });
             
             statNumbers.forEach(stat => statsObserver.observe(stat));
             
-            function animateCounter(element, target) {
+            function animateCounter(element, target, isPercent) {
                 let current = 0;
-                const increment = target / 100;
-                const isPercent = element.textContent.includes('%');
+                const duration = 2000; // 2 segundos
+                const stepTime = 20; // Actualizar cada 20ms
+                const totalSteps = duration / stepTime;
+                const increment = target / totalSteps;
+
                 const timer = setInterval(() => {
                     current += increment;
                     if (current >= target) {
@@ -723,7 +764,7 @@
                         clearInterval(timer);
                     }
                     element.textContent = Math.floor(current) + (isPercent ? '%' : '');
-                }, 20);
+                }, stepTime);
             }
             
             // Efecto parallax suave
