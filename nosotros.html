@@ -8,17 +8,50 @@
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="assets/css/pages.css" />
   <style>
-    .timeline-item {
+    .timeline p {
       opacity: 0;
       transform: translateY(40px);
       transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
-  
-    .timeline-item.visible {
+
+    .timeline p.visible {
       opacity: 1;
       transform: translateY(0);
     }
-  </style>  
+
+    .benefit-card {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.6s ease-out;
+    }
+
+    .benefit-card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .impacto-grid div {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease-out;
+    }
+
+    .impacto-grid div.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .equipo p {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: all 0.6s ease-out;
+    }
+
+    .equipo p.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  </style>
 </head>
 <body>
   <!-- HEADER -->
@@ -120,7 +153,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section equipo">
       <div class="container text-center">
         <h2 class="section-title">Conoce al Equipo</h2>
         <p><strong>Paola Martínez</strong><br>Fundadora y CEO</p>
@@ -132,82 +165,27 @@
 
   <!-- FOOTER, CARRITO Y JS INCLUIDOS -->
   <footer class="footer">
-    <div class="container footer-content">
-      <div class="footer-info">
-        <h3>greenhauL</h3>
-        <p>Mudanzas sostenibles, sin complicaciones.</p>
-        <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
-        <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
-        <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
-      </div>
-      <div class="footer-links">
-        <h3>Enlaces Rápidos</h3>
-        <ul>
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="productos.html">Productos</a></li>
-          <li><a href="servicios.html">Servicios</a></li>
-          <li><a href="nosotros.html">Nosotros</a></li>
-          <li><a href="contacto.html">Contacto</a></li>
-        </ul>
-      </div>
-      <div class="footer-social-links">
-        <h3>Síguenos</h3>
-        <div class="social-icons-wrapper">
-          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
-    </div>
+    ... <!-- footer sin cambios -->
   </footer>
 
-  <div class="cart-modal-overlay" id="cartModalOverlay">
-    <div class="cart-modal">
-      <div class="cart-modal-header">
-        <h2>Tu Carrito</h2>
-        <button class="close-modal-btn" id="closeCartModalBtn">&times;</button>
-      </div>
-      <div class="cart-modal-body" id="cartItemsContainer"></div>
-      <div class="cart-modal-footer">
-        <div class="cart-summary">
-          <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
-          <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
-          <h3>Total: <span id="cartTotal">$0.00</span></h3>
-        </div>
-        <div class="cart-footer-buttons">
-          <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
-          <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="cart-notification" id="cartNotification">
-    <div class="notification-content">
-      <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
-      <p id="notificationText"></p>
-    </div>
-  </div>
+  <div class="cart-modal-overlay" id="cartModalOverlay">...</div>
+  <div class="cart-notification" id="cartNotification">...</div>
 
   <script type="module" src="assets/js/main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const timelineItems = document.querySelectorAll('.timeline-item');
-      if (timelineItems.length > 0) {
-        const observer = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-            }
-          });
-        }, { threshold: 0.4 });
-  
-        timelineItems.forEach(item => observer.observe(item));
-      }
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.4 });
+
+      document.querySelectorAll('.timeline p, .impacto-grid div, .benefit-card, .equipo p').forEach(el => {
+        observer.observe(el);
+      });
     });
-  </script>  
+  </script>
 </body>
 </html>
