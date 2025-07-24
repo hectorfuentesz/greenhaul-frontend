@@ -135,7 +135,11 @@
             color: var(--accent-green);
             margin-bottom: 10px;
         }
-        
+
+        /* ================================================= */
+        /* INICIO: CÓDIGO CSS CORREGIDO PARA LA LÍNEA DE TIEMPO */
+        /* ================================================= */
+
         .tech-timeline {
             padding: 100px 0;
             background-color: var(--background);
@@ -148,67 +152,83 @@
             margin: 0 auto;
         }
         
-        .timeline-line {
+        /* La línea vertical central */
+        .timeline-container::after {
+            content: '';
             position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
             width: 4px;
             background: linear-gradient(to bottom, var(--primary-solid), var(--accent-green));
-            transform: translateX(-50%);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px; /* La mitad del ancho para centrarla perfectamente */
         }
         
+        /* El contenedor de cada evento de la línea de tiempo */
         .timeline-item {
+            padding: 10px 40px;
             position: relative;
-            margin-bottom: 50px;
+            background-color: inherit;
+            width: 50%;
+            /* Animación de entrada */
             opacity: 0;
-            transform: translateX(-50px);
+            transform: translateY(50px);
             transition: all 0.6s ease;
         }
-        
+
+        /* Hace visible el elemento cuando entra en la pantalla */
         .timeline-item.visible {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateY(0);
         }
         
+        /* Posiciona los elementos impares a la izquierda */
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        /* Posiciona los elementos pares a la derecha */
         .timeline-item:nth-child(even) {
-            transform: translateX(50px);
+            left: 50%;
         }
         
-        .timeline-item:nth-child(even).visible {
-            transform: translateX(0);
+        /* El punto circular en la línea */
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 30px; /* Alineación vertical del punto */
+            background: var(--accent-green);
+            border: 4px solid var(--background);
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 0 4px var(--accent-green);
         }
         
+        /* Posiciona el punto para los elementos de la izquierda */
+        .timeline-item:nth-child(odd)::after {
+            right: -10px; /* (Ancho del punto / 2) */
+        }
+        
+        /* Posiciona el punto para los elementos de la derecha */
+        .timeline-item:nth-child(even)::after {
+            left: -10px; /* (Ancho del punto / 2) */
+        }
+        
+        /* El cuadro de contenido */
         .timeline-content {
-            background: var(--background);
             padding: 30px;
+            background: var(--background);
+            position: relative;
             border-radius: 15px;
             box-shadow: var(--shadow);
-            width: 45%;
-            position: relative;
             border: 1px solid var(--border);
         }
         
-        .timeline-item:nth-child(odd) .timeline-content {
-            margin-left: 0;
-        }
-        
-        .timeline-item:nth-child(even) .timeline-content {
-            margin-left: 55%;
-        }
-        
-        .timeline-dot {
-            position: absolute;
-            left: 50%;
-            top: 30px;
-            width: 20px;
-            height: 20px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            transform: translateX(-50%);
-            border: 4px solid var(--background);
-            box-shadow: 0 0 0 4px var(--accent-green);
-        }
+        /* ================================================= */
+        /* FIN: CÓDIGO CSS CORREGIDO PARA LA LÍNEA DE TIEMPO   */
+        /* ================================================= */
         
         .innovation-grid {
             display: grid;
@@ -334,9 +354,25 @@
         /* Responsive */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.5rem; }
-            .timeline-line { display: none; }
-            .timeline-content { width: 100% !important; margin-left: 0 !important; }
-            .timeline-dot { display: none; }
+            
+            /* Responsive para la línea de tiempo */
+            .timeline-container::after {
+                left: 31px; /* Mueve la línea a la izquierda */
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-item:nth-child(even) {
+                left: 0%; /* Todos los elementos a la izquierda */
+            }
+            .timeline-item::after,
+            .timeline-item:nth-child(odd)::after, 
+            .timeline-item:nth-child(even)::after {
+                left: 15px; /* Mueve todos los puntos a la línea de la izquierda */
+            }
+
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
@@ -432,60 +468,41 @@
         </section>
 
         <section class="tech-timeline">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Nuestra Historia</h2>
-                    <p>Cómo nació EcoBox y hacia dónde vamos</p>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>2022 - La Idea</h3>
+                        <p>Después de una mudanza frustrante llena de cajas rotas y desperdicio, decidimos que tenía que haber una mejor manera de hacer las cosas.</p>
+                    </div>
                 </div>
-                <div class="timeline-container">
-                    <div class="timeline-line"></div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2022 - La Idea</h3>
-                            <p>Después de una mudanza frustrante llena de cajas rotas y desperdicio, decidimos que tenía que haber una mejor manera de hacer las cosas.</p>
-                        </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>2023 - Primeras Cajas</h3>
+                        <p>Compramos nuestro primer lote de 500 cajas reutilizables y comenzamos a ofrecer el servicio a amigos y familiares en la CDMX.</p>
                     </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2023 - Primeras Cajas</h3>
-                            <p>Compramos nuestro primer lote de 500 cajas reutilizables y comenzamos a ofrecer el servicio a amigos y familiares en la CDMX.</p>
-                        </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>2024 - Crecimiento</h3>
+                        <p>Expandimos nuestro inventario a 2,000 cajas y comenzamos a atender toda el área metropolitana con entregas programadas.</p>
                     </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2024 - Crecimiento</h3>
-                            <p>Expandimos nuestro inventario a 2,000 cajas y comenzamos a atender toda el área metropolitana con entregas programadas.</p>
-                        </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>2024 - Plataforma Digital</h3>
+                        <p>Lanzamos nuestra página web para facilitar las reservas en línea y mejorar la experiencia del cliente.</p>
                     </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2024 - Plataforma Digital</h3>
-                            <p>Lanzamos nuestra página web para facilitar las reservas en línea y mejorar la experiencia del cliente.</p>
-                        </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>2025 - Presente</h3>
+                        <p>Hoy contamos con más de 5,000 cajas en circulación y hemos ayudado a más de 2,500 familias con sus mudanzas.</p>
                     </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2025 - Presente</h3>
-                            <p>Hoy contamos con más de 5,000 cajas en circulación y hemos ayudado a más de 2,500 familias con sus mudanzas.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>2025 - Futuro</h3>
-                            <p>Planeamos expandirnos a Guadalajara y Monterrey, además de agregar servicios complementarios como embalaje profesional.</p>
-                        </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>2025 - Futuro</h3>
+                        <p>Planeamos expandirnos a Guadalajara y Monterrey, además de agregar servicios complementarios como embalaje profesional.</p>
                     </div>
                 </div>
             </div>
@@ -729,7 +746,7 @@
                         entry.target.classList.add('visible');
                     }
                 });
-            }, { threshold: 0.3 });
+            }, { threshold: 0.1 }); // Se ajusta el threshold para que se active antes
             
             timelineItems.forEach(item => timelineObserver.observe(item));
             
