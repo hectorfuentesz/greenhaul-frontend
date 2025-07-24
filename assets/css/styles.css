@@ -1632,3 +1632,235 @@ hr {
     padding: 10px 12px;
   }
 }
+
+/* ============================================= */
+/* ESTILOS PARA PÁGINA "NOSOTROS"         */
+/* ============================================= */
+
+/* --- Estructura y Espaciado General --- */
+/* Le damos un fondo gris claro a secciones alternas para separarlas visualmente */
+.section:nth-child(even) {
+  background-color: #f8f9fa; /* Un gris muy sutil */
+}
+
+/* Aumentamos el espaciado vertical para que la página respire */
+.section {
+  padding: 80px 0;
+}
+
+.section-title {
+  margin-bottom: 40px; /* Más espacio debajo de los títulos */
+}
+
+/* --- 1. Sección: "Nuestro Impacto Real" --- */
+.impacto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px; /* Espacio entre las tarjetas */
+  margin-top: 40px;
+}
+
+.impacto-card { /* Renombramos los divs para darles estilo */
+  background-color: #ffffff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.07);
+  text-align: center;
+  border-top: 4px solid #8BC34A; /* Un acento con el color de tu marca */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.impacto-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.impacto-card .impacto-numero {
+  font-size: 3em; /* 48px */
+  font-weight: 700;
+  color: #333;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.impacto-card .impacto-texto {
+  font-size: 1em; /* 16px */
+  color: #666;
+  line-height: 1.4;
+}
+
+
+/* --- 2. Sección: "Nuestra Historia" (Timeline) --- */
+.timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px 0;
+}
+/* La línea vertical central */
+.timeline::after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  background-color: #8BC34A; /* Verde de tu marca */
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -1.5px;
+}
+
+/* Contenedor de cada item del timeline */
+.timeline-item {
+  padding: 10px 40px;
+  position: relative;
+  width: 50%;
+}
+
+/* El círculo en la línea */
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: -10px;
+  background-color: white;
+  border: 4px solid #8BC34A;
+  top: 25px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* Items a la izquierda */
+.timeline-item.left {
+  left: 0;
+}
+/* Items a la derecha */
+.timeline-item.right {
+  left: 50%;
+}
+
+/* Flechas para los contenedores */
+.timeline-item.left::before, .timeline-item.right::before {
+  content: " ";
+  height: 0;
+  position: absolute;
+  top: 30px;
+  width: 0;
+  z-index: 1;
+  border: medium solid white;
+}
+.timeline-item.left::before {
+  right: 30px;
+  border-width: 10px 0 10px 10px;
+  border-color: transparent transparent transparent white;
+}
+.timeline-item.right::before {
+  left: 30px;
+  border-width: 10px 10px 10px 0;
+  border-color: transparent white transparent transparent;
+}
+
+/* Ajustar posición de los círculos */
+.timeline-item.left::after {
+  right: -10px;
+}
+.timeline-item.right::after {
+  left: -10px;
+}
+
+/* Contenido de cada item */
+.timeline-content {
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.timeline-content h3 { /* El año */
+  font-weight: 700;
+  color: #8BC34A;
+  margin-bottom: 5px;
+}
+
+
+/* --- 3. Sección: "¿Por Qué Elegir greenhauL?" --- */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.benefit-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-5px);
+}
+
+.benefit-card h3 {
+  font-size: 1.4em;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+/* Espacio para un futuro ícono */
+.benefit-card h3::before {
+  /* content: '\f00c';  Ejemplo de icono FontAwesome */
+  /* font-family: 'Font Awesome 6 Free'; */
+  font-weight: 900;
+  color: #8BC34A;
+  margin-right: 10px;
+  font-size: 20px;
+}
+/* Asignar íconos específicos (se necesita FontAwesome) */
+.benefit-card:nth-child(1) h3::before { content: '\f021'; } /* Reutilizar */
+.benefit-card:nth-child(2) h3::before { content: '\f4d1'; } /* Uso */
+.benefit-card:nth-child(3) h3::before { content: '\f0c0'; } /* Apoyo */
+.benefit-card:nth-child(4) h3::before { content: '\f53f'; } /* Cajas */
+
+
+/* --- 4. Sección: "Conoce al Equipo" --- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-top: 40px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.team-member {
+  text-align: center;
+}
+/* Estilo para la foto */
+.team-member .team-photo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%; /* Foto circular */
+  background-color: #e0e0e0; /* Color de fondo si no hay imagen */
+  margin: 0 auto 20px auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  /* Aquí puedes poner un background-image con la foto */
+  /* background-image: url('../img/paola.jpg'); */
+  background-size: cover;
+  background-position: center;
+}
+
+.team-member h3 { /* Nombre */
+  margin-bottom: 5px;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.team-member p { /* Cargo */
+  color: #8BC34A;
+  font-weight: 500;
+}
