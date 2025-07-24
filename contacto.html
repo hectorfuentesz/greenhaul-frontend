@@ -285,7 +285,7 @@
                         </ul>
                     </div>
                     <div class="map-container-full">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.52838321424!2d-99.1352453850933!3d19.43260778688414!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1f93f0b2f1b7b%3A0x9f5f5f5f5f5f5f5f!2sZ%C3%B3calo%2C%20Centro%20Hist%C3%B3rico%2C%20CDMX!5e0!3m2!1ses-419!2smx!4v1628796915850!5m2!1ses-419!2smx" allowfullscreen="" loading="lazy"></iframe>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.523315934416!2d-99.1685!3d19.4326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1f8d2b2b2b2b2%3A0x8b8b8b8b8b8b8b8b!2sAngel%20de%20la%20Independencia!5e0!3m2!1ses-419!2smx!4v1627000000000" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                 </div>
             </div>
@@ -293,7 +293,6 @@
     </section>
 </main>
 
-<!-- Toast Popup -->
 <div id="toastPopup">¡Mensaje enviado! Nos contactaremos en breve.</div>
 
 <footer class="footer">
@@ -313,6 +312,7 @@
                 <li><a href="servicios.html">Servicios</a></li>
                 <li><a href="nosotros.html">Nosotros</a></li>
                 <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="cuenta.html">Mi Cuenta</a></li>
             </ul>
         </div>
         <div class="footer-social-links">
@@ -325,14 +325,14 @@
         </div>
     </div>
     <div class="footer-bottom">
-        &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+        &copy; <span id="current-year"></span> greenhauL. Todos los derechos reservados.
     </div>
 </footer>
 <div class="cart-modal-overlay" id="cartModalOverlay">
     <div class="cart-modal">
         <div class="cart-modal-header">
             <h2>Tu Carrito</h2>
-            <button class="close-modal-btn" id="closeCartModalBtn" title="Cerrar">&times;</button>
+            <button class="close-modal-btn" id="closeCartModalBtn" title="Cerrar">×</button>
         </div>
         <div class="cart-modal-body" id="cartItemsContainer"></div>
         <div class="cart-modal-footer">
@@ -354,66 +354,105 @@
         <p id="notificationText"></p>
     </div>
 </div>
-<script src="assets/js/main.js"></script>
+
+<script type="module" src="assets/js/main.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // --- Envío del formulario de contacto ---
-  const form = document.getElementById('contactForm');
-  const successMsg = document.getElementById('contactSuccess');
-  const errorMsg = document.getElementById('contactError');
-  const toast = document.getElementById('toastPopup');
-  if (!form) return;
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    // ===================================================================
+    // LÓGICA DE INICIO DE SESIÓN Y ACTUALIZACIÓN DEL HEADER
+    // ===================================================================
+    const loginBtn = document.getElementById('loginBtn');
+    const accountLink = document.getElementById('accountLink');
+    const userNameSpan = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    // Obtén los valores de los campos
-    const full_name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const message = document.getElementById('message').value.trim();
-
-    // Validación básica
-    if (!full_name || !email || !message) {
-      errorMsg.style.display = 'block';
-      errorMsg.textContent = 'Por favor, llena todos los campos.';
-      successMsg.style.display = 'none';
-      return;
+    function updateLoginStatus() {
+        const loggedInUserStr = localStorage.getItem('loggedInUser');
+        if (loggedInUserStr) {
+            const loggedInUser = JSON.parse(loggedInUserStr);
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (accountLink) accountLink.style.display = 'inline';
+            if (logoutBtn) logoutBtn.style.display = 'inline';
+            if (userNameSpan) userNameSpan.textContent = loggedInUser.name;
+        } else {
+            if (loginBtn) loginBtn.style.display = 'inline';
+            if (accountLink) accountLink.style.display = 'none';
+            if (logoutBtn) logoutBtn.style.display = 'none';
+        }
     }
 
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      errorMsg.style.display = 'block';
-      errorMsg.textContent = 'Por favor, ingresa un correo válido.';
-      successMsg.style.display = 'none';
-      return;
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser');
+            updateLoginStatus();
+        });
     }
+    updateLoginStatus();
 
-    const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+    // ===================================================================
+    // LÓGICA PARA ACTUALIZAR EL AÑO EN EL FOOTER
+    // ===================================================================
+    const yearSpan = document.getElementById('current-year');
+    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-    try {
-      const response = await fetch(`${backendUrl}/api/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ full_name, email, message })
+
+    // ===================================================================
+    // LÓGICA PARA EL ENVÍO DEL FORMULARIO DE CONTACTO
+    // ===================================================================
+    const form = document.getElementById('contactForm');
+    const successMsg = document.getElementById('contactSuccess');
+    const errorMsg = document.getElementById('contactError');
+    const toast = document.getElementById('toastPopup');
+    
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const full_name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        if (!full_name || !email || !message) {
+          errorMsg.style.display = 'block';
+          errorMsg.textContent = 'Por favor, llena todos los campos.';
+          successMsg.style.display = 'none';
+          return;
+        }
+
+        if (!/\S+@\S+\.\S+/.test(email)) {
+          errorMsg.style.display = 'block';
+          errorMsg.textContent = 'Por favor, ingresa un correo válido.';
+          successMsg.style.display = 'none';
+          return;
+        }
+
+        const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+
+        try {
+          const response = await fetch(`${backendUrl}/api/contact`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ full_name, email, message })
+          });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.message || 'Error al enviar mensaje');
+          
+          errorMsg.style.display = 'none';
+          form.reset();
+
+          toast.textContent = '¡Mensaje enviado! Nos contactaremos en breve.';
+          toast.classList.add('show');
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 2800);
+
+        } catch (err) {
+          errorMsg.style.display = 'block';
+          errorMsg.textContent = 'Hubo un error al enviar tu mensaje: ' + err.message;
+          successMsg.style.display = 'none';
+        }
       });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || 'Error al enviar mensaje');
-      successMsg.style.display = 'none';
-      errorMsg.style.display = 'none';
-      form.reset();
-
-      // --- POPUP TOAST DISCRETO ---
-      toast.textContent = '¡Mensaje enviado! Nos contactaremos en breve.';
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 2800);
-
-    } catch (err) {
-      errorMsg.style.display = 'block';
-      errorMsg.textContent = 'Hubo un error al enviar tu mensaje: ' + err.message;
-      successMsg.style.display = 'none';
     }
-  });
 });
 </script>
 </body>
