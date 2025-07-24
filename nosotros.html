@@ -8,96 +8,92 @@
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="assets/css/pages.css" />
   <style>
-    .timeline {
-      border-left: 4px solid #1ec96b;
-      padding-left: 2rem;
-      margin-top: 2rem;
-    }
     .timeline p {
-      position: relative;
       opacity: 0;
       transform: translateY(40px);
       transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-      background: #fff;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin-bottom: 1.5rem;
     }
-    .timeline p::before {
-      content: "";
-      position: absolute;
-      left: -30px;
-      top: 1rem;
-      width: 16px;
-      height: 16px;
-      background: #1ec96b;
-      border-radius: 50%;
-      border: 3px solid white;
-      box-shadow: 0 0 0 2px #1ec96b;
-    }
+
     .timeline p.visible {
       opacity: 1;
       transform: translateY(0);
     }
+
     .benefit-card {
       opacity: 0;
       transform: scale(0.9);
       transition: all 0.6s ease-out;
-      background: #fff;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-      margin: 1rem;
     }
+
     .benefit-card.visible {
       opacity: 1;
       transform: scale(1);
     }
-    .impacto-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
+
     .impacto-grid div {
       opacity: 0;
       transform: translateY(20px);
       transition: all 0.6s ease-out;
-      background: linear-gradient(135deg, #1ec96b, #03a9f4);
-      color: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: bold;
     }
+
     .impacto-grid div.visible {
       opacity: 1;
       transform: translateY(0);
     }
+
     .equipo p {
       opacity: 0;
       transform: translateX(-40px);
       transition: all 0.6s ease-out;
-      background: #fff;
-      padding: 1rem;
-      border-radius: 12px;
-      margin-bottom: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
+
     .equipo p.visible {
       opacity: 1;
       transform: translateX(0);
     }
-    .section-title span {
-      background: linear-gradient(90deg, #1ec96b, #03a9f4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
   </style>
 </head>
 <body>
-  <header>...</header>
+  <!-- HEADER -->
+  <header>
+    <nav class="navbar">
+      <div class="container navbar-content">
+        <a href="index.html" class="logo">
+          <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" />
+        </a>
+        <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
+          <span class="toggler-icon"></span>
+          <span class="toggler-icon"></span>
+          <span class="toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse" id="navbarCollapse">
+          <ul class="nav-links-list">
+            <li><a href="index.html" class="nav-link">Inicio</a></li>
+            <li><a href="productos.html" class="nav-link">Productos</a></li>
+            <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+            <li><a href="nosotros.html" class="nav-link active">Nosotros</a></li>
+            <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+            <li><a href="faq.html" class="nav-link">Preguntas</a></li>
+          </ul>
+          <div class="navbar-right-items">
+            <div class="navbar-user-actions" id="navbarUserActions">
+              <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+              <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+              <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+            <div class="nav-icons">
+              <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO -->
   <main class="page-content">
     <section class="section">
       <div class="container">
@@ -106,6 +102,7 @@
         <p class="section-text text-center">Somos una empresa mexicana dedicada al alquiler de cajas reutilizables para mudanzas. Nuestra misión es hacer tu mudanza más fácil mientras cuidamos el medio ambiente.</p>
       </div>
     </section>
+
     <section class="section">
       <div class="container text-center">
         <h2 class="section-title">Nuestro Impacto Real</h2>
@@ -117,30 +114,45 @@
         </div>
       </div>
     </section>
+
     <section class="section">
       <div class="container">
         <h2 class="section-title text-center">Nuestra Historia</h2>
         <div class="timeline">
-          <p><strong>2022 - La Idea</strong><br>Después de una mudanza frustrante llena de cajas rotas y desperdicio...</p>
-          <p><strong>2023 - Primeras Cajas</strong><br>Compramos nuestros primeros lotes de 500 cajas reutilizables...</p>
-          <p><strong>2024 - Crecimiento</strong><br>Expandiendo a municipios, aumentamos a 2,000 cajas...</p>
-          <p><strong>2024 - Plataforma Digital</strong><br>Lanzamos el portal web para facilitar la renta de cajas...</p>
-          <p><strong>2025 - Presente</strong><br>Hoy contamos con más de 500 clientes en todo el país...</p>
-          <p><strong>2025 - Futuro</strong><br>Planeamos expandirnos a Guadalajara y Monterrey...</p>
+          <p><strong>2022 - La Idea</strong><br>Después de una mudanza frustrante llena de cajas rotas y desperdicio, decidimos que tenía que haber una mejor forma de hacer las cosas.</p>
+          <p><strong>2023 - Primeras Cajas</strong><br>Compramos nuestros primeros lotes de 500 cajas reutilizables y comenzamos a ofrecer el servicio a amigos y familias en la CDMX.</p>
+          <p><strong>2024 - Crecimiento</strong><br>Expandiendo a municipios, aumentamos a 2,000 cajas y comenzamos a trabajar de la mano con empresas de logística responsable.</p>
+          <p><strong>2024 - Plataforma Digital</strong><br>Lanzamos el portal web para facilitar la renta de cajas y mejorar la experiencia del cliente.</p>
+          <p><strong>2025 - Presente</strong><br>Hoy contamos con más de 500 clientes en todo el país, y nuestro stock de cajas alquilables alcanza las 3,000 unidades con alta rotación.</p>
+          <p><strong>2025 - Futuro</strong><br>Planeamos expandirnos a Guadalajara y Monterrey, además de seguir sumando complementos como asistencia profesional.</p>
         </div>
       </div>
     </section>
+
     <section class="section">
       <div class="container text-center">
         <h2 class="section-title">¿Por Qué Elegir <span class="highlight-sostenible">greenhauL</span>?</h2>
         <div class="benefits-grid">
-          <div class="benefit-card"><h3>Impacto Ambiental</h3><p>Reducimos residuos y promovemos el uso de materiales reutilizables.</p></div>
-          <div class="benefit-card"><h3>Facilidad de Uso</h3><p>Entrega y recolección sin complicaciones en todo momento.</p></div>
-          <div class="benefit-card"><h3>Apoyo Local</h3><p>Trabajamos con proveedores locales para generar empleo.</p></div>
-          <div class="benefit-card"><h3>Cajas Resistentes</h3><p>Duraderas, seguras, fáciles de apilar y listas para usarse.</p></div>
+          <div class="benefit-card">
+            <h3>Impacto Ambiental</h3>
+            <p>Reducimos residuos y promovemos el uso de materiales reutilizables.</p>
+          </div>
+          <div class="benefit-card">
+            <h3>Facilidad de Uso</h3>
+            <p>Entrega y recolección sin complicaciones en todo momento.</p>
+          </div>
+          <div class="benefit-card">
+            <h3>Apoyo Local</h3>
+            <p>Trabajamos con proveedores locales para generar empleo.</p>
+          </div>
+          <div class="benefit-card">
+            <h3>Cajas Resistentes</h3>
+            <p>Duraderas, seguras, fáciles de apilar y listas para usarse.</p>
+          </div>
         </div>
       </div>
     </section>
+
     <section class="section equipo">
       <div class="container text-center">
         <h2 class="section-title">Conoce al Equipo</h2>
@@ -150,9 +162,15 @@
       </div>
     </section>
   </main>
-  <footer>...</footer>
+
+  <!-- FOOTER, CARRITO Y JS INCLUIDOS -->
+  <footer class="footer">
+    ... <!-- footer sin cambios -->
+  </footer>
+
   <div class="cart-modal-overlay" id="cartModalOverlay">...</div>
   <div class="cart-notification" id="cartNotification">...</div>
+
   <script type="module" src="assets/js/main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -163,7 +181,10 @@
           }
         });
       }, { threshold: 0.4 });
-      document.querySelectorAll('.timeline p, .impacto-grid div, .benefit-card, .equipo p').forEach(el => observer.observe(el));
+
+      document.querySelectorAll('.timeline p, .impacto-grid div, .benefit-card, .equipo p').forEach(el => {
+        observer.observe(el);
+      });
     });
   </script>
 </body>
