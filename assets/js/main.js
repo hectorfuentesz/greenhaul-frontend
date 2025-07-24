@@ -345,3 +345,49 @@ document.addEventListener('DOMContentLoaded', () => {
     initShoppingCart();
     initProductPageElements();
 });
+
+// ====== 1. Activar animación de línea del tiempo cuando aparecen en pantalla ======
+const timelineItems = document.querySelectorAll('.timeline-item');
+if (timelineItems.length > 0) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.4
+  });
+
+  timelineItems.forEach(item => {
+    observer.observe(item);
+  });
+}
+
+// ====== 2. Cargar el año actual en el footer ======
+const yearElement = document.getElementById('current-year');
+if (yearElement) {
+  yearElement.textContent = new Date().getFullYear();
+}
+
+// ====== 3. Verificar si hay un usuario logueado y mostrar nombre en header ======
+const userNameElement = document.getElementById('userName');
+const accountLink = document.getElementById('accountLink');
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+
+const currentUser = JSON.parse(localStorage.getItem('user'));
+if (currentUser && userNameElement && accountLink && loginBtn && logoutBtn) {
+  userNameElement.textContent = currentUser.nombre || 'Usuario';
+  accountLink.style.display = 'inline-block';
+  loginBtn.style.display = 'none';
+  logoutBtn.style.display = 'inline-block';
+}
+
+// ====== 4. Listener para logout ======
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('user');
+    location.reload();
+  });
+}
