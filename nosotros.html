@@ -2,151 +2,198 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nosotros - greenhauL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nosotros - Mudanzas Ecológicas | greenhauL</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="assets/css/pages.css" />
   <style>
-    .fade-in {
+    /* Animación para timeline */
+    .timeline-item {
       opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s ease-out;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
-    .fade-in.visible {
+    .timeline-item.visible {
       opacity: 1;
       transform: translateY(0);
     }
-    .impacto-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .impact-card {
-      background: linear-gradient(135deg, #1ec96b, #03a9f4);
-      color: white;
-      border-radius: 16px;
-      padding: 2rem;
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: 500;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .impact-card:hover {
-      transform: translateY(-8px) scale(1.03);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    }
+
     .timeline {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem 1rem;
       position: relative;
-      margin: 4rem 0;
-      padding-left: 2rem;
-      border-left: 4px solid #1ec96b;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 100%;
+      width: 4px;
+      background-color: #00b894;
     }
     .timeline-item {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
       position: relative;
-      background: #fff;
-      margin-bottom: 2.5rem;
-      padding: 1.5rem 2rem;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s ease;
-    }
-    .timeline-item:hover {
-      transform: scale(1.03);
+      width: 100%;
     }
     .timeline-item::before {
       content: "";
       position: absolute;
-      left: -13px;
-      top: 1rem;
-      width: 20px;
-      height: 20px;
-      background: #1ec96b;
+      top: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #00b894;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
+      z-index: 2;
       border: 3px solid white;
-      box-shadow: 0 0 0 3px #1ec96b;
     }
+    .timeline-item strong {
+      display: block;
+      font-size: 1.1rem;
+      color: #2d3436;
+      margin-bottom: 0.5rem;
+    }
+
+    .impacto-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .impacto-grid div {
+      background-color: #f1f1f1;
+      padding: 1.2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    }
+
     .benefits-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem;
-      margin-top: 2.5rem;
-    }
-    .benefit-card {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-      padding: 2rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .benefit-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    }
-    .section-title span {
-      background: linear-gradient(90deg, #1ec96b, #03a9f4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .team-grid {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
       margin-top: 2rem;
     }
-    .team-card {
-      background: #fff;
-      border-radius: 16px;
+
+    .benefit-card {
+      background-color: #ffffff;
       padding: 1.5rem;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-      max-width: 260px;
+      border-radius: 1rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
       transition: transform 0.3s ease;
     }
-    .team-card:hover {
-      transform: translateY(-8px);
+
+    .benefit-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .benefit-card h3 {
+      margin-bottom: 0.5rem;
+      color: #00b894;
+    }
+
+    .section-title span {
+      color: #00b894;
+    }
+
+    .section-text, .section-title {
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
-  <header id="header"></header>
+  <!-- HEADER -->
+  <header>
+    <nav class="navbar">
+      <div class="container navbar-content">
+        <a href="index.html" class="logo">
+          <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" />
+        </a>
+        <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
+          <span class="toggler-icon"></span>
+          <span class="toggler-icon"></span>
+          <span class="toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse" id="navbarCollapse">
+          <ul class="nav-links-list">
+            <li><a href="index.html" class="nav-link">Inicio</a></li>
+            <li><a href="productos.html" class="nav-link">Productos</a></li>
+            <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+            <li><a href="nosotros.html" class="nav-link active">Nosotros</a></li>
+            <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+            <li><a href="faq.html" class="nav-link">Preguntas</a></li>
+          </ul>
+          <div class="navbar-right-items">
+            <div class="navbar-user-actions" id="navbarUserActions">
+              <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+              <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+              <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+            <div class="nav-icons">
+              <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO -->
   <main class="page-content">
-    <section class="section fade-in">
-      <div class="container text-center">
-        <h1 class="section-title">Renta de Cajas <span>Reutilizables</span></h1>
+    <section class="section">
+      <div class="container">
+        <h1 class="section-title text-center">Renta de Cajas <span class="highlight-sostenible">Reutilizables</span></h1>
         <p class="text-center">MUDANZAS MÁS FÁCILES + PLANETA MÁS LIMPIO</p>
         <p class="section-text text-center">Somos una empresa mexicana dedicada al alquiler de cajas reutilizables para mudanzas. Nuestra misión es hacer tu mudanza más fácil mientras cuidamos el medio ambiente.</p>
       </div>
     </section>
-    <section class="section fade-in">
+
+    <section class="section">
       <div class="container text-center">
         <h2 class="section-title">Nuestro Impacto Real</h2>
         <div class="impacto-grid">
-          <div class="impact-card"><strong>2400</strong><br><small>Mudanzas Completadas</small></div>
-          <div class="impact-card"><strong>4200</strong><br><small>Cajas de Cartón Evitadas</small></div>
-          <div class="impact-card"><strong>10 T</strong><br><small>Toneladas de Cartón Ahorradas</small></div>
-          <div class="impact-card"><strong>98%</strong><br><small>Satisfacción del Cliente</small></div>
+          <div><strong>2400</strong><br>Mudanzas Completadas</div>
+          <div><strong>4200</strong><br>Cajas de Cartón Evitadas</div>
+          <div><strong>10 T</strong><br>Toneladas de Cartón Ahorradas</div>
+          <div><strong>98%</strong><br>Satisfacción del Cliente</div>
         </div>
       </div>
     </section>
-    <section class="section fade-in">
+
+    <section class="section">
       <div class="container">
         <h2 class="section-title text-center">Nuestra Historia</h2>
         <div class="timeline">
-          <div class="timeline-item"><strong>2022 - La Idea</strong><p>Después de una mudanza frustrante llena de cajas rotas y desperdicio, decidimos que tenía que haber una mejor forma de hacer las cosas.</p></div>
-          <div class="timeline-item"><strong>2023 - Primeras Cajas</strong><p>Compramos nuestros primeros lotes de 500 cajas reutilizables y comenzamos a ofrecer el servicio a amigos y familias en la CDMX.</p></div>
-          <div class="timeline-item"><strong>2024 - Crecimiento</strong><p>Expandiendo a municipios, aumentamos a 2,000 cajas y comenzamos a trabajar de la mano con empresas de logística responsable.</p></div>
-          <div class="timeline-item"><strong>2024 - Plataforma Digital</strong><p>Lanzamos el portal web para facilitar la renta de cajas y mejorar la experiencia del cliente.</p></div>
-          <div class="timeline-item"><strong>2025 - Presente</strong><p>Hoy contamos con más de 500 clientes en todo el país, y nuestro stock de cajas alquilables alcanza las 3,000 unidades con alta rotación.</p></div>
-          <div class="timeline-item"><strong>2025 - Futuro</strong><p>Planeamos expandirnos a Guadalajara y Monterrey, además de seguir sumando complementos como asistencia profesional.</p></div>
+          <div class="timeline-item"><strong>2022 - La Idea</strong>Después de una mudanza frustrante llena de cajas rotas y desperdicio, decidimos que tenía que haber una mejor forma de hacer las cosas.</div>
+          <div class="timeline-item"><strong>2023 - Primeras Cajas</strong>Compramos nuestros primeros lotes de 500 cajas reutilizables y comenzamos a ofrecer el servicio a amigos y familias en la CDMX.</div>
+          <div class="timeline-item"><strong>2024 - Crecimiento</strong>Expandiendo a municipios, aumentamos a 2,000 cajas y comenzamos a trabajar de la mano con empresas de logística responsable.</div>
+          <div class="timeline-item"><strong>2024 - Plataforma Digital</strong>Lanzamos el portal web para facilitar la renta de cajas y mejorar la experiencia del cliente.</div>
+          <div class="timeline-item"><strong>2025 - Presente</strong>Hoy contamos con más de 500 clientes en todo el país, y nuestro stock de cajas alquilables alcanza las 3,000 unidades con alta rotación.</div>
+          <div class="timeline-item"><strong>2025 - Futuro</strong>Planeamos expandirnos a Guadalajara y Monterrey, además de seguir sumando complementos como asistencia profesional.</div>
         </div>
       </div>
     </section>
-    <section class="section fade-in">
+
+    <section class="section">
       <div class="container text-center">
-        <h2 class="section-title">¿Por Qué Elegir <span>greenhauL</span>?</h2>
+        <h2 class="section-title">¿Por Qué Elegir <span class="highlight-sostenible">greenhauL</span>?</h2>
         <div class="benefits-grid">
           <div class="benefit-card">
             <h3>Impacto Ambiental</h3>
@@ -167,39 +214,94 @@
         </div>
       </div>
     </section>
-    <section class="section fade-in">
+
+    <section class="section">
       <div class="container text-center">
         <h2 class="section-title">Conoce al Equipo</h2>
-        <div class="team-grid">
-          <div class="team-card">
-            <h4>Paola Martínez</h4>
-            <p>Fundadora y CEO</p>
-          </div>
-          <div class="team-card">
-            <h4>Andrés López</h4>
-            <p>Co-fundador y Operaciones</p>
-          </div>
-          <div class="team-card">
-            <h4>Sofía Ramírez</h4>
-            <p>Desarrollo y Tecnología</p>
-          </div>
-        </div>
+        <p><strong>Paola Martínez</strong><br>Fundadora y CEO</p>
+        <p><strong>Andrés López</strong><br>Co-fundador y Operaciones</p>
+        <p><strong>Sofía Ramírez</strong><br>Desarrollo y Tecnología</p>
       </div>
     </section>
   </main>
-  <footer id="footer"></footer>
+
+  <!-- FOOTER Y CARRITO -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-info">
+        <h3>greenhauL</h3>
+        <p>Mudanzas sostenibles, sin complicaciones.</p>
+        <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
+        <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
+        <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
+      </div>
+      <div class="footer-links">
+        <h3>Enlaces Rápidos</h3>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="productos.html">Productos</a></li>
+          <li><a href="servicios.html">Servicios</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-social-links">
+        <h3>Síguenos</h3>
+        <div class="social-icons-wrapper">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <!-- Carrito + Notificación + Animaciones -->
+  <div class="cart-modal-overlay" id="cartModalOverlay">
+    <div class="cart-modal">
+      <div class="cart-modal-header">
+        <h2>Tu Carrito</h2>
+        <button class="close-modal-btn" id="closeCartModalBtn">&times;</button>
+      </div>
+      <div class="cart-modal-body" id="cartItemsContainer"></div>
+      <div class="cart-modal-footer">
+        <div class="cart-summary">
+          <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
+          <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
+          <h3>Total: <span id="cartTotal">$0.00</span></h3>
+        </div>
+        <div class="cart-footer-buttons">
+          <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
+          <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-notification" id="cartNotification">
+    <div class="notification-content">
+      <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
+      <p id="notificationText"></p>
+    </div>
+  </div>
+
   <script type="module" src="assets/js/main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      }, { threshold: 0.2 });
-
-      document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      if (timelineItems.length > 0) {
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        }, { threshold: 0.4 });
+        timelineItems.forEach(item => observer.observe(item));
+      }
     });
   </script>
 </body>
