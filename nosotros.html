@@ -2,212 +2,147 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nosotros - Mudanzas Ecológicas | greenhauL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nosotros - greenhauL</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="assets/css/pages.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/pages.css" />
   <style>
-    .timeline-item {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    /* Estilos mejorados */
+    .section {
+      padding: 5rem 1rem;
     }
-  
-    .timeline-item.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .hero-section {
+      background: linear-gradient(to right, #1ec96b, #03a9f4);
+      color: white;
+      padding: 6rem 1rem;
+      text-align: center;
     }
-  </style>  
+    .hero-section h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .hero-section p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .highlight {
+      background: linear-gradient(to right, #ffffff, #d1fff2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .values-section {
+      background-color: #f9f9f9;
+    }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .value-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+    .section-title span {
+      background: linear-gradient(to right, #1ec96b, #03a9f4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .testimonial-section {
+      background: #fff;
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .testimonial-card {
+      padding: 2rem;
+      border-radius: 12px;
+      background: #f3f3f3;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      font-style: italic;
+    }
+    .contact-cta {
+      background-color: #1ec96b;
+      color: white;
+      text-align: center;
+      padding: 4rem 2rem;
+      border-radius: 1rem;
+    }
+    .contact-cta h2 {
+      font-size: 2rem;
+    }
+    .contact-cta a {
+      margin-top: 1rem;
+      display: inline-block;
+      background-color: #fff;
+      color: #1ec96b;
+      padding: 1rem 2rem;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header>
-    <nav class="navbar">
-      <div class="container navbar-content">
-        <a href="index.html" class="logo">
-          <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" />
-        </a>
-        <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
-          <span class="toggler-icon"></span>
-          <span class="toggler-icon"></span>
-          <span class="toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse" id="navbarCollapse">
-          <ul class="nav-links-list">
-            <li><a href="index.html" class="nav-link">Inicio</a></li>
-            <li><a href="productos.html" class="nav-link">Productos</a></li>
-            <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-            <li><a href="nosotros.html" class="nav-link active">Nosotros</a></li>
-            <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-            <li><a href="faq.html" class="nav-link">Preguntas</a></li>
-          </ul>
-          <div class="navbar-right-items">
-            <div class="navbar-user-actions" id="navbarUserActions">
-              <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
-              <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
-              <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-            <div class="nav-icons">
-              <a href="#" class="nav-icon cart-icon" id="cartIcon">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count" id="cartCount">0</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </header>
+  <header id="header"></header>
 
-  <!-- CONTENIDO -->
   <main class="page-content">
+    <section class="hero-section">
+      <h1>Transformando <span class="highlight">Mudanzas</span> en Experiencias Ecológicas</h1>
+      <p>Somos una empresa mexicana comprometida con la sostenibilidad a través del alquiler de cajas reutilizables. Hacemos tus mudanzas más fáciles, más verdes y sin complicaciones.</p>
+    </section>
+
+    <section class="section values-section">
+      <div class="container">
+        <h2 class="section-title text-center">Nuestros <span>Valores</span></h2>
+        <div class="values-grid">
+          <div class="value-card">
+            <h3>Sostenibilidad</h3>
+            <p>Reducimos el uso de cartón y residuos de mudanza promoviendo el uso de cajas reutilizables.</p>
+          </div>
+          <div class="value-card">
+            <h3>Confianza</h3>
+            <p>Más de 2400 mudanzas exitosas respaldan nuestro compromiso con cada cliente.</p>
+          </div>
+          <div class="value-card">
+            <h3>Innovación</h3>
+            <p>Desarrollamos soluciones digitales para facilitar el alquiler y la gestión de productos de mudanza.</p>
+          </div>
+          <div class="value-card">
+            <h3>Comunidad</h3>
+            <p>Trabajamos con proveedores y transportistas locales, impulsando la economía circular.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="container">
-        <h1 class="section-title">Renta de Cajas <span class="highlight-sostenible">Reutilizables</span></h1>
-        <p class="text-center">MUDANZAS MÁS FÁCILES + PLANETA MÁS LIMPIO</p>
-        <p class="section-text text-center">Somos una empresa mexicana dedicada al alquiler de cajas reutilizables para mudanzas. Nuestra misión es hacer tu mudanza más fácil mientras cuidamos el medio ambiente.</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container text-center">
-        <h2 class="section-title">Nuestro Impacto Real</h2>
-        <div class="impacto-grid">
-          <div><strong>2400</strong><br>Mudanzas Completadas</div>
-          <div><strong>4200</strong><br>Cajas de Cartón Evitadas</div>
-          <div><strong>10 T</strong><br>Toneladas de Cartón Ahorradas</div>
-          <div><strong>98%</strong><br>Satisfacción del Cliente</div>
+        <h2 class="section-title text-center">Testimonios de <span>Clientes</span></h2>
+        <div class="testimonial-grid">
+          <div class="testimonial-card">"Nunca había tenido una mudanza tan sencilla. Las cajas son resistentes, limpias y llegaron puntuales."<br><strong>- Karla M.</strong></div>
+          <div class="testimonial-card">"Nos ayudaron a reducir mucho el desperdicio. ¡Lo recomendaría a cualquiera que se mude!"<br><strong>- Ernesto G.</strong></div>
+          <div class="testimonial-card">"La atención al cliente fue excelente. ¡Definitivamente volvería a rentar con ellos!"<br><strong>- Mariana R.</strong></div>
         </div>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title text-center">Nuestra Historia</h2>
-        <div class="timeline">
-          <p><strong>2022 - La Idea</strong><br>Después de una mudanza frustrante llena de cajas rotas y desperdicio, decidimos que tenía que haber una mejor forma de hacer las cosas.</p>
-          <p><strong>2023 - Primeras Cajas</strong><br>Compramos nuestros primeros lotes de 500 cajas reutilizables y comenzamos a ofrecer el servicio a amigos y familias en la CDMX.</p>
-          <p><strong>2024 - Crecimiento</strong><br>Expandiendo a municipios, aumentamos a 2,000 cajas y comenzamos a trabajar de la mano con empresas de logística responsable.</p>
-          <p><strong>2024 - Plataforma Digital</strong><br>Lanzamos el portal web para facilitar la renta de cajas y mejorar la experiencia del cliente.</p>
-          <p><strong>2025 - Presente</strong><br>Hoy contamos con más de 500 clientes en todo el país, y nuestro stock de cajas alquilables alcanza las 3,000 unidades con alta rotación.</p>
-          <p><strong>2025 - Futuro</strong><br>Planeamos expandirnos a Guadalajara y Monterrey, además de seguir sumando complementos como asistencia profesional.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container text-center">
-        <h2 class="section-title">¿Por Qué Elegir <span class="highlight-sostenible">greenhauL</span>?</h2>
-        <div class="benefits-grid">
-          <div class="benefit-card">
-            <h3>Impacto Ambiental</h3>
-            <p>Reducimos residuos y promovemos el uso de materiales reutilizables.</p>
-          </div>
-          <div class="benefit-card">
-            <h3>Facilidad de Uso</h3>
-            <p>Entrega y recolección sin complicaciones en todo momento.</p>
-          </div>
-          <div class="benefit-card">
-            <h3>Apoyo Local</h3>
-            <p>Trabajamos con proveedores locales para generar empleo.</p>
-          </div>
-          <div class="benefit-card">
-            <h3>Cajas Resistentes</h3>
-            <p>Duraderas, seguras, fáciles de apilar y listas para usarse.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container text-center">
-        <h2 class="section-title">Conoce al Equipo</h2>
-        <p><strong>Paola Martínez</strong><br>Fundadora y CEO</p>
-        <p><strong>Andrés López</strong><br>Co-fundador y Operaciones</p>
-        <p><strong>Sofía Ramírez</strong><br>Desarrollo y Tecnología</p>
-      </div>
+    <section class="section contact-cta">
+      <h2>¿Estás listo para mudarte de forma sostenible?</h2>
+      <p>Haz tu próxima mudanza más ecológica y eficiente con nuestras cajas reutilizables.</p>
+      <a href="contacto.html">Contáctanos</a>
     </section>
   </main>
 
-  <!-- FOOTER, CARRITO Y JS INCLUIDOS -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <div class="footer-info">
-        <h3>greenhauL</h3>
-        <p>Mudanzas sostenibles, sin complicaciones.</p>
-        <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
-        <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
-        <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
-      </div>
-      <div class="footer-links">
-        <h3>Enlaces Rápidos</h3>
-        <ul>
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="productos.html">Productos</a></li>
-          <li><a href="servicios.html">Servicios</a></li>
-          <li><a href="nosotros.html">Nosotros</a></li>
-          <li><a href="contacto.html">Contacto</a></li>
-        </ul>
-      </div>
-      <div class="footer-social-links">
-        <h3>Síguenos</h3>
-        <div class="social-icons-wrapper">
-          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
-    </div>
-  </footer>
-
-  <div class="cart-modal-overlay" id="cartModalOverlay">
-    <div class="cart-modal">
-      <div class="cart-modal-header">
-        <h2>Tu Carrito</h2>
-        <button class="close-modal-btn" id="closeCartModalBtn">&times;</button>
-      </div>
-      <div class="cart-modal-body" id="cartItemsContainer"></div>
-      <div class="cart-modal-footer">
-        <div class="cart-summary">
-          <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
-          <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
-          <h3>Total: <span id="cartTotal">$0.00</span></h3>
-        </div>
-        <div class="cart-footer-buttons">
-          <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
-          <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="cart-notification" id="cartNotification">
-    <div class="notification-content">
-      <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
-      <p id="notificationText"></p>
-    </div>
-  </div>
-
-  <script type="module" src="assets/js/main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const timelineItems = document.querySelectorAll('.timeline-item');
-      if (timelineItems.length > 0) {
-        const observer = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-            }
-          });
-        }, { threshold: 0.4 });
-  
-        timelineItems.forEach(item => observer.observe(item));
-      }
-    });
-  </script>  
+  <footer id="footer"></footer>
+  <script type="module" src="/assets/js/main.js"></script>
 </body>
 </html>
