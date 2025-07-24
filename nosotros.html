@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="assets/css/pages.css" />
   <style>
-    /* Animaciones suaves */
     .fade-in {
       opacity: 0;
       transform: translateY(30px);
@@ -26,69 +25,90 @@
     }
     .impact-card {
       background: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
       text-align: center;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .impact-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px);
+      box-shadow: 0 10px 36px rgba(0, 0, 0, 0.12);
     }
     .timeline {
       position: relative;
-      margin: 3rem 0;
+      margin: 4rem 0;
       padding-left: 2rem;
       border-left: 4px solid #1ec96b;
     }
     .timeline-item {
       position: relative;
       background: #fff;
-      margin-bottom: 2rem;
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      margin-bottom: 2.5rem;
+      padding: 1.5rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+    }
+    .timeline-item:hover {
+      transform: scale(1.02);
     }
     .timeline-item::before {
       content: "";
       position: absolute;
-      left: -10px;
+      left: -13px;
       top: 1rem;
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       background: #1ec96b;
       border-radius: 50%;
       border: 3px solid white;
-      box-shadow: 0 0 0 2px #1ec96b;
+      box-shadow: 0 0 0 3px #1ec96b;
     }
     .benefits-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      margin-top: 2.5rem;
     }
     .benefit-card {
       background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-      padding: 1.5rem;
-      transition: transform 0.3s ease;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      padding: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .benefit-card:hover {
-      transform: scale(1.03);
+      transform: scale(1.04);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
     }
     .section-title span {
       background: linear-gradient(90deg, #1ec96b, #03a9f4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    .team-grid {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .team-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      max-width: 260px;
+      transition: transform 0.3s ease;
+    }
+    .team-card:hover {
+      transform: translateY(-5px);
+    }
   </style>
 </head>
 <body>
-  <!-- HEADER dinámico -->
   <header id="header"></header>
-
-  <!-- CONTENIDO -->
   <main class="page-content">
     <section class="section fade-in">
       <div class="container text-center">
@@ -97,7 +117,6 @@
         <p class="section-text text-center">Somos una empresa mexicana dedicada al alquiler de cajas reutilizables para mudanzas. Nuestra misión es hacer tu mudanza más fácil mientras cuidamos el medio ambiente.</p>
       </div>
     </section>
-
     <section class="section fade-in">
       <div class="container text-center">
         <h2 class="section-title">Nuestro Impacto Real</h2>
@@ -109,7 +128,6 @@
         </div>
       </div>
     </section>
-
     <section class="section fade-in">
       <div class="container">
         <h2 class="section-title text-center">Nuestra Historia</h2>
@@ -123,7 +141,6 @@
         </div>
       </div>
     </section>
-
     <section class="section fade-in">
       <div class="container text-center">
         <h2 class="section-title">¿Por Qué Elegir <span>greenhauL</span>?</h2>
@@ -147,24 +164,29 @@
         </div>
       </div>
     </section>
-
     <section class="section fade-in">
       <div class="container text-center">
         <h2 class="section-title">Conoce al Equipo</h2>
-        <p><strong>Paola Martínez</strong><br>Fundadora y CEO</p>
-        <p><strong>Andrés López</strong><br>Co-fundador y Operaciones</p>
-        <p><strong>Sofía Ramírez</strong><br>Desarrollo y Tecnología</p>
+        <div class="team-grid">
+          <div class="team-card">
+            <h4>Paola Martínez</h4>
+            <p>Fundadora y CEO</p>
+          </div>
+          <div class="team-card">
+            <h4>Andrés López</h4>
+            <p>Co-fundador y Operaciones</p>
+          </div>
+          <div class="team-card">
+            <h4>Sofía Ramírez</h4>
+            <p>Desarrollo y Tecnología</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
-
-  <!-- FOOTER dinámico -->
   <footer id="footer"></footer>
-
-  <!-- SCRIPTS -->
   <script type="module" src="assets/js/main.js"></script>
   <script>
-    // Fade in al hacer scroll
     document.addEventListener('DOMContentLoaded', () => {
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
