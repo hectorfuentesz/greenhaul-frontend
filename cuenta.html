@@ -1,1975 +1,967 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Mi Cuenta - GreenHaul</title>
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 <link rel="stylesheet" href="assets/css/styles.css">
-
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-
 <style>
-
 /* --- Variables CSS Globales para el Dashboard y Módulos de Cuenta --- */
-
 :root {
-
 --account-primary-solid: #4AB3C1;
-
 --account-secondary-solid: #4a90e2;
-
 --gradient-account-primary: linear-gradient(120deg, var(--account-primary-solid) 0%, var(--account-secondary-solid) 100%);
-
 --text-dark-account: #333;
-
 --text-light-account: #666;
-
 --border-account: #e0e0e0;
-
 --shadow-account: 0 4px 15px rgba(0,0,0,0.08);
-
 --border-radius-account: 14px;
-
 --widget-card-radius: 11px;
-
 --form-control-border-focus: rgba(74,144,226,0.2);
-
 --accent-red: #e74c3c;
-
 }
-
 body { background: #f1f5f9; }
-
 .fade-in { animation: fadeIn 0.5s ease-out; }
-
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
-
 .slide-up { animation: slideUp 0.7s cubic-bezier(.68,-0.55,.27,1.55); }
-
 @keyframes slideUp { 0% { transform: translateY(60px); opacity: 0; } 60% { transform: translateY(-8px); opacity: 1; } 100% { transform: translateY(0); } }
-
 .account-dashboard-container { max-width: 1280px; margin: 0 auto; padding: 0 15px; }
-
 .account-dashboard-layout { display: grid; grid-template-columns: 300px 1fr; gap: 38px; align-items: flex-start; margin: 0 auto; }
-
 @media (max-width: 900px) { .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } .account-sidebar { position: static; } }
-
 .account-sidebar { position: sticky; top: 110px; min-width: 220px; }
-
 .user-card { background: var(--gradient-account-primary); color: #fff; border-radius: var(--border-radius-account); box-shadow: var(--shadow-account); text-align: center; padding: 36px 18px 24px 18px; margin-bottom: 28px; }
-
 .user-avatar { background: #fff; color: var(--account-secondary-solid); border-radius: 50%; width: 72px; height: 72px; font-size: 2.8rem; margin: 0 auto 18px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(0,179,134,0.12); }
-
 .user-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -1px; }
-
 .user-email { font-size: 1rem; opacity: 0.95; margin-bottom: 8px; }
-
 .account-nav { background: #fff; border-radius: var(--border-radius-account); box-shadow: var(--shadow-account); display: flex; flex-direction: column; gap: 2px; padding: 15px 0; }
-
 .account-nav-link { padding: 15px 28px; border-radius: 10px; color: var(--text-dark-account); font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 18px; transition: all 0.2s; cursor: pointer; font-size: 1.08rem;}
-
 .account-nav-link i { width: 22px; text-align: center; font-size: 1.35rem; color: var(--account-secondary-solid); opacity: 0.95;}
-
 .account-nav-link:hover { background: #f3f8fe; color: var(--account-secondary-solid); }
-
 .account-nav-link.active { background: var(--gradient-account-primary); color: #fff; font-weight: 700; box-shadow: 0 6px 18px rgba(0,179,134,0.11); transform: scale(1.04);}
-
 .account-nav-link.active i { color: #fff; }
-
 .account-content { min-height: 500px; }
-
 .account-section { display: none; background: #fff; padding: 38px 35px 30px 35px; border-radius: var(--border-radius-account); box-shadow: var(--shadow-account);}
-
 .account-section.active { display: block; animation: fadeIn 0.45s; }
-
 .dashboard-widgets { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 30px; margin-bottom: 36px; }
-
 .widget-card { background: #f8f9fa; border-radius: var(--widget-card-radius); box-shadow: 0 2px 10px rgba(0,179,134,0.09); text-align: center; padding: 28px 12px 22px 12px; transition: box-shadow 0.3s, transform 0.3s;}
-
 .widget-card:hover { box-shadow: 0 8px 24px rgba(0,179,134,0.19); transform: translateY(-7px) scale(1.04);}
-
 .widget-card .widget-icon { font-size: 2.6rem; margin-bottom: 10px; color: var(--account-secondary-solid); }
-
 .widget-card .widget-value { font-size: 2rem; font-weight: 700; color: var(--account-secondary-solid); margin-bottom: 4px;}
-
 .widget-card .widget-label { font-size: 1.08rem; color: var(--text-dark-account); opacity: 0.7;}
-
 .widget-card.ahorro { background: var(--gradient-account-primary); color:#fff; }
-
 .widget-card.ahorro .widget-icon { color: #fff;}
-
 .impact-card { background: var(--gradient-account-primary); color: #fff; border-radius: var(--border-radius-account); box-shadow: 0 8px 28px rgba(74,144,226,0.09); text-align: center; padding: 30px 20px; margin-top: 40px; max-width: 660px; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.5s ease-out;}
-
 .impact-card .icon-large { font-size: 4rem; margin-bottom: 15px; color: #fff; opacity: 0.9;}
-
 .impact-card h4 { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 10px;}
-
 .impact-card p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 0;}
-
 .quick-actions { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;}
-
 .action-card { background: #f8f9fa; border-radius: var(--border-radius-account); box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s ease;}
-
 .action-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1);}
-
 .action-card .action-icon { font-size: 3rem; color: var(--account-secondary-solid); margin-bottom: 15px;}
-
 .action-card h4 { font-size: 1.25rem; margin-bottom: 10px; color: var(--text-dark-account);}
-
 .action-card p { font-size: 0.95rem; color: var(--text-light-account); margin-bottom: 15px;}
-
 .recent-orders-summary { margin-top: 40px; }
-
 .recent-orders-summary .order-item { background: #fff; border-radius: 9px; margin-bottom: 12px; padding: 15px 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); align-items: center; gap: 10px; border: 1px solid var(--border-account); box-shadow: 0 1px 5px rgba(74,144,226,0.05);}
-
 .recent-orders-summary .order-item strong { color: var(--account-secondary-solid); }
-
 .order-list { margin-top: 18px; }
-
 .order-list .order-item { background: #f8f9fa; border-radius: 9px; margin-bottom: 16px; padding: 20px 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: center; gap: 12px; border: 1px solid var(--border-account); box-shadow: 0 2px 8px rgba(74,144,226,0.07); transition: box-shadow 0.3s, transform 0.2s;}
-
 .order-item:hover { box-shadow: 0 8px 24px rgba(74,144,226,0.19); transform: translateY(-4px) scale(1.02);}
-
 .order-item-status { font-weight: bold; padding: 5px 14px; border-radius: 99px; font-size: 0.97rem; text-align: center;}
-
 .status-completado { color: var(--accent-green); background: rgba(0,179,134,0.11);}
-
 .status-activo { color: var(--account-secondary-solid); background: rgba(74,144,226,0.11);}
-
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-
 .form-group { margin-bottom: 20px; }
-
 .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-dark-account);}
-
 .form-control[disabled] { background: #e9ecef; cursor: not-allowed; }
-
 .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border-account); border-radius: 8px; font-size: 1rem; font-family: inherit; color: var(--text-dark-account);}
-
 .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--account-secondary-solid); box-shadow: 0 0 0 3px var(--form-control-border-focus);}
-
 .account-section input[type="checkbox"] { width: auto !important; margin-bottom: 0;}
-
 .account-section label[for$="-notifications"] { font-weight: normal; margin-bottom: 0;}
-
 .account-section .form-group.checkbox-group { display: flex; align-items: center; gap: 15px;}
-
 .address-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 15px; flex-wrap: wrap;}
-
 .address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
-
 .address-card { background: #f8f9fa; border-radius: var(--border-radius-account); padding: 22px; border: 1px solid var(--border-account); display: flex; flex-direction: column; box-shadow: 0 2px 9px rgba(0,179,134,0.07);}
-
 .address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-
 .address-card-header h4 { color: var(--account-secondary-solid); font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-
 .address-card-body { flex-grow: 1; margin-bottom: 20px;}
-
 .address-card-actions { display: flex; align-items: center; gap: 15px; }
-
 .address-references-text { font-size:0.9em; color: var(--text-light-account); margin-top: 5px; }
-
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s;}
-
 .modal-overlay.show { opacity: 1; visibility: visible;}
-
 .modal-content { background: #fff; padding: 38px 28px; border-radius: var(--border-radius-account); box-shadow: 0 10px 25px rgba(0,0,0,0.11); width: 95%; max-width: 520px; transform: scale(0.93); transition: transform 0.3s;}
-
 .modal-overlay.show .modal-content { transform: scale(1);}
-
 .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-account); padding-bottom: 15px; margin-bottom: 25px;}
-
 .modal-header h3 { margin: 0; font-weight: 700;}
-
 .modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-dark-account);}
-
 .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 18px;}
-
 #address-map { height: 220px; width: 100%; border-radius: var(--border-radius-account); margin-top: 18px; border: 1px solid var(--border-account);}
-
 .modal-content p { font-size:0.85rem; color:var(--text-light-account); margin-top:10px;}
-
 @media (max-width: 600px) { .account-section, .modal-content { padding: 25px 15px; } }
-
 #dashboard-section h3, #dashboard-section h4 { color: var(--text);}
-
 #dashboard-section h3 span { color: var(--account-secondary-solid);}
-
 #dashboard-section p { color: var(--text-light);}
-
 #dashboard-section h4 { margin-top:50px;}
-
 #dashboard-section > p:last-of-type { text-align:center; color:var(--text-light); margin-top:22px;}
-
 hr { border: 0; border-top: 1px solid #eee; margin: 30px 0; }
-
 #seguridad-section p:last-of-type, #notificaciones-section p:last-of-type { font-size:0.9rem; color:var(--text-light-account); margin-top:10px;}
-
 #notificaciones-section .form-group label { margin-bottom: 0; }
-
 /* --- Notificación animada para confirmaciones rápidas --- */
-
 #notificationPopup {
-
 position: fixed;
-
 top: 95px;
-
 right: 30px;
-
 background: var(--gradient-account-primary, #4AB3C1);
-
 color: #fff;
-
 padding: 14px 30px;
-
 border-radius: 999px;
-
 font-size: 1.05rem;
-
 font-weight: 600;
-
 box-shadow: 0 10px 30px rgba(74,144,226,0.15);
-
 z-index: 5000;
-
 opacity: 0;
-
 pointer-events: none;
-
 transition: opacity 0.25s, transform 0.45s cubic-bezier(.68,-0.55,.27,1.55);
-
 transform: translateY(-30px) scale(0.97);
-
 display: flex;
-
 align-items: center;
-
 gap: 10px;
-
 }
-
 #notificationPopup.show {
-
 opacity: 1;
-
 pointer-events: auto;
-
 transform: translateY(0) scale(1);
-
 animation: popNotification 1.2s cubic-bezier(.68,-0.55,.27,1.55);
-
 }
-
 #notificationPopup.error {
-
 background: var(--accent-red, #e74c3c);
-
 color: #fff;
-
 }
-
 @keyframes popNotification {
-
 0% { opacity: 0; transform: translateY(-30px) scale(0.97);}
-
 60% { opacity: 1; transform: translateY(10px) scale(1.05);}
-
 90% { opacity: 1; transform: translateY(0) scale(0.97);}
-
 100% { opacity: 1; transform: translateY(0) scale(1);}
-
 }
-
 @media (max-width: 600px) {
-
 #notificationPopup {
-
 top: 16px;
-
 right: 7vw;
-
 font-size: 0.98rem;
-
 padding: 10px 20px;
-
 }
-
 }
-
 </style>
-
 </head>
-
 <body>
-
 <header>
-
 <nav class="navbar">
-
 <div class="container navbar-content">
-
 <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul"></a>
-
 <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
-
 <span class="toggler-icon"></span>
-
 <span class="toggler-icon"></span>
-
 <span class="toggler-icon"></span>
-
 </button>
-
 <div class="navbar-collapse" id="navbarCollapse">
-
 <ul class="nav-links-list">
-
 <li><a href="index.html" class="nav-link">Inicio</a></li>
-
 <li><a href="productos.html" class="nav-link">Productos</a></li>
-
 <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-
 <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-
 <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-
 <li><a href="cuenta.html" class="nav-link active">Mi Cuenta</a></li>
-
 </ul>
-
 <div class="navbar-right-items">
-
 <div class="navbar-user-actions" id="navbarUserActions">
-
 <a href="login.html" class="btn btn-outline" id="loginBtn" style="display: none;">Iniciar Sesión</a>
-
 <a href="cuenta.html" class="nav-link active" id="accountLink" style="display: flex;">Hola, <span id="userName"></span></a>
-
 <button class="btn-tertiary" id="logoutBtn" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-
 </div>
-
 <div class="nav-icons">
-
-</a>
-
 </div>
-
 </div>
-
 </div>
-
 </div>
-
 </nav>
-
 </header>
-
 <main class="page-content">
-
 <section class="section">
-
 <div class="account-dashboard-container">
-
 <h2 id="account-title"></h2>
-
 <div class="account-dashboard-layout">
-
 <aside class="account-sidebar">
-
 <div class="user-card" id="userCard">
-
 <div class="user-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
-
 <div class="user-name" id="userCardName">Usuario</div>
-
 <div class="user-email" id="userCardEmail"></div>
-
 </div>
-
 <nav class="account-nav">
-
 <a class="account-nav-link active" data-section="dashboard"><i class="fas fa-th-large"></i> Resumen</a>
-
 <a class="account-nav-link" data-section="pedidos"><i class="fas fa-box"></i> Mis Pedidos</a>
-
 <a class="account-nav-link" data-section="perfil"><i class="fas fa-user-circle"></i> Mi Perfil</a>
-
 <a class="account-nav-link" data-section="direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a>
-
 <a class="account-nav-link" data-section="seguridad"><i class="fas fa-shield-alt"></i> Seguridad</a>
-
 <a class="account-nav-link" data-section="notificaciones"><i class="fas fa-bell"></i> Notificaciones</a>
-
 </nav>
-
 </aside>
-
 <div class="account-content">
-
 <div id="dashboard-section" class="account-section active fade-in">
-
 <h3>Bienvenido de Nuevo a GreenHaul, <span id="dashboardUserName"></span>!</h3>
-
 <p>Aquí tienes un resumen rápido de tu actividad y algunas acciones útiles.</p>
-
 <h4>Tu Impacto y Actividad Reciente</h4>
-
 <div class="dashboard-widgets">
-
 <div class="widget-card slide-up">
-
 <div class="widget-icon"><i class="fas fa-box"></i></div>
-
 <div class="widget-value" id="widgetPedidos">0</div>
-
 <div class="widget-label">Pedidos Activos</div>
-
 </div>
-
 <div class="widget-card slide-up">
-
 <div class="widget-icon"><i class="fas fa-check-circle"></i></div>
-
 <div class="widget-value" id="widgetCompletados">0</div>
-
 <div class="widget-label">Pedidos Completados</div>
-
 </div>
-
 <div class="widget-card slide-up">
-
 <div class="widget-icon"><i class="fas fa-map-marker-alt"></i></div>
-
 <div class="widget-value" id="widgetDirecciones">0</div>
-
 <div class="widget-label">Direcciones Guardadas</div>
-
 </div>
-
 <div class="widget-card slide-up ahorro">
-
 <div class="widget-icon"><i class="fas fa-seedling"></i></div>
-
 <div class="widget-value" id="widgetAhorro">0 kg</div>
-
 <div class="widget-label">CO₂ Ahorrado</div>
-
 <div id="widgetAhorroEquivalente"></div>
-
 </div>
-
 </div>
-
 <div class="impact-card">
-
 <div class="icon-large"><i class="fas fa-leaf"></i></div>
-
 <h4>¡Tu Impacto Sostenible Crece!</h4>
-
 <p>Cada mudanza y envío con GreenHaul contribuye a un futuro más verde.</p>
-
 <p style="font-size:1.2rem; font-weight:bold; margin-top:10px;">¡Gracias por tu compromiso con el planeta!</p>
-
 </div>
-
 <p>
-
 Sigue contribuyendo a reducir la huella de carbono.
-
 </p>
-
 <h4>Acciones Rápidas</h4>
-
 <div class="quick-actions">
-
 <div class="action-card slide-up">
-
 <div class="action-icon"><i class="fas fa-box-open"></i></div>
-
 <h4>Programar un Nuevo Servicio</h4>
-
 <p>Inicia una nueva solicitud de mudanza o envío.</p>
-
 <a href="servicios.html" class="btn btn-primary">Agendar Ahora</a>
-
 </div>
-
 <div class="action-card slide-up">
-
 <div class="action-icon"><i class="fas fa-user-edit"></i></div>
-
 <h4>Actualizar Mi Perfil</h4>
-
 <p>Modifica tu información personal o de contacto.</p>
-
 <button class="btn btn-outline" data-target-section="perfil">Editar Perfil</button>
-
 </div>
-
 <div class="action-card slide-up">
-
 <div class="action-icon"><i class="fas fa-map-marked-alt"></i></div>
-
 <h4>Gestionar Direcciones</h4>
-
 <p>Añade, edita o elimina tus direcciones guardadas.</p>
-
 <button class="btn btn-outline" data-target-section="direcciones">Mis Direcciones</button>
-
 </div>
-
 </div>
-
 <h4>Tus Últimos Pedidos</h4>
-
 <div class="recent-orders-summary" id="recent-orders-summary-container">
-
 <p>Cargando tus pedidos más recientes...</p>
-
 </div>
-
 <div style="text-align:center; margin-top:30px;">
-
 <button class="btn btn-primary" data-target-section="pedidos">Ver Todos Mis Pedidos</button>
-
 </div>
-
 </div>
-
 <div id="pedidos-section" class="account-section">
-
 <h3>Historial de Pedidos</h3>
-
 <div class="order-list" id="order-history-container"></div>
-
 </div>
-
 <div id="perfil-section" class="account-section">
-
 <h3>Configuración de Perfil</h3>
-
 <form id="profileForm" autocomplete="off">
-
 <div class="form-grid">
-
 <div class="form-group"><label for="profile-name">Nombre(s)</label><input type="text" id="profile-name" class="form-control" disabled></div>
-
 <div class="form-group"><label for="profile-lastname">Apellidos</label><input type="text" id="profile-lastname" class="form-control" disabled></div>
-
 </div>
-
 <div class="form-group"><label for="profile-email">Correo Electrónico</label><input type="email" id="profile-email" class="form-control"></div>
-
 <div class="form-group"><label for="profile-whatsapp">Número de WhatsApp</label><input type="tel" id="profile-whatsapp" class="form-control" placeholder="Ej. 5512345678"></div>
-
 <hr>
-
 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-
 </form>
-
 </div>
-
 <div id="direcciones-section" class="account-section">
-
 <div class="address-header">
-
 <h3>Mis Direcciones</h3>
-
 <button class="btn btn-primary" id="addAddressBtn">Agregar Nueva Dirección</button>
-
 </div>
-
 <div class="address-list" id="address-list-container"></div>
-
 </div>
-
 <div id="seguridad-section" class="account-section">
-
 <h3>Configuración de Seguridad</h3>
-
 <p>Administra tus credenciales y opciones de seguridad.</p>
-
 <form id="securityForm">
-
 <h4>Cambiar Contraseña</h4>
-
 <div class="form-group">
-
-<label for="current-password">Contraseña Actual</label>
-
+<label for="current-password">Contraseña Actual o Temporal</label>
 <input type="password" id="current-password" class="form-control" required>
-
 </div>
-
 <div class="form-group">
-
 <label for="new-password">Nueva Contraseña</label>
-
 <input type="password" id="new-password" class="form-control" required minlength="6">
-
 </div>
-
 <div class="form-group">
-
 <label for="confirm-new-password">Confirmar Nueva Contraseña</label>
-
 <input type="password" id="confirm-new-password" class="form-control" required>
-
 </div>
-
 <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
-
 </form>
-
 <hr>
-
 <h4>Autenticación de Dos Factores (2FA)</h4>
-
 <p>Añade una capa extra de seguridad a tu cuenta.</p>
-
 <button id="toggle2FABtn" class="btn btn-outline">
-
 <i class="fas fa-toggle-off"></i> Habilitar 2FA (No funcional)
-
 </button>
-
 <p>
-
 *Esta funcionalidad aún no está implementada en el backend.
-
 </p>
-
 </div>
-
 <div id="notificaciones-section" class="account-section">
-
 <h3>Preferencias de Notificaciones</h3>
-
 <p>Controla cómo y cuándo recibes nuestras comunicaciones.</p>
-
 <form id="notificationsForm">
-
 <div class="form-group">
-
 <input type="checkbox" id="email-notifications">
-
 <label for="email-notifications">Recibir notificaciones por correo electrónico</label>
-
 </div>
-
 <div class="form-group">
-
 <input type="checkbox" id="whatsapp-notifications">
-
 <label for="whatsapp-notifications">Recibir notificaciones por WhatsApp</label>
-
 </div>
-
 <div class="form-group">
-
 <input type="checkbox" id="sms-notifications">
-
 <label for="sms-notifications">Recibir notificaciones por SMS</label>
-
 </div>
-
 <p>
-
 *La funcionalidad de guardar las preferencias de notificación aún no está implementada.
-
 </p>
-
 <button type="submit" class="btn btn-primary" disabled>Guardar Preferencias</button>
-
 </form>
-
 </div>
-
 </div>
-
 </div>
-
 </div>
-
 </section>
-
 </main>
-
 <div class="modal-overlay" id="addressModal">
-
 <div class="modal-content">
-
 <div class="modal-header">
-
 <h3 id="modalTitle">Agregar Nueva Dirección</h3>
-
 <button class="modal-close" id="modalCloseBtn">&times;</button>
-
 </div>
-
 <form id="addressForm" autocomplete="off">
-
 <input type="hidden" id="addressId">
-
 <div class="form-group">
-
 <label for="address-name">Nombre de la Dirección (ej. Casa, Oficina)</label>
-
 <input type="text" id="address-name" class="form-control" placeholder="Ej. Mi Casa" required>
-
 </div>
-
 <div class="form-group">
-
 <label for="address-street">Calle y Número</label>
-
 <input type="text" id="address-street" class="form-control" placeholder="Ej. Av. Insurgentes Sur 123" required>
-
 </div>
-
 <div class="form-grid">
-
 <div class="form-group">
-
 <label for="address-neighborhood">Colonia</label>
-
 <input type="text" id="address-neighborhood" class="form-control" placeholder="Ej. Roma Norte">
-
 </div>
-
 <div class="form-group">
-
 <label for="address-city">Ciudad</label>
-
 <input type="text" id="address-city" class="form-control" placeholder="Ej. Ciudad de México" required>
-
 </div>
-
 </div>
-
 <div class="form-grid">
-
 <div class="form-group">
-
 <label for="address-state">Estado</label>
-
 <input type="text" id="address-state" class="form-control" placeholder="Ej. CDMX">
-
 </div>
-
 <div class="form-group">
-
 <label for="address-postal-code">Código Postal</label>
-
 <input type="text" id="address-postal-code" class="form-control" placeholder="Ej. 03810">
-
 </div>
-
 </div>
-
 <div class="form-group">
-
 <label for="address-references">Referencias Adicionales</label>
-
 <textarea id="address-references" class="form-control" rows="3" placeholder="Ej. Edificio blanco con portón verde, frente a un parque."></textarea>
-
 </div>
-
 <div id="address-map"></div>
-
 <p style="font-size:0.85rem; color:#888; margin-top:10px;">Arrastra el marcador para ajustar la ubicación exacta.</p>
-
 <div class="modal-actions">
-
 <button type="button" class="btn btn-outline" id="modalCancelBtn">Cancelar</button>
-
 <button type="submit" class="btn btn-primary">Guardar Dirección</button>
-
 </div>
-
 </form>
-
 </div>
-
 </div>
-
 <div id="notificationPopup"></div>
-
 <footer class="footer">
-
 <div class="container footer-content">
-
 <div class="footer-info">
-
 <h3>greenhauL</h3>
-
 <p>Mudanzas sostenibles, sin complicaciones.</p>
-
 <p><i class="fas fa-phone-alt"></i> +52 55 1234 5678</p>
-
 <p><i class="fas fa-envelope"></i> info@greenhauL.com</p>
-
 <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
-
 </div>
-
 <div class="footer-links">
-
 <h3>Enlaces Rápidos</h3>
-
 <ul>
-
 <li><a href="index.html">Inicio</a></li>
-
 <li><a href="productos.html">Productos</a></li>
-
 <li><a href="servicios.html">Servicios</a></li>
-
 <li><a href="nosotros.html">Nosotros</a></li>
-
 <li><a href="contacto.html">Contacto</a></li>
-
 <li><a href="cuenta.html">Mi Cuenta</a></li>
-
 </ul>
-
 </div>
-
 <div class="footer-social-links">
-
 <h3>Síguenos</h3>
-
 <div class="social-icons-wrapper">
-
 <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-
 <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-
 <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-
 </div>
-
 </div>
-
 </div>
-
 <div class="footer-bottom">
-
 &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
-
 </div>
-
 </footer>
-
 <div class="notification-content">
-
 <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
-
 <p id="notificationText"></p>
-
 </div>
-
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
 <script src="assets/js/main.js"></script>
-
 <script>
-
 document.addEventListener('DOMContentLoaded', async () => {
-
 // --- Backend URL y elementos principales ---
-
 const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
-
 const loggedInUser = JSON.parse(localStorage.getItem('greenhaulUser'));
-
-
-
 // Redireccionar si no hay usuario logueado
-
 if (!loggedInUser || !loggedInUser.id) {
-
 window.location.href = 'login.html';
-
 return;
-
 }
-
-
-
 let userData = {};
-
 let map, marker;
-
-
-
 document.querySelectorAll('.widget-card').forEach((el, i) => { el.style.animationDelay = (i * 0.15) + 's'; });
-
 document.querySelectorAll('.action-card').forEach((el, i) => { el.style.animationDelay = (i * 0.1) + 's'; });
-
-
-
 const userCardName = document.getElementById('userCardName');
-
 const userCardEmail = document.getElementById('userCardEmail');
-
 const userNameSpan = document.getElementById('userName');
-
 const accountTitle = document.getElementById('account-title');
-
 const dashboardUserName = document.getElementById('dashboardUserName');
-
 const widgetPedidos = document.getElementById('widgetPedidos');
-
 const widgetCompletados = document.getElementById('widgetCompletados');
-
 const widgetDirecciones = document.getElementById('widgetDirecciones');
-
 const widgetAhorro = document.getElementById('widgetAhorro');
-
 const widgetAhorroEquivalente = document.getElementById('widgetAhorroEquivalente');
-
 const navLinks = document.querySelectorAll('.account-nav-link');
-
 const sections = document.querySelectorAll('.account-section');
-
 const orderHistoryContainer = document.getElementById('order-history-container');
-
 const recentOrdersSummaryContainer = document.getElementById('recent-orders-summary-container');
-
 const profileForm = document.getElementById('profileForm');
-
 const profileNameInput = document.getElementById('profile-name');
-
 const profileLastNameInput = document.getElementById('profile-lastname');
-
 const profileEmailInput = document.getElementById('profile-email');
-
 const profileWhatsappInput = document.getElementById('profile-whatsapp');
-
 const addAddressBtn = document.getElementById('addAddressBtn');
-
 const addressModal = document.getElementById('addressModal');
-
 const modalCloseBtn = document.getElementById('modalCloseBtn');
-
 const modalCancelBtn = document.getElementById('modalCancelBtn');
-
 const addressForm = document.getElementById('addressForm');
-
 const addressListContainer = document.getElementById('address-list-container');
-
 const modalTitle = document.getElementById('modalTitle');
-
 const addressIdInput = document.getElementById('addressId');
-
 const addressNameInput = document.getElementById('address-name');
-
 const streetInput = document.getElementById('address-street');
-
 const neighborhoodInput = document.getElementById('address-neighborhood');
-
 const cityInput = document.getElementById('address-city');
-
 const stateInput = document.getElementById('address-state');
-
 const postalCodeInput = document.getElementById('address-postal-code');
-
 const referencesInput = document.getElementById('address-references');
-
 const notificationPopup = document.getElementById('notificationPopup');
-
 const logoutBtn = document.getElementById('logoutBtn');
-
-
-
 /**
-
 * Muestra una notificación animada y discreta de confirmación.
-
 * @param {string} message - El mensaje a mostrar.
-
 * @param {boolean} isError - Si es true, la notificación será de error.
-
 */
-
 function showNotification(message, isError = false) {
-
 if (!notificationPopup) return;
-
 notificationPopup.textContent = message;
-
 notificationPopup.className = 'show' + (isError ? ' error' : '');
-
 setTimeout(() => {
-
 notificationPopup.className = '';
-
 }, 2200);
-
 }
-
-
-
 function updateSidebar(user) {
-
 userCardName.textContent = user.name ?? 'Usuario';
-
 userCardEmail.textContent = user.email ?? '';
-
 userNameSpan.textContent = user.name ? user.name.split(' ')[0] : 'Usuario';
-
 accountTitle.textContent = `Panel de Control de ${user.name || 'Usuario'}`;
-
 dashboardUserName.textContent = user.name ? user.name.split(' ')[0] : 'Usuario';
-
 }
-
-
-
 async function updateDashboardWidgetsFromBackend() {
-
 try {
-
 const res = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/dashboard`);
-
 if (!res.ok) throw new Error('Error al cargar estadísticas del dashboard.');
-
 const stats = await res.json();
-
 widgetPedidos.textContent = stats.pedidos_activos ?? 0;
-
 widgetCompletados.textContent = stats.pedidos_completados ?? 0;
-
 widgetDirecciones.textContent = stats.direcciones ?? 0;
-
 widgetAhorro.textContent = stats.ahorro_kg_co2 + ' kg';
-
 widgetAhorroEquivalente.textContent = `Equivale a ${stats.arboles_equivalentes} árboles 🌳 o ${stats.km_equivalentes} km en auto 🚗`;
-
 displayRecentOrders(stats.recent_orders || []);
-
 } catch (e) {
-
 showNotification('No se pudieron cargar las estadísticas del dashboard. Carga parcial de la información.', true);
-
 widgetAhorro.textContent = '0 kg';
-
 widgetAhorroEquivalente.textContent = '';
-
 recentOrdersSummaryContainer.innerHTML = '<p>No se pudieron cargar los pedidos recientes.</p>';
-
 }
-
 }
-
-
-
 function displayRecentOrders(orders) {
-
 recentOrdersSummaryContainer.innerHTML = '';
-
 if (!orders || orders.length === 0) {
-
 recentOrdersSummaryContainer.innerHTML = '<p>No hay pedidos recientes para mostrar.</p>';
-
 return;
-
 }
-
 orders.slice(0, 3).forEach(order => {
-
 const estado = order.status === 'completado' ? 'Completado' : 'Activo';
-
 orderHistoryContainer.innerHTML += `
-
 <div class="order-item slide-up">
-
 <div><strong>ID:</strong> ${order.id}</div>
-
 <div><strong>Fecha:</strong> ${order.date}</div>
-
 <div><strong>Total:</strong> $${parseFloat(order.total).toFixed(2)} MXN</div>
-
 <div><strong>Estado:</strong> <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span></div>
-
 </div>`;
-
 });
-
 }
-
-
-
 function activateSection(sectionId) {
-
 navLinks.forEach(l => l.classList.remove('active'));
-
 sections.forEach(s => s.classList.remove('active', 'fade-in'));
-
 const targetLink = document.querySelector(`.account-nav-link[data-section="${sectionId}"]`);
-
 const targetSection = document.getElementById(`${sectionId}-section`);
-
 if (targetLink) targetLink.classList.add('active');
-
 if (targetSection) targetSection.classList.add('active', 'fade-in');
-
 switch (sectionId) {
-
 case 'dashboard': updateDashboardWidgetsFromBackend(); break;
-
 case 'pedidos': loadOrders(); break;
-
 case 'perfil': populateProfileForm(); break;
-
 case 'direcciones': loadAddresses(); break;
-
 }
-
 }
-
-
-
 navLinks.forEach(link => {
-
 link.addEventListener('click', (e) => {
-
 e.preventDefault();
-
 const sectionId = link.dataset.section;
-
 activateSection(sectionId);
-
 });
-
 });
-
-
-
 document.querySelectorAll('.quick-actions .btn').forEach(button => {
-
 button.addEventListener('click', (e) => {
-
 const targetSection = e.target.dataset.targetSection;
-
 if (targetSection) {
-
 activateSection(targetSection);
-
 } else if (e.target.href) {
-
 window.location.href = e.target.href;
-
 }
-
 });
-
 });
-
 document.querySelector('.recent-orders-summary + div .btn').addEventListener('click', () => {
-
 activateSection('pedidos');
-
 });
-
-
-
 async function loadOrders() {
-
 orderHistoryContainer.innerHTML = '<div class="order-item"><span>Cargando pedidos...</span></div>';
-
 try {
-
 const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/orders`);
-
 if (!response.ok) throw new Error('Error al cargar pedidos.');
-
 const orders = await response.json();
-
 orderHistoryContainer.innerHTML = '';
-
 if (!orders || orders.length === 0) {
-
 orderHistoryContainer.innerHTML = '<p>No tienes pedidos aún. ¡Anímate a programar tu primera mudanza sostenible!</p>';
-
 return;
-
 }
-
 orders.sort((a, b) => new Date(b.date) - new Date(a.date));
-
 orders.forEach(order => {
-
 const estado = order.status === 'completado' ? 'Completado' : 'Activo';
-
 orderHistoryContainer.innerHTML += `
-
 <div class="order-item slide-up">
-
 <div><strong>ID:</strong> ${order.id}</div>
-
 <div><strong>Fecha:</strong> ${order.date}</div>
-
 <div><strong>Total:</strong> $${order.total} MXN</div>
-
 <div><strong>Estado:</strong> <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span></div>
-
 </div>`;
-
 });
-
 } catch (error) {
-
 showNotification(`Error al cargar pedidos: ${error.message}`, true);
-
 orderHistoryContainer.innerHTML = '<p>Error al cargar pedidos. Por favor, inténtalo de nuevo más tarde.</p>';
-
 }
-
 }
-
-
-
 function populateProfileForm() {
-
 if (!userData) return;
-
 profileNameInput.value = userData.name || '';
-
 profileLastNameInput.value = userData.surname || '';
-
 profileEmailInput.value = userData.email || '';
-
 profileWhatsappInput.value = userData.whatsapp || '';
-
 }
-
-
-
 profileForm.addEventListener('submit', async (e) => {
-
 e.preventDefault();
-
 const submitBtn = profileForm.querySelector('button[type="submit"]');
-
 const originalBtnText = submitBtn.textContent;
-
 submitBtn.disabled = true;
-
 submitBtn.textContent = 'Guardando...';
-
 const updatedData = {
-
 email: profileEmailInput.value,
-
 whatsapp: profileWhatsappInput.value,
-
 };
-
 try {
-
 const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}`, {
-
 method: 'PUT',
-
 headers: { 'Content-Type': 'application/json' },
-
 body: JSON.stringify(updatedData)
-
 });
-
 const result = await response.json();
-
 if (!response.ok) throw new Error(result.message || 'Error al actualizar el perfil.');
-
 userData = { ...loggedInUser, ...result.user };
-
 localStorage.setItem('greenhaulUser', JSON.stringify(userData));
-
 showNotification('Perfil actualizado con éxito.');
-
 updateSidebar(userData);
-
 } catch (error) {
-
 showNotification(error.message, true);
-
 } finally {
-
 submitBtn.disabled = false;
-
 submitBtn.textContent = originalBtnText;
-
 }
-
 });
-
-
-
 function initMap(lat = 19.4326, lng = -99.1332) {
-
 if (map) {
-
 map.remove();
-
 map = null;
-
 }
-
 map = L.map('address-map').setView([lat, lng], 13);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-
 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-
 }).addTo(map);
-
 marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-
 marker.on('dragend', function(event) {
-
 const pos = marker.getLatLng();
-
 reverseGeocode(pos.lat, pos.lng);
-
 });
-
 setTimeout(() => { if (map) map.invalidateSize(); }, 200);
-
 }
-
-
-
 async function reverseGeocode(lat, lng) {
-
 try {
-
 const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
-
 const response = await fetch(url);
-
 const data = await response.json();
-
 if (data && data.address) {
-
 const addr = data.address;
-
 let street = addr.road || '';
-
 let houseNumber = addr.house_number || '';
-
 let neighborhood = addr.suburb || addr.neighbourhood || '';
-
 let fullStreet = street.trim();
-
 if (houseNumber) {
-
 fullStreet += ` ${houseNumber}`;
-
 } else if (data.display_name) {
-
 const streetRegex = new RegExp(`^${escapeRegExp(street)}\\s*(\\d+[A-Za-z]?)?\\b`, 'i');
-
 const match = data.display_name.match(streetRegex);
-
 if (match && match[1]) {
-
 fullStreet = `${street} ${match[1]}`;
-
 } else {
-
 const genericNumberMatch = data.display_name.match(/\b(\d+[A-Za-z]?)\b/);
-
 if (genericNumberMatch && street && !street.includes(genericNumberMatch[1])) {
-
 fullStreet = `${street} ${genericNumberMatch[1]}`;
-
 }
-
 }
-
 }
-
 streetInput.value = fullStreet.trim();
-
 neighborhoodInput.value = neighborhood;
-
 cityInput.value = addr.city || addr.town || addr.village || '';
-
 stateInput.value = addr.state || '';
-
 postalCodeInput.value = addr.postcode || '';
-
 } else {
-
 streetInput.value = '';
-
 neighborhoodInput.value = '';
-
 cityInput.value = '';
-
 stateInput.value = '';
-
 postalCodeInput.value = '';
-
 showNotification('No se pudo obtener la dirección desde el mapa.', true);
-
 }
-
 } catch (error) {
-
 showNotification('Error de conexión al servicio de geocodificación inversa.', true);
-
 }
-
 }
-
 function escapeRegExp(string) {
-
 return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
 }
-
 async function geocodeAddress() {
-
 const address = `${streetInput.value}, ${neighborhoodInput.value}, ${cityInput.value}, ${stateInput.value}, ${postalCodeInput.value}`;
-
 if (address.trim().length < 10) return;
-
 try {
-
 const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
-
 const response = await fetch(url);
-
 const results = await response.json();
-
 if (results && results.length > 0) {
-
 const { lat, lon } = results[0];
-
 const newPosition = L.latLng(lat, lon);
-
 marker.setLatLng(newPosition);
-
 map.setView(newPosition, 16);
-
 } else {
-
 showNotification('No se pudo ubicar la dirección en el mapa con los datos proporcionados.', true);
-
 }
-
 } catch (error) {
-
 showNotification('Error de conexión al servicio de geocodificación.', true);
-
 }
-
 }
-
 [streetInput, neighborhoodInput, cityInput, stateInput, postalCodeInput].forEach(input => {
-
 input.addEventListener('blur', () => { geocodeAddress(); });
-
 input.addEventListener('keydown', (e) => {
-
 if (e.key === 'Enter') {
-
 e.preventDefault();
-
 geocodeAddress();
-
 }
-
 });
-
 });
-
 function openModal(lat = 19.4326, lng = -99.1332) {
-
 addressModal.classList.add('show');
-
 setTimeout(() => { initMap(lat, lng); }, 50);
-
 }
-
 function closeModal() {
-
 addressModal.classList.remove('show');
-
 addressForm.reset();
-
 addressIdInput.value = '';
-
 if (map) {
-
 map.remove();
-
 map = null;
-
 }
-
 }
-
 if (addAddressBtn) addAddressBtn.addEventListener('click', () => {
-
 modalTitle.textContent = 'Agregar Nueva Dirección';
-
 openModal();
-
 });
-
 if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
-
 if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
-
 if (addressForm) addressForm.addEventListener('submit', async (e) => {
-
 e.preventDefault();
-
 const addressId = addressIdInput.value;
-
 const isUpdating = !!addressId;
-
 const submitBtn = addressForm.querySelector('button[type="submit"]');
-
 const originalBtnText = submitBtn.textContent;
-
 submitBtn.disabled = true;
-
 submitBtn.textContent = 'Guardando...';
-
 const addressData = {
-
 name: addressNameInput.value,
-
 street: streetInput.value,
-
 neighborhood: neighborhoodInput.value,
-
 city: cityInput.value,
-
 state: stateInput.value,
-
 postal_code: postalCodeInput.value,
-
 references: referencesInput.value,
-
 };
-
 const url = isUpdating ? `${backendUrl}/api/addresses/${addressId}` : `${backendUrl}/api/users/${loggedInUser.id}/addresses`;
-
 const method = isUpdating ? 'PUT' : 'POST';
-
 try {
-
 const response = await fetch(url, {
-
 method,
-
 headers: { 'Content-Type': 'application/json' },
-
 body: JSON.stringify(addressData)
-
 });
-
 const result = await response.json();
-
 if (!response.ok) throw new Error(result.message || 'Error al guardar la dirección.');
-
 showNotification(result.message || 'Dirección guardada correctamente.');
-
 closeModal();
-
 await loadAddresses();
-
 } catch (error) {
-
 showNotification(error.message, true);
-
 } finally {
-
 submitBtn.disabled = false;
-
 submitBtn.textContent = originalBtnText;
-
 }
-
 });
-
 async function loadAddresses() {
-
 try {
-
 const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/addresses`);
-
 if (!response.ok) throw new Error('No se pudieron cargar las direcciones.');
-
 const addresses = await response.json();
-
 addressListContainer.innerHTML = '';
-
 if (addresses.length === 0) {
-
 addressListContainer.innerHTML = '<p>Aún no tienes direcciones guardadas. ¡Agrega una para agilizar tus futuros servicios!</p>';
-
 return;
-
 }
-
 addresses.forEach(addr => {
-
 const card = document.createElement('div');
-
 card.className = 'address-card slide-up';
-
 card.innerHTML = `
-
 <div class="address-card-header">
-
 <h4><i class="fas fa-map-marker-alt"></i> ${addr.name || 'Dirección sin nombre'}</h4>
-
 </div>
-
 <div class="address-card-body">
-
 <p>${addr.street}, ${addr.neighborhood || ''}</p>
-
 <p>${addr.city}, ${addr.state || ''} ${addr.postal_code || ''}</p>
-
 ${addr.references ? `<p class="address-references-text">Ref: ${addr.references}</p>` : ''}
-
 </div>
-
 <div class="address-card-actions">
-
 <button class="btn btn-outline edit-btn" data-id="${addr.id}">Editar</button>
-
 <button class="btn-tertiary delete-btn" data-id="${addr.id}" title="Eliminar"><i class="fas fa-trash"></i></button>
-
 </div>`;
-
 addressListContainer.appendChild(card);
-
 });
-
 } catch (error) {
-
 showNotification(error.message, true);
-
 addressListContainer.innerHTML = '<p>Error al cargar direcciones. Por favor, inténtalo de nuevo.</p>';
-
 }
-
 }
-
 if (addressListContainer) addressListContainer.addEventListener('click', async (e) => {
-
 const editBtn = e.target.closest('.edit-btn');
-
 const deleteBtn = e.target.closest('.delete-btn');
-
 if (editBtn) {
-
 const id = editBtn.dataset.id;
-
 try {
-
 const response = await fetch(`${backendUrl}/api/addresses/${id}`);
-
 if (!response.ok) throw new Error('No se pudo cargar la dirección para editar.');
-
 const addressToEdit = await response.json();
-
 modalTitle.textContent = 'Editar Dirección';
-
 addressIdInput.value = addressToEdit.id;
-
 addressNameInput.value = addressToEdit.name || '';
-
 streetInput.value = addressToEdit.street || '';
-
 neighborhoodInput.value = addressToEdit.neighborhood || '';
-
 cityInput.value = addressToEdit.city || '';
-
 stateInput.value = addressToEdit.state || '';
-
 postalCodeInput.value = addressToEdit.postal_code || '';
-
 referencesInput.value = addressToEdit.references || '';
-
 openModal(addressToEdit.latitude, addressToEdit.longitude);
-
 } catch (error) {
-
 showNotification(error.message, true);
-
 }
-
 }
-
 if (deleteBtn) {
-
 const id = deleteBtn.dataset.id;
-
 if (confirm('¿Estás seguro de que quieres eliminar esta dirección? Esta acción no se puede deshacer.')) {
-
 try {
-
 const response = await fetch(`${backendUrl}/api/addresses/${id}`, { method: 'DELETE' });
-
 const result = await response.json();
-
 if (!response.ok) throw new Error(result.message || 'Error al eliminar la dirección.');
-
 showNotification(result.message || 'Dirección eliminada con éxito.');
-
 await loadAddresses();
-
 } catch (error) {
-
 showNotification(error.message, true);
-
 }
-
 }
-
 }
-
 });
-
 const securityForm = document.getElementById('securityForm');
-
 const currentPasswordInput = document.getElementById('current-password');
-
 const newPasswordInput = document.getElementById('new-password');
-
 const confirmNewPasswordInput = document.getElementById('confirm-new-password');
-
 if (securityForm) {
-
 securityForm.addEventListener('submit', async (e) => {
-
 e.preventDefault();
-
 const submitBtn = securityForm.querySelector('button[type="submit"]');
-
 const originalBtnText = submitBtn.textContent;
-
 submitBtn.disabled = true;
-
 submitBtn.textContent = 'Actualizando...';
-
 const currentPassword = currentPasswordInput.value;
-
 const newPassword = newPasswordInput.value;
-
 const confirmNewPassword = confirmNewPasswordInput.value;
-
 if (newPassword !== confirmNewPassword) {
-
 showNotification('Las nuevas contraseñas no coinciden.', true);
-
 submitBtn.disabled = false;
-
 submitBtn.textContent = originalBtnText;
-
 return;
-
 }
-
 if (newPassword.length < 6) {
-
 showNotification('La nueva contraseña debe tener al menos 6 caracteres.', true);
-
 submitBtn.disabled = false;
-
 submitBtn.textContent = originalBtnText;
-
 return;
-
 }
-
 try {
-
-const response = await new Promise(resolve => setTimeout(() => {
-
-if (currentPassword === "password_actual_valida") {
-
-resolve({ ok: true, json: () => Promise.resolve({ message: 'Contraseña actualizada con éxito.' }) });
-
-} else {
-
-resolve({ ok: false, json: () => Promise.resolve({ message: 'Contraseña actual incorrecta.' }) });
-
-}
-
-}, 1000));
-
-const result = await response.json();
-
-if (!response.ok) throw new Error(result.message || 'Error al cambiar la contraseña.');
-
-showNotification(result.message);
-
-securityForm.reset();
-
-} catch (error) {
-
-showNotification(error.message, true);
-
-} finally {
-
-submitBtn.disabled = false;
-
-submitBtn.textContent = originalBtnText;
-
-}
-
-});
-
-}
-
-const notificationsForm = document.getElementById('notificationsForm');
-
-const toggle2FABtn = document.getElementById('toggle2FABtn');
-
-if (notificationsForm) {
-
-notificationsForm.addEventListener('submit', (e) => {
-
-e.preventDefault();
-
-showNotification('La funcionalidad de guardar preferencias de notificación aún no está implementada.', false);
-
-});
-
-}
-
-if (toggle2FABtn) {
-
-toggle2FABtn.addEventListener('click', () => {
-
-showNotification('La autenticación de dos factores aún no está implementada.', false);
-
-});
-
-}
-
-if (logoutBtn) {
-
-logoutBtn.addEventListener('click', () => {
-
-localStorage.removeItem('greenhaulUser');
-
-window.location.href = 'index.html';
-
-});
-
-}
-
-async function fetchUserData(userId) {
-
-try {
-
-const response = await fetch(`${backendUrl}/api/users/${userId}`);
-
-if (!response.ok) throw new Error('Usuario no encontrado en el servidor.');
-
-const result = await response.json();
-
-userData = result.user;
-
-localStorage.setItem('greenhaulUser', JSON.stringify(userData));
-
-updateSidebar(userData);
-
-activateSection('dashboard');
-
-} catch (error) {
-
-showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
-
-}
-
-}
-
-fetchUserData(loggedInUser.id);
-
-});
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-
-const form = document.getElementById('contactForm');
-
-if (!form) return;
-
-form.addEventListener('submit', async (e) => {
-
-e.preventDefault();
-
-const full_name = document.getElementById('contactName').value;
-
-const email = document.getElementById('contactEmail').value;
-
-const message = document.getElementById('contactMessage').value;
-
-try {
-
-const response = await fetch('https://greenhaul-backend-production.up.railway.app/api/contact', {
-
-method: 'POST',
-
+const response = await fetch(`${backendUrl}/api/users/${loggedInUser.id}/change-password`, {
+method: 'PUT',
 headers: { 'Content-Type': 'application/json' },
-
-body: JSON.stringify({ full_name, email, message })
-
+body: JSON.stringify({ currentPassword, newPassword })
 });
-
 const result = await response.json();
-
-if (!response.ok) throw new Error(result.message || 'Error al enviar mensaje');
-
-alert('¡Mensaje enviado correctamente!');
-
-form.reset();
-
-} catch (err) {
-
-alert('Hubo un error al enviar tu mensaje: ' + err.message);
-
+if (!response.ok) throw new Error(result.message || 'Error al cambiar la contraseña.');
+showNotification(result.message);
+securityForm.reset();
+} catch (error) {
+showNotification(error.message, true);
+} finally {
+submitBtn.disabled = false;
+submitBtn.textContent = originalBtnText;
 }
-
 });
-
+}
+const notificationsForm = document.getElementById('notificationsForm');
+const toggle2FABtn = document.getElementById('toggle2FABtn');
+if (notificationsForm) {
+notificationsForm.addEventListener('submit', (e) => {
+e.preventDefault();
+showNotification('La funcionalidad de guardar preferencias de notificación aún no está implementada.', false);
 });
-
-
-
+}
+if (toggle2FABtn) {
+toggle2FABtn.addEventListener('click', () => {
+showNotification('La autenticación de dos factores aún no está implementada.', false);
+});
+}
+if (logoutBtn) {
+logoutBtn.addEventListener('click', () => {
+localStorage.removeItem('greenhaulUser');
+window.location.href = 'index.html';
+});
+}
+async function fetchUserData(userId) {
+try {
+const response = await fetch(`${backendUrl}/api/users/${userId}`);
+if (!response.ok) throw new Error('Usuario no encontrado en el servidor.');
+const result = await response.json();
+userData = result.user;
+localStorage.setItem('greenhaulUser', JSON.stringify(userData));
+updateSidebar(userData);
+activateSection('dashboard');
+} catch (error) {
+showNotification(`Error al cargar el perfil: ${error.message}. Por favor, intenta de nuevo.`, true);
+}
+}
+fetchUserData(loggedInUser.id);
+});
+document.addEventListener('DOMContentLoaded', () => {
+const form = document.getElementById('contactForm');
+if (!form) return;
+form.addEventListener('submit', async (e) => {
+e.preventDefault();
+const full_name = document.getElementById('contactName').value;
+const email = document.getElementById('contactEmail').value;
+const message = document.getElementById('contactMessage').value;
+try {
+const response = await fetch('https://greenhaul-backend-production.up.railway.app/api/contact', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ full_name, email, message })
+});
+const result = await response.json();
+if (!response.ok) throw new Error(result.message || 'Error al enviar mensaje');
+alert('¡Mensaje enviado correctamente!');
+form.reset();
+} catch (err) {
+alert('Hubo un error al enviar tu mensaje: ' + err.message);
+}
+});
+});
 </script>
-
 </body>
-
 </html>
