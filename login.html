@@ -82,62 +82,6 @@
             color: white !important;
             margin: 0;
         }
-
-        /* Estilos para el modal de recuperación */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.45);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-content {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 8px 30px rgba(0,179,134,0.16);
-            padding: 38px 32px 28px 32px;
-            max-width: 380px;
-            width: 96vw;
-            position: relative;
-        }
-        .modal-content h3 {
-            margin-top: 0;
-        }
-        .modal-close {
-            position: absolute;
-            top: 16px;
-            right: 18px;
-            background: none;
-            border: none;
-            font-size: 1.9rem;
-            color: #666;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .modal-close:hover {
-            color: #e74c3c;
-        }
-        .modal-content .form-group label {
-            margin-bottom: 8px;
-        }
-        .modal-content .form-group {
-            margin-bottom: 18px;
-        }
-        .modal-content #recoverPasswordMessage {
-            margin-top: 10px;
-            font-size: 0.97rem;
-            color: #008060;
-            min-height: 18px;
-        }
-        .modal-content .error {
-            color: #e74c3c;
-        }
     </style>
 </head>
 <body>
@@ -185,7 +129,7 @@
                         <button type="submit" class="btn btn-primary" style="width: 100%;">Ingresar</button>
                     </form>
                     <div style="text-align: center; margin-top: 18px;">
-                        <a href="#" id="forgotPasswordLink" style="color: #4ab3c1; text-decoration: underline;">¿Olvidaste tu contraseña?</a>
+                        <a href="password-reset.html" style="color: #4ab3c1; text-decoration: underline;">¿Olvidaste tu contraseña?</a>
                     </div>
                     <div style="text-align: center; margin-top: 20px;">
                         <p>¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
@@ -194,23 +138,7 @@
             </div>
         </section>
     </main>
-
-    <!-- Modal Recuperación de Contraseña -->
-    <div class="modal-overlay" id="recoverPasswordModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeRecoverModalBtn">&times;</button>
-            <h3>Recuperar Contraseña</h3>
-            <form id="recoverPasswordForm" autocomplete="off">
-                <div class="form-group">
-                    <label for="recoverEmail">Correo electrónico</label>
-                    <input type="email" id="recoverEmail" class="form-control" required placeholder="ejemplo@email.com">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar contraseña temporal</button>
-            </form>
-            <div id="recoverPasswordMessage"></div>
-        </div>
-    </div>
-    
+        
     <footer class="footer">
         <div class="container footer-content">
             <div class="footer-info">
@@ -245,6 +173,9 @@
                     alert(message);
                 }
             }
+
+            // Footer year
+            document.getElementById('current-year').textContent = new Date().getFullYear();
 
             const loginForm = document.getElementById('loginForm');
             if(loginForm){
@@ -286,61 +217,6 @@
                     }
                 });
             }
-
-            // Forgot Password Functionality
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-            const recoverPasswordModal = document.getElementById('recoverPasswordModal');
-            const closeRecoverModalBtn = document.getElementById('closeRecoverModalBtn');
-            const recoverPasswordForm = document.getElementById('recoverPasswordForm');
-            const recoverPasswordMessage = document.getElementById('recoverPasswordMessage');
-
-            forgotPasswordLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                recoverPasswordModal.classList.add('active');
-                recoverPasswordMessage.textContent = '';
-                recoverPasswordMessage.classList.remove('error');
-                recoverPasswordForm.reset();
-            });
-
-            closeRecoverModalBtn.addEventListener('click', function() {
-                recoverPasswordModal.classList.remove('active');
-            });
-
-            recoverPasswordForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const email = document.getElementById('recoverEmail').value;
-                recoverPasswordMessage.textContent = '';
-                recoverPasswordMessage.classList.remove('error');
-                
-                try {
-                    const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
-                    const response = await fetch(`${backendUrl}/api/recover-password`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email })
-                    });
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        recoverPasswordMessage.textContent = result.message;
-                        recoverPasswordMessage.classList.remove('error');
-                    } else {
-                        recoverPasswordMessage.textContent = result.message || 'No se pudo enviar la contraseña temporal.';
-                        recoverPasswordMessage.classList.add('error');
-                    }
-                } catch (err) {
-                    recoverPasswordMessage.textContent = 'Error al conectar con el servidor.';
-                    recoverPasswordMessage.classList.add('error');
-                }
-            });
-
-            // Cerrar modal con Escape y click fuera
-            window.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') recoverPasswordModal.classList.remove('active');
-            });
-            recoverPasswordModal.addEventListener('click', function(e){
-                if (e.target === recoverPasswordModal) recoverPasswordModal.classList.remove('active');
-            });
         });
     </script>
     <script type="module" src="/assets/js/main.js"></script>
