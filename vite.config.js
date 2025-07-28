@@ -1,13 +1,10 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  // Aseguramos que la raíz es la carpeta principal
   root: '.', 
   build: {
-    // La carpeta de salida al compilar será 'dist'
     outDir: 'dist', 
     rollupOptions: {
-      // Definimos cada una de tus páginas HTML
       input: {
         main: './index.html',
         productos: './productos.html',
@@ -19,7 +16,8 @@ export default defineConfig({
         confirmacion: './confirmacion-entrega-recoleccion.html',
         cuenta: './cuenta.html',
         faq: './faq.html',
-        register: './register.html'
+        register: './register.html',
+        passwordReset: './password-reset.html' // <-- AGREGA ESTA LÍNEA
       }
     }
   }
