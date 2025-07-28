@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Cuenta - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css"> 
 
     <style>
         /* ================================================================= */
-        /* ===== REDISEÑO MODERNO Y TECNOLÓGICO DE "MI CUENTA" ===== */
+        /* ===== ESTILOS AUTOCONTENIDOS PARA LA PÁGINA "MI CUENTA" ===== */
         /* ================================================================= */
 
         :root {
@@ -91,7 +90,7 @@
           color: var(--text-light);
           font-weight: bold;
         }
-
+        
         .account-nav-link.active i {
           color: var(--text-light);
         }
@@ -174,15 +173,15 @@
           color: var(--text-dimmed);
           font-size: 0.9rem;
         }
-
+        
         .order-list { display: flex; flex-direction: column; gap: 15px; }
         .order-item { background-color: #2E2F48; border: 1px solid #44475A; border-radius: 8px; padding: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: center; }
-
+        
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-dimmed); }
         .form-control { width: 100%; padding: 10px; background-color: #1E1E2A; border: 1px solid #44475A; border-radius: 5px; color: var(--text-light); }
         .form-control:focus { outline: none; border-color: var(--accent-color); }
-        .form-control:disabled { background-color: #333; cursor: not-allowed; }
+        .form-control[disabled] { background-color: #333; cursor: not-allowed; }
 
         /* Responsive */
         @media(max-width: 992px) {
@@ -199,7 +198,7 @@
               flex-wrap: wrap;
           }
         }
-
+        
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
@@ -329,8 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileForm = document.getElementById('profileForm');
     const profileNameInput = document.getElementById('profile-name');
     const profileEmailInput = document.getElementById('profile-email');
-    const navbarToggler = document.getElementById('navbarToggler');
-    const navbarCollapse = document.getElementById('navbarCollapse');
 
     // --- 3. FUNCIONES DE RENDERIZADO Y CARGA DE DATOS ---
 
@@ -340,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(activeSection) activeSection.classList.add('active');
 
         navLinks.forEach(link => link.classList.remove('active'));
-        const activeLink = document.querySelector(`.account-nav-link-mi-cuenta`);
+        const activeLink = document.querySelector(`.account-nav-link[data-section="${sectionId}"]`);
         if(activeLink) activeLink.classList.add('active');
     }
 
@@ -350,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${backendUrl}/api/users/${currentUser.id}/dashboard`);
             if (!response.ok) throw new Error('No se pudieron cargar los datos del dashboard.');
             const data = await response.json();
-
+            
             metricActivos.textContent = data.pedidos_activos || 0;
             metricCompletados.textContent = data.pedidos_completados || 0;
             metricCo2.textContent = `${data.ahorro_kg_co2 || 0} kg`;
@@ -359,14 +356,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Dejar los valores en 0 si hay un error
         }
     }
-
+    
     async function loadOrders() {
         orderHistoryContainer.innerHTML = '<p>Cargando tus pedidos...</p>';
         try {
             const response = await fetch(`${backendUrl}/api/users/${currentUser.id}/orders`);
             if(!response.ok) throw new Error('No se pudieron cargar los pedidos.');
             const orders = await response.json();
-
+            
             if(orders.length === 0) {
                 orderHistoryContainer.innerHTML = '<p>No tienes pedidos en tu historial.</p>';
                 return;
@@ -396,27 +393,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 4. EVENT LISTENERS ---
 
-    // Menú de navegación móvil
-    if (navbarToggler && navbarCollapse) {
-        navbarToggler.addEventListener('click', () => {
-            navbarCollapse.classList.toggle('active');
-            navbarToggler.classList.toggle('active');
-        });
-    }
-
-    // Navegación del panel
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const sectionId = link.dataset.section;
             showSection(sectionId);
-
+            
             if(sectionId === 'pedidos') loadOrders();
             if(sectionId === 'perfil') loadProfile();
         });
     });
 
-    // Botón de cerrar sesión
     if(logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('greenhaulUser');
