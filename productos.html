@@ -76,90 +76,198 @@
                     <h3>2. Selecciona tus productos</h3>
                 </div>
                 <div class="product-grid" style="gap:2rem;">
-                    <!-- KIT PEQUEÑO -->
-                    <div class="product-card" data-product-id="1" data-product-price="550.00">
-                        <div class="badge best-value">Mejor Valor</div>
-                        <div class="product-image" style="font-size:2.5rem;">🏡</div>
+
+                    <!-- PAQUETE BÁSICO -->
+                    <div class="product-card" data-product-id="101" data-product-price="79.00">
+                        <div class="badge best-value">Paquete Básico</div>
+                        <div class="product-image" style="font-size:2.5rem;">📦</div>
                         <div class="product-info">
-                            <h3>Kit Mudanza Pequeña</h3>
-                            <p class="description">Ideal para estudios o apartamentos de 1 habitación (aprox. 25 cajas).</p>
+                            <h3>Paquete Básico</h3>
+                            <p class="description">Incluye 5 cajas chicas y 5 cajas medianas. Ideal para mudanzas pequeñas.</p>
                             <ul class="product-features">
-                                <li>15 cajas medianas y 10 grandes</li>
-                                <li>Cinta, marcadores y diablito</li>
+                                <li>5 Cajas Cozumel 20kg (chica)</li>
+                                <li>5 Cajas HDPE 15kg (mediana)</li>
                             </ul>
                             <div class="quantity-control">
-                                <label for="qty-kit-pequeno">Cantidad:</label>
-                                <select id="qty-kit-pequeno" class="product-qty form-control">
+                                <label for="qty-paq-basico">Cantidad:</label>
+                                <select id="qty-paq-basico" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+                            </div>
+                            <p class="price">$79.00 MXN <span>/día</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- PAQUETE ESTÁNDAR -->
+                    <div class="product-card" data-product-id="102" data-product-price="159.00">
+                        <div class="badge popular">Paquete Estándar</div>
+                        <div class="product-image" style="font-size:2.5rem;">🏠</div>
+                        <div class="product-info">
+                            <h3>Paquete Estándar</h3>
+                            <p class="description">Mudanza mediana: 5 chicas, 5 medianas, 2 grandes y 1 diablito.</p>
+                            <ul class="product-features">
+                                <li>5 Cajas Cozumel 20kg (chica)</li>
+                                <li>5 Cajas HDPE 15kg (mediana)</li>
+                                <li>2 Cajas PP 30L (grande)</li>
+                                <li>1 Diablito de carga</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-paq-estandar">Cantidad:</label>
+                                <select id="qty-paq-estandar" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+                            </div>
+                            <p class="price">$159.00 MXN <span>/día</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- PAQUETE PREMIUM -->
+                    <div class="product-card" data-product-id="103" data-product-price="249.00">
+                        <div class="badge nuevo">Paquete Premium</div>
+                        <div class="product-image" style="font-size:2.5rem;">🏡</div>
+                        <div class="product-info">
+                            <h3>Paquete Premium</h3>
+                            <p class="description">Mudanza grande: 10 chicas, 10 medianas, 5 grandes, 2 diablitos, 2 cobijas y 1 cinta.</p>
+                            <ul class="product-features">
+                                <li>10 Cajas Cozumel 20kg (chica)</li>
+                                <li>10 Cajas HDPE 15kg (mediana)</li>
+                                <li>5 Cajas PP 30L (grande)</li>
+                                <li>2 Diablitos de carga</li>
+                                <li>2 Cobijas de mudanza</li>
+                                <li>1 Cinta adhesiva ecológica</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-paq-premium">Cantidad:</label>
+                                <select id="qty-paq-premium" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
+                            <p class="price">$249.00 MXN <span>/día</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCTOS INDIVIDUALES -->
+                    <!-- Caja HDPE 15kg (mediana) -->
+                    <div class="product-card" data-product-id="201" data-product-price="8.00">
+                        <div class="badge">Caja Mediana</div>
+                        <div class="product-image" style="font-size:2.5rem;">🟩</div>
+                        <div class="product-info">
+                            <h3>Caja HDPE 15kg (mediana)</h3>
+                            <ul class="product-features">
+                                <li>Resistente y reutilizable</li>
+                                <li>Capacidad: 15kg</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-caja-mediana">Cantidad:</label>
+                                <select id="qty-caja-mediana" class="product-qty form-control">
                                     <option value="" disabled selected>Selecciona</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
                                 </select>
                             </div>
-                            <p class="price">$550.00 MXN <span>/semana</span></p>
+                            <p class="price">$8.00 MXN <span>/día</span></p>
                             <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
                         </div>
                     </div>
-                    <!-- KIT MEDIANO -->
-                    <div class="product-card" data-product-id="2" data-product-price="980.00">
-                        <div class="badge popular">Más Popular</div>
-                        <div class="product-image" style="font-size:2.5rem;">🏘️</div>
+                    <!-- Caja Cozumel 20kg (chica) -->
+                    <div class="product-card" data-product-id="202" data-product-price="7.00">
+                        <div class="badge">Caja Chica</div>
+                        <div class="product-image" style="font-size:2.5rem;">🟦</div>
                         <div class="product-info">
-                            <h3>Kit Mudanza Mediana</h3>
-                            <p class="description">Perfecto para casas o departamentos de 2 a 3 recámaras (aprox. 50 cajas).</p>
+                            <h3>Caja Cozumel 20kg (chica)</h3>
                             <ul class="product-features">
-                                <li>30 cajas medianas y 20 grandes</li>
-                                <li>Cinta, marcadores y diablito reforzado</li>
+                                <li>Ligera y fácil de manejar</li>
+                                <li>Capacidad: 20kg</li>
                             </ul>
                             <div class="quantity-control">
-                                <label for="qty-kit-mediano">Cantidad:</label>
-                                <select id="qty-kit-mediano" class="product-qty form-control">
+                                <label for="qty-caja-chica">Cantidad:</label>
+                                <select id="qty-caja-chica" class="product-qty form-control">
                                     <option value="" disabled selected>Selecciona</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
                                 </select>
                             </div>
-                            <p class="price">$980.00 MXN <span>/semana</span></p>
+                            <p class="price">$7.00 MXN <span>/día</span></p>
                             <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
                         </div>
                     </div>
-                    <!-- KIT GRANDE -->
-                    <div class="product-card" data-product-id="3" data-product-price="1600.00">
-                        <div class="badge"></div>
-                        <div class="product-image" style="font-size:2.5rem;">🏰</div>
+                    <!-- Caja PP 30L (grande) -->
+                    <div class="product-card" data-product-id="203" data-product-price="10.00">
+                        <div class="badge">Caja Grande</div>
+                        <div class="product-image" style="font-size:2.5rem;">🟥</div>
                         <div class="product-info">
-                            <h3>Kit Mudanza Grande</h3>
-                            <p class="description">Para casas grandes de 4+ recámaras o mudanzas completas (aprox. 80 cajas).</p>
+                            <h3>Caja PP 30L (grande)</h3>
                             <ul class="product-features">
-                                <li>50 cajas medianas y 30 grandes</li>
-                                <li>Kit de embalaje y 2 diablitos</li>
+                                <li>Robusta y espaciosa</li>
+                                <li>Capacidad: 30L</li>
                             </ul>
                             <div class="quantity-control">
-                                <label for="qty-kit-grande">Cantidad:</label>
-                                <select id="qty-kit-grande" class="product-qty form-control">
+                                <label for="qty-caja-grande">Cantidad:</label>
+                                <select id="qty-caja-grande" class="product-qty form-control">
                                     <option value="" disabled selected>Selecciona</option>
                                     <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
                                 </select>
                             </div>
-                            <p class="price">$1,600.00 MXN <span>/semana</span></p>
+                            <p class="price">$10.00 MXN <span>/día</span></p>
                             <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
                         </div>
                     </div>
-                    <!-- ACCESORIOS -->
-                    <div class="product-card" data-product-id="4" data-product-price="300.00">
-                        <div class="badge nuevo">Accesorios</div>
-                        <div class="product-image" style="font-size:2.5rem;">✨</div>
+                    <!-- Caja HDPE 10kg (alta) -->
+                    <div class="product-card" data-product-id="204" data-product-price="7.00">
+                        <div class="badge">Caja Alta</div>
+                        <div class="product-image" style="font-size:2.5rem;">⬛</div>
                         <div class="product-info">
-                            <h3>Kit Protector de Frágiles</h3>
-                            <p class="description">Protege vajilla, vasos y objetos delicados con separadores ecológicos.</p>
+                            <h3>Caja HDPE 10kg (alta)</h3>
                             <ul class="product-features">
-                                <li>Separadores para 24 vasos</li>
-                                <li>Separadores para 12 platos</li>
-                                <li>Papel de embalaje ecológico</li>
+                                <li>Alta y resistente</li>
+                                <li>Capacidad: 10kg</li>
                             </ul>
                             <div class="quantity-control">
-                                <label for="qty-accesorios-pro">Cantidad:</label>
-                                <select id="qty-accesorios-pro" class="product-qty form-control">
+                                <label for="qty-caja-alta">Cantidad:</label>
+                                <select id="qty-caja-alta" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                            <p class="price">$7.00 MXN <span>/día</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- Cinta adhesiva ecológica -->
+                    <div class="product-card" data-product-id="205" data-product-price="30.00">
+                        <div class="badge">Accesorio</div>
+                        <div class="product-image" style="font-size:2.5rem;">🧵</div>
+                        <div class="product-info">
+                            <h3>Cinta adhesiva ecológica</h3>
+                            <ul class="product-features">
+                                <li>100% reciclable</li>
+                                <li>Venta por unidad</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-cinta-eco">Cantidad:</label>
+                                <select id="qty-cinta-eco" class="product-qty form-control">
                                     <option value="" disabled selected>Selecciona</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -167,7 +275,99 @@
                                     <option value="4">4</option>
                                 </select>
                             </div>
-                            <p class="price">$300.00 MXN <span>/semana</span></p>
+                            <p class="price">$30.00 MXN <span>/unidad</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- Etiquetas para caja -->
+                    <div class="product-card" data-product-id="206" data-product-price="2.00">
+                        <div class="badge">Accesorio</div>
+                        <div class="product-image" style="font-size:2.5rem;">🏷️</div>
+                        <div class="product-info">
+                            <h3>Etiquetas para caja</h3>
+                            <ul class="product-features">
+                                <li>Identifica tus cajas fácilmente</li>
+                                <li>Venta por unidad</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-etiquetas">Cantidad:</label>
+                                <select id="qty-etiquetas" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                </select>
+                            </div>
+                            <p class="price">$2.00 MXN <span>/unidad</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- Rollo de espuma protectora -->
+                    <div class="product-card" data-product-id="207" data-product-price="45.00">
+                        <div class="badge">Accesorio</div>
+                        <div class="product-image" style="font-size:2.5rem;">🧽</div>
+                        <div class="product-info">
+                            <h3>Rollo de espuma protectora</h3>
+                            <ul class="product-features">
+                                <li>Protección extra para objetos delicados</li>
+                                <li>Venta por unidad</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-espuma">Cantidad:</label>
+                                <select id="qty-espuma" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <p class="price">$45.00 MXN <span>/unidad</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- Cobija de mudanza -->
+                    <div class="product-card" data-product-id="208" data-product-price="10.00">
+                        <div class="badge">Accesorio</div>
+                        <div class="product-image" style="font-size:2.5rem;">🧺</div>
+                        <div class="product-info">
+                            <h3>Cobija de mudanza</h3>
+                            <ul class="product-features">
+                                <li>Protege muebles y objetos grandes</li>
+                                <li>Renta por día</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-cobija">Cantidad:</label>
+                                <select id="qty-cobija" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <p class="price">$10.00 MXN <span>/día</span></p>
+                            <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                    <!-- Diablito de carga -->
+                    <div class="product-card" data-product-id="209" data-product-price="40.00">
+                        <div class="badge">Accesorio</div>
+                        <div class="product-image" style="font-size:2.5rem;">🛒</div>
+                        <div class="product-info">
+                            <h3>Diablito de carga</h3>
+                            <ul class="product-features">
+                                <li>Facilita el movimiento de cajas</li>
+                                <li>Renta por día</li>
+                            </ul>
+                            <div class="quantity-control">
+                                <label for="qty-diablito">Cantidad:</label>
+                                <select id="qty-diablito" class="product-qty form-control">
+                                    <option value="" disabled selected>Selecciona</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+                            </div>
+                            <p class="price">$40.00 MXN <span>/día</span></p>
                             <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
                         </div>
                     </div>
@@ -228,9 +428,9 @@
             <div class="footer-social-links">
                 <h3>Síguenos</h3>
                 <div class="social-icons-wrapper">
-                    <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://facebook.com/greenhaulmx" class="social-icon" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://instagram.com/greenhaulmx" class="social-icon" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://twitter.com/greenhaulmx" class="social-icon" aria-label="Twitter" target="_blank"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
         </div>
