@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://sdk.mercadopago.com/js/v2"></script>
-    <!-- styles igual que tu versión -->
     <style>
         :root {
             --primary-solid: #4a90e2;
@@ -167,6 +166,7 @@
     </style>
 </head>
 <body>
+    <!-- Navbar, main, popups igual que tu versión original -->
     <header class="navbar">
         <div class="container navbar-content">
             <a href="index.html" class="logo"><img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 48px;"></a>
@@ -219,7 +219,6 @@
             </div>
         </div>
     </main>
-
     <!-- POPUP PROCESANDO -->
     <div class="popup-overlay" id="processingPopup">
         <div class="popup-card">
@@ -228,7 +227,6 @@
             <div class="popup-message">Por favor espera unos segundos mientras confirmamos tu pago.</div>
         </div>
     </div>
-
     <!-- POPUP DE ÉXITO BONITO -->
     <div class="popup-overlay" id="orderSuccessPopup">
         <div class="popup-card">
@@ -264,6 +262,8 @@
     <script src="assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+
             // Navbar y usuario
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
@@ -276,7 +276,6 @@
             const logoutBtn = document.getElementById('logoutBtn');
             const userNameSpan = document.getElementById('userName');
             const cartIcon = document.getElementById('cartIcon');
-            const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
 
             // --- VALIDACIONES PREVIAS ----
             const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null, totalDays: 0 };
@@ -296,11 +295,11 @@
                 return;
             }
 
-            // --- OPCIONAL: Validación de inventario antes de pagar (máxima seguridad)
+            // --- CORREGIDO: Validación de inventario antes de pagar (máxima seguridad)
             for (const item of shoppingCart.items) {
                 try {
                     const resp = await fetch(
-                        `/api/products/${item.id}/availability?fecha_inicio=${shoppingCart.rentalDates.start}&fecha_fin=${shoppingCart.rentalDates.end}&cantidad=${item.quantity}`
+                        `${backendUrl}/api/products/${item.id}/availability?fecha_inicio=${shoppingCart.rentalDates.start}&fecha_fin=${shoppingCart.rentalDates.end}&cantidad=${item.quantity}`
                     );
                     const data = await resp.json();
                     if (!data.disponible) {
