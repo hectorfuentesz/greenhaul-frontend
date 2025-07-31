@@ -220,9 +220,54 @@ document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
         };
 
-        // --- IMPORTANTE: NO AGREGAR EVENT LISTENER AQUÍ PARA .add-to-cart-btn ---
-        // La validación y el añadir al carrito deben ocurrir en el script de productos.html
-        // Así evitamos duplicidad y conflictos con la validación de inventario
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', e => {
+                const startDateInput = document.getElementById('fecha-entrega');
+                const endDateInput = document.getElementById('fecha-recoleccion');
+
+                if (!startDateInput.value || !endDateInput.value) {
+                    showNotification('Por favor, selecciona las fechas de entrega y recolección.', 'error');
+                    const rentalContainer = document.querySelector('.rental-dates-container');
+                    if (rentalContainer) {
+                        rentalContainer.classList.add('shake-animation');
+                        setTimeout(() => rentalContainer.classList.remove('shake-animation'), 500);
+                    }
+                    return;
+                }
+
+                const newRentalDates = { start: startDateInput.value, end: endDateInput.value };
+                if (cart.rentalDates && (cart.rentalDates.start !== newRentalDates.start || cart.rentalDates.end !== newRentalDates.end)) {
+                    if (!confirm('Has cambiado las fechas. ¿Deseas vaciar el carrito y empezar un nuevo pedido?')) return;
+                    clearCart();
+                }
+
+                const productCard = e.target.closest('.product-card');
+                const quantitySelect = productCard?.querySelector('.product-qty');
+                if (!quantitySelect || !quantitySelect.value) {
+                    showNotification('Por favor, selecciona una cantidad.', 'error');
+                    return;
+                }
+                const productPrice = parseFloat(productCard.dataset.productPrice);
+                if (isNaN(productPrice)) {
+                    showNotification('Error: El precio del producto no es válido.', 'error');
+                    return;
+                }
+
+                const productId = parseInt(productCard.dataset.productId, 10);
+                if (isNaN(productId)) {
+                    showNotification('Error: El producto no tiene un ID válido.', 'error');
+                    return;
+                }
+
+                addToCart({
+                    id: productId,
+                    name: productCard.querySelector('h3').textContent,
+                    price: productPrice,
+                    quantity: parseInt(quantitySelect.value, 10)
+                }, newRentalDates);
+                quantitySelect.value = "";
+            });
+        });
 
         cartIcon.addEventListener('click', e => {
             e.preventDefault();
@@ -266,9 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateCartCount();
         if (cartModalOverlay) renderCartModal();
-
-        // --- Exporta addToCart para que productos.html lo pueda usar ---
-        window.addToCart = addToCart;
     };
 
     const initProductPageElements = () => {
