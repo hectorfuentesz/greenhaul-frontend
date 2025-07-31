@@ -416,211 +416,177 @@
                             <button class="btn btn-primary add-to-cart-btn">Añadir al Carrito</button>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
-    </main>
-    <div class="cart-modal-overlay" id="cartModalOverlay">
-        <div class="cart-modal">
-            <div class="cart-modal-header">
-                <h2>Tu Carrito</h2>
-                <button class="close-modal-btn" id="closeCartModalBtn">&times;</button>
-            </div>
-            <div class="cart-modal-body" id="cartItemsContainer"></div>
-            <div class="cart-modal-footer">
-                <div class="cart-summary">
-                    <div class="cart-rental-dates" style="display: none; padding-bottom: 1rem; border-bottom: 1px dashed #ccc; margin-bottom: 1rem;">
-                        <p><strong>Entrega:</strong> <span id="cartStartDate">--</span></p>
-                        <p><strong>Recolección:</strong> <span id="cartEndDate">--</span></p>
+                </section>
+            </main>
+            <div class="cart-modal-overlay" id="cartModalOverlay">
+                <div class="cart-modal">
+                    <div class="cart-modal-header">
+                        <h2>Tu Carrito</h2>
+                        <button class="close-modal-btn" id="closeCartModalBtn">&times;</button>
                     </div>
-                    <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
-                    <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
-                    <h3>Total: <span id="cartTotal">$0.00</span></h3>
-                </div>
-                <div class="cart-footer-buttons">
-                    <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
-                    <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="cart-notification" id="cartNotification">
-        <div class="notification-content">
-            <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
-            <p id="notificationText"></p>
-        </div>
-    </div>
-    <footer class="footer">
-        <div class="container footer-content">
-            <div class="footer-info">
-                <h3>greenhauL</h3>
-                <p>Mudanzas sostenibles, sin complicaciones.</p>
-                <p><i class="fas fa-phone-alt"></i> +52 56 5569 0681</p>
-                <p><i class="fas fa-envelope"></i> soporte@greenhauL.com.mx</p>
-                <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
-            </div>
-            <div class="footer-links">
-                <h3>Enlaces Rápidos</h3>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="productos.html">Productos</a></li>
-                    <li><a href="servicios.html">Servicios</a></li>
-                    <li><a href="nosotros.html">Nosotros</a></li>
-                    <li><a href="contacto.html">Contacto</a></li>
-                    <li><a href="cuenta.html">Mi Cuenta</a></li>
-                </ul>
-            </div>
-            <div class="footer-social-links">
-                <h3>Síguenos</h3>
-                <div class="social-icons-wrapper">
-                    <a href="https://facebook.com/greenhaulmx" class="social-icon" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://instagram.com/greenhaulmx" class="social-icon" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="https://twitter.com/greenhaulmx" class="social-icon" aria-label="Twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <div class="cart-modal-body" id="cartItemsContainer"></div>
+                    <div class="cart-modal-footer">
+                        <div class="cart-summary">
+                            <div class="cart-rental-dates" style="display: none; padding-bottom: 1rem; border-bottom: 1px dashed #ccc; margin-bottom: 1rem;">
+                                <p><strong>Entrega:</strong> <span id="cartStartDate">--</span></p>
+                                <p><strong>Recolección:</strong> <span id="cartEndDate">--</span></p>
+                            </div>
+                            <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
+                            <p>Impuestos (16%): <span id="cartTaxes">$0.00</span></p>
+                            <h3>Total: <span id="cartTotal">$0.00</span></h3>
+                        </div>
+                        <div class="cart-footer-buttons">
+                            <button class="btn btn-secondary empty-cart-btn" id="emptyCartBtn">Vaciar Carrito</button>
+                            <a href="confirmacion-entrega-recoleccion.html" class="btn btn-primary proceed-to-checkout-btn" id="proceedToCheckoutBtn">Finalizar Compra</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; <span id="current-year"></span> greenhauL. Todos los derechos reservados.
-        </div>
-    </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const yearSpan = document.getElementById('current-year');
-            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
-    <script type="module" src="/assets/js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            function updateRentalDatesInCart() {
-                const startDateInput = document.getElementById('fecha-entrega');
-                const endDateInput = document.getElementById('fecha-recoleccion');
-                const start = startDateInput.value;
-                const end = endDateInput.value;
-                if (start && end) {
-                    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
-                    cart.rentalDates = { start, end };
-                    const startDate = new Date(start);
-                    const endDate = new Date(end);
-                    cart.totalDays = Math.max(Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)), 1);
-                    localStorage.setItem('shoppingCart', JSON.stringify(cart));
-                }
-            }
-            document.getElementById('fecha-entrega').addEventListener('change', updateRentalDatesInCart);
-            document.getElementById('fecha-recoleccion').addEventListener('change', updateRentalDatesInCart);
-
-            // Si ya hay fechas, rellena los inputs
-            const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
-            if (cart.rentalDates) {
-                document.getElementById('fecha-entrega').value = cart.rentalDates.start || '';
-                document.getElementById('fecha-recoleccion').value = cart.rentalDates.end || '';
-            }
-        });
-    </script>
-    <!-- MODIFICACIÓN: VALIDACIÓN DE DISPONIBILIDAD ANTES DE AGREGAR AL CARRITO -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Selecciona todos los botones de "Añadir al Carrito"
-            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-            addToCartButtons.forEach(function(btn) {
-                btn.addEventListener('click', async function(e) {
-                    e.preventDefault();
-
-                    const productCard = btn.closest('.product-card');
-                    const productId = productCard.getAttribute('data-product-id');
-                    const productName = productCard.querySelector('.product-info h3').textContent.trim();
-                    const quantitySelect = productCard.querySelector('.product-qty');
-                    const quantity = parseInt(quantitySelect.value);
-                    const productPrice = parseFloat(productCard.getAttribute('data-product-price'));
-
-                    const startDateInput = document.getElementById('fecha-entrega');
-                    const endDateInput = document.getElementById('fecha-recoleccion');
-                    const fechaInicio = startDateInput.value;
-                    const fechaFin = endDateInput.value;
-
-                    // Validaciones iniciales
-                    if (!fechaInicio || !fechaFin) {
-                        showNotification("Selecciona primero las fechas de renta.");
-                        return;
+            <div class="cart-notification" id="cartNotification">
+                <div class="notification-content">
+                    <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
+                    <p id="notificationText"></p>
+                </div>
+            </div>
+            <footer class="footer">
+                <div class="container footer-content">
+                    <div class="footer-info">
+                        <h3>greenhauL</h3>
+                        <p>Mudanzas sostenibles, sin complicaciones.</p>
+                        <p><i class="fas fa-phone-alt"></i> +52 56 5569 0681</p>
+                        <p><i class="fas fa-envelope"></i> soporte@greenhauL.com.mx</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
+                    </div>
+                    <div class="footer-links">
+                        <h3>Enlaces Rápidos</h3>
+                        <ul>
+                            <li><a href="index.html">Inicio</a></li>
+                            <li><a href="productos.html">Productos</a></li>
+                            <li><a href="servicios.html">Servicios</a></li>
+                            <li><a href="nosotros.html">Nosotros</a></li>
+                            <li><a href="contacto.html">Contacto</a></li>
+                            <li><a href="cuenta.html">Mi Cuenta</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-social-links">
+                        <h3>Síguenos</h3>
+                        <div class="social-icons-wrapper">
+                            <a href="https://facebook.com/greenhaulmx" class="social-icon" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://instagram.com/greenhaulmx" class="social-icon" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                            <a href="https://twitter.com/greenhaulmx" class="social-icon" aria-label="Twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    &copy; <span id="current-year"></span> greenhauL. Todos los derechos reservados.
+                </div>
+            </footer>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const yearSpan = document.getElementById('current-year');
+                    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+                });
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+            <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+            <!-- Asegúrate que main.js se carga ANTES que tu script de productos para que window.showNotification y window.addToCart estén disponibles -->
+            <script type="module" src="/assets/js/main.js"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    function updateRentalDatesInCart() {
+                        const startDateInput = document.getElementById('fecha-entrega');
+                        const endDateInput = document.getElementById('fecha-recoleccion');
+                        const start = startDateInput.value;
+                        const end = endDateInput.value;
+                        if (start && end) {
+                            let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
+                            cart.rentalDates = { start, end };
+                            const startDate = new Date(start);
+                            const endDate = new Date(end);
+                            cart.totalDays = Math.max(Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)), 1);
+                            localStorage.setItem('shoppingCart', JSON.stringify(cart));
+                        }
                     }
-                    if (!quantity || isNaN(quantity)) {
-                        showNotification("Selecciona la cantidad del producto.");
-                        return;
-                    }
-
-                    try {
-                        btn.disabled = true;
-                        btn.classList.add('loading');
-                        const url = `/api/products/${productId}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${quantity}`;
-                        const res = await fetch(url);
-
-                        // Mejores prácticas: Checa el status de la respuesta
-                        if (!res.ok) {
-                            btn.disabled = false;
-                            btn.classList.remove('loading');
-                            showNotification("No se pudo verificar la disponibilidad. Intenta de nuevo.");
-                            return;
-                        }
-
-                        const data = await res.json();
-
-                        btn.disabled = false;
-                        btn.classList.remove('loading');
-
-                        if (typeof data.disponible === "undefined") {
-                            showNotification("Respuesta inesperada del servidor. Intenta de nuevo.");
-                            return;
-                        }
-
-                        if (!data.disponible) {
-                            showNotification(`Cantidad no disponible, stock disponible: ${data.cantidad_maxima}. Intenta con menos cantidad o selecciona otras fechas.`);
-                            return;
-                        }
-
-                        // Solo aquí se agrega al carrito
-                        addToCart(productId, productName, quantity, productPrice);
-                        showNotification("Producto añadido al carrito.");
-                    } catch (err) {
-                        btn.disabled = false;
-                        btn.classList.remove('loading');
-                        showNotification("No se pudo verificar la disponibilidad. Intenta de nuevo.");
+                    document.getElementById('fecha-entrega').addEventListener('change', updateRentalDatesInCart);
+                    document.getElementById('fecha-recoleccion').addEventListener('change', updateRentalDatesInCart);
+        
+                    // Si ya hay fechas, rellena los inputs
+                    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
+                    if (cart.rentalDates) {
+                        document.getElementById('fecha-entrega').value = cart.rentalDates.start || '';
+                        document.getElementById('fecha-recoleccion').value = cart.rentalDates.end || '';
                     }
                 });
-            });
-
-            function showNotification(msg) {
-                const cartNotification = document.getElementById('cartNotification');
-                const notificationText = document.getElementById('notificationText');
-                notificationText.textContent = msg;
-                cartNotification.classList.add('show');
-                setTimeout(() => {
-                    cartNotification.classList.remove('show');
-                }, 3200);
-            }
-
-            // Función para agregar productos al carrito en localStorage (puedes adaptar si usas otra lógica)
-            function addToCart(productId, productName, quantity, productPrice) {
-                let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
-                // Busca si ya existe
-                const existingIndex = cart.items.findIndex(item => item.id == productId);
-                if (existingIndex >= 0) {
-                    cart.items[existingIndex].quantity += quantity;
-                } else {
-                    cart.items.push({
-                        id: productId,
-                        name: productName,
-                        quantity: quantity,
-                        price: productPrice
+            </script>
+            <!-- VALIDACIÓN DE DISPONIBILIDAD Y AGREGAR AL CARRITO -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+                    addToCartButtons.forEach(function(btn) {
+                        btn.addEventListener('click', async function(e) {
+                            e.preventDefault();
+        
+                            const productCard = btn.closest('.product-card');
+                            const productId = productCard.getAttribute('data-product-id');
+                            const productName = productCard.querySelector('.product-info h3').textContent.trim();
+                            const quantitySelect = productCard.querySelector('.product-qty');
+                            const quantity = parseInt(quantitySelect.value);
+                            const productPrice = parseFloat(productCard.getAttribute('data-product-price'));
+        
+                            const startDateInput = document.getElementById('fecha-entrega');
+                            const endDateInput = document.getElementById('fecha-recoleccion');
+                            const fechaInicio = startDateInput.value;
+                            const fechaFin = endDateInput.value;
+        
+                            // Validaciones iniciales
+                            if (!fechaInicio || !fechaFin) {
+                                window.showNotification("Selecciona primero las fechas de renta.", "error");
+                                return;
+                            }
+                            if (!quantity || isNaN(quantity)) {
+                                window.showNotification("Selecciona la cantidad del producto.", "error");
+                                return;
+                            }
+        
+                            try {
+                                btn.disabled = true;
+                                btn.classList.add('loading');
+                                const url = `/api/products/${productId}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${quantity}`;
+                                const res = await fetch(url);
+        
+                                if (!res.ok) {
+                                    btn.disabled = false;
+                                    btn.classList.remove('loading');
+                                    window.showNotification("No se pudo verificar la disponibilidad. Intenta de nuevo.", "error");
+                                    return;
+                                }
+        
+                                const data = await res.json();
+        
+                                btn.disabled = false;
+                                btn.classList.remove('loading');
+        
+                                if (typeof data.disponible === "undefined") {
+                                    window.showNotification("Respuesta inesperada del servidor. Intenta de nuevo.", "error");
+                                    return;
+                                }
+        
+                                if (!data.disponible) {
+                                    window.showNotification(`Cantidad no disponible, stock disponible: ${data.cantidad_maxima}. Intenta con menos cantidad o selecciona otras fechas.`, "error");
+                                    return;
+                                }
+        
+                                // Solo aquí se agrega al carrito, usando la función global de main.js
+                                window.addToCart(productId, productName, quantity, productPrice);
+                                window.showNotification("Producto añadido al carrito.", "success");
+                            } catch (err) {
+                                btn.disabled = false;
+                                btn.classList.remove('loading');
+                                window.showNotification("No se pudo verificar la disponibilidad. Intenta de nuevo.", "error");
+                            }
+                        });
                     });
-                }
-                localStorage.setItem('shoppingCart', JSON.stringify(cart));
-                // Actualiza la cuenta del carrito visualmente
-                const cartCount = document.getElementById('cartCount');
-                cartCount.textContent = cart.items.reduce((sum, item) => sum + item.quantity, 0);
-            }
-        });
-    </script>
-</body>
-</html>
+                });
+            </script>
+        </body>
+        </html>
