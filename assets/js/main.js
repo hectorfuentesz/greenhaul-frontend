@@ -4,6 +4,9 @@
  * =================================================================
  */
 
+// --- URL ABSOLUTA DEL BACKEND ---
+const BACKEND_URL = 'https://greenhaul-backend-production.up.railway.app';
+
 // --- 1. FUNCIÓN GLOBAL DE NOTIFICACIÓN ---
 function showNotification(message, type = 'success') {
     const notificationElement = document.getElementById('cartNotification');
@@ -203,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const fechaInicio = rentalDates.start;
             const fechaFin = rentalDates.end;
             try {
-                const resp = await fetch(`/api/products/${product.id}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${product.quantity}`);
+                const resp = await fetch(`${BACKEND_URL}/api/products/${product.id}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${product.quantity}`);
                 const data = await resp.json();
                 if (!data.disponible) {
                     showNotification(`No hay suficiente inventario para este producto en las fechas seleccionadas. Inventario máximo: ${data.cantidad_maxima}`, 'error');

@@ -76,7 +76,6 @@
                     <h3>2. Selecciona tus productos</h3>
                 </div>
                 <div class="product-grid" style="gap:2rem;">
-
                     <!-- PAQUETE BÁSICO -->
                     <div class="product-card" data-product-id="101" data-product-price="79.00">
                         <div class="badge best-value">Paquete Básico</div>
@@ -496,13 +495,16 @@
     <!-- INTEGRACIÓN DE FECHAS BLOQUEADAS Y VALIDACIÓN DE INVENTARIO (NOVEDAD) -->
     <script>
     document.addEventListener('DOMContentLoaded', async () => {
+        // --- URL ABSOLUTA DEL BACKEND ---
+        const BACKEND_URL = 'https://greenhaul-backend-production.up.railway.app';
+
         // --- Bloquear fechas saturadas en el calendario ---
         const entregaInput = document.getElementById('fecha-entrega');
         const recoleccionInput = document.getElementById('fecha-recoleccion');
         let entregasBloqueadas = [], recoleccionesBloqueadas = [];
 
         try {
-            const resp = await fetch('/api/calendar/blocked-dates');
+            const resp = await fetch(`${BACKEND_URL}/api/calendar/blocked-dates`);
             const data = await resp.json();
             entregasBloqueadas = data.entregasBloqueadas || [];
             recoleccionesBloqueadas = data.recoleccionesBloqueadas || [];
@@ -581,7 +583,7 @@
                 }
                 // Consulta inventario antes de añadir al carrito
                 try {
-                    const resp = await fetch(`/api/products/${productId}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${cantidad}`);
+                    const resp = await fetch(`${BACKEND_URL}/api/products/${productId}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${cantidad}`);
                     const data = await resp.json();
                     if (!data.disponible) {
                         alert(`No hay suficiente inventario para este producto en las fechas seleccionadas. Inventario máximo: ${data.cantidad_maxima}`);
@@ -591,8 +593,7 @@
                     alert('Error al verificar inventario. Intenta de nuevo.');
                     return;
                 }
-                // Si pasa la validación, continúa con tu lógica original para añadir al carrito (ejemplo)
-                // Aquí deberías tener tu lógica para añadir el producto al carrito en localStorage
+                // Si pasa la validación, continúa con tu lógica original para añadir al carrito en localStorage
                 // ...
             });
         });
