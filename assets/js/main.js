@@ -1,6 +1,6 @@
 /**
  * =================================================================
- * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA Y CORREGIDA)
+ * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (CORREGIDO PARA DISPONIBILIDAD Y POPUPS)
  * =================================================================
  */
 
@@ -135,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- INICIO: FUNCIONES DEL CARRITO CORREGIDAS ---
         const updateCartModalTotals = () => {
-            // Calcula la cantidad de días de renta
             let totalDays = 1;
             if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
                 const startDate = new Date(cart.rentalDates.start);
@@ -194,23 +193,24 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         // --- FIN: FUNCIONES DEL CARRITO CORREGIDAS ---
 
-        const addToCart = (product, rentalDates) => {
-            cart.rentalDates = rentalDates;
-            // Aseguramos que el id sea numérico
-            product.id = parseInt(product.id, 10);
-            if (isNaN(product.id)) {
-                showNotification('Error: El producto no tiene un ID válido.', 'error');
-                return;
-            }
-            const itemInCart = cart.items.find(item => item.id === product.id);
-            if (itemInCart) {
-                itemInCart.quantity += product.quantity;
+        // CORREGIDO: SOLO EXPORTA addToCart, NO AGREGA EVENT LISTENER AQUÍ
+        const addToCart = (productId, productName, quantity, productPrice) => {
+            let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null };
+            const existingIndex = cart.items.findIndex(item => item.id == productId);
+            if (existingIndex >= 0) {
+                cart.items[existingIndex].quantity += quantity;
             } else {
-                cart.items.push(product);
+                cart.items.push({
+                    id: productId,
+                    name: productName,
+                    quantity: quantity,
+                    price: productPrice
+                });
             }
-            showNotification(`${product.name} añadido al carrito.`, 'success');
-            saveCart();
-            updateCartCount();
+            localStorage.setItem('shoppingCart', JSON.stringify(cart));
+            // Actualiza la cuenta del carrito visualmente
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = cart.items.reduce((sum, item) => sum + item.quantity, 0);
         };
 
         const clearCart = () => {
@@ -220,54 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
         };
 
-        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-            button.addEventListener('click', e => {
-                const startDateInput = document.getElementById('fecha-entrega');
-                const endDateInput = document.getElementById('fecha-recoleccion');
-
-                if (!startDateInput.value || !endDateInput.value) {
-                    showNotification('Por favor, selecciona las fechas de entrega y recolección.', 'error');
-                    const rentalContainer = document.querySelector('.rental-dates-container');
-                    if (rentalContainer) {
-                        rentalContainer.classList.add('shake-animation');
-                        setTimeout(() => rentalContainer.classList.remove('shake-animation'), 500);
-                    }
-                    return;
-                }
-
-                const newRentalDates = { start: startDateInput.value, end: endDateInput.value };
-                if (cart.rentalDates && (cart.rentalDates.start !== newRentalDates.start || cart.rentalDates.end !== newRentalDates.end)) {
-                    if (!confirm('Has cambiado las fechas. ¿Deseas vaciar el carrito y empezar un nuevo pedido?')) return;
-                    clearCart();
-                }
-
-                const productCard = e.target.closest('.product-card');
-                const quantitySelect = productCard?.querySelector('.product-qty');
-                if (!quantitySelect || !quantitySelect.value) {
-                    showNotification('Por favor, selecciona una cantidad.', 'error');
-                    return;
-                }
-                const productPrice = parseFloat(productCard.dataset.productPrice);
-                if (isNaN(productPrice)) {
-                    showNotification('Error: El precio del producto no es válido.', 'error');
-                    return;
-                }
-
-                const productId = parseInt(productCard.dataset.productId, 10);
-                if (isNaN(productId)) {
-                    showNotification('Error: El producto no tiene un ID válido.', 'error');
-                    return;
-                }
-
-                addToCart({
-                    id: productId,
-                    name: productCard.querySelector('h3').textContent,
-                    price: productPrice,
-                    quantity: parseInt(quantitySelect.value, 10)
-                }, newRentalDates);
-                quantitySelect.value = "";
-            });
-        });
+        // --- IMPORTANTE: NO AGREGAR EVENT LISTENER AQUÍ PARA .add-to-cart-btn ---
+        // La validación y el añadir al carrito deben ocurrir en el script de productos.html
 
         cartIcon.addEventListener('click', e => {
             e.preventDefault();
@@ -284,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (proceedToCheckoutBtn) {
             proceedToCheckoutBtn.addEventListener('click', e => {
-                // Checa sesión
                 const user = JSON.parse(localStorage.getItem('greenhaulUser'));
                 if (!user) {
                     e.preventDefault();
@@ -300,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     showNotification('Tu carrito está vacío.', 'error');
                     return;
                 }
-                // Guarda fechas en localStorage ANTES de redirigir
                 if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
                     localStorage.setItem('greenhaulEntrega', cart.rentalDates.start);
                     localStorage.setItem('greenhaulRecoleccion', cart.rentalDates.end);
@@ -311,6 +263,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateCartCount();
         if (cartModalOverlay) renderCartModal();
+
+        // Exporta funciones globales para productos.html
+        window.addToCart = addToCart;
+        window.showNotification = showNotification;
     };
 
     const initProductPageElements = () => {
