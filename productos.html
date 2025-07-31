@@ -519,5 +519,91 @@
             }
         });
     </script>
+    <!-- MODIFICACIÓN: VALIDACIÓN DE DISPONIBILIDAD ANTES DE AGREGAR AL CARRITO -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecciona todos los botones de "Añadir al Carrito"
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            addToCartButtons.forEach(function(btn) {
+                btn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+
+                    const productCard = btn.closest('.product-card');
+                    const productId = productCard.getAttribute('data-product-id');
+                    const productName = productCard.querySelector('.product-info h3').textContent.trim();
+                    const quantitySelect = productCard.querySelector('.product-qty');
+                    const quantity = parseInt(quantitySelect.value);
+                    const productPrice = parseFloat(productCard.getAttribute('data-product-price'));
+
+                    const startDateInput = document.getElementById('fecha-entrega');
+                    const endDateInput = document.getElementById('fecha-recoleccion');
+                    const fechaInicio = startDateInput.value;
+                    const fechaFin = endDateInput.value;
+
+                    // Validaciones iniciales
+                    if (!fechaInicio || !fechaFin) {
+                        showNotification("Selecciona primero las fechas de renta.");
+                        return;
+                    }
+                    if (!quantity || isNaN(quantity)) {
+                        showNotification("Selecciona la cantidad del producto.");
+                        return;
+                    }
+
+                    // Consulta al endpoint de disponibilidad
+                    try {
+                        btn.disabled = true;
+                        btn.classList.add('loading');
+                        const res = await fetch(`/api/products/${productId}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${quantity}`);
+                        const data = await res.json();
+                        btn.disabled = false;
+                        btn.classList.remove('loading');
+                        if (!data.disponible) {
+                            showNotification(`Cantidad no disponible, stock disponible: ${data.cantidad_maxima}. Intenta con menos cantidad o selecciona otras fechas.`);
+                            return;
+                        }
+                        // Si disponible, agrega al carrito normalmente
+                        addToCart(productId, productName, quantity, productPrice);
+                        showNotification("Producto añadido al carrito.");
+                    } catch (err) {
+                        btn.disabled = false;
+                        btn.classList.remove('loading');
+                        showNotification("No se pudo verificar la disponibilidad. Intenta de nuevo.");
+                    }
+                });
+            });
+
+            function showNotification(msg) {
+                const cartNotification = document.getElementById('cartNotification');
+                const notificationText = document.getElementById('notificationText');
+                notificationText.textContent = msg;
+                cartNotification.classList.add('show');
+                setTimeout(() => {
+                    cartNotification.classList.remove('show');
+                }, 3200);
+            }
+
+            // Función para agregar productos al carrito en localStorage (puedes adaptar si usas otra lógica)
+            function addToCart(productId, productName, quantity, productPrice) {
+                let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
+                // Busca si ya existe
+                const existingIndex = cart.items.findIndex(item => item.id == productId);
+                if (existingIndex >= 0) {
+                    cart.items[existingIndex].quantity += quantity;
+                } else {
+                    cart.items.push({
+                        id: productId,
+                        name: productName,
+                        quantity: quantity,
+                        price: productPrice
+                    });
+                }
+                localStorage.setItem('shoppingCart', JSON.stringify(cart));
+                // Actualiza la cuenta del carrito visualmente
+                const cartCount = document.getElementById('cartCount');
+                cartCount.textContent = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+            }
+        });
+    </script>
 </body>
 </html>
