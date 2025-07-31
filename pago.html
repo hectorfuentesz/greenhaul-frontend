@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <!-- styles igual que tu versión -->
     <style>
         :root {
             --primary-solid: #4a90e2;
@@ -262,7 +263,7 @@
     </div>
     <script src="assets/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             // Navbar y usuario
             const navbarToggler = document.getElementById('navbarToggler');
             const navbarCollapse = document.getElementById('navbarCollapse');
@@ -276,6 +277,45 @@
             const userNameSpan = document.getElementById('userName');
             const cartIcon = document.getElementById('cartIcon');
             const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
+
+            // --- VALIDACIONES PREVIAS ----
+            const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null, totalDays: 0 };
+            if (!loggedInUser) {
+                alert('Debes iniciar sesión para realizar el pago.');
+                window.location.href = 'login.html';
+                return;
+            }
+            if (!shoppingCart.items || shoppingCart.items.length === 0) {
+                alert('No hay productos en tu carrito.');
+                window.location.href = 'productos.html';
+                return;
+            }
+            if (!shoppingCart.rentalDates || !shoppingCart.rentalDates.start || !shoppingCart.rentalDates.end) {
+                alert('Debes seleccionar las fechas de entrega y recolección.');
+                window.location.href = 'productos.html';
+                return;
+            }
+
+            // --- OPCIONAL: Validación de inventario antes de pagar (máxima seguridad)
+            for (const item of shoppingCart.items) {
+                try {
+                    const resp = await fetch(
+                        `/api/products/${item.id}/availability?fecha_inicio=${shoppingCart.rentalDates.start}&fecha_fin=${shoppingCart.rentalDates.end}&cantidad=${item.quantity}`
+                    );
+                    const data = await resp.json();
+                    if (!data.disponible) {
+                        alert(`No hay suficiente inventario para ${item.name} en las fechas seleccionadas. Máximo disponible: ${data.cantidad_maxima}`);
+                        window.location.href = 'productos.html';
+                        return;
+                    }
+                } catch (err) {
+                    alert('Error al verificar inventario. Intenta de nuevo.');
+                    window.location.href = 'productos.html';
+                    return;
+                }
+            }
+
+            // Mostrar usuario en navbar
             if (loggedInUser) {
                 if(loginBtn) loginBtn.style.display = 'none';
                 if(accountLink) accountLink.style.display = 'flex';
@@ -294,7 +334,6 @@
                 });
             }
             // Renderizar resumen de pedido
-            const shoppingCart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null, totalDays: 0 };
             const itemsContainer = document.getElementById('summaryItemsContainer');
             const subtotalEl = document.getElementById('summarySubtotal');
             const taxesEl = document.getElementById('summaryTaxes');
@@ -372,7 +411,6 @@
                         onReady: () => {},
                         onSubmit: async (formData) => {
                             paymentData = formData;
-                            // MOSTRAR POPUP PROCESANDO
                             document.getElementById('processingPopup').classList.add('active');
                             const deliveryAddressId = localStorage.getItem('deliveryAddressId');
                             const pickupAddressId = localStorage.getItem('pickupAddressId');
@@ -385,7 +423,9 @@
                                 cartItems: shoppingCart.items,
                                 delivery_address_id: deliveryAddressId ? parseInt(deliveryAddressId, 10) : null,
                                 pickup_address_id: pickupAddressId ? parseInt(pickupAddressId, 10) : null,
-                                rentalDates: shoppingCart.rentalDates || null
+                                rentalDates: shoppingCart.rentalDates || null,
+                                delivery_date: shoppingCart.rentalDates?.start || null,
+                                pickup_date: shoppingCart.rentalDates?.end || null
                             };
                             try {
                                 const res = await fetch(`${backendUrl}/api/mercadopago`, {
@@ -394,7 +434,6 @@
                                     body: JSON.stringify(payload)
                                 });
                                 const data = await res.json();
-                                // OCULTAR POPUP PROCESANDO
                                 document.getElementById('processingPopup').classList.remove('active');
                                 if (data.order_folio) {
                                     const orderSuccessPopup = document.getElementById('orderSuccessPopup');

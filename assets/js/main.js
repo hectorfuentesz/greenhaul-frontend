@@ -133,9 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addCartModalEventListeners();
         };
         
-        // --- INICIO: FUNCIONES DEL CARRITO CORREGIDAS ---
         const updateCartModalTotals = () => {
-            // Calcula la cantidad de días de renta
             let totalDays = 1;
             if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
                 const startDate = new Date(cart.rentalDates.start);
@@ -192,16 +190,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
         };
-        // --- FIN: FUNCIONES DEL CARRITO CORREGIDAS ---
 
-        const addToCart = (product, rentalDates) => {
+        const addToCart = async (product, rentalDates) => {
             cart.rentalDates = rentalDates;
-            // Aseguramos que el id sea numérico
             product.id = parseInt(product.id, 10);
             if (isNaN(product.id)) {
                 showNotification('Error: El producto no tiene un ID válido.', 'error');
                 return;
             }
+
+            // --- Validación inventario por fechas antes de agregar ---
+            const fechaInicio = rentalDates.start;
+            const fechaFin = rentalDates.end;
+            try {
+                const resp = await fetch(`/api/products/${product.id}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${product.quantity}`);
+                const data = await resp.json();
+                if (!data.disponible) {
+                    showNotification(`No hay suficiente inventario para este producto en las fechas seleccionadas. Inventario máximo: ${data.cantidad_maxima}`, 'error');
+                    return;
+                }
+            } catch (err) {
+                showNotification('Error al verificar inventario. Intenta de nuevo.', 'error');
+                return;
+            }
+
             const itemInCart = cart.items.find(item => item.id === product.id);
             if (itemInCart) {
                 itemInCart.quantity += product.quantity;
@@ -221,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-            button.addEventListener('click', e => {
+            button.addEventListener('click', async e => {
                 const startDateInput = document.getElementById('fecha-entrega');
                 const endDateInput = document.getElementById('fecha-recoleccion');
 
@@ -259,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                addToCart({
+                await addToCart({
                     id: productId,
                     name: productCard.querySelector('h3').textContent,
                     price: productPrice,
@@ -284,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (proceedToCheckoutBtn) {
             proceedToCheckoutBtn.addEventListener('click', e => {
-                // Checa sesión
                 const user = JSON.parse(localStorage.getItem('greenhaulUser'));
                 if (!user) {
                     e.preventDefault();
@@ -300,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     showNotification('Tu carrito está vacío.', 'error');
                     return;
                 }
-                // Guarda fechas en localStorage ANTES de redirigir
                 if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
                     localStorage.setItem('greenhaulEntrega', cart.rentalDates.start);
                     localStorage.setItem('greenhaulRecoleccion', cart.rentalDates.end);

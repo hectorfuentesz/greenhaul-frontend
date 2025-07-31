@@ -492,32 +492,111 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script type="module" src="/assets/js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            function updateRentalDatesInCart() {
-                const startDateInput = document.getElementById('fecha-entrega');
-                const endDateInput = document.getElementById('fecha-recoleccion');
-                const start = startDateInput.value;
-                const end = endDateInput.value;
-                if (start && end) {
-                    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
-                    cart.rentalDates = { start, end };
-                    const startDate = new Date(start);
-                    const endDate = new Date(end);
-                    cart.totalDays = Math.max(Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)), 1);
-                    localStorage.setItem('shoppingCart', JSON.stringify(cart));
-                }
-            }
-            document.getElementById('fecha-entrega').addEventListener('change', updateRentalDatesInCart);
-            document.getElementById('fecha-recoleccion').addEventListener('change', updateRentalDatesInCart);
 
-            // Si ya hay fechas, rellena los inputs
-            const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
-            if (cart.rentalDates) {
-                document.getElementById('fecha-entrega').value = cart.rentalDates.start || '';
-                document.getElementById('fecha-recoleccion').value = cart.rentalDates.end || '';
-            }
+    <!-- INTEGRACIÓN DE FECHAS BLOQUEADAS Y VALIDACIÓN DE INVENTARIO (NOVEDAD) -->
+    <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        // --- Bloquear fechas saturadas en el calendario ---
+        const entregaInput = document.getElementById('fecha-entrega');
+        const recoleccionInput = document.getElementById('fecha-recoleccion');
+        let entregasBloqueadas = [], recoleccionesBloqueadas = [];
+
+        try {
+            const resp = await fetch('/api/calendar/blocked-dates');
+            const data = await resp.json();
+            entregasBloqueadas = data.entregasBloqueadas || [];
+            recoleccionesBloqueadas = data.recoleccionesBloqueadas || [];
+        } catch (e) { entregasBloqueadas = []; recoleccionesBloqueadas = []; }
+
+        // Bloquear fechas en inputs tipo date
+        entregaInput.addEventListener('input', function() {
+            if (entregasBloqueadas.includes(this.value)) {
+                this.setCustomValidity('Ya hay 3 entregas programadas en esa fecha. Selecciona otra.');
+                this.reportValidity();
+            } else { this.setCustomValidity(''); }
         });
+        recoleccionInput.addEventListener('input', function() {
+            if (recoleccionesBloqueadas.includes(this.value)) {
+                this.setCustomValidity('Ya hay 3 recolecciones programadas en esa fecha. Selecciona otra.');
+                this.reportValidity();
+            } else { this.setCustomValidity(''); }
+        });
+
+        // Si usas flatpickr, bloquea fechas desde aquí
+        if (window.flatpickr) {
+            flatpickr(entregaInput, {
+                locale: 'es',
+                disable: entregasBloqueadas,
+                minDate: "today"
+            });
+            flatpickr(recoleccionInput, {
+                locale: 'es',
+                disable: recoleccionesBloqueadas,
+                minDate: "today"
+            });
+        }
+
+        // --- Guardar fechas en localStorage al cambiar ---
+        function updateRentalDatesInCart() {
+            const startDateInput = entregaInput;
+            const endDateInput = recoleccionInput;
+            const start = startDateInput.value;
+            const end = endDateInput.value;
+            if (start && end) {
+                let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
+                cart.rentalDates = { start, end };
+                const startDate = new Date(start);
+                const endDate = new Date(end);
+                cart.totalDays = Math.max(Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)), 1);
+                localStorage.setItem('shoppingCart', JSON.stringify(cart));
+            }
+        }
+        entregaInput.addEventListener('change', updateRentalDatesInCart);
+        recoleccionInput.addEventListener('change', updateRentalDatesInCart);
+
+        // Si ya hay fechas, rellena los inputs
+        const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
+        if (cart.rentalDates) {
+            entregaInput.value = cart.rentalDates.start || '';
+            recoleccionInput.value = cart.rentalDates.end || '';
+        }
+
+        // --- Validar inventario antes de añadir al carrito ---
+        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+            btn.addEventListener('click', async function(e) {
+                const card = btn.closest('.product-card');
+                const productId = card.getAttribute('data-product-id');
+                const qtySelect = card.querySelector('.product-qty');
+                const cantidad = parseInt(qtySelect.value);
+                const fechaInicio = entregaInput.value;
+                const fechaFin = recoleccionInput.value;
+
+                if (!fechaInicio || !fechaFin) {
+                    alert('Selecciona primero las fechas de entrega y recolección.');
+                    return;
+                }
+                if (!cantidad || cantidad < 1) {
+                    alert('Selecciona una cantidad válida.');
+                    return;
+                }
+                // Consulta inventario antes de añadir al carrito
+                try {
+                    const resp = await fetch(`/api/products/${productId}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${cantidad}`);
+                    const data = await resp.json();
+                    if (!data.disponible) {
+                        alert(`No hay suficiente inventario para este producto en las fechas seleccionadas. Inventario máximo: ${data.cantidad_maxima}`);
+                        return;
+                    }
+                } catch (err) {
+                    alert('Error al verificar inventario. Intenta de nuevo.');
+                    return;
+                }
+                // Si pasa la validación, continúa con tu lógica original para añadir al carrito (ejemplo)
+                // Aquí deberías tener tu lógica para añadir el producto al carrito en localStorage
+                // ...
+            });
+        });
+    });
     </script>
 </body>
 </html>
