@@ -550,19 +550,36 @@
                         return;
                     }
 
-                    // Consulta al endpoint de disponibilidad
                     try {
                         btn.disabled = true;
                         btn.classList.add('loading');
-                        const res = await fetch(`/api/products/${productId}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${quantity}`);
+                        const url = `/api/products/${productId}/availability?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&cantidad=${quantity}`;
+                        const res = await fetch(url);
+
+                        // Mejores prácticas: Checa el status de la respuesta
+                        if (!res.ok) {
+                            btn.disabled = false;
+                            btn.classList.remove('loading');
+                            showNotification("No se pudo verificar la disponibilidad. Intenta de nuevo.");
+                            return;
+                        }
+
                         const data = await res.json();
+
                         btn.disabled = false;
                         btn.classList.remove('loading');
+
+                        if (typeof data.disponible === "undefined") {
+                            showNotification("Respuesta inesperada del servidor. Intenta de nuevo.");
+                            return;
+                        }
+
                         if (!data.disponible) {
                             showNotification(`Cantidad no disponible, stock disponible: ${data.cantidad_maxima}. Intenta con menos cantidad o selecciona otras fechas.`);
                             return;
                         }
-                        // Si disponible, agrega al carrito normalmente
+
+                        // Solo aquí se agrega al carrito
                         addToCart(productId, productName, quantity, productPrice);
                         showNotification("Producto añadido al carrito.");
                     } catch (err) {
