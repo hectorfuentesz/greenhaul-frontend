@@ -489,9 +489,10 @@
             </script>
             <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
             <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
-            <!-- Asegúrate que main.js se carga ANTES que tu script de productos para que window.showNotification y window.addToCart estén disponibles -->
-            <script type="module" src="/assets/js/main.js"></script>
+            <!-- main.js primero para que window.showNotification y window.addToCart estén disponibles -->
+            <script src="assets/js/main.js"></script>
             <script>
+                // Guarda las fechas de renta en el carrito cada vez que cambian
                 document.addEventListener('DOMContentLoaded', () => {
                     function updateRentalDatesInCart() {
                         const startDateInput = document.getElementById('fecha-entrega');
