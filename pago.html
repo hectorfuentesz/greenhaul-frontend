@@ -261,6 +261,21 @@
     </div>
     <script src="assets/js/main.js"></script>
     <script>
+        // FIX: Función para transformar las fechas al formato que espera el backend
+        function getRentalDatesForBackend() {
+            const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
+            if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
+                return {
+                    fecha_inicio: cart.rentalDates.start,
+                    fecha_fin: cart.rentalDates.end
+                };
+            }
+            if (cart.rentalDates && cart.rentalDates.fecha_inicio && cart.rentalDates.fecha_fin) {
+                return cart.rentalDates;
+            }
+            return null;
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const backendUrl = 'https://greenhaul-backend-production.up.railway.app';
 
@@ -422,7 +437,7 @@
                                 cartItems: shoppingCart.items,
                                 delivery_address_id: deliveryAddressId ? parseInt(deliveryAddressId, 10) : null,
                                 pickup_address_id: pickupAddressId ? parseInt(pickupAddressId, 10) : null,
-                                rentalDates: shoppingCart.rentalDates || null,
+                                rentalDates: getRentalDatesForBackend(),
                                 delivery_date: shoppingCart.rentalDates?.start || null,
                                 pickup_date: shoppingCart.rentalDates?.end || null
                             };
