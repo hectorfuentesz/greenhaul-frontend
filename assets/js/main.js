@@ -26,6 +26,21 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
+// --- FIX: FUNCIÓN PARA FORMATEAR FECHAS AL FORMATO QUE ESPERA EL BACKEND ---
+function getRentalDatesForBackend() {
+    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
+    if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
+        return {
+            fecha_inicio: cart.rentalDates.start,
+            fecha_fin: cart.rentalDates.end
+        };
+    }
+    if (cart.rentalDates && cart.rentalDates.fecha_inicio && cart.rentalDates.fecha_fin) {
+        return cart.rentalDates;
+    }
+    return null;
+}
+
 // --- 2. LÓGICA PRINCIPAL DEL SITIO ---
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -376,3 +391,29 @@ document.addEventListener('DOMContentLoaded', () => {
     initProductPageElements();
     initTimelineAnimations();
 });
+
+// --- EJEMPLO DE USO DEL FIX EN TU PAGO/ORDEN ---
+// Cuando vayas a hacer fetch a /api/mercadopago o /api/orders, usa SIEMPRE el formato correcto:
+function enviarPagoOMiOrden() {
+    // ... otros datos que prepares ...
+    const rentalDates = getRentalDatesForBackend();
+    // Ejemplo fetch:
+    fetch(`${BACKEND_URL}/api/mercadopago`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            // ... otros campos como user_id, email, nombre, productos, direcciones, etc.
+            rentalDates,
+            // ... otros campos
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Maneja la respuesta aquí
+        if (data.message) showNotification(data.message, 'success');
+    })
+    .catch(err => {
+        showNotification('Error al procesar el pago.', 'error');
+    });
+}
+// Puedes quitar esta función ejemplo, es solo para mostrar el uso correcto del fix.
