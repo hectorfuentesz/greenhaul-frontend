@@ -497,6 +497,35 @@
         const recoleccionInput = document.getElementById('fecha-recoleccion');
         let entregasBloqueadas = [], recoleccionesBloqueadas = [];
 
+        // 1. Si hay fechas de renta en localStorage, SIEMPRE precárgalas en los inputs
+        let cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
+        if (cart.rentalDates) {
+            entregaInput.value = cart.rentalDates.start || '';
+            recoleccionInput.value = cart.rentalDates.end || '';
+        }
+
+        // 2. Sincroniza las fechas del input hacia localStorage SIEMPRE que cambien
+        function updateRentalDatesInCart() {
+            const start = entregaInput.value;
+            const end = recoleccionInput.value;
+            let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
+            if (start && end) {
+                cart.rentalDates = { start, end };
+                // Calcula días de renta (mínimo 1)
+                const startDate = new Date(start);
+                const endDate = new Date(end);
+                cart.totalDays = Math.max(Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)), 1);
+            } else {
+                // Si se borra una fecha, bórralas también del carrito (opcional)
+                delete cart.rentalDates;
+                delete cart.totalDays;
+            }
+            localStorage.setItem('shoppingCart', JSON.stringify(cart));
+        }
+        entregaInput.addEventListener('change', updateRentalDatesInCart);
+        recoleccionInput.addEventListener('change', updateRentalDatesInCart);
+
+        // 3. Lógica para fechas bloqueadas y flatpickr igual
         try {
             const resp = await fetch(`${BACKEND_URL}/api/calendar/blocked-dates`);
             const data = await resp.json();
@@ -530,30 +559,7 @@
             });
         }
 
-        // --- Guardar fechas en localStorage al cambiar ---
-        function updateRentalDatesInCart() {
-            const start = entregaInput.value;
-            const end = recoleccionInput.value;
-            if (start && end) {
-                let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [] };
-                cart.rentalDates = { start, end };
-                const startDate = new Date(start);
-                const endDate = new Date(end);
-                cart.totalDays = Math.max(Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)), 1);
-                localStorage.setItem('shoppingCart', JSON.stringify(cart));
-            }
-        }
-        entregaInput.addEventListener('change', updateRentalDatesInCart);
-        recoleccionInput.addEventListener('change', updateRentalDatesInCart);
-
-        // Si ya hay fechas, rellena los inputs
-        const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
-        if (cart.rentalDates) {
-            entregaInput.value = cart.rentalDates.start || '';
-            recoleccionInput.value = cart.rentalDates.end || '';
-        }
-
-        // --- Validar inventario y SIEMPRE guardar fechas antes de añadir al carrito ---
+        // 4. Al agregar al carrito, asegura que SIEMPRE hay fechas válidas y las guarda
         document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
             btn.addEventListener('click', async function(e) {
                 const card = btn.closest('.product-card');
@@ -606,6 +612,17 @@
                 alert(`${card.querySelector('h3').textContent} añadido al carrito.`);
             });
         });
+
+        // 5. Si el usuario vacía el carrito desde cualquier botón, borra también las fechas:
+        const emptyCartBtn = document.getElementById('emptyCartBtn');
+        if (emptyCartBtn) {
+            emptyCartBtn.addEventListener('click', () => {
+                localStorage.removeItem('shoppingCart');
+                // Limpia inputs en UI también
+                entregaInput.value = '';
+                recoleccionInput.value = '';
+            });
+        }
     });
     </script>
 </body>
