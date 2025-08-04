@@ -1886,3 +1886,16 @@ hr {
 .faq-item.active .faq-answer {
   grid-template-rows: 1fr; /* Expande el contenedor */
 }
+/* Fuerza que los estilos inline de JS dominen sobre los de Flatpickr */
+.flatpickr-calendar .flatpickr-day {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Evita que los estados hover, selected, today sobreescriban el color inline */
+.flatpickr-day:hover,
+.flatpickr-day.selected,
+.flatpickr-day.today {
+    background: inherit !important;
+    color: inherit !important;
+}
