@@ -41,6 +41,37 @@ function getRentalDatesForBackend() {
     return null;
 }
 
+// --- MODAL PARA DISPONIBILIDAD DE FECHA ---
+function showDisponibilidadModal(message, type="info") {
+    const modalBg = document.createElement('div');
+    modalBg.style.position = 'fixed';
+    modalBg.style.top = '0';
+    modalBg.style.left = '0';
+    modalBg.style.width = '100vw';
+    modalBg.style.height = '100vh';
+    modalBg.style.background = 'rgba(0,0,0,0.4)';
+    modalBg.style.zIndex = '9999';
+    modalBg.style.display = 'flex';
+    modalBg.style.justifyContent = 'center';
+    modalBg.style.alignItems = 'center';
+
+    const modalBox = document.createElement('div');
+    modalBox.style.background = '#fff';
+    modalBox.style.padding = '2em';
+    modalBox.style.borderRadius = '10px';
+    modalBox.style.boxShadow = '0 2px 16px #0002';
+    modalBox.style.maxWidth = '90vw';
+    modalBox.style.textAlign = 'center';
+    modalBox.innerHTML = `<h2 style="color:${type === "error" ? "#f66" : "#27ae60"}">${type === "error" ? "¡Sin disponibilidad!" : "¡Fecha disponible!"}</h2><p>${message}</p><button id="closeModalBtn" style="margin-top:1em;padding:.5em 2em;border:none;border-radius:5px;background:${type === "error" ? "#f66" : "#27ae60"};color:#fff;font-size:1em;cursor:pointer;">Cerrar</button>`;
+    
+    modalBg.appendChild(modalBox);
+    document.body.appendChild(modalBg);
+
+    document.getElementById('closeModalBtn').onclick = () => {
+        document.body.removeChild(modalBg);
+    };
+}
+
 // --- LÓGICA PRINCIPAL ---
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -345,115 +376,55 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartModalOverlay) renderCartModal();
     };
 
-    // --- CALENDARIO FLATPICKR CON COLORES SEGÚN DISPONIBILIDAD ---
+    // --- CALENDARIO FLATPICKR CON POPUP DISPONIBILIDAD ---
     const initProductPageElements = () => {
         if (typeof flatpickr === 'undefined' || !document.getElementById('fecha-entrega') || !document.getElementById('fecha-recoleccion')) return;
 
-        let daysMap = {};
-
-        // Función para pintar los días según disponibilidad
-        function colorFlatpickrDays() {
-            // Selecciona solo el calendario abierto
-            const calendar = document.querySelector('.flatpickr-calendar.open');
-            if (calendar) {
-                calendar.querySelectorAll('.flatpickr-day').forEach(day => {
-                    // Limpia estilos anteriores
-                    day.style.background = '';
-                    day.style.color = '';
-                    day.title = '';
-
-                    // Obtén la fecha del día
-                    const fecha = day.dateObj ? day.dateObj.toISOString().slice(0,10) : null;
-                    if (!fecha || !daysMap[fecha]) return;
-                    const info = daysMap[fecha];
-
-                    // Lógica de color:
-                    // Verde: entrega Y recolección disponible
-                    // Rojo: ninguna disponible
-                    if (info.entregas_disponibles && info.recolecciones_disponibles) {
-                        day.style.background = '#6f6';
-                        day.style.color = '#222';
-                        day.title = 'Entrega y recolección disponibles';
-                    } else if (!info.entregas_disponibles && !info.recolecciones_disponibles) {
-                        day.style.background = '#f66';
-                        day.style.color = '#fff';
-                        day.title = 'Sin entrega ni recolección disponible';
-                    }
-                });
-            }
-        }
-
-        // Inicialización de Flatpickr
-        const fechaEntregaPicker = flatpickr("#fecha-entrega", {
+        // Flatpickr FECHA DE ENTREGA
+        flatpickr("#fecha-entrega", {
             locale: "es",
             minDate: "today",
             altInput: true,
             altFormat: "F j, Y",
             dateFormat: "Y-m-d",
-            onOpen: function() {
-                setTimeout(() => {
-                    colorFlatpickrDays();
-                }, 10);
-            },
-            onMonthChange: function() {
-                setTimeout(() => {
-                    colorFlatpickrDays();
-                }, 10);
-            },
-            onYearChange: function() {
-                setTimeout(() => {
-                    colorFlatpickrDays();
-                }, 10);
-            }
-        });
-
-        const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
-            locale: "es",
-            minDate: "today",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-            onOpen: function() {
-                setTimeout(() => {
-                    colorFlatpickrDays();
-                }, 10);
-            },
-            onMonthChange: function() {
-                setTimeout(() => {
-                    colorFlatpickrDays();
-                }, 10);
-            },
-            onYearChange: function() {
-                setTimeout(() => {
-                    colorFlatpickrDays();
-                }, 10);
-            }
-        });
-
-        fechaEntregaPicker.config.onChange.push(function(selectedDates, dateStr) {
-            if (fechaRecoleccionPicker) {
-                fechaRecoleccionPicker.set('minDate', dateStr);
-            }
-        });
-
-        // Fetch días disponibles del backend
-        fetch(`${BACKEND_URL}/api/calendar/days-status`)
-            .then(resp => resp.json())
-            .then(data => {
-                daysMap = {};
-                if (data.days) {
-                    data.days.forEach(day => {
-                        daysMap[day.fecha] = day;
+            onChange: function(selectedDates, dateStr) {
+                fetch(`${BACKEND_URL}/api/calendar/disponibilidad?fecha=${dateStr}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.entregas_disponibles) {
+                            showDisponibilidadModal("¡Sí hay disponibilidad para entrega! Realiza tu compra lo antes posible para asegurar la fecha.", "success");
+                        } else {
+                            showDisponibilidadModal("Gracias por tu interés, pero no hay disponibilidad de entrega para ese día. Por favor selecciona otro.", "error");
+                        }
+                    })
+                    .catch(err => {
+                        showDisponibilidadModal("Ocurrió un error al consultar disponibilidad. Intenta de nuevo.", "error");
                     });
-                }
-                // Pintar días en ambos calendarios si están abiertos
-                setTimeout(() => {
-                    colorFlatpickrDays();
-                }, 20);
-            })
-            .catch(err => {
-                console.error('Error al obtener estado de días:', err);
-            });
+            }
+        });
+
+        // Flatpickr FECHA DE RECOLECCIÓN
+        flatpickr("#fecha-recoleccion", {
+            locale: "es",
+            minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+            onChange: function(selectedDates, dateStr) {
+                fetch(`${BACKEND_URL}/api/calendar/disponibilidad?fecha=${dateStr}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.recolecciones_disponibles) {
+                            showDisponibilidadModal("¡Sí hay disponibilidad para recolección! Realiza tu compra lo antes posible para asegurar la fecha.", "success");
+                        } else {
+                            showDisponibilidadModal("Gracias por tu interés, pero no hay disponibilidad de recolección para ese día. Por favor selecciona otro.", "error");
+                        }
+                    })
+                    .catch(err => {
+                        showDisponibilidadModal("Ocurrió un error al consultar disponibilidad. Intenta de nuevo.", "error");
+                    });
+            }
+        });
     };
 
     // --- ANIMACIONES DE TIMELINE ---
