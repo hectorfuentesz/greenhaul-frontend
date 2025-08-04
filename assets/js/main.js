@@ -1,13 +1,13 @@
 /**
  * =================================================================
- * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL (VERSIÓN FINAL COMPLETA Y CORREGIDA)
+ * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL
  * =================================================================
  */
 
 // --- URL ABSOLUTA DEL BACKEND ---
 const BACKEND_URL = 'https://greenhaul-backend-production.up.railway.app';
 
-// --- 1. FUNCIÓN GLOBAL DE NOTIFICACIÓN ---
+// --- FUNCIÓN GLOBAL DE NOTIFICACIÓN ---
 function showNotification(message, type = 'success') {
     const notificationElement = document.getElementById('cartNotification');
     if (!notificationElement) return;
@@ -26,7 +26,7 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// --- FIX: FUNCIÓN PARA FORMATEAR FECHAS AL FORMATO QUE ESPERA EL BACKEND ---
+// --- FIX FECHAS BACKEND ---
 function getRentalDatesForBackend() {
     const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
     if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
@@ -41,9 +41,10 @@ function getRentalDatesForBackend() {
     return null;
 }
 
-// --- 2. LÓGICA PRINCIPAL DEL SITIO ---
+// --- LÓGICA PRINCIPAL DEL SITIO ---
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- NAVBAR, FECHA Y ELEMENTOS GLOBALES ---
     const initGlobalElements = () => {
         const navbarToggler = document.getElementById('navbarToggler');
         const navbarCollapse = document.getElementById('navbarCollapse');
@@ -57,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
     };
 
+    // --- MARCA LINK ACTIVO EN NAV ---
     const initActiveNav = () => {
         const navLinks = document.querySelectorAll('.nav-links-list .nav-link');
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -69,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // --- SESIÓN DE USUARIO ---
     const initUserSession = () => {
         const userActionsContainer = document.getElementById('navbarUserActions');
         const loginBtn = document.getElementById('loginBtn');
@@ -101,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- CARRITO DE COMPRAS ---
     const initShoppingCart = () => {
         let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null };
         const cartIcon = document.getElementById('cartIcon');
@@ -341,19 +345,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartModalOverlay) renderCartModal();
     };
 
-    // ---- ESTA ES LA FUNCIÓN QUE DEBES USAR PARA EL CALENDARIO CON COLORES ----
+    // ---- CALENDARIO FLATPICKR CON COLORES INLINE (ALTERNATIVA 2) ----
     const initProductPageElements = () => {
         if (typeof flatpickr === 'undefined' || !document.getElementById('fecha-entrega')) return;
 
-        // Inicializa los calendarios SIN colores primero
+        // Calendario de recolección
         const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
             locale: "es",
             minDate: "today",
             altInput: true,
             altFormat: "F j, Y",
-            dateFormat: "Y-m-d"
+            dateFormat: "Y-m-d",
+            onOpen: function(selectedDates, dateStr, instance) {
+                setTimeout(() => {
+                    document.querySelectorAll('.flatpickr-day').forEach(day => {
+                        day.style.background = "#6f6";
+                        day.style.color = "#222";
+                    });
+                }, 0);
+            }
         });
 
+        // Calendario de entrega
         const fechaEntregaPicker = flatpickr("#fecha-entrega", {
             locale: "es",
             minDate: "today",
@@ -364,53 +377,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (fechaRecoleccionPicker) {
                     fechaRecoleccionPicker.set('minDate', dateStr);
                 }
+            },
+            onOpen: function(selectedDates, dateStr, instance) {
+                setTimeout(() => {
+                    document.querySelectorAll('.flatpickr-day').forEach(day => {
+                        day.style.background = "#6f6";
+                        day.style.color = "#222";
+                    });
+                }, 0);
             }
         });
-
-        // Después de inicializar, pide los datos al backend y actualiza colores
-        fetch('https://greenhaul-backend-production.up.railway.app/api/calendar/days-status')
-            .then(resp => resp.json())
-            .then(data => {
-                const daysMap = {};
-                if (data.days) {
-                    data.days.forEach(day => {
-                        daysMap[day.fecha] = day;
-                    });
-                }
-
-                // Función para colorear los días
-                function colorFlatpickrDays(instance, type) {
-                    instance.config.onDayCreate = [
-                        function(dObj, dDay, date) {
-                            const fecha = date.toISOString().slice(0, 10);
-                            const dayData = daysMap[fecha];
-                            if (!dayData) return;
-                            // type: 'entrega' o 'recoleccion'
-                            let disponible;
-                            if (type === 'entrega') disponible = dayData.entregas_disponibles;
-                            else disponible = dayData.recolecciones_disponibles;
-
-                            if (!dayData.entregas_disponibles && !dayData.recolecciones_disponibles) {
-                                dDay.classList.add('flatpickr-day-red');
-                            } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
-                                dDay.classList.add('flatpickr-day-green');
-                            } else {
-                                dDay.classList.add('flatpickr-day-yellow');
-                            }
-                        }
-                    ];
-                    instance.redraw();
-                }
-
-                // Colorea ambos calendarios
-                colorFlatpickrDays(fechaEntregaPicker, 'entrega');
-                colorFlatpickrDays(fechaRecoleccionPicker, 'recoleccion');
-            })
-            .catch(err => {
-                console.error('Error al obtener estado de días:', err);
-            });
     };
 
+    // --- ANIMACIONES DE TIMELINE ---
     const initTimelineAnimations = () => {
         const timelineItems = document.querySelectorAll('.timeline-item');
         if (timelineItems.length > 0) {
@@ -428,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Llamadas a las funciones de inicialización
+    // --- LLAMADA A INICIALIZACIONES ---
     initGlobalElements();
     initActiveNav();
     initUserSession();
@@ -438,27 +417,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- EJEMPLO DE USO DEL FIX EN TU PAGO/ORDEN ---
-// Cuando vayas a hacer fetch a /api/mercadopago o /api/orders, usa SIEMPRE el formato correcto:
 function enviarPagoOMiOrden() {
-    // ... otros datos que prepares ...
     const rentalDates = getRentalDatesForBackend();
-    // Ejemplo fetch:
     fetch(`${BACKEND_URL}/api/mercadopago`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            // ... otros campos como user_id, email, nombre, productos, direcciones, etc.
-            rentalDates,
-            // ... otros campos
+            rentalDates
         })
     })
     .then(res => res.json())
     .then(data => {
-        // Maneja la respuesta aquí
         if (data.message) showNotification(data.message, 'success');
     })
     .catch(err => {
         showNotification('Error al procesar el pago.', 'error');
     });
 }
-// Puedes quitar esta función ejemplo, es solo para mostrar el uso correcto del fix.
