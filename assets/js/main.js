@@ -1,10 +1,10 @@
 /**
  * =================================================================
- * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL
+ * ARCHIVO JAVASCRIPT PRINCIPAL PARA GREENHAUL - COMPLETO Y ROBUSTO
  * =================================================================
  */
 
-// --- URL ABSOLUTA DEL BACKEND ---
+// --- URL DEL BACKEND ---
 const BACKEND_URL = 'https://greenhaul-backend-production.up.railway.app';
 
 // --- FUNCIÓN GLOBAL DE NOTIFICACIÓN ---
@@ -26,7 +26,7 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// --- FIX FECHAS BACKEND ---
+// --- FUNCIÓN PARA FORMATEAR FECHAS QUE ESPERA EL BACKEND ---
 function getRentalDatesForBackend() {
     const cart = JSON.parse(localStorage.getItem('shoppingCart')) || {};
     if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
@@ -41,10 +41,10 @@ function getRentalDatesForBackend() {
     return null;
 }
 
-// --- LÓGICA PRINCIPAL DEL SITIO ---
+// --- LÓGICA PRINCIPAL ---
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- NAVBAR, FECHA Y ELEMENTOS GLOBALES ---
+    // --- NAVBAR Y ELEMENTOS GLOBALES ---
     const initGlobalElements = () => {
         const navbarToggler = document.getElementById('navbarToggler');
         const navbarCollapse = document.getElementById('navbarCollapse');
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
     };
 
-    // --- MARCA LINK ACTIVO EN NAV ---
+    // --- MARCAR LINK ACTIVO EN NAV ---
     const initActiveNav = () => {
         const navLinks = document.querySelectorAll('.nav-links-list .nav-link');
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!cartIcon || !cartModalOverlay || !closeCartModalBtn) return;
 
         const saveCart = () => localStorage.setItem('shoppingCart', JSON.stringify(cart));
-        
+
         const updateCartCount = () => {
             const el = document.getElementById('cartCount');
             if (!el) return;
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const renderCartModal = () => {
             if (!cartItemsContainer) return;
             cartItemsContainer.innerHTML = '';
-            
+
             const startDateEl = document.getElementById('cartStartDate');
             const endDateEl = document.getElementById('cartEndDate');
             const datesContainer = document.querySelector('.cart-rental-dates');
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateCartModalTotals();
             addCartModalEventListeners();
         };
-        
+
         const updateCartModalTotals = () => {
             let totalDays = 1;
             if (cart.rentalDates && cart.rentalDates.start && cart.rentalDates.end) {
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const subtotalEl = document.getElementById('cartSubtotal');
             const taxesEl = document.getElementById('cartTaxes');
             const totalEl = document.getElementById('cartTotal');
-            
+
             if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
             if (taxesEl) taxesEl.textContent = `$${taxes.toFixed(2)}`;
             if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
@@ -345,48 +345,115 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartModalOverlay) renderCartModal();
     };
 
-    // ---- CALENDARIO FLATPICKR CON COLORES INLINE (ALTERNATIVA 2) ----
+    // --- CALENDARIO FLATPICKR CON COLORES SEGÚN DISPONIBILIDAD ---
     const initProductPageElements = () => {
-        if (typeof flatpickr === 'undefined' || !document.getElementById('fecha-entrega')) return;
+        if (typeof flatpickr === 'undefined' || !document.getElementById('fecha-entrega') || !document.getElementById('fecha-recoleccion')) return;
 
-        // Calendario de recolección
-        const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
-            locale: "es",
-            minDate: "today",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-            onOpen: function(selectedDates, dateStr, instance) {
-                setTimeout(() => {
-                    document.querySelectorAll('.flatpickr-day').forEach(day => {
-                        day.style.background = "#6f6";
-                        day.style.color = "#222";
-                    });
-                }, 0);
+        let daysMap = {};
+
+        // Función para pintar los días según disponibilidad
+        function colorFlatpickrDays() {
+            // Selecciona solo el calendario abierto
+            const calendar = document.querySelector('.flatpickr-calendar.open');
+            if (calendar) {
+                calendar.querySelectorAll('.flatpickr-day').forEach(day => {
+                    // Limpia estilos anteriores
+                    day.style.background = '';
+                    day.style.color = '';
+                    day.title = '';
+
+                    // Obtén la fecha del día
+                    const fecha = day.dateObj ? day.dateObj.toISOString().slice(0,10) : null;
+                    if (!fecha || !daysMap[fecha]) return;
+                    const info = daysMap[fecha];
+
+                    // Lógica de color:
+                    // Verde: entrega Y recolección disponible
+                    // Rojo: ninguna disponible
+                    if (info.entregas_disponibles && info.recolecciones_disponibles) {
+                        day.style.background = '#6f6';
+                        day.style.color = '#222';
+                        day.title = 'Entrega y recolección disponibles';
+                    } else if (!info.entregas_disponibles && !info.recolecciones_disponibles) {
+                        day.style.background = '#f66';
+                        day.style.color = '#fff';
+                        day.title = 'Sin entrega ni recolección disponible';
+                    }
+                });
             }
-        });
+        }
 
-        // Calendario de entrega
+        // Inicialización de Flatpickr
         const fechaEntregaPicker = flatpickr("#fecha-entrega", {
             locale: "es",
             minDate: "today",
             altInput: true,
             altFormat: "F j, Y",
             dateFormat: "Y-m-d",
-            onChange: function(selectedDates, dateStr) {
-                if (fechaRecoleccionPicker) {
-                    fechaRecoleccionPicker.set('minDate', dateStr);
-                }
-            },
-            onOpen: function(selectedDates, dateStr, instance) {
+            onOpen: function() {
                 setTimeout(() => {
-                    document.querySelectorAll('.flatpickr-day').forEach(day => {
-                        day.style.background = "#6f6";
-                        day.style.color = "#222";
-                    });
-                }, 0);
+                    colorFlatpickrDays();
+                }, 10);
+            },
+            onMonthChange: function() {
+                setTimeout(() => {
+                    colorFlatpickrDays();
+                }, 10);
+            },
+            onYearChange: function() {
+                setTimeout(() => {
+                    colorFlatpickrDays();
+                }, 10);
             }
         });
+
+        const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
+            locale: "es",
+            minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+            onOpen: function() {
+                setTimeout(() => {
+                    colorFlatpickrDays();
+                }, 10);
+            },
+            onMonthChange: function() {
+                setTimeout(() => {
+                    colorFlatpickrDays();
+                }, 10);
+            },
+            onYearChange: function() {
+                setTimeout(() => {
+                    colorFlatpickrDays();
+                }, 10);
+            }
+        });
+
+        fechaEntregaPicker.config.onChange.push(function(selectedDates, dateStr) {
+            if (fechaRecoleccionPicker) {
+                fechaRecoleccionPicker.set('minDate', dateStr);
+            }
+        });
+
+        // Fetch días disponibles del backend
+        fetch(`${BACKEND_URL}/api/calendar/days-status`)
+            .then(resp => resp.json())
+            .then(data => {
+                daysMap = {};
+                if (data.days) {
+                    data.days.forEach(day => {
+                        daysMap[day.fecha] = day;
+                    });
+                }
+                // Pintar días en ambos calendarios si están abiertos
+                setTimeout(() => {
+                    colorFlatpickrDays();
+                }, 20);
+            })
+            .catch(err => {
+                console.error('Error al obtener estado de días:', err);
+            });
     };
 
     // --- ANIMACIONES DE TIMELINE ---
@@ -407,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- LLAMADA A INICIALIZACIONES ---
+    // --- INICIALIZACIONES ---
     initGlobalElements();
     initActiveNav();
     initUserSession();
