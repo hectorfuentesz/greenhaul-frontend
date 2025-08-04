@@ -44,6 +44,7 @@ function getRentalDatesForBackend() {
 // --- 2. LÓGICA PRINCIPAL DEL SITIO ---
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- NAVBAR, FECHA Y ELEMENTOS GLOBALES ---
     const initGlobalElements = () => {
         const navbarToggler = document.getElementById('navbarToggler');
         const navbarCollapse = document.getElementById('navbarCollapse');
@@ -57,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
     };
 
+    // --- MARCA LINK ACTIVO EN NAV ---
     const initActiveNav = () => {
         const navLinks = document.querySelectorAll('.nav-links-list .nav-link');
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -69,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // --- SESIÓN DE USUARIO ---
     const initUserSession = () => {
         const userActionsContainer = document.getElementById('navbarUserActions');
         const loginBtn = document.getElementById('loginBtn');
@@ -101,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- CARRITO DE COMPRAS ---
     const initShoppingCart = () => {
         let cart = JSON.parse(localStorage.getItem('shoppingCart')) || { items: [], rentalDates: null };
         const cartIcon = document.getElementById('cartIcon');
@@ -341,14 +345,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartModalOverlay) renderCartModal();
     };
 
-    // ---- CORRECTO: CALENDARIO CON COLORES FLATPICKR ----
+    // ---- CALENDARIO FLATPICKR CON COLORES (PRUEBA: TODOS VERDES) ----
     const initProductPageElements = () => {
         if (typeof flatpickr === 'undefined' || !document.getElementById('fecha-entrega')) return;
 
-        // Variable global para los días
-        let daysMap = {};
-
-        // Inicializa los calendarios con onDayCreate leyendo daysMap
+        // Calendario de recolección
         const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
             locale: "es",
             minDate: "today",
@@ -356,19 +357,11 @@ document.addEventListener('DOMContentLoaded', () => {
             altFormat: "F j, Y",
             dateFormat: "Y-m-d",
             onDayCreate: function(dObj, dDay, date) {
-                const fecha = date.toISOString().slice(0, 10);
-                const dayData = daysMap[fecha];
-                if (!dayData) return;
-                if (!dayData.entregas_disponibles && !dayData.recolecciones_disponibles) {
-                    dDay.classList.add('flatpickr-day-red');
-                } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
-                    dDay.classList.add('flatpickr-day-green');
-                } else {
-                    dDay.classList.add('flatpickr-day-yellow');
-                }
+                dDay.classList.add('flatpickr-day-green'); // PRUEBA: todos verdes
             }
         });
 
+        // Calendario de entrega
         const fechaEntregaPicker = flatpickr("#fecha-entrega", {
             locale: "es",
             minDate: "today",
@@ -381,38 +374,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             onDayCreate: function(dObj, dDay, date) {
-                const fecha = date.toISOString().slice(0, 10);
-                const dayData = daysMap[fecha];
-                if (!dayData) return;
-                if (!dayData.entregas_disponibles && !dayData.recolecciones_disponibles) {
-                    dDay.classList.add('flatpickr-day-red');
-                } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
-                    dDay.classList.add('flatpickr-day-green');
-                } else {
-                    dDay.classList.add('flatpickr-day-yellow');
-                }
+                dDay.classList.add('flatpickr-day-green'); // PRUEBA: todos verdes
             }
         });
-
-        // Después de inicializar, pide los datos al backend y actualiza daysMap y colores
-        fetch('https://greenhaul-backend-production.up.railway.app/api/calendar/days-status')
-            .then(resp => resp.json())
-            .then(data => {
-                daysMap = {};
-                if (data.days) {
-                    data.days.forEach(day => {
-                        daysMap[day.fecha] = day;
-                    });
-                }
-                // Redibuja ambos calendarios para aplicar los colores
-                fechaEntregaPicker.redraw();
-                fechaRecoleccionPicker.redraw();
-            })
-            .catch(err => {
-                console.error('Error al obtener estado de días:', err);
-            });
     };
 
+    // --- ANIMACIONES DE TIMELINE ---
     const initTimelineAnimations = () => {
         const timelineItems = document.querySelectorAll('.timeline-item');
         if (timelineItems.length > 0) {
@@ -430,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Llamadas a las funciones de inicialización
+    // --- LLAMADA A INICIALIZACIONES ---
     initGlobalElements();
     initActiveNav();
     initUserSession();
@@ -440,23 +407,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- EJEMPLO DE USO DEL FIX EN TU PAGO/ORDEN ---
-// Cuando vayas a hacer fetch a /api/mercadopago o /api/orders, usa SIEMPRE el formato correcto:
 function enviarPagoOMiOrden() {
     // ... otros datos que prepares ...
     const rentalDates = getRentalDatesForBackend();
-    // Ejemplo fetch:
     fetch(`${BACKEND_URL}/api/mercadopago`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            // ... otros campos como user_id, email, nombre, productos, direcciones, etc.
             rentalDates,
             // ... otros campos
         })
     })
     .then(res => res.json())
     .then(data => {
-        // Maneja la respuesta aquí
         if (data.message) showNotification(data.message, 'success');
     })
     .catch(err => {
