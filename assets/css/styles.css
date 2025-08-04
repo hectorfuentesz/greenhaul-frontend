@@ -1887,15 +1887,3 @@ hr {
   grid-template-rows: 1fr; /* Expande el contenedor */
 }
 
-.flatpickr-day-red {
-  background: #f66 !important;
-  color: #fff !important;
-}
-.flatpickr-day-green {
-  background: #6f6 !important;
-  color: #222 !important;
-}
-.flatpickr-day-yellow {
-  background: #ff6 !important;
-  color: #222 !important;
-}
