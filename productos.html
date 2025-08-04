@@ -34,33 +34,7 @@
         }
         .modal-box h2.error { color: #f66; }
         .modal-box h2.success { color: #27ae60; }
-        </style>
-        <style>
-            .modal-bg {
-                position: fixed;
-                top: 0; left: 0; width: 100vw; height: 100vh;
-                background: rgba(0,0,0,0.4);
-                z-index: 9999;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            .modal-box {
-                background: #fff;
-                padding: 2em;
-                border-radius: 10px;
-                box-shadow: 0 2px 16px #0002;
-                max-width: 90vw;
-                text-align: center;
-            }
-            .modal-box h2 { margin-top: 0; margin-bottom: .5em; }
-            #closeModalBtn {
-                margin-top:1em; padding:.5em 2em; border:none; border-radius:5px;
-                background:#27ae60; color:#fff; font-size:1em; cursor:pointer;
-            }
-            .modal-box h2.error { color: #f66; }
-            .modal-box h2.success { color: #27ae60; }
-            </style>
+    </style>
 </head>
 <body>
     <header>
@@ -130,6 +104,7 @@
                 </div>
                 <div class="product-grid" style="gap:2rem;">
                     <!-- PAQUETE BÁSICO -->
+                    <!-- Aquí van todos los productos como en tu archivo original, los mantengo tal cual (no se omite ningún producto) -->
                     <div class="product-card" data-product-id="101" data-product-price="79.00">
                         <div class="badge best-value">Paquete Básico</div>
                         <div class="product-image" style="font-size:2.5rem;">📦✨</div>
@@ -679,134 +654,68 @@
     });
     </script>
     <script>
-        // Modal de disponibilidad (puedes poner este bloque después de tu main.js)
-        function showDisponibilidadModal(message, type="info") {
-            const modalBg = document.createElement('div');
-            modalBg.className = "modal-bg";
-            const modalBox = document.createElement('div');
-            modalBox.className = "modal-box";
-            modalBox.innerHTML = `<h2 class="${type}">${type === "error" ? "¡Sin disponibilidad!" : "¡Fecha disponible!"}</h2>
-                <p>${message}</p>
-                <button id="closeModalBtn">Cerrar</button>`;
-            modalBg.appendChild(modalBox);
-            document.body.appendChild(modalBg);
-            document.getElementById('closeModalBtn').onclick = () => {
-                document.body.removeChild(modalBg);
-            };
-        }
-        
-        // Flatpickr con popup de disponibilidad
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.flatpickr && document.getElementById('fecha-entrega') && document.getElementById('fecha-recoleccion')) {
-                const BACKEND_URL = 'https://greenhaul-backend-production.up.railway.app';
-                flatpickr("#fecha-entrega", {
-                    locale: "es",
-                    minDate: "today",
-                    altInput: true,
-                    altFormat: "F j, Y",
-                    dateFormat: "Y-m-d",
-                    onChange: function(selectedDates, dateStr) {
-                        fetch(`${BACKEND_URL}/api/calendar/disponibilidad?fecha=${dateStr}`)
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.entregas_disponibles) {
-                                    showDisponibilidadModal("¡Sí hay disponibilidad para entrega! Realiza tu compra lo antes posible para asegurar la fecha.", "success");
-                                } else {
-                                    showDisponibilidadModal("Gracias por tu interés, pero no hay disponibilidad de entrega para ese día. Por favor selecciona otro.", "error");
-                                }
-                            })
-                            .catch(err => {
-                                showDisponibilidadModal("Ocurrió un error al consultar disponibilidad. Intenta de nuevo.", "error");
-                            });
-                    }
-                });
-                flatpickr("#fecha-recoleccion", {
-                    locale: "es",
-                    minDate: "today",
-                    altInput: true,
-                    altFormat: "F j, Y",
-                    dateFormat: "Y-m-d",
-                    onChange: function(selectedDates, dateStr) {
-                        fetch(`${BACKEND_URL}/api/calendar/disponibilidad?fecha=${dateStr}`)
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.recolecciones_disponibles) {
-                                    showDisponibilidadModal("¡Sí hay disponibilidad para recolección! Realiza tu compra lo antes posible para asegurar la fecha.", "success");
-                                } else {
-                                    showDisponibilidadModal("Gracias por tu interés, pero no hay disponibilidad de recolección para ese día. Por favor selecciona otro.", "error");
-                                }
-                            })
-                            .catch(err => {
-                                showDisponibilidadModal("Ocurrió un error al consultar disponibilidad. Intenta de nuevo.", "error");
-                            });
-                    }
-                });
-            }
-        });
-        </script>
-        <script>
-            function showDisponibilidadModal(message, type="info") {
-                const modalBg = document.createElement('div');
-                modalBg.className = "modal-bg";
-                const modalBox = document.createElement('div');
-                modalBox.className = "modal-box";
-                modalBox.innerHTML = `<h2 class="${type}">${type === "error" ? "¡Sin disponibilidad!" : "¡Fecha disponible!"}</h2>
-                    <p>${message}</p>
-                    <button id="closeModalBtn">Cerrar</button>`;
-                modalBg.appendChild(modalBox);
-                document.body.appendChild(modalBg);
-                document.getElementById('closeModalBtn').onclick = () => {
-                    document.body.removeChild(modalBg);
-                };
-            }
-            
-            document.addEventListener('DOMContentLoaded', () => {
-                if (window.flatpickr && document.getElementById('fecha-entrega') && document.getElementById('fecha-recoleccion')) {
-                    const BACKEND_URL = 'https://greenhaul-backend-production.up.railway.app';
-                    flatpickr("#fecha-entrega", {
-                        locale: "es",
-                        minDate: "today",
-                        altInput: true,
-                        altFormat: "F j, Y",
-                        dateFormat: "Y-m-d",
-                        onChange: function(selectedDates, dateStr) {
-                            fetch(`${BACKEND_URL}/api/calendar/disponibilidad?fecha=${dateStr}`)
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.entregas_disponibles) {
-                                        showDisponibilidadModal("¡Sí hay disponibilidad para entrega! Realiza tu compra lo antes posible para asegurar la fecha.", "success");
-                                    } else {
-                                        showDisponibilidadModal("Gracias por tu interés, pero no hay disponibilidad de entrega para ese día. Por favor selecciona otro.", "error");
-                                    }
-                                })
-                                .catch(err => {
-                                    showDisponibilidadModal("Ocurrió un error al consultar disponibilidad. Intenta de nuevo.", "error");
-                                });
-                        }
-                    });
-                    flatpickr("#fecha-recoleccion", {
-                        locale: "es",
-                        minDate: "today",
-                        altInput: true,
-                        altFormat: "F j, Y",
-                        dateFormat: "Y-m-d",
-                        onChange: function(selectedDates, dateStr) {
-                            fetch(`${BACKEND_URL}/api/calendar/disponibilidad?fecha=${dateStr}`)
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.recolecciones_disponibles) {
-                                        showDisponibilidadModal("¡Sí hay disponibilidad para recolección! Realiza tu compra lo antes posible para asegurar la fecha.", "success");
-                                    } else {
-                                        showDisponibilidadModal("Gracias por tu interés, pero no hay disponibilidad de recolección para ese día. Por favor selecciona otro.", "error");
-                                    }
-                                })
-                                .catch(err => {
-                                    showDisponibilidadModal("Ocurrió un error al consultar disponibilidad. Intenta de nuevo.", "error");
-                                });
-                        }
-                    });
+    // Modal de disponibilidad y Flatpickr con popup de disponibilidad
+    function showDisponibilidadModal(message, type="info") {
+        const modalBg = document.createElement('div');
+        modalBg.className = "modal-bg";
+        const modalBox = document.createElement('div');
+        modalBox.className = "modal-box";
+        modalBox.innerHTML = `<h2 class="${type}">${type === "error" ? "¡Sin disponibilidad!" : "¡Fecha disponible!"}</h2>
+            <p>${message}</p>
+            <button id="closeModalBtn">Cerrar</button>`;
+        modalBg.appendChild(modalBox);
+        document.body.appendChild(modalBg);
+        document.getElementById('closeModalBtn').onclick = () => {
+            document.body.removeChild(modalBg);
+        };
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.flatpickr && document.getElementById('fecha-entrega') && document.getElementById('fecha-recoleccion')) {
+            const BACKEND_URL = 'https://greenhaul-backend-production.up.railway.app';
+            flatpickr("#fecha-entrega", {
+                locale: "es",
+                minDate: "today",
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+                onChange: function(selectedDates, dateStr) {
+                    fetch(`${BACKEND_URL}/api/calendar/disponibilidad?fecha=${dateStr}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.entregas_disponibles) {
+                                showDisponibilidadModal("¡Sí hay disponibilidad para entrega! Realiza tu compra lo antes posible para asegurar la fecha.", "success");
+                            } else {
+                                showDisponibilidadModal("Gracias por tu interés, pero no hay disponibilidad de entrega para ese día. Por favor selecciona otro.", "error");
+                            }
+                        })
+                        .catch(err => {
+                            showDisponibilidadModal("Ocurrió un error al consultar disponibilidad. Intenta de nuevo.", "error");
+                        });
                 }
             });
-            </script>
+            flatpickr("#fecha-recoleccion", {
+                locale: "es",
+                minDate: "today",
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+                onChange: function(selectedDates, dateStr) {
+                    fetch(`${BACKEND_URL}/api/calendar/disponibilidad?fecha=${dateStr}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.recolecciones_disponibles) {
+                                showDisponibilidadModal("¡Sí hay disponibilidad para recolección! Realiza tu compra lo antes posible para asegurar la fecha.", "success");
+                            } else {
+                                showDisponibilidadModal("Gracias por tu interés, pero no hay disponibilidad de recolección para ese día. Por favor selecciona otro.", "error");
+                            }
+                        })
+                        .catch(err => {
+                            showDisponibilidadModal("Ocurrió un error al consultar disponibilidad. Intenta de nuevo.", "error");
+                        });
+                }
+            });
+        }
+    });
+    </script>
 </body>
 </html>
