@@ -417,3 +417,24 @@ function enviarPagoOMiOrden() {
     });
 }
 // Puedes quitar esta función ejemplo, es solo para mostrar el uso correcto del fix.
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof flatpickr !== 'undefined') {
+        flatpickr("#fecha-entrega", {
+            locale: "es",
+            minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d"
+        });
+        flatpickr("#fecha-recoleccion", {
+            locale: "es",
+            minDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d"
+        });
+    } else {
+        console.error("Flatpickr no está cargado.");
+    }
+});
