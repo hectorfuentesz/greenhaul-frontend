@@ -341,17 +341,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartModalOverlay) renderCartModal();
     };
 
-    // ---- ESTA ES LA FUNCIÓN QUE DEBES USAR PARA EL CALENDARIO CON COLORES ----
+    // ---- CORRECTO: CALENDARIO CON COLORES FLATPICKR ----
     const initProductPageElements = () => {
         if (typeof flatpickr === 'undefined' || !document.getElementById('fecha-entrega')) return;
 
-        // Inicializa los calendarios SIN colores primero
+        // Variable global para los días
+        let daysMap = {};
+
+        // Inicializa los calendarios con onDayCreate leyendo daysMap
         const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
             locale: "es",
             minDate: "today",
             altInput: true,
             altFormat: "F j, Y",
-            dateFormat: "Y-m-d"
+            dateFormat: "Y-m-d",
+            onDayCreate: function(dObj, dDay, date) {
+                const fecha = date.toISOString().slice(0, 10);
+                const dayData = daysMap[fecha];
+                if (!dayData) return;
+                if (!dayData.entregas_disponibles && !dayData.recolecciones_disponibles) {
+                    dDay.classList.add('flatpickr-day-red');
+                } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
+                    dDay.classList.add('flatpickr-day-green');
+                } else {
+                    dDay.classList.add('flatpickr-day-yellow');
+                }
+            }
         });
 
         const fechaEntregaPicker = flatpickr("#fecha-entrega", {
@@ -364,47 +379,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (fechaRecoleccionPicker) {
                     fechaRecoleccionPicker.set('minDate', dateStr);
                 }
+            },
+            onDayCreate: function(dObj, dDay, date) {
+                const fecha = date.toISOString().slice(0, 10);
+                const dayData = daysMap[fecha];
+                if (!dayData) return;
+                if (!dayData.entregas_disponibles && !dayData.recolecciones_disponibles) {
+                    dDay.classList.add('flatpickr-day-red');
+                } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
+                    dDay.classList.add('flatpickr-day-green');
+                } else {
+                    dDay.classList.add('flatpickr-day-yellow');
+                }
             }
         });
 
-        // Después de inicializar, pide los datos al backend y actualiza colores
+        // Después de inicializar, pide los datos al backend y actualiza daysMap y colores
         fetch('https://greenhaul-backend-production.up.railway.app/api/calendar/days-status')
             .then(resp => resp.json())
             .then(data => {
-                const daysMap = {};
+                daysMap = {};
                 if (data.days) {
                     data.days.forEach(day => {
                         daysMap[day.fecha] = day;
                     });
                 }
-
-                // Función para colorear los días
-                function colorFlatpickrDays(instance, type) {
-                    instance.config.onDayCreate = [
-                        function(dObj, dDay, date) {
-                            const fecha = date.toISOString().slice(0, 10);
-                            const dayData = daysMap[fecha];
-                            if (!dayData) return;
-                            // type: 'entrega' o 'recoleccion'
-                            let disponible;
-                            if (type === 'entrega') disponible = dayData.entregas_disponibles;
-                            else disponible = dayData.recolecciones_disponibles;
-
-                            if (!dayData.entregas_disponibles && !dayData.recolecciones_disponibles) {
-                                dDay.classList.add('flatpickr-day-red');
-                            } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
-                                dDay.classList.add('flatpickr-day-green');
-                            } else {
-                                dDay.classList.add('flatpickr-day-yellow');
-                            }
-                        }
-                    ];
-                    instance.redraw();
-                }
-
-                // Colorea ambos calendarios
-                colorFlatpickrDays(fechaEntregaPicker, 'entrega');
-                colorFlatpickrDays(fechaRecoleccionPicker, 'recoleccion');
+                // Redibuja ambos calendarios para aplicar los colores
+                fechaEntregaPicker.redraw();
+                fechaRecoleccionPicker.redraw();
             })
             .catch(err => {
                 console.error('Error al obtener estado de días:', err);
