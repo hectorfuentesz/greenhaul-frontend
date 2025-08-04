@@ -341,18 +341,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartModalOverlay) renderCartModal();
     };
 
+    // ---- ESTA ES LA FUNCIÓN QUE DEBES USAR PARA EL CALENDARIO CON COLORES ----
     const initProductPageElements = () => {
         if (typeof flatpickr === 'undefined' || !document.getElementById('fecha-entrega')) return;
 
+        // Inicializa los calendarios SIN colores primero
         const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
             locale: "es",
             minDate: "today",
             altInput: true,
             altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
+            dateFormat: "Y-m-d"
         });
 
-        flatpickr("#fecha-entrega", {
+        const fechaEntregaPicker = flatpickr("#fecha-entrega", {
             locale: "es",
             minDate: "today",
             altInput: true,
@@ -364,6 +366,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+
+        // Después de inicializar, pide los datos al backend y actualiza colores
+        fetch('https://greenhaul-backend-production.up.railway.app/api/calendar/days-status')
+            .then(resp => resp.json())
+            .then(data => {
+                const daysMap = {};
+                if (data.days) {
+                    data.days.forEach(day => {
+                        daysMap[day.fecha] = day;
+                    });
+                }
+
+                // Función para colorear los días
+                function colorFlatpickrDays(instance, type) {
+                    instance.config.onDayCreate = [
+                        function(dObj, dDay, date) {
+                            const fecha = date.toISOString().slice(0, 10);
+                            const dayData = daysMap[fecha];
+                            if (!dayData) return;
+                            // type: 'entrega' o 'recoleccion'
+                            let disponible;
+                            if (type === 'entrega') disponible = dayData.entregas_disponibles;
+                            else disponible = dayData.recolecciones_disponibles;
+
+                            if (!dayData.entregas_disponibles && !dayData.recolecciones_disponibles) {
+                                dDay.classList.add('flatpickr-day-red');
+                            } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
+                                dDay.classList.add('flatpickr-day-green');
+                            } else {
+                                dDay.classList.add('flatpickr-day-yellow');
+                            }
+                        }
+                    ];
+                    instance.redraw();
+                }
+
+                // Colorea ambos calendarios
+                colorFlatpickrDays(fechaEntregaPicker, 'entrega');
+                colorFlatpickrDays(fechaRecoleccionPicker, 'recoleccion');
+            })
+            .catch(err => {
+                console.error('Error al obtener estado de días:', err);
+            });
     };
 
     const initTimelineAnimations = () => {
@@ -417,24 +462,3 @@ function enviarPagoOMiOrden() {
     });
 }
 // Puedes quitar esta función ejemplo, es solo para mostrar el uso correcto del fix.
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof flatpickr !== 'undefined') {
-        flatpickr("#fecha-entrega", {
-            locale: "es",
-            minDate: "today",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d"
-        });
-        flatpickr("#fecha-recoleccion", {
-            locale: "es",
-            minDate: "today",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d"
-        });
-    } else {
-        console.error("Flatpickr no está cargado.");
-    }
-});
