@@ -418,23 +418,75 @@ function enviarPagoOMiOrden() {
 }
 // Puedes quitar esta función ejemplo, es solo para mostrar el uso correcto del fix.
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof flatpickr !== 'undefined') {
-        flatpickr("#fecha-entrega", {
-            locale: "es",
-            minDate: "today",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d"
-        });
-        flatpickr("#fecha-recoleccion", {
-            locale: "es",
-            minDate: "today",
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d"
-        });
-    } else {
+document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof flatpickr === 'undefined') {
         console.error("Flatpickr no está cargado.");
+        return;
     }
+
+    // 1. Obtener estados del backend
+    async function fetchCalendarDaysStatus() {
+        try {
+            const resp = await fetch('https://greenhaul-backend-production.up.railway.app/api/calendar/days-status');
+            const data = await resp.json();
+            const daysMap = {};
+            if (data.days) {
+                data.days.forEach(day => {
+                    daysMap[day.fecha] = day;
+                });
+            }
+            return daysMap;
+        } catch (err) {
+            console.error('Error al obtener estado de días:', err);
+            return {};
+        }
+    }
+
+    const daysMap = await fetchCalendarDaysStatus();
+
+    // 2. Inicializa los calendarios con colores
+    const fechaRecoleccionPicker = flatpickr("#fecha-recoleccion", {
+        locale: "es",
+        minDate: "today",
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        onDayCreate: function(dObj, dDay, date) {
+            const fecha = date.toISOString().slice(0, 10);
+            const dayData = daysMap[fecha];
+            if (!dayData) return;
+            if (!dayData.recolecciones_disponibles && !dayData.entregas_disponibles) {
+                dDay.classList.add('flatpickr-day-red');
+            } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
+                dDay.classList.add('flatpickr-day-green');
+            } else {
+                dDay.classList.add('flatpickr-day-yellow');
+            }
+        }
+    });
+
+    flatpickr("#fecha-entrega", {
+        locale: "es",
+        minDate: "today",
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        onChange: function(selectedDates, dateStr) {
+            if (fechaRecoleccionPicker) {
+                fechaRecoleccionPicker.set('minDate', dateStr);
+            }
+        },
+        onDayCreate: function(dObj, dDay, date) {
+            const fecha = date.toISOString().slice(0, 10);
+            const dayData = daysMap[fecha];
+            if (!dayData) return;
+            if (!dayData.entregas_disponibles && !dayData.recolecciones_disponibles) {
+                dDay.classList.add('flatpickr-day-red');
+            } else if (dayData.entregas_disponibles && dayData.recolecciones_disponibles) {
+                dDay.classList.add('flatpickr-day-green');
+            } else {
+                dDay.classList.add('flatpickr-day-yellow');
+            }
+        }
+    });
 });
