@@ -598,11 +598,11 @@ orders.forEach(order => {
   const estado = order.status === 'completado' ? 'Completado' : 'Activo';
   orderHistoryContainer.innerHTML += `
   <div class="order-item slide-up">
-    <div><strong>Folio:</strong> ${order.order_folio}</div>
-    <div><strong>Fecha Pedido:</strong> ${order.order_date}</div>
+    <div><strong>Folio:</strong> ${order.order_folio || '-'}</div>
+    <div><strong>Fecha Pedido:</strong> ${order.order_date || '-'}</div>
     <div><strong>Entrega:</strong> ${order.delivery_date || '-'}</div>
     <div><strong>Recolección:</strong> ${order.pickup_date || '-'}</div>
-    <div><strong>Total:</strong> $${order.total_amount} MXN</div>
+    <div><strong>Total:</strong> $${order.total_amount || '0.00'} MXN</div>
     <div><strong>Estado:</strong> <span class="order-item-status status-${estado.toLowerCase()}">${estado}</span></div>
   </div>`;
 });
