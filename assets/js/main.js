@@ -472,3 +472,4 @@ function enviarPagoOMiOrden() {
         showNotification('Error al procesar el pago.', 'error');
     });
 }
+
