@@ -445,6 +445,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- LÓGICA PARA NAVEGACIÓN DE MI CUENTA (SIDEBAR y SECCIONES) ---
+    function initAccountSidebar() {
+        const links = document.querySelectorAll('.account-nav-link');
+        const sections = document.querySelectorAll('.account-section');
+        if (links.length === 0 || sections.length === 0) return;
+
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                links.forEach(l => l.classList.remove('active'));
+                sections.forEach(sec => sec.classList.remove('active'));
+                this.classList.add('active');
+                const targetId = this.getAttribute('href').replace('#', '');
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) targetSection.classList.add('active');
+                if (window.innerWidth <= 768) {
+                    targetSection.scrollIntoView({behavior: 'smooth', block: 'start'});
+                }
+            });
+        });
+    }
+
     // --- INICIALIZACIONES ---
     initGlobalElements();
     initActiveNav();
@@ -452,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initShoppingCart();
     initProductPageElements();
     initTimelineAnimations();
+    initAccountSidebar();
 });
 
 // --- EJEMPLO DE USO DEL FIX EN TU PAGO/ORDEN ---
@@ -472,4 +495,3 @@ function enviarPagoOMiOrden() {
         showNotification('Error al procesar el pago.', 'error');
     });
 }
-
