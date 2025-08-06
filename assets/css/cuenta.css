@@ -1,199 +1,26 @@
-/* ================================================================= */
-/* ===== REDISEÑO MODERNO Y TECNOLÓGICO DE "MI CUENTA" ===== */
-/* ================================================================= */
-
 :root {
-  --accent-color: #6633FF; /* Morado eléctrico como acento */
+  --accent-color: #6633FF;
+  --accent-color-rgb: 102, 51, 255;
   --dark-bg: #1E1E2A;
   --card-bg: #282A3E;
   --text-light: #F8F8F2;
   --text-dimmed: #A9A9B8;
+  --border-radius: 14px;
 }
 
+/* Fondo general */
 body {
   background-color: var(--dark-bg);
-}
-
-.page-content {
-  padding-top: 80px; /* Espacio para el navbar fijo */
-}
-
-.account-layout {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 30px;
-  align-items: flex-start;
-  margin-top: 20px;
-}
-
-.account-sidebar {
-  position: sticky;
-  top: 100px;
-}
-
-.account-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: 15px;
-}
-
-.account-nav-link {
-  padding: 10px 15px;
-  border-radius: 5px;
-  color: var(--text-dimmed);
-  font-weight: 500;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: background-color 0.3s, color 0.3s, transform 0.2s ease;
-}
-
-.account-nav-link i {
-  width: 20px;
-  text-align: center;
-  color: var(--accent-color);
-}
-
-.account-nav-link:hover {
-  background-color: rgba(var(--accent-color-rgb), 0.1);
   color: var(--text-light);
-  transform: translateX(3px);
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
-.account-nav-link.active {
-  background-color: var(--accent-color);
-  color: var(--text-light);
-}
-
-.account-content {
-  background-color: transparent;
-  box-shadow: none;
-  padding: 0;
-}
-
-.account-section {
-  display: none;
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: 30px;
-  margin-bottom: 20px;
-}
-
-.account-section.active {
-  display: block;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.account-section h3 {
-  font-size: 1.8rem;
-  color: var(--text-light);
-  margin-top: 0;
-  margin-bottom: 25px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #44475A;
-}
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.dashboard-card {
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border-left: 5px solid var(--accent-color);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.dashboard-card:nth-child(2) { border-left-color: #00FFFF; /* Cyan */ }
-.dashboard-card:nth-child(3) { border-left-color: #FF4081; /* Rosa */ }
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  color: var(--text-light);
-}
-
-.card-header h4 {
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.card-header .icon {
-  font-size: 1.4rem;
-  color: var(--accent-color);
-}
-.dashboard-card:nth-child(2) .icon { color: #00FFFF; }
-.dashboard-card:nth-child(3) .icon { color: #FF4081; }
-
-.card-body {
-  color: var(--text-light);
-}
-
-.metric {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.label {
-  color: var(--text-dimmed);
-  font-size: 0.9rem;
-}
-
-.progress-bar-container {
-  background-color: #44475A;
-  border-radius: 5px;
-  height: 8px;
-  margin-top: 15px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  background-color: var(--accent-color);
-  height: 100%;
-  width: 0%; /* Se actualiza con JS */
-  border-radius: 5px;
-}
-.dashboard-card:nth-child(2) .progress-bar { background-color: #00FFFF; }
-.dashboard-card:nth-child(3) .progress-bar { background-color: #FF4081; }
-
-/* Responsive */
-@media(max-width: 992px) {
-  .account-layout {
-      grid-template-columns: 1fr;
-  }
-  .account-sidebar {
-      position: static;
-      width: 100%;
-  }
-  .account-nav {
-      flex-direction: row;
-      justify-content: center;
-      flex-wrap: wrap;
-  }
-}
-
-@media (max-width: 768px) {
-  .account-section {
-      padding: 20px;
-  }
-}
-
-/* Estilos para consistencia con la navegación principal */
+/* Navbar y footer consistentes y legibles */
 .navbar {
   background-color: var(--dark-bg) !important;
   border-bottom: 1px solid #333;
+  z-index: 100;
 }
 .logo {
   color: var(--text-light) !important;
@@ -211,4 +38,297 @@ body {
   background-color: var(--dark-bg) !important;
   border-top: 1px solid #333;
   color: var(--text-dimmed) !important;
+  font-size: 0.98rem;
+  padding: 16px 0;
 }
+
+/* Espacio para navbar fijo */
+.page-content {
+  padding-top: 80px;
+  min-height: 70vh;
+}
+
+/* Layout principal */
+.account-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+  align-items: flex-start;
+  margin-top: 22px;
+}
+
+/* Sidebar */
+.account-sidebar {
+  position: sticky;
+  top: 100px;
+  min-width: 180px;
+  z-index: 99;
+}
+
+/* Navegación lateral */
+.account-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+}
+
+.account-nav-link {
+  padding: 11px 16px;
+  border-radius: 7px;
+  color: var(--text-dimmed);
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  transition: background-color 0.25s, color 0.25s, transform 0.18s;
+  outline: none;
+  border: none;
+}
+
+.account-nav-link i {
+  width: 22px;
+  text-align: center;
+  color: var(--accent-color);
+  font-size: 1.4rem;
+}
+
+.account-nav-link:hover,
+.account-nav-link:focus {
+  background-color: rgba(var(--accent-color-rgb), 0.13);
+  color: var(--text-light);
+  transform: translateX(2px) scale(1.04);
+}
+
+.account-nav-link.active,
+.account-nav-link.active:focus {
+  background-color: var(--accent-color);
+  color: var(--text-light);
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(102, 51, 255, 0.13);
+}
+
+.account-content {
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0;
+  min-width: 0;
+}
+
+/* Secciones internas */
+.account-section {
+  display: none;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 32px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 18px rgba(0,0,0,0.09);
+  min-width: 0;
+  word-break: break-word;
+}
+
+.account-section.active {
+  display: block;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(18px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+
+.account-section h3 {
+  font-size: 1.45rem;
+  color: var(--text-light);
+  margin-top: 0;
+  margin-bottom: 22px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #44475A;
+  font-weight: 600;
+}
+
+/* Widget y dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.dashboard-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 20px 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.17);
+  border-left: 5px solid var(--accent-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+.dashboard-card:nth-child(2) { border-left-color: #00FFFF; }
+.dashboard-card:nth-child(3) { border-left-color: #FF4081; }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--text-light);
+}
+.card-header h4 {
+  font-size: 1.06rem;
+  margin: 0;
+}
+.card-header .icon {
+  font-size: 1.2rem;
+  color: var(--accent-color);
+}
+.dashboard-card:nth-child(2) .icon { color: #00FFFF; }
+.dashboard-card:nth-child(3) .icon { color: #FF4081; }
+
+.card-body { color: var(--text-light); }
+.metric { font-size: 1.7rem; font-weight: bold; margin-bottom: 5px; }
+.label { color: var(--text-dimmed); font-size: 0.92rem; }
+
+.progress-bar-container {
+  background-color: #44475A;
+  border-radius: 5px;
+  height: 8px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background-color: var(--accent-color);
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  transition: width 0.5s;
+}
+.dashboard-card:nth-child(2) .progress-bar { background-color: #00FFFF; }
+.dashboard-card:nth-child(3) .progress-bar { background-color: #FF4081; }
+
+/* ----------- ULTRA RESPONSIVE BREAKPOINTS ----------- */
+
+/* Tablets y pantallas medianas */
+@media(max-width: 992px) {
+  .account-layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+  }
+  .account-sidebar {
+      position: static;
+      width: 100%;
+      min-width: 0;
+      margin-bottom: 18px;
+      z-index: 10;
+  }
+  .account-nav {
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: none;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+}
+
+/* Teléfonos grandes y medianos */
+@media (max-width: 768px) {
+  .account-section {
+      padding: 13px 6px;
+      margin-bottom: 12px;
+      font-size: 0.98rem;
+      border-radius: 10px;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .dashboard-card {
+    padding: 12px 7px;
+    font-size: 0.98rem;
+    border-radius: 9px;
+  }
+  .card-header h4 { font-size: 0.97rem; }
+  .metric { font-size: 1.19rem; }
+  .label { font-size: 0.89rem; }
+  .account-nav-link {
+    padding: 7px 10px;
+    font-size: 0.97rem;
+    border-radius: 5px;
+    gap: 7px;
+  }
+  .account-nav-link i { font-size: 1.2rem; width: 19px;}
+}
+
+/* Teléfonos chicos y pantallas pequeñas */
+@media (max-width: 480px) {
+  .page-content {
+    padding-top: 62px;
+  }
+  .account-layout {
+    margin-top: 8px;
+  }
+  .account-nav {
+    padding: 7px 2px;
+    gap: 5px;
+    border-radius: 7px;
+  }
+  .account-nav-link {
+    padding: 6px 5px;
+    font-size: 0.89rem;
+    gap: 5px;
+    border-radius: 3px;
+  }
+  .account-section h3 {
+    font-size: 1.09rem;
+    margin-bottom: 13px;
+    padding-bottom: 5px;
+  }
+  .dashboard-card {
+    padding: 7px 3px;
+    border-radius: 7px;
+  }
+}
+
+/* Siempre forzar que los contenedores no se desborden */
+.account-content,
+.account-section,
+.dashboard-card,
+.account-nav,
+.account-sidebar {
+  min-width: 0 !important;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.account-section,
+.dashboard-card,
+.account-nav {
+  overflow: visible;
+}
+
+/* Para pantallas MUY pequeñas (320px) */
+@media (max-width: 350px) {
+  .account-nav-link {
+    font-size: 0.82rem;
+    gap: 2px;
+    padding: 4px 2px;
+  }
+  .dashboard-card { font-size: 0.92rem; }
+}
+
+/* ----------- FIN ULTRA RESPONSIVO ----------- */
