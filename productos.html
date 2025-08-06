@@ -9,31 +9,64 @@
     <link rel="stylesheet" href="assets/css/pages.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
-        /* Modal de disponibilidad */
+        /* Modal de disponibilidad - DISEÑO ACTUALIZADO GREENHAUL */
         .modal-bg {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.4);
+            background: rgba(38, 44, 61, 0.75); /* Más oscuro, tono azul/gris */
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .modal-box {
-            background: #fff;
-            padding: 2em;
-            border-radius: 10px;
-            box-shadow: 0 2px 16px #0002;
-            max-width: 90vw;
+            background: var(--background, #fff);
+            padding: 2.5em 2em 2em 2em;
+            border-radius: 14px;
+            box-shadow: 0 6px 36px 0 rgba(44, 54, 80, 0.18);
+            max-width: 95vw;
+            min-width: 320px;
             text-align: center;
+            border: 3px solid var(--accent-purple, #6153CC);
+            position: relative;
+            font-family: 'Montserrat', Arial, sans-serif;
         }
-        .modal-box h2 { margin-top: 0; margin-bottom: .5em; }
+        .modal-box h2 {
+            margin-top: 0; margin-bottom: .5em;
+            font-size: 1.6em;
+            font-family: inherit;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .modal-box h2.success {
+            color: var(--accent-green, #27ae60);
+        }
+        .modal-box h2.error {
+            color: var(--accent-red, #e74c3c);
+        }
+        .modal-box p {
+            color: var(--main-text, #262c3d);
+            font-size: 1.13em;
+            margin-bottom: 0.5em;
+        }
         #closeModalBtn {
-            margin-top:1em; padding:.5em 2em; border:none; border-radius:5px;
-            background:#27ae60; color:#fff; font-size:1em; cursor:pointer;
+            margin-top: 1.5em;
+            padding: .6em 2.5em;
+            border: none;
+            border-radius: 6px;
+            background: var(--accent-purple, #6153CC);
+            color: #fff;
+            font-size: 1em;
+            font-family: inherit;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background 0.18s;
         }
-        .modal-box h2.error { color: #f66; }
-        .modal-box h2.success { color: #27ae60; }
+        #closeModalBtn:hover, #closeModalBtn:focus {
+            background: var(--accent-green, #27ae60);
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -524,7 +557,9 @@
         modalBg.className = "modal-bg";
         const modalBox = document.createElement('div');
         modalBox.className = "modal-box";
-        modalBox.innerHTML = `<h2 class="${type}">${type === "error" ? "¡Sin disponibilidad!" : "¡Fecha disponible!"}</h2>
+        modalBox.innerHTML = `
+            <img src="assets/img/Greenhaul-fl.svg" style="width:70px;margin-bottom:1em;" alt="Logo Greenhaul">
+            <h2 class="${type}">${type === "error" ? "¡Sin disponibilidad!" : "¡Fecha disponible!"}</h2>
             <p>${message}</p>
             <button id="closeModalBtn">Cerrar</button>`;
         modalBg.appendChild(modalBox);
