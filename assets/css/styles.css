@@ -17,19 +17,19 @@
   );
   
   /* Colores y elementos secundarios */
-  --secondary: #a0a4a8; /* Gris secundario */
-  --accent-orange: #ff9900; /* Naranja acento (para contador de carrito, etc.) */
-  --accent-purple: #8a2be2; /* Púrpura acento */
-  --accent-red: #e74c3c; /* Rojo acento (para errores, notificaciones) */
-  --background: #ffffff; /* Fondo principal de la mayoría de las páginas */
-  --text: #333333; /* Color de texto principal */
-  --text-light: #666666; /* Color de texto más claro */
-  --text-dark: #444444; /* Color de texto ligeramente oscuro (usado en footer original) */
-  --border: #e0e0e0; /* Color de borde estándar */
-  --border-focus: rgba(74, 144, 226, 0.4); /* Color de borde al enfocar */
-  --shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra estándar */
-  --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12); /* Sombra al pasar el mouse */
-  --border-radius: 12px; /* Radio de borde global */
+  --secondary: #a0a4a8;
+  --accent-orange: #ff9900;
+  --accent-purple: #8a2be2;
+  --accent-red: #e74c3c;
+  --background: #ffffff;
+  --text: #333333;
+  --text-light: #666666;
+  --text-dark: #444444;
+  --border: #e0e0e0;
+  --border-focus: rgba(74, 144, 226, 0.4);
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
+  --border-radius: 12px;
   
   /* Fuentes */
   --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
@@ -42,12 +42,11 @@
   --navbar-height-mobile: 90px;
 
   /* Variables específicas para el Dashboard de Mi Cuenta */
-  /* NOTA: Estas son cruciales para el aspecto del dashboard y su sidebar/widgets/cards */
-  --dashboard-gradient-start: #4AB3C1; /* El azul verdoso vibrante para el dashboard */
-  --dashboard-gradient-end: #4a90e2; /* El azul puro para el dashboard */
+  --dashboard-gradient-start: #4AB3C1;
+  --dashboard-gradient-end: #4a90e2;
   --gradient-dashboard: linear-gradient(120deg, var(--dashboard-gradient-start) 0%, var(--dashboard-gradient-end) 100%);
-  --dashboard-accent-blue: #4a90e2; /* Un azul para íconos y textos específicos del dashboard */
-  --dashboard-background: #f1f5f9; /* Fondo específico para la página de Mi Cuenta */
+  --dashboard-accent-blue: #4a90e2;
+  --dashboard-background: #f1f5f9;
 }
 
 /* Reset de Box-sizing para todos los elementos */
@@ -60,70 +59,63 @@
 /* Propiedades básicas de HTML y Body */
 html, body {
   height: 100%;
-  overflow-x: hidden; /* Evita el scroll horizontal */
+  overflow-x: hidden;
 }
 
 body {
-  font-family: var(--font-main); /* Fuente principal */
-  line-height: 1.6; /* Altura de línea para legibilidad */
-  color: var(--text); /* Color de texto predeterminado */
-  background-color: var(--background); /* Fondo de la página */
+  font-family: var(--font-main);
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--background);
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
+  min-height: 100vh;
 }
 
-/* Utilidad para deshabilitar el scroll vertical del body */
 body.no-scroll {
     overflow-y: hidden;
 }
 
-/* Estilos para enlaces */
 a {
-  color: var(--primary-solid); /* Color de enlace predeterminado */
-  text-decoration: none; /* Sin subrayado */
-  transition: color 0.3s ease; /* Transición suave al color al pasar el mouse */
+  color: var(--primary-solid);
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 a:hover {
-  color: var(--primary-solid-dark); /* Color más oscuro al pasar el mouse */
+  color: var(--primary-solid-dark);
   opacity: 0.9;
 }
 
-/* Estilos para imágenes */
 img {
-  max-width: 100%; /* Asegura que las imágenes no se desborden de su contenedor */
-  height: auto; /* Mantiene la proporción de la imagen */
-  display: block; /* Elimina espacio extra debajo de las imágenes */
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* ===== Typography (Tipografía) ===== */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading); /* Fuente para encabezados */
-  color: var(--text); /* Color de texto para encabezados */
-  margin-bottom: 0.7em; /* Espacio debajo de los encabezados */
-  line-height: 1.25; /* Altura de línea para encabezados */
-  letter-spacing: -0.02em; /* Espaciado de letras */
+  font-family: var(--font-heading);
+  color: var(--text);
+  margin-bottom: 0.7em;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
-/* Tamaños de fuente para diferentes niveles de encabezado */
 h1 { font-size: 4rem; font-weight: 700; }
 h2 { font-size: 3rem; font-weight: 700; }
 h3 { font-size: 2.4rem; font-weight: 600; }
 h4 { font-size: 1.8rem; font-weight: 600; }
 
-/* Estilo para párrafos */
 p {
   font-size: 1.15rem;
   line-height: 1.7;
   margin-bottom: 1.5em;
-  color: var(--text-dark); /* Color de texto para párrafos */
+  color: var(--text-dark);
 }
 
-/* Estilo para spans (generalmente para acentos de color) */
 span { color: var(--primary-solid); }
 
-/* Clases para resaltado de texto específico */
 .highlight-sostenible { color: var(--accent-green); }
 .highlight-complicaciones { color: var(--accent-orange); }
 
@@ -131,62 +123,57 @@ span { color: var(--primary-solid); }
 .btn {
   display: inline-block;
   padding: 12px 28px;
-  border-radius: 999px; /* Bordes muy redondeados (estilo píldora) */
+  border-radius: 999px;
   font-size: 1.05rem;
   font-weight: 600;
   text-align: center;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease, transform 0.2s ease-out, box-shadow 0.2s ease;
-  white-space: nowrap; /* Evita que el texto del botón se rompa */
+  white-space: nowrap;
 }
 
-/* Botón principal (primario) */
 .btn-primary { 
-  background: var(--gradient-primary); /* Degradado principal */
+  background: var(--gradient-primary);
   color: white;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary:hover {
-  background: var(--gradient-primary-hover); /* Degradado al pasar el mouse */
-  color: white;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  transform: translateY(-5px) scale(1.03); /* Efecto de "levantar" */
-}
-
-/* Botón secundario (para "Vaciar Carrito") */
-.btn-secondary { 
-  background: var(--text-dark); /* Color de fondo oscuro */
-  color: white;
-  border: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-.btn-secondary:hover {
-  background: var(--text-light); /* Color un poco más claro al hover */
+  background: var(--gradient-primary-hover);
   color: white;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   transform: translateY(-5px) scale(1.03);
 }
 
-/* Botón outline (contorno) */
+.btn-secondary { 
+  background: var(--text-dark);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+.btn-secondary:hover {
+  background: var(--text-light);
+  color: white;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px) scale(1.03);
+}
+
 .btn-outline {
-    background-color: transparent; /* Fondo transparente */
-    color: var(--primary-solid); /* Color de texto primario */
-    border: 1px solid var(--primary-solid); /* Borde con color primario */
-    box-shadow: none; /* Sin sombra por defecto */
-    padding: 8px 20px; /* Relleno ajustado */
-    border-radius: var(--border-radius); /* Bordes redondeados */
+    background-color: transparent;
+    color: var(--primary-solid);
+    border: 1px solid var(--primary-solid);
+    box-shadow: none;
+    padding: 8px 20px;
+    border-radius: var(--border-radius);
 }
-
 .btn-outline:hover {
-    background-color: var(--primary-solid); /* Fondo primario al pasar el mouse */
-    color: white; /* Texto blanco al pasar el mouse */
-    transform: translateY(-2px); /* Ligeramente hacia arriba */
-    box-shadow: var(--shadow); /* Sombra al pasar el mouse */
+    background-color: var(--primary-solid);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
-/* Botón terciario (para "Cerrar Sesión") */
 .btn-tertiary {
     background: none;
     border: none;
@@ -209,7 +196,7 @@ span { color: var(--primary-solid); }
   padding: 0 20px;
 }
 
-.section { padding: 80px 0; } /* Relleno estándar para secciones */
+.section { padding: 80px 0; }
 
 .section-title {
   text-align: center;
@@ -219,7 +206,7 @@ span { color: var(--primary-solid); }
 .section-title h1, .section-title h2 {
   font-size: 3.5rem;
   margin-bottom: 15px;
-  color: var(--text); /* Color de texto principal */
+  color: var(--text);
 }
 
 .section-title p {
@@ -239,9 +226,9 @@ span { color: var(--primary-solid); }
 
 /* Padding para el contenido principal (para evitar que la navbar lo cubra) */
 .page-content {
-  padding-top: var(--navbar-height-mobile); /* Ajusta este valor si tu navbar es más alta */
-  flex-grow: 1; /* Permite que el main ocupe el espacio restante */
-  background-color: var(--background); /* Fondo para la mayoría del contenido */
+  padding-top: var(--navbar-height-mobile);
+  flex-grow: 1;
+  background-color: var(--background);
 }
 
 /* ===== Navbar (Barra de Navegación Superior) ===== */
@@ -251,11 +238,11 @@ span { color: var(--primary-solid); }
   left: 0; 
   width: 100%;
   padding: 18px 0;
-  background: rgba(255, 255, 255, 0.85); /* Fondo semitransparente con blur */
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  z-index: 1000; /* Asegura que esté sobre otros elementos */
+  z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease-out, opacity 0.3s ease-out, box-shadow 0.3s ease;
   will-change: transform, opacity, box-shadow; 
@@ -280,32 +267,31 @@ span { color: var(--primary-solid); }
   font-weight: 700;
   color: var(--primary-solid);
   text-transform: uppercase;
-  flex-shrink: 0; /* Evita que el logo se encoja */
+  flex-shrink: 0;
 }
 
-/* Estilos para la imagen del logo dentro del enlace .logo */
 .logo img {
-  height: 48px; /* ¡AJUSTE CLAVE AQUÍ! Tamaño del logo */
-  width: auto; /* Mantiene la proporción */
+  height: 48px;
+  width: auto;
   display: block; 
-  filter: none; /* Asegura que no haya filtros de color extra */
+  filter: none;
 }
 
 .navbar-collapse {
     display: flex;
     align-items: center;
     width: 100%; 
-    justify-content: flex-end; /* Alinea los ítems de navegación a la derecha */
+    justify-content: flex-end;
 }
 
 /* Lista de enlaces de navegación */
 .nav-links-list {
     list-style: none;
     display: flex;
-    gap: 30px; /* Espacio entre enlaces */
+    gap: 30px;
     padding: 0;
     margin: 0; 
-    position: absolute; /* Posiciona la lista de enlaces en el centro */
+    position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -313,12 +299,11 @@ span { color: var(--primary-solid); }
 
 .nav-link {
   font-weight: 500;
-  color: var(--text-light); /* Color de los enlaces */
+  color: var(--text-light);
   padding: 5px 0;
   position: relative;
 }
 
-/* Subrayado animado para enlaces de navegación */
 .nav-link::after {
   content: '';
   position: absolute;
@@ -326,11 +311,11 @@ span { color: var(--primary-solid); }
   left: 0;
   width: 0;
   height: 2px;
-  background-color: var(--primary-solid); /* Color del subrayado */
+  background-color: var(--primary-solid);
   transition: width 0.3s ease;
 }
 .nav-link:hover::after, .nav-link.active::after { width: 100%; }
-.nav-link.active { color: var(--primary-solid); } /* Color del enlace activo */
+.nav-link.active { color: var(--primary-solid); }
 
 .navbar-right-items {
     display: flex;
@@ -343,7 +328,7 @@ span { color: var(--primary-solid); }
     display: flex;
     align-items: center;
     gap: 15px;
-    visibility: hidden; /* Oculto por defecto para evitar parpadeo en la carga */
+    visibility: hidden;
     opacity: 0;
     transition: visibility 0s, opacity 0.3s linear;
 }
@@ -359,7 +344,7 @@ span { color: var(--primary-solid); }
 
 .nav-icon {
   font-size: 1.5rem;
-  color: var(--text); /* Color de los íconos de navegación (ej. carrito) */
+  color: var(--text);
   text-decoration: none;
   position: relative;
   transition: color 0.3s;
@@ -392,7 +377,7 @@ span { color: var(--primary-solid); }
 
 /* Botón de hamburguesa para móviles */
 .navbar-toggler {
-    display: none; /* Oculto por defecto, visible solo en mobile */
+    display: none;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -769,6 +754,569 @@ span { color: var(--primary-solid); }
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 1200px) {
+  .container {
+    max-width: 98vw;
+    padding: 0 10px;
+  }
+  .about-intro-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    max-width: 98vw;
+    padding: 0 6px;
+  }
+  .features-grid,
+  .how-it-works-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .about-intro-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-info, .footer-links, .footer-social-links {
+    min-width: unset;
+    text-align: center;
+  }
+  .section { padding: 48px 0; }
+  .section-title h1, .section-title h2 { font-size: 2.4rem; }
+  .section-title p { font-size: 1.08rem; }
+}
+
+@media (max-width: 600px) {
+  .container {
+    max-width: 99vw;
+    padding: 0 2px;
+  }
+  .section { padding: 32px 0; }
+  .section-title h1, .section-title h2 { font-size: 1.5rem; }
+  .section-title p { font-size: 0.99rem; }
+  .hero-content h1 { font-size: 2rem; }
+  .hero-subtitle { font-size: 1.1rem; }
+  .features-grid, .how-it-works-grid { gap: 12px; }
+  .about-intro-section { padding: 24px 0; }
+  .about-intro-grid { gap: 10px; }
+  .intro-card { padding: 12px; }
+  .feature-item, .step-card { padding: 14px; }
+  .product-grid { gap: 12px; }
+  .product-card { padding: 8px; }
+  .product-info { padding: 12px; }
+  .footer-content { gap: 10px; }
+  .footer { padding: 18px 0; }
+}
+
+@media (max-width: 400px) {
+  body, .container, header, nav, footer {
+    font-size: 0.95rem;
+    padding: 2px;
+  }
+}
+.cart-item-controls .cart-item-quantity {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  color: var(--text);
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='%236e6e73'%3E%3Cpath%20d='M7%2010l5%205%205-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.cart-item-controls .cart-item-quantity:focus {
+  outline: none;
+  border-color: var(--primary-solid);
+  box-shadow: 0 0 0 3px var(--border-focus);
+}
+.cart-item-controls .remove-item-btn {
+  background: #f1f3f5;
+  border: 1px solid #dee2e6;
+  color: #868e96;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 1.2rem;
+  line-height: 24px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+.cart-item-controls .remove-item-btn:hover {
+  background-color: var(--accent-red);
+  color: white;
+  border-color: var(--accent-red);
+}
+
+
+/* =============================================== */
+/* ===== Estilos específicos de Mi Cuenta (cuenta.html) ===== */
+/* =============================================== */
+
+/* Fondo específico para la página de Mi Cuenta */
+.account-page { 
+  background-color: var(--dashboard-background);
+}
+
+/* Layout del Dashboard */
+.account-dashboard-container { 
+  max-width: 1280px; 
+  margin: 0 auto; 
+  padding: 0 15px; 
+}
+.account-dashboard-layout { 
+  display: grid; 
+  grid-template-columns: 300px 1fr; 
+  gap: 38px; 
+  align-items: flex-start; 
+  margin: 0 auto; 
+}
+@media (max-width: 900px) { 
+  .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } 
+  .account-sidebar { position: static; } 
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+/* Sidebar de la cuenta */
+.account-sidebar { 
+  position: sticky; 
+  top: 110px;
+  min-width: 220px; 
+}
+.user-card { 
+  background: var(--gradient-dashboard);
+  color: #fff; 
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center; 
+  padding: 36px 18px 24px 18px; 
+  margin-bottom: 28px; 
+}
+.user-avatar { 
+  background: #fff; 
+  color: var(--dashboard-accent-blue);
+  border-radius: 50%; 
+  width: 72px; height: 72px; 
+  font-size: 2.8rem; 
+  margin: 0 auto 18px auto; 
+  display: flex; align-items: center; justify-content: center; 
+  box-shadow: 0 4px 18px rgba(0,179,134,0.12);
+}
+.user-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -1px; }
+.user-email { font-size: 1rem; opacity: 0.95; margin-bottom: 8px; }
+
+.account-nav { 
+  background: #fff; 
+  border-radius: var(--border-radius); 
+  box-shadow: var(--shadow); 
+  display: flex; 
+  flex-direction: column; 
+  gap: 2px; 
+  padding: 15px 0; 
+}
+.account-nav-link { 
+  padding: 15px 28px; 
+  border-radius: 10px;
+  color: var(--text-dark);
+  font-weight: 500; 
+  text-decoration: none; 
+  display: flex; align-items: center; gap: 18px; 
+  transition: all 0.2s;
+  cursor: pointer; 
+  font-size: 1.08rem;
+}
+.account-nav-link i { 
+  width: 22px; 
+  text-align: center; 
+  font-size: 1.35rem; 
+  color: var(--dashboard-accent-blue);
+  opacity: 0.95;
+}
+.account-nav-link:hover { 
+  background: #f3f8fe;
+  color: var(--dashboard-accent-blue);
+}
+.account-nav-link.active { 
+  background: var(--gradient-dashboard);
+  color: #fff; 
+  font-weight: 700; 
+  box-shadow: 0 6px 18px rgba(0,179,134,0.11); 
+  transform: scale(1.04);
+}
+.account-nav-link.active i { color: #fff; }
+
+/* Contenido principal de la cuenta */
+.account-content { min-height: 500px; }
+.account-section { 
+  display: none; 
+  background: #fff; 
+  padding: 38px 35px 30px 35px; 
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+.account-section.active { display: block; animation: fadeIn 0.45s; }
+
+/* Dashboard (Sección de Resumen) */
+.dashboard-widgets { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+  gap: 30px; 
+  margin-bottom: 36px; 
+}
+.widget-card { 
+  background: #f8f9fa; 
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 10px rgba(0,179,134,0.09);
+  text-align: center; 
+  padding: 28px 12px 22px 12px; 
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.widget-card:hover { 
+  box-shadow: 0 8px 24px rgba(0,179,134,0.19); 
+  transform: translateY(-7px) scale(1.04);
+}
+.widget-card .widget-icon { 
+  font-size: 2.6rem; 
+  margin-bottom: 10px; 
+  color: var(--dashboard-accent-blue);
+}
+.widget-card .widget-value { 
+  font-size: 2rem; 
+  font-weight: 700; 
+  color: var(--dashboard-accent-blue); 
+  margin-bottom: 4px;
+}
+.widget-card .widget-label { 
+  font-size: 1.08rem; 
+  color: var(--text-dark); 
+  opacity: 0.7;
+}
+.widget-card.ahorro { 
+  background: var(--gradient-dashboard);
+  color:#fff;
+}
+.widget-card.ahorro .widget-icon { color: #fff;}
+
+/* Tarjeta de Impacto Sostenible */
+.impact-card {
+  background: var(--gradient-dashboard);
+  color: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  padding: 30px 20px;
+  margin-top: 40px;
+  max-width: 660px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s ease-out;
+}
+.impact-card .icon-large { font-size: 4rem; margin-bottom: 15px; color: #fff; opacity: 0.9;}
+.impact-card h4 { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 10px;}
+.impact-card p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 0;}
+
+/* Acciones Rápidas en el Dashboard */
+.quick-actions { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;}
+.action-card { background: #f8f9fa; border-radius: var(--border-radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s ease;}
+.action-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1);}
+.action-card .action-icon { font-size: 3rem; color: var(--dashboard-accent-blue); margin-bottom: 15px;}
+.action-card h4 { font-size: 1.25rem; margin-bottom: 10px; color: var(--text-dark);}
+.action-card p { font-size: 0.95rem; color: var(--text-light);}
+
+/* Resumen de Pedidos Recientes en el Dashboard */
+.recent-orders-summary { margin-top: 40px; }
+.recent-orders-summary .order-item {
+  background: #fff;
+  border-radius: 9px;
+  margin-bottom: 12px;
+  padding: 15px 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 5px rgba(74,144,226,0.05);
+}
+.recent-orders-summary .order-item strong { color: var(--dashboard-accent-blue); }
+
+/* Sección de Pedidos */
+.order-list { margin-top: 18px; }
+.order-list .order-item { 
+  background: #f8f9fa; 
+  border-radius: 9px; 
+  margin-bottom: 16px; 
+  padding: 20px 18px; 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+  align-items: center; 
+  gap: 12px; 
+  border: 1px solid var(--border); 
+  box-shadow: 0 2px 8px rgba(74,144,226,0.07); 
+  transition: box-shadow 0.3s, transform 0.2s;
+}
+.order-item:hover { 
+  box-shadow: 0 8px 24px rgba(74,144,226,0.19); 
+  transform: translateY(-4px) scale(1.02);
+}
+.order-item-status { 
+  font-weight: bold; 
+  padding: 5px 14px; 
+  border-radius: 99px; 
+  font-size: 0.97rem; 
+  text-align: center;
+}
+.status-completado { color: var(--accent-green-dark); background: rgba(0,179,134,0.11);}
+.status-activo { color: var(--primary-solid-dark); background: rgba(74,144,226,0.11);}
+
+/* Estilos de Formularios */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);}
+.form-control[disabled] { background: #e9ecef; cursor: not-allowed; }
+.form-group input, .form-group textarea, .form-group select { 
+  width: 100%; 
+  padding: 12px; 
+  border: 1px solid var(--border); 
+  border-radius: var(--border-radius); 
+  font-size: 1rem; 
+  font-family: inherit; 
+  color: var(--text-dark);
+  box-sizing: border-box;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+  outline: none; 
+  border-color: var(--dashboard-accent-blue);
+  box-shadow: 0 0 0 3px var(--border-focus);
+}
+/* Ajustes para checkboxes */
+.account-section input[type="checkbox"] {
+  width: auto !important;
+  margin-bottom: 0;
+}
+.account-section label[for$="-notifications"] { 
+  font-weight: normal;
+  margin-bottom: 0;
+}
+.account-section .form-group.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Sección de Direcciones */
+.address-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 15px; flex-wrap: wrap;}
+.address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
+.address-card { 
+  background: #f8f9fa; 
+  border-radius: var(--border-radius); 
+  padding: 22px; 
+  border: 1px solid var(--border); 
+  display: flex; 
+  flex-direction: column; 
+  box-shadow: 0 2px 9px rgba(0,179,134,0.07);
+}
+.address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.address-card-header h4 { 
+  color: var(--dashboard-accent-blue);
+  font-size: 1.2rem; 
+  display: flex; align-items: center; gap: 10px; 
+}
+.address-card-body { flex-grow: 1; margin-bottom: 20px;}
+.address-card-actions { display: flex; align-items: center; gap: 15px; }
+.address-references-text { 
+  font-size:0.9em; 
+  color: var(--text-light); 
+  margin-top: 5px; 
+}
+
+/* Modales de la Cuenta */
+.modal-overlay { 
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+  background: rgba(0,0,0,0.6); 
+  display: flex; justify-content: center; align-items: center; 
+  z-index: 10000; 
+  opacity: 0; visibility: hidden; 
+  transition: all 0.3s;
+}
+.modal-overlay.show { opacity: 1; visibility: visible;}
+.modal-content { 
+  background: #fff; 
+  padding: 38px 28px; 
+  border-radius: var(--border-radius); 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.11); 
+  width: 95%; max-width: 520px; 
+  transform: scale(0.93); 
+  transition: transform 0.3s;
+}
+.modal-overlay.show .modal-content { transform: scale(1);}
+.modal-header { 
+  display: flex; justify-content: space-between; align-items: center; 
+  border-bottom: 1px solid var(--border); 
+  padding-bottom: 15px; margin-bottom: 25px;
+}
+.modal-header h3 { margin: 0; font-weight: 700;}
+.modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-dark);}
+.modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 18px;}
+#address-map { 
+  height: 220px; width: 100%; 
+  border-radius: var(--border-radius); 
+  margin-top: 18px; 
+  border: 1px solid var(--border);
+}
+.modal-content p.map-instruction { 
+  font-size:0.85rem; 
+  color:var(--text-light); 
+  margin-top:10px;
+}
+
+/* Estilos para HRs */
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 30px 0;
+}
+
+/* Estilos para textos de funcionalidad no implementada */
+.account-section p.text-muted {
+  font-size:0.9rem;
+  color:var(--text-light);
+  margin-top:10px;
+}
+
+/* ===== SERVICIOS (services.html) ===== */
+.services-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+gap: 32px;
+margin-top: 40px;
+justify-content: center;
+}
+.service-card {
+background: #fff;
+border-radius: var(--border-radius);
+box-shadow: var(--shadow);
+padding: 32px 24px 24px 24px;
+display: flex;
+flex-direction: column;
+align-items: center;
+text-align: center;
+position: relative;
+transition: box-shadow 0.3s, transform 0.3s;
+border: 1px solid var(--border);
+}
+.service-card:hover {
+box-shadow: var(--shadow-hover);
+transform: translateY(-6px) scale(1.02);
+border-color: var(--primary-solid);
+}
+.service-icon {
+font-size: 3rem;
+margin-bottom: 15px;
+color: var(--accent-green);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.service-card h3 {
+font-size: 1.25rem;
+font-weight: 700;
+color: var(--primary-solid);
+margin-bottom: 8px;
+}
+.service-card p {
+font-size: 1.05rem;
+color: var(--text-dark);
+margin-bottom: 22px;
+flex-grow: 1;
+}
+.service-card .btn {
+background: var(--gradient-primary);
+color: white;
+border: none;
+padding: 9px 24px;
+border-radius: 999px;
+font-weight: 600;
+font-size: 1rem;
+box-shadow: 0 2px 10px rgba(74,144,226,0.13);
+transition: background 0.22s, box-shadow 0.22s, transform 0.18s;
+cursor: pointer;
+margin-top: 8px;
+}
+.service-card .btn:hover {
+background: var(--gradient-primary-hover);
+box-shadow: 0 6px 20px rgba(0,179,134,0.18);
+transform: translateY(-2px) scale(1.04);
+}
+
+@media (max-width: 900px) {
+.services-grid {
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.service-card {
+  max-width: 100%;
+  width: 100%;
+}
+}
+.footer-links ul li a {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+.footer-links ul li a:hover {
+  color: var(--primary-solid);
+}
+.footer-social-links .social-icons-wrapper {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+.footer-social-links .social-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.4rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  transition: background 0.25s, transform 0.2s;
+}
+.footer-social-links .social-icon:hover {
+  background: var(--gradient-primary-hover);
+  transform: scale(1.1) translateY(-2px);
+  color: #fff;
+}
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  margin-top: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
 @media (max-width: 900px) {
   .footer-content {
     flex-direction: column;
@@ -782,7 +1330,6 @@ span { color: var(--primary-solid); }
 }
 
 /* ===== Discreto Notification (Bottom Center) ===== */
-/* NOTA: Estos estilos ahora son parte de este styles.css para ser globales */
 .cart-notification {
   position: fixed;
   left: 50%;
@@ -803,7 +1350,7 @@ span { color: var(--primary-solid); }
   transition: opacity .2s, transform .38s cubic-bezier(.68,-0.55,.27,1.55), background 0.3s;
   display: flex;
   align-items: center;
-  justify-content: center; /* Centrar contenido dentro */
+  justify-content: center;
   gap: 12px;
   text-align: center;
 }
@@ -865,793 +1412,21 @@ span { color: var(--primary-solid); }
   }
 }
 
-/* =============================================== */
-/* ===== MODAL DEL CARRITO ===== */
-/* NOTA: Estos estilos ahora son parte de este styles.css para ser globales */
-/* =============================================== */
-.cart-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  display: none;
-  opacity: 0;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  transition: opacity 0.3s ease-in-out;
-}
-.cart-modal-overlay.active {
-  display: flex;
-  opacity: 1;
-}
-.cart-modal {
-  background-color: white;
-  width: 90%;
-  max-width: 450px;
-  border-radius: 12px;
-  box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  max-height: 90vh; /* Ajustado para permitir scroll */
-  transform: scale(0.95);
-  transition: transform 0.3s ease-in-out;
-}
-.cart-modal-overlay.active .cart-modal {
-    transform: scale(1);
-}
-.cart-modal-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e9ecef;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.cart-modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: var(--primary-solid); /* Color del título del carrito basado en styles.css */
-}
-.close-modal-btn {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  font-weight: 300;
-  cursor: pointer;
-  color: #6c757d;
-  padding: 0;
-  line-height: 1;
-}
-.cart-modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex-grow: 1;
-}
-.cart-modal-footer {
-  padding: 1.5rem;
-  border-top: 1px solid #e9ecef;
-  background-color: #f8f9fa;
-  border-radius: 0 0 12px 12px;
-}
-.cart-summary {
-  margin-bottom: 1.5rem;
-}
-.cart-summary p {
-  display: flex;
-  justify-content: space-between;
-  margin: 0.5rem 0;
-  color: var(--text-dark); /* Color de texto para el subtotal */
-}
-.cart-summary h3 {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-  font-size: 1.4rem;
-  border-top: 2px solid #dee2e6;
-  padding-top: 1rem;
-  color: var(--primary-solid); /* Color del total del carrito basado en styles.css */
-}
-.cart-footer-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-.empty-cart-message {
-    text-align: center;
-    padding: 2rem 0;
-    color: #6c757d;
-}
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-    border-bottom: 1px solid #e9ecef;
-}
-.cart-item:last-child {
-    border-bottom: none;
-}
-.cart-item-details h4 {
-    margin: 0 0 5px 0;
-    font-size: 1rem;
-    color: var(--text); /* Color de texto para el nombre del producto */
-}
-.cart-item-details .price {
-    font-size: 0.9rem;
-    color: var(--text-light); /* Color de texto para el precio unitario */
-}
-.cart-item-details .item-subtotal { /* Estilo para el subtotal del ítem */
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-dark);
-}
-.cart-item-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.cart-item-controls label {
-    font-size: 0.9rem;
-    color: var(--text-light);
-}
-.cart-item-controls .cart-item-quantity {
-    width: 60px;
-    padding: 5px;
-    border: 1px solid var(--border);
-    border-radius: var(--border-radius);
-    font-size: 0.9rem;
-    color: var(--text);
-    background-color: white;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='%236e6e73'%3E%3Cpath%20d='M7%2010l5%205%205-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 20px;
-    cursor: pointer;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.cart-item-controls .cart-item-quantity:focus {
-    outline: none;
-    border-color: var(--primary-solid);
-    box-shadow: 0 0 0 3px var(--border-focus);
-}
-.cart-item-controls .remove-item-btn {
-    background: #f1f3f5;
-    border: 1px solid #dee2e6;
-    color: #868e96;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    font-size: 1.2rem;
-    line-height: 24px;
-    cursor: pointer;
-    text-align: center;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-.cart-item-controls .remove-item-btn:hover {
-    background-color: var(--accent-red);
-    color: white;
-    border-color: var(--accent-red);
-}
-
-
-/* =============================================== */
-/* ===== Estilos específicos de Mi Cuenta (cuenta.html) ===== */
-/* NOTA: ¡Estos estilos ahora están aquí para ser globalmente aplicables a account-related pages! */
-/* =============================================== */
-
-/* Fondo específico para la página de Mi Cuenta */
-/* Se aplica a body.account-page si decides usar una clase en el body para esto */
-.account-page { 
-    background-color: var(--dashboard-background); /* Usamos la variable específica del dashboard */
-}
-
-/* Layout del Dashboard */
-.account-dashboard-container { 
-    max-width: 1280px; 
-    margin: 0 auto; 
-    padding: 0 15px; 
-}
-.account-dashboard-layout { 
-    display: grid; 
-    grid-template-columns: 300px 1fr; 
-    gap: 38px; 
-    align-items: flex-start; 
-    margin: 0 auto; 
-}
-@media (max-width: 900px) { 
-    .account-dashboard-layout { grid-template-columns: 1fr; gap: 18px; } 
-    .account-sidebar { position: static; } 
-    .form-grid { grid-template-columns: 1fr; } /* Asegura que el form-grid se adapte */
-}
-
-/* Sidebar de la cuenta */
-.account-sidebar { 
-    position: sticky; 
-    top: 110px; /* Debajo de la navbar */
-    min-width: 220px; 
-}
-.user-card { 
-    background: var(--gradient-dashboard); /* Degradado del dashboard */
-    color: #fff; 
-    border-radius: var(--border-radius); /* Usamos el border-radius global */
-    box-shadow: var(--shadow); /* Usamos la sombra global */
-    text-align: center; 
-    padding: 36px 18px 24px 18px; 
-    margin-bottom: 28px; 
-}
-.user-avatar { 
-    background: #fff; 
-    color: var(--dashboard-accent-blue); /* Azul para el ícono del avatar */
-    border-radius: 50%; 
-    width: 72px; height: 72px; 
-    font-size: 2.8rem; 
-    margin: 0 auto 18px auto; 
-    display: flex; align-items: center; justify-content: center; 
-    box-shadow: 0 4px 18px rgba(0,179,134,0.12); /* Sombra específica */
-}
-.user-name { font-size: 1.3rem; font-weight: 700; letter-spacing: -1px; }
-.user-email { font-size: 1rem; opacity: 0.95; margin-bottom: 8px; }
-
-.account-nav { 
-    background: #fff; 
-    border-radius: var(--border-radius); 
-    box-shadow: var(--shadow); 
-    display: flex; 
-    flex-direction: column; 
-    gap: 2px; 
-    padding: 15px 0; 
-}
-.account-nav-link { 
-    padding: 15px 28px; 
-    border-radius: 10px; /* Un poco menos redondeado que el global */
-    color: var(--text-dark); /* Color de texto oscuro de styles.css */
-    font-weight: 500; 
-    text-decoration: none; 
-    display: flex; align-items: center; gap: 18px; 
-    transition: all 0.2s; 
-    cursor: pointer; 
-    font-size: 1.08rem;
-}
-.account-nav-link i { 
-    width: 22px; 
-    text-align: center; 
-    font-size: 1.35rem; 
-    color: var(--dashboard-accent-blue); /* Azul para los íconos de navegación */
-    opacity: 0.95;
-}
-.account-nav-link:hover { 
-    background: #f3f8fe; /* Fondo azul claro al hover */
-    color: var(--dashboard-accent-blue); /* Color azul al hover */
-}
-.account-nav-link.active { 
-    background: var(--gradient-dashboard); /* Usar el degradado del dashboard */
-    color: #fff; 
-    font-weight: 700; 
-    box-shadow: 0 6px 18px rgba(0,179,134,0.11); 
-    transform: scale(1.04);
-}
-.account-nav-link.active i { color: #fff; }
-
-/* Contenido principal de la cuenta (secciones internas) */
-.account-content { min-height: 500px; }
-.account-section { 
-    display: none; 
-    background: #fff; 
-    padding: 38px 35px 30px 35px; 
-    border-radius: var(--border-radius); /* Usamos el border-radius global */
-    box-shadow: var(--shadow); /* Usamos la sombra global */
-}
-.account-section.active { display: block; animation: fadeIn 0.45s; }
-
-/* Dashboard (Sección de Resumen) */
-.dashboard-widgets { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-    gap: 30px; 
-    margin-bottom: 36px; 
-}
-.widget-card { 
-    background: #f8f9fa; 
-    border-radius: var(--border-radius); /* Usamos el border-radius global */
-    box-shadow: 0 2px 10px rgba(0,179,134,0.09); /* Sombra específica */
-    text-align: center; 
-    padding: 28px 12px 22px 12px; 
-    transition: box-shadow 0.3s, transform 0.3s;
-}
-.widget-card:hover { 
-    box-shadow: 0 8px 24px rgba(0,179,134,0.19); 
-    transform: translateY(-7px) scale(1.04);
-}
-.widget-card .widget-icon { 
-    font-size: 2.6rem; 
-    margin-bottom: 10px; 
-    color: var(--dashboard-accent-blue); /* Azul para íconos de widgets */
-}
-.widget-card .widget-value { 
-    font-size: 2rem; 
-    font-weight: 700; 
-    color: var(--dashboard-accent-blue); 
-    margin-bottom: 4px;
-}
-.widget-card .widget-label { 
-    font-size: 1.08rem; 
-    color: var(--text-dark); 
-    opacity: 0.7;
-}
-.widget-card.ahorro { 
-    background: var(--gradient-dashboard); /* Degradado del dashboard */
-    color:#fff; 
-}
-.widget-card.ahorro .widget-icon { color: #fff;}
-
-/* Tarjeta de Impacto Sostenible (reemplazo de gráfica) */
-.impact-card {
-    background: var(--gradient-dashboard); /* Degradado del dashboard */
-    color: #fff;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    text-align: center;
-    padding: 30px 20px;
-    margin-top: 40px;
-    max-width: 660px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.5s ease-out;
-}
-.impact-card .icon-large { font-size: 4rem; margin-bottom: 15px; color: #fff; opacity: 0.9;}
-.impact-card h4 { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 10px;}
-.impact-card p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 0;}
-
-/* Acciones Rápidas en el Dashboard */
-.quick-actions { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;}
-.action-card { background: #f8f9fa; border-radius: var(--border-radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s ease;}
-.action-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1);}
-.action-card .action-icon { font-size: 3rem; color: var(--dashboard-accent-blue); margin-bottom: 15px;} /* Azul para íconos de acción */
-.action-card h4 { font-size: 1.25rem; margin-bottom: 10px; color: var(--text-dark);}
-.action-card p { font-size: 0.95rem; color: var(--text-light);}
-
-/* Resumen de Pedidos Recientes en el Dashboard */
-.recent-orders-summary { margin-top: 40px; }
-.recent-orders-summary .order-item {
-    background: #fff;
-    border-radius: 9px;
-    margin-bottom: 12px;
-    padding: 15px 18px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    align-items: center;
-    gap: 10px;
-    border: 1px solid var(--border);
-    box-shadow: 0 1px 5px rgba(74,144,226,0.05);
-}
-.recent-orders-summary .order-item strong { color: var(--dashboard-accent-blue); } /* Azul para el texto fuerte */
-
-/* Sección de Pedidos */
-.order-list { margin-top: 18px; }
-.order-list .order-item { 
-    background: #f8f9fa; 
-    border-radius: 9px; 
-    margin-bottom: 16px; 
-    padding: 20px 18px; 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
-    align-items: center; 
-    gap: 12px; 
-    border: 1px solid var(--border); 
-    box-shadow: 0 2px 8px rgba(74,144,226,0.07); 
-    transition: box-shadow 0.3s, transform 0.2s;
-}
-.order-item:hover { 
-    box-shadow: 0 8px 24px rgba(74,144,226,0.19); 
-    transform: translateY(-4px) scale(1.02);
-}
-.order-item-status { 
-    font-weight: bold; 
-    padding: 5px 14px; 
-    border-radius: 99px; 
-    font-size: 0.97rem; 
-    text-align: center;
-}
-.status-completado { color: var(--accent-green-dark); background: rgba(0,179,134,0.11);}
-.status-activo { color: var(--primary-solid-dark); background: rgba(74,144,226,0.11);}
-
-/* Estilos de Formularios (dentro de Perfil, Direcciones, Seguridad, Notificaciones) */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-.form-group { margin-bottom: 20px; }
-.form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);}
-.form-control[disabled] { background: #e9ecef; cursor: not-allowed; }
-.form-group input, .form-group textarea, .form-group select { 
-    width: 100%; 
-    padding: 12px; 
-    border: 1px solid var(--border); 
-    border-radius: var(--border-radius); 
-    font-size: 1rem; 
-    font-family: inherit; 
-    color: var(--text-dark);
-    box-sizing: border-box; /* Asegura que padding y border estén incluidos en el ancho */
-}
-.form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
-    outline: none; 
-    border-color: var(--dashboard-accent-blue); /* Color de enfoque azul */
-    box-shadow: 0 0 0 3px var(--border-focus);
-}
-/* Ajustes para checkboxes */
-.account-section input[type="checkbox"] {
-    width: auto !important; /* Anula el 100% de .form-control */
-    margin-bottom: 0;
-}
-.account-section label[for$="-notifications"] { 
-    font-weight: normal;
-    margin-bottom: 0;
-}
-.account-section .form-group.checkbox-group { /* Si usas un div para agrupar checkbox+label */
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-/* Sección de Direcciones */
-.address-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 15px; flex-wrap: wrap;}
-.address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
-.address-card { 
-    background: #f8f9fa; 
-    border-radius: var(--border-radius); 
-    padding: 22px; 
-    border: 1px solid var(--border); 
-    display: flex; 
-    flex-direction: column; 
-    box-shadow: 0 2px 9px rgba(0,179,134,0.07);
-}
-.address-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.address-card-header h4 { 
-    color: var(--dashboard-accent-blue); /* Azul para el título de la dirección */
-    font-size: 1.2rem; 
-    display: flex; align-items: center; gap: 10px; 
-}
-.address-card-body { flex-grow: 1; margin-bottom: 20px;}
-.address-card-actions { display: flex; align-items: center; gap: 15px; }
-.address-references-text { 
-    font-size:0.9em; 
-    color: var(--text-light); 
-    margin-top: 5px; 
-}
-
-/* Modales de la Cuenta (Ej. Modal de Añadir/Editar Dirección) */
-.modal-overlay { 
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.6); 
-    display: flex; justify-content: center; align-items: center; 
-    z-index: 10000; 
-    opacity: 0; visibility: hidden; 
-    transition: all 0.3s;
-}
-.modal-overlay.show { opacity: 1; visibility: visible;}
-.modal-content { 
-    background: #fff; 
-    padding: 38px 28px; 
-    border-radius: var(--border-radius); 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.11); 
-    width: 95%; max-width: 520px; 
-    transform: scale(0.93); 
-    transition: transform 0.3s;
-}
-.modal-overlay.show .modal-content { transform: scale(1);}
-.modal-header { 
-    display: flex; justify-content: space-between; align-items: center; 
-    border-bottom: 1px solid var(--border); 
-    padding-bottom: 15px; margin-bottom: 25px;
-}
-.modal-header h3 { margin: 0; font-weight: 700;}
-.modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-dark);}
-.modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 18px;}
-#address-map { 
-    height: 220px; width: 100%; 
-    border-radius: var(--border-radius); 
-    margin-top: 18px; 
-    border: 1px solid var(--border);
-}
-.modal-content p.map-instruction { 
-    font-size:0.85rem; 
-    color:var(--text-light); 
-    margin-top:10px;
-}
-
-/* Estilos para HRs */
-hr {
-    border: 0;
-    border-top: 1px solid #eee;
-    margin: 30px 0;
-}
-
-/* Estilos para textos de funcionalidad no implementada */
-.account-section p.text-muted { /* Usar una clase para estos párrafos */
-    font-size:0.9rem;
-    color:var(--text-light); /* Usar text-light global */
-    margin-top:10px;
-}
-/* Reemplazo de p:last-of-type por clases más específicas si es posible */
-
-
-/* ===== SERVICIOS (services.html) ===== */
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: 32px;
-  margin-top: 40px;
-  justify-content: center;
-}
-.service-card {
-  background: #fff;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  padding: 32px 24px 24px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  position: relative;
-  transition: box-shadow 0.3s, transform 0.3s;
-  border: 1px solid var(--border);
-}
-.service-card:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-6px) scale(1.02);
-  border-color: var(--primary-solid);
-}
-.service-icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
-  color: var(--accent-green);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.service-card h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--primary-solid);
-  margin-bottom: 8px;
-}
-.service-card p {
-  font-size: 1.05rem;
-  color: var(--text-dark);
-  margin-bottom: 22px;
-  flex-grow: 1;
-}
-.service-card .btn { /* El btn en service-card usa el estilo global de .btn */
-  background: var(--gradient-primary);
-  color: white;
-  border: none;
-  padding: 9px 24px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 1rem;
-  box-shadow: 0 2px 10px rgba(74,144,226,0.13);
-  transition: background 0.22s, box-shadow 0.22s, transform 0.18s;
-  cursor: pointer;
-  margin-top: 8px;
-}
-.service-card .btn:hover {
-  background: var(--gradient-primary-hover);
-  box-shadow: 0 6px 20px rgba(0,179,134,0.18);
-  transform: translateY(-2px) scale(1.04);
-}
-
-@media (max-width: 900px) {
-  .services-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .service-card {
-    max-width: 100%;
-    width: 100%;
-  }
-}
-
-/* ===== Footer (Pie de Página) ===== */
-.footer {
-  background-color: var(--text);
-  color: white;
-  text-align: center;
-  padding: 30px 0;
-  margin-top: auto;
-}
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 30px;
-  padding: 20px 0;
-}
-.footer-info, .footer-links, .footer-social-links {
-  flex: 1;
-  min-width: 200px;
-  text-align: left;
-}
-.footer-info h3, .footer-links h3, .footer-social-links h3 {
-  color: white;
-  margin-bottom: 15px;
-  font-size: 1.3rem;
-}
-.footer-info p {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 10px;
-  color: rgba(255, 255, 255, 0.8);
-}
-.footer-links ul {
-  list-style: none;
-  padding: 0;
-}
-.footer-links ul li {
-  margin-bottom: 8px;
-}
-.footer-links ul li a {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.95rem;
-  transition: color 0.3s ease;
-}
-.footer-links ul li a:hover {
-  color: var(--primary-solid);
-}
-.footer-social-links .social-icons-wrapper {
-  display: flex;
-  gap: 16px;
-  margin-top: 8px;
-}
-.footer-social-links .social-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--gradient-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.4rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
-  transition: background 0.25s, transform 0.2s;
-}
-.footer-social-links .social-icon:hover {
-  background: var(--gradient-primary-hover);
-  transform: scale(1.1) translateY(-2px);
-  color: #fff;
-}
-.footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 20px;
-  margin-top: 20px;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-@media (max-width: 900px) {
-  .footer-content {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .footer-info, .footer-links, .footer-social-links {
-    min-width: unset;
-    text-align: center;
-  }
-}
-
-/* ===== Discreto Notification (Bottom Center) ===== */
-/* NOTA: Estos estilos ahora son parte de este styles.css para ser globales */
-.cart-notification {
-  position: fixed;
-  left: 50%;
-  bottom: 42px;
-  transform: translateX(-50%) translateY(60px);
-  min-width: 220px;
-  max-width: 350px;
-  padding: 13px 28px;
-  border-radius: 99px;
-  font-size: 1.08rem;
-  font-weight: 600;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.13);
-  z-index: 3200;
-  color: #fff;
-  background: var(--accent-green);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s, transform .38s cubic-bezier(.68,-0.55,.27,1.55), background 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Centrar contenido dentro */
-  gap: 12px;
-  text-align: center;
-}
-.cart-notification.error {
-  background: var(--accent-red);
-}
-.cart-notification.visible { /* La clase ahora es 'visible' en main.js */
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
-  animation: popBottom .55s cubic-bezier(.68,-0.55,.27,1.55);
-}
-@keyframes popBottom {
-  0% { transform: scale(0); opacity: 0; }
-  60% { transform: scale(1.1); opacity: 1; }
-  90% { opacity: 1; transform: translateX(-50%) translateY(0) scale(0.97);}
-  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1);}
-}
-.cart-notification .notification-content {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  justify-content: center;
-}
-.cart-notification .notification-icon-wrapper {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.92);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.cart-notification .notification-icon svg {
-  width: 18px;
-  height: 18px;
-  color: var(--accent-green);
-}
-.cart-notification.error .notification-icon svg {
-  color: var(--accent-red);
-}
-.cart-notification p {
-  margin: 0;
-  font-size: 1.08rem;
-  color: #fff;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.09);
-}
-@media (max-width: 700px) {
-  .cart-notification {
-    bottom: 14px;
-    min-width: unset;
-    max-width: 95vw;
-    font-size: 0.95rem;
-    padding: 10px 12px;
-  }
-}
-
 /* ========================================================= */
 /* ESTILOS REDISEÑADOS PARA PÁGINA "NOSOTROS" (CON VARIABLES) */
 /* ========================================================= */
 
-/* --- Estructura y Fondos --- */
-/* Usamos el color de fondo del dashboard para secciones alternas */
 .section-light-gray {
   background-color: var(--dashboard-background, #f8f9fa);
 }
 
-/* --- 1. Sección Héroe --- */
 .section-hero {
-  /* Usamos un degradado sutil con tus colores para el fondo */
   background: linear-gradient(to bottom, rgba(0, 179, 134, 0.1), rgba(74, 144, 226, 0.1));
   color: var(--text);
   padding: 80px 15px;
 }
 .hero-title {
-  font-size: 3.5em; /* Ligeramente ajustado para no ser tan grande como H1 global */
+  font-size: 3.5em;
   font-weight: 700;
   margin-bottom: 20px;
 }
@@ -1662,7 +1437,6 @@ hr {
   color: var(--text-light);
 }
 
-/* --- 2. Sección Impacto --- */
 .impacto-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1673,7 +1447,7 @@ hr {
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   padding: 30px 20px;
-  border-top: 4px solid var(--accent-green); /* Usamos tu verde de acento */
+  border-top: 4px solid var(--accent-green);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .impacto-card:hover {
@@ -1695,7 +1469,6 @@ hr {
   color: var(--text-light);
 }
 
-/* --- 3. Sección Historia (Timeline) --- */
 .timeline {
   position: relative;
   max-width: 800px;
@@ -1705,7 +1478,7 @@ hr {
   content: '';
   position: absolute;
   width: 3px;
-  background-color: var(--accent-green); /* Verde para la línea */
+  background-color: var(--accent-green);
   top: 0;
   bottom: 0;
   left: 50%;
@@ -1728,7 +1501,7 @@ hr {
   position: absolute;
   width: 24px;
   height: 24px;
-  background-color: var(--dashboard-background, #f8f9fa); /* Color del fondo de la sección */
+  background-color: var(--dashboard-background, #f8f9fa);
   border: 4px solid var(--accent-green);
   top: 25px;
   border-radius: 50%;
@@ -1746,12 +1519,11 @@ hr {
 }
 .timeline-content h3 {
   font-weight: 600;
-  font-size: 1.5rem; /* Ajustamos el tamaño a tus H3/H4 */
-  color: var(--primary-solid); /* Usamos tu azul primario */
+  font-size: 1.5rem;
+  color: var(--primary-solid);
   margin-bottom: 8px;
 }
 
-/* --- 4. Sección "Por Qué Elegirnos" --- */
 .benefits-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -1775,7 +1547,7 @@ hr {
   margin-bottom: 20px;
 }
 .benefit-card h3 {
-  font-size: 1.6rem; /* Ajustado a tu escala tipográfica */
+  font-size: 1.6rem;
   margin-bottom: 10px;
   color: var(--text);
 }
@@ -1784,7 +1556,6 @@ hr {
   line-height: 1.6;
 }
 
-/* --- 5. Sección Equipo --- */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -1809,12 +1580,12 @@ hr {
   transform: scale(1.05);
 }
 .team-member h3 {
-  font-size: 1.6rem; /* Ajustado */
+  font-size: 1.6rem;
   font-weight: 600;
   margin-bottom: 5px;
 }
 .team-member p {
-  color: var(--primary-solid); /* Títulos en azul primario */
+  color: var(--primary-solid);
   font-weight: 500;
   font-size: 1.1em;
 }
@@ -1862,7 +1633,7 @@ hr {
 
 .faq-answer {
   display: grid;
-  grid-template-rows: 0fr; /* Inicia colapsado */
+  grid-template-rows: 0fr;
   transition: grid-template-rows 0.4s ease-out;
 }
 
@@ -1877,22 +1648,21 @@ hr {
   padding-top: 20px;
 }
 
-/* Estado activo cuando se hace clic */
 .faq-item.active .faq-question .icon {
   transform: rotate(45deg);
   color: var(--accent-green);
 }
 
 .faq-item.active .faq-answer {
-  grid-template-rows: 1fr; /* Expande el contenedor */
+  grid-template-rows: 1fr;
 }
-/* Fuerza que los estilos inline de JS dominen sobre los de Flatpickr */
+
+/* Flatpickr overrides */
 .flatpickr-calendar .flatpickr-day {
   box-shadow: none !important;
   border: none !important;
 }
 
-/* Evita que los estados hover, selected, today sobreescriban el color inline */
 .flatpickr-day:hover,
 .flatpickr-day.selected,
 .flatpickr-day.today {
