@@ -1971,24 +1971,46 @@ hr {
   }
 }
 @media (max-width: 900px) {
-  .navbar-user-actions .btn-outline {
-    font-size: 0.85rem;          /* Texto más pequeño */
-    padding: 2px 8px;            /* Menos espacio interno */
-    min-width: 64px;             /* Botón más compacto */
-    height: 32px;                /* Opcional: altura menor */
-  }
-  .nav-icons .cart-icon {
-    font-size: 1.1rem;           /* Ícono más pequeño */
-    margin-left: 4px;
+  .navbar-content {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse; /* Cambia el orden visual: primero lo de la derecha */
+    justify-content: flex-start;
+    width: 100%;
+    position: relative;
   }
   .navbar-toggler {
-    font-size: 1.1rem;           /* Hamburguesa más pequeña */
-    padding: 4px;                /* Menos espacio alrededor */
-    width: 32px;                 /* Opcional: ajusta tamaño */
-    height: 32px;
+    order: 1; /* Hamburguesa primero (más a la derecha) */
+    margin-left: 0;
+    margin-right: 0;
+    z-index: 102;
   }
   .navbar-right-items {
-    gap: 6px;                    /* Menos espacio entre ellos */
-    padding: 0 4px;
+    order: 2; /* Carrito e iniciar sesión en medio */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .logo {
+    order: 3; /* Logo hasta la izquierda */
+    margin-right: auto;
+    margin-left: 0;
+  }
+  .logo img {
+    height: 32px !important;
+    width: auto !important;
+    max-width: 140px;
+  }
+  .navbar-user-actions .btn-outline {
+    font-size: 1rem;
+    padding: 6px 16px;
+    min-width: 90px;
+    box-sizing: border-box;
+  }
+  .nav-icons .cart-icon {
+    font-size: 1.7rem;
+    margin-left: 8px;
   }
 }
