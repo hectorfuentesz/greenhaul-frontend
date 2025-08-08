@@ -6,72 +6,151 @@
     <title>Preguntas Frecuentes - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-
     <style>
+        /* Fondo general y header */
+        body {
+            background: linear-gradient(90deg, #f8f9fa 80%, #e7eaf3 100%);
+        }
+        header {
+            box-shadow: 0 2px 10px rgba(44, 62, 80, 0.07);
+        }
+        .logo img {
+            height: 48px;
+            max-width: 160px;
+            transition: height 0.2s;
+        }
+        @media (max-width: 900px) {
+            .logo img { height: 42px; max-width: 120px; }
+            .navbar-right-items { gap: 5px; }
+            #loginBtn.btn-outline { font-size: 0.85rem; padding: 4px 10px; min-width: 60px; height: 22px; line-height: 1.2; border-radius: 7px; }
+        }
+        /* --- FAQ styles --- */
+        .faq-section-bg {
+            position: relative;
+            background: linear-gradient(120deg, #e7eaf3 0%, #f8f9fa 100%);
+            padding-bottom: 60px;
+        }
+        .faq-section-bg::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('assets/img/faq-bg.svg'), linear-gradient(120deg, #e7eaf3 0%, #f8f9fa 100%);
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        .section-title {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section-title h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-solid, #218c74);
+        }
+        .section-title p {
+            font-size: 1.1rem;
+            color: #555;
+        }
         .faq-container {
-            max-width: 850px;
-            margin: 40px auto;
-            padding: 0 15px;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 12px;
+            position: relative;
+            z-index: 1;
         }
         .faq-item {
-            background-color: #ffffff;
+            background: #fff;
             border: 1px solid #e7eaf3;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 14px rgba(44, 62, 80, 0.04);
+            margin-bottom: 26px;
             overflow: hidden;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            position: relative;
         }
         .faq-item:hover {
-            border-color: var(--accent-green);
+            border-color: var(--accent-green, #218c74);
+            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.08);
         }
         .faq-question {
-            padding: 20px 25px;
+            padding: 22px 28px 22px 28px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.15rem;
+            font-size: 1.18rem;
             font-weight: 600;
             color: #2c3e50;
+            transition: background 0.2s;
         }
         .faq-question .icon {
-            font-size: 1.2rem;
-            color: var(--primary-solid);
-            transition: transform 0.3s ease-in-out;
+            font-size: 1.45rem;
+            color: var(--primary-solid, #218c74);
+            transition: transform 0.3s, color 0.3s;
         }
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease-out;
+            transition: max-height 0.4s cubic-bezier(.56,.07,.86,.58);
+            background: #f8f9fa;
         }
         .faq-answer p {
-            padding: 0 25px 25px 25px;
+            padding: 0 28px 24px 28px;
             margin: 0;
-            font-size: 1.05rem;
+            font-size: 1.08rem;
             line-height: 1.7;
-            color: #555;
+            color: #444;
             border-top: 1px solid #e7eaf3;
-            padding-top: 20px;
+            padding-top: 18px;
         }
-        /* Estado activo cuando se hace clic */
         .faq-item.active .faq-question .icon {
             transform: rotate(45deg);
-            color: var(--accent-green);
+            color: var(--accent-green, #218c74);
         }
-        
-        /* CORRECCIÓN: Se eliminó la regla de CSS vacía que causaba el error. */
-        /* La animación de altura ahora es manejada 100% por el JavaScript. */
-
+        .faq-item.active .faq-question {
+            background: linear-gradient(90deg, #e7eaf3 60%, #f8f9fa 100%);
+        }
+        /* Decorativos de íconos */
+        .faq-item::before {
+            content: '\f059';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 13px; top: 22px;
+            font-size: 1.4rem;
+            color: #e7eaf3;
+        }
+        /* Responsive */
+        @media (max-width: 600px) {
+            .faq-section-bg { padding-bottom: 32px; }
+            .faq-container { padding: 0 2vw; }
+            .section-title h2 { font-size: 1.4rem; }
+            .faq-question, .faq-answer p { font-size: 0.99rem; padding-left: 16px; padding-right: 16px; }
+        }
     </style>
-    </head>
+</head>
 <body>
     <header>
         <nav class="navbar">
             <div class="container navbar-content">
                 <a href="index.html" class="logo">
-                    <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="height: 55px;">
+                    <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
                 </a>
+                <div class="navbar-right-items">
+                    <div class="navbar-user-actions" id="navbarUserActions">
+                        <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                        <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+                        <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                    <div class="nav-icons">
+                        <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </a>
+                    </div>
+                </div>
                 <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
                     <span class="toggler-icon"></span>
                     <span class="toggler-icon"></span>
@@ -86,30 +165,17 @@
                         <li><a href="contacto.html" class="nav-link">Contacto</a></li>
                         <li><a href="faq.html" class="nav-link active">Preguntas</a></li>
                     </ul>
-                    <div class="navbar-right-items">
-                        <div class="navbar-user-actions" id="navbarUserActions">
-                            <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
-                            <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
-                            <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-                        </div>
-                        <div class="nav-icons">
-                            <a href="#" class="nav-icon cart-icon" id="cartIcon">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="cart-count" id="cartCount">0</span>
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </nav>
     </header>
 
     <main class="page-content">
-        <section class="section">
+        <section class="faq-section-bg">
             <div class="container">
                 <div class="section-title">
-                    <h2>Preguntas Frecuentes (FAQ)</h2>
-                    <p>Encuentra respuestas a las dudas más comunes sobre nuestro servicio.</p>
+                    <h2><i class="fas fa-question-circle" style="color:#218c74;"></i> Preguntas Frecuentes (FAQ)</h2>
+                    <p>Encuentra respuestas a las dudas más comunes sobre nuestro servicio. Si tienes otra pregunta, escríbenos por WhatsApp o correo.</p>
                 </div>
 
                 <div class="faq-container">
@@ -122,7 +188,6 @@
                             <p>Actualmente, ofrecemos servicio de entrega y recolección en toda la Ciudad de México y el Área Metropolitana. Si tienes dudas sobre una ubicación específica, no dudes en contactarnos.</p>
                         </div>
                     </div>
-
                     <div class="faq-item">
                         <div class="faq-question">
                             <span>¿Con cuánta anticipación debo reservar mis cajas?</span>
@@ -132,7 +197,6 @@
                             <p>Recomendamos reservar con al menos 48 horas de anticipación para asegurar la disponibilidad y coordinar la entrega en el horario que más te convenga. Sin embargo, haremos lo posible por atender pedidos urgentes.</p>
                         </div>
                     </div>
-
                     <div class="faq-item">
                         <div class="faq-question">
                             <span>¿Las cajas vienen limpias y desinfectadas?</span>
@@ -142,7 +206,6 @@
                             <p>¡Absolutamente! La higiene es nuestra prioridad. Después de cada uso, todas nuestras cajas pasan por un riguroso proceso de limpieza y desinfección industrial para garantizar que las recibas en perfectas condiciones, como si fueran nuevas.</p>
                         </div>
                     </div>
-
                     <div class="faq-item">
                         <div class="faq-question">
                             <span>¿Qué pasa si necesito las cajas por más tiempo?</span>
@@ -191,6 +254,7 @@
         </div>
     </footer>
     
+    <!-- Carrito y notificaciones igual que en otras páginas -->
     <div class="cart-modal-overlay" id="cartModalOverlay">
         <div class="cart-modal">
             <div class="cart-modal-header">
@@ -219,21 +283,16 @@
     </div>
 
     <script type="module" src="assets/js/main.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            /**
-             * LÓGICA 1: SESIÓN DE USUARIO EN EL HEADER
-             */
+            // Lógica de sesión del usuario (igual que en otras páginas)
             const loginBtn = document.getElementById('loginBtn');
             const accountLink = document.getElementById('accountLink');
             const userNameSpan = document.getElementById('userName');
             const logoutBtn = document.getElementById('logoutBtn');
-
             function updateUserLoginStatus() {
                 try {
-                    const loggedInUserStr = localStorage.getItem('greenhaulUser'); // Usamos una clave consistente
+                    const loggedInUserStr = localStorage.getItem('greenhaulUser');
                     if (loggedInUserStr) {
                         const loggedInUser = JSON.parse(loggedInUserStr);
                         if (loginBtn) loginBtn.style.display = 'none';
@@ -249,7 +308,6 @@
                     console.error("Error al leer datos de usuario:", error);
                 }
             }
-
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     localStorage.removeItem('greenhaulUser');
@@ -258,47 +316,35 @@
             }
             updateUserLoginStatus();
 
-            /**
-             * LÓGICA 2: AÑO ACTUAL EN EL FOOTER
-             */
+            // Año en footer
             const yearSpan = document.getElementById('current-year');
-            if (yearSpan) {
-                yearSpan.textContent = new Date().getFullYear();
-            }
+            if (yearSpan) { yearSpan.textContent = new Date().getFullYear(); }
 
-            /**
-             * LÓGICA 3: ACORDEÓN DE PREGUNTAS FRECUENTES (FAQ)
-             */
+            // Animación acordeón FAQ
             const faqContainer = document.querySelector('.faq-container');
             if (faqContainer) {
                 faqContainer.addEventListener('click', (e) => {
                     const questionHeader = e.target.closest('.faq-question');
                     if (!questionHeader) return;
-
                     const currentItem = questionHeader.parentElement;
                     const answer = currentItem.querySelector('.faq-answer');
                     const isActive = currentItem.classList.contains('active');
-
-                    // Cierra todos los demás items
                     document.querySelectorAll('.faq-item').forEach(item => {
                         if (item !== currentItem) {
                             item.classList.remove('active');
                             item.querySelector('.faq-answer').style.maxHeight = null;
                         }
                     });
-
-                    // Abre o cierra el item actual
                     if (isActive) {
                         currentItem.classList.remove('active');
                         answer.style.maxHeight = null;
                     } else {
                         currentItem.classList.add('active');
-                        // Calcula la altura necesaria para la animación
                         answer.style.maxHeight = answer.scrollHeight + "px";
                     }
                 });
             }
         });
     </script>
-    </body>
+</body>
 </html>
