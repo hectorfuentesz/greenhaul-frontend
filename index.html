@@ -4,37 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>greenhauL - Mudanzas Sostenibles</title>
+    <!-- Bootstrap CDN agregado -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/pages.css">
 </head>
 <body>
     <header>
-        <nav class="navbar">
-            <div class="container navbar-content">
-            <a href="index.html" class="logo">
-            <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
-        </a>
-                <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
-                    <span class="toggler-icon"></span>
-                    <span class="toggler-icon"></span>
-                    <span class="toggler-icon"></span>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a href="index.html" class="navbar-brand logo">
+                    <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" style="max-height:40px;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse" id="navbarCollapse">
-                    <ul class="nav-links-list">
-                        <li><a href="index.html" class="nav-link active">Inicio</a></li>
-                        <li><a href="productos.html" class="nav-link">Productos</a></li>
-                        <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-                        <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-                        <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-                        <li><a href="faq.html" class="nav-link">Preguntas</a></li>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a href="index.html" class="nav-link active">Inicio</a></li>
+                        <li class="nav-item"><a href="productos.html" class="nav-link">Productos</a></li>
+                        <li class="nav-item"><a href="servicios.html" class="nav-link">Servicios</a></li>
+                        <li class="nav-item"><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                        <li class="nav-item"><a href="contacto.html" class="nav-link">Contacto</a></li>
+                        <li class="nav-item"><a href="faq.html" class="nav-link">Preguntas</a></li>
                     </ul>
-                    <div class="navbar-right-items">
-                    <div class="navbar-user-actions" id="navbarUserActions">
-                            <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                    <div class="d-flex align-items-center ms-lg-3">
+                        <div class="navbar-user-actions me-2" id="navbarUserActions">
+                            <a href="login.html" class="btn btn-outline-primary btn-sm" id="loginBtn">Iniciar Sesión</a>
                             <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
-                            <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                            <button class="btn btn-tertiary btn-sm" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
                         </div>
                         <div class="nav-icons">
                             <a href="#" class="nav-icon cart-icon" id="cartIcon">
@@ -49,91 +48,148 @@
     </header>
 
     <main class="page-content">
+        <!-- Hero Section -->
         <section class="hero">
-            <div class="container hero-content">
-                <p class="hero-subtitle">¡Tu mudanza, más fácil y ecológica!</p>
-                <h1>Mudanzas <span class="highlight-sostenible">Sostenibles</span> <br> Sin <span class="highlight-complicaciones">Complicaciones</span></h1>
-                <p>Alquila cajas reutilizables de alta resistencia para tu mudanza y contribuye al cuidado del planeta. ¡Menos residuos, más eficiencia!</p>
-                <div class="hero-buttons">
-                    <a href="productos.html" class="btn btn-primary">Ver Productos</a>
-                    <a href="servicios.html" class="btn btn-secondary">Explorar Servicios</a>
+            <div class="container py-5">
+                <div class="row align-items-center hero-content">
+                    <div class="col-12 text-center">
+                        <p class="hero-subtitle">¡Tu mudanza, más fácil y ecológica!</p>
+                        <h1>Mudanzas <span class="highlight-sostenible">Sostenibles</span> <br> Sin <span class="highlight-complicaciones">Complicaciones</span></h1>
+                        <p>Alquila cajas reutilizables de alta resistencia para tu mudanza y contribuye al cuidado del planeta. ¡Menos residuos, más eficiencia!</p>
+                        <div class="hero-buttons d-flex justify-content-center gap-2 flex-wrap">
+                            <a href="productos.html" class="btn btn-primary">Ver Productos</a>
+                            <a href="servicios.html" class="btn btn-secondary">Explorar Servicios</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- Features Section -->
         <section class="section features-section">
-            <div class="container">
-                <div class="section-title">
+            <div class="container py-4">
+                <div class="section-title text-center mb-4">
                     <h2>¿Por qué elegir <span class="highlight-sostenible">GreenHaul</span>?</h2>
                     <p>Descubre los beneficios de una mudanza inteligente y respetuosa con el medio ambiente.</p>
                 </div>
-                <div class="features-grid">
-                    <div class="feature-item"><span class="feature-icon">🌿</span><h3>Eco-amigable</h3><p>Reduce tu huella de carbono al evitar el uso de cajas de cartón desechables.</p></div>
-                    <div class="feature-item"><span class="feature-icon">🛡️</span><h3>Protección Superior</h3><p>Nuestras cajas de plástico son más resistentes y protegen mejor tus pertenencias.</p></div>
-                    <div class="feature-item"><span class="feature-icon">♻️</span><h3>Reutilizables</h3><p>Diseñadas para múltiples usos, promoviendo un ciclo de vida sostenible.</p></div>
-                    <div class="feature-item"><span class="feature-icon">📦</span><h3>Logística Sencilla</h3><p>Entrega y recolección a domicilio para tu comodidad.</p></div>
+                <div class="row features-grid text-center">
+                    <div class="col-12 col-md-3 mb-3 feature-item">
+                        <span class="feature-icon">🌿</span>
+                        <h3>Eco-amigable</h3>
+                        <p>Reduce tu huella de carbono al evitar el uso de cajas de cartón desechables.</p>
+                    </div>
+                    <div class="col-12 col-md-3 mb-3 feature-item">
+                        <span class="feature-icon">🛡️</span>
+                        <h3>Protección Superior</h3>
+                        <p>Nuestras cajas de plástico son más resistentes y protegen mejor tus pertenencias.</p>
+                    </div>
+                    <div class="col-12 col-md-3 mb-3 feature-item">
+                        <span class="feature-icon">♻️</span>
+                        <h3>Reutilizables</h3>
+                        <p>Diseñadas para múltiples usos, promoviendo un ciclo de vida sostenible.</p>
+                    </div>
+                    <div class="col-12 col-md-3 mb-3 feature-item">
+                        <span class="feature-icon">📦</span>
+                        <h3>Logística Sencilla</h3>
+                        <p>Entrega y recolección a domicilio para tu comodidad.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- How it works Section -->
         <section class="section how-it-works-section">
-             <div class="container">
-                <div class="section-title">
+            <div class="container py-4">
+                <div class="section-title text-center mb-4">
                     <h2>¿Cómo Funciona?</h2>
                     <p>Alquilar tus cajas EcoBox es rápido y sencillo en 4 pasos.</p>
                 </div>
-                <div class="how-it-works-grid">
-                    <div class="step-card"><i class="fas fa-hand-pointer step-icon"></i><h3>Elige tus cajas</h3><p>Selecciona el paquete de cajas que mejor se adapte a tu mudanza.</p></div>
-                    <div class="step-card"><i class="fas fa-truck-ramp-box step-icon"></i><h3>Recíbelas</h3><p>Te entregamos las cajas limpias y listas para usar en tu domicilio.</p></div>
-                    <div class="step-card"><i class="fas fa-box-open step-icon"></i> <h3>Empaca y Múdate</h3><p>Usa nuestras resistentes cajas para empacar todo fácilmente.</p></div>
-                    <div class="step-card"><i class="fas fa-truck-moving step-icon"></i><h3>Las Recogemos</h3><p>Una vez que termines, pasamos a recoger las cajas vacías en tu nueva dirección.</p></div>
+                <div class="row how-it-works-grid text-center">
+                    <div class="col-12 col-md-3 mb-3 step-card">
+                        <i class="fas fa-hand-pointer step-icon"></i>
+                        <h3>Elige tus cajas</h3>
+                        <p>Selecciona el paquete de cajas que mejor se adapte a tu mudanza.</p>
+                    </div>
+                    <div class="col-12 col-md-3 mb-3 step-card">
+                        <i class="fas fa-truck-ramp-box step-icon"></i>
+                        <h3>Recíbelas</h3>
+                        <p>Te entregamos las cajas limpias y listas para usar en tu domicilio.</p>
+                    </div>
+                    <div class="col-12 col-md-3 mb-3 step-card">
+                        <i class="fas fa-box-open step-icon"></i>
+                        <h3>Empaca y Múdate</h3>
+                        <p>Usa nuestras resistentes cajas para empacar todo fácilmente.</p>
+                    </div>
+                    <div class="col-12 col-md-3 mb-3 step-card">
+                        <i class="fas fa-truck-moving step-icon"></i>
+                        <h3>Las Recogemos</h3>
+                        <p>Una vez que termines, pasamos a recoger las cajas vacías en tu nueva dirección.</p>
+                    </div>
                 </div>
             </div>
         </section>
         
-        <!-- SECCIÓN CALCULADORA ELIMINADA -->
-
+        <!-- About Intro Section -->
         <section class="section about-intro-section">
-            <div class="container">
-                <div class="section-title"><h2>Nuestra <span class="highlight-sostenible">Misión</span></h2></div>
-                <div class="about-intro-grid">
-                    <div class="intro-card"><span class="intro-icon">🌱</span><h3>Sostenibilidad</h3><p>Comprometidos con la reducción de residuos.</p><a href="nosotros.html" class="btn btn-primary btn-small">Más...</a></div>
-                    <div class="intro-card"><span class="intro-icon">✨</span><h3>Innovación</h3><p>Buscamos mejorar constantemente.</p><a href="servicios.html" class="btn btn-primary btn-small">Servicios</a></div>
-                    <div class="intro-card"><span class="intro-icon">🤝</span><h3>Comunidad</h3><p>Creemos en el poder de la colaboración.</p><a href="contacto.html" class="btn btn-primary btn-small">Únete</a></div>
+            <div class="container py-4">
+                <div class="section-title text-center mb-4">
+                    <h2>Nuestra <span class="highlight-sostenible">Misión</span></h2>
+                </div>
+                <div class="row about-intro-grid text-center">
+                    <div class="col-12 col-md-4 mb-3 intro-card">
+                        <span class="intro-icon">🌱</span>
+                        <h3>Sostenibilidad</h3>
+                        <p>Comprometidos con la reducción de residuos.</p>
+                        <a href="nosotros.html" class="btn btn-primary btn-small">Más...</a>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3 intro-card">
+                        <span class="intro-icon">✨</span>
+                        <h3>Innovación</h3>
+                        <p>Buscamos mejorar constantemente.</p>
+                        <a href="servicios.html" class="btn btn-primary btn-small">Servicios</a>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3 intro-card">
+                        <span class="intro-icon">🤝</span>
+                        <h3>Comunidad</h3>
+                        <p>Creemos en el poder de la colaboración.</p>
+                        <a href="contacto.html" class="btn btn-primary btn-small">Únete</a>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer bg-light pt-4">
         <div class="container footer-content">
-            <div class="footer-info">
-                <h3>greenhauL</h3>
-                <p>Mudanzas sostenibles, sin complicaciones.</p>
-                <p><i class="fas fa-phone-alt"></i> +52 56 5569 0681</p>
-                <p><i class="fas fa-envelope"></i> soporte@greenhauL.com.mx</p>
-                <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
-            </div>
-            <div class="footer-links">
-                <h3>Enlaces Rápidos</h3>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="productos.html">Productos</a></li>
-                    <li><a href="servicios.html">Servicios</a></li>
-                    <li><a href="nosotros.html">Nosotros</a></li>
-                    <li><a href="contacto.html">Contacto</a></li>
-                </ul>
-            </div>
-            <div class="footer-social-links">
-                <h3>Síguenos</h3>
-                <div class="social-icons-wrapper">
-                    <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <div class="row">
+                <div class="col-12 col-md-4 mb-3 footer-info">
+                    <h3>greenhauL</h3>
+                    <p>Mudanzas sostenibles, sin complicaciones.</p>
+                    <p><i class="fas fa-phone-alt"></i> +52 56 5569 0681</p>
+                    <p><i class="fas fa-envelope"></i> soporte@greenhauL.com.mx</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Ciudad de México</p>
+                </div>
+                <div class="col-12 col-md-4 mb-3 footer-links">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="productos.html">Productos</a></li>
+                        <li><a href="servicios.html">Servicios</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-4 mb-3 footer-social-links">
+                    <h3>Síguenos</h3>
+                    <div class="social-icons-wrapper d-flex gap-2">
+                        <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="footer-bottom">
+        <div class="footer-bottom text-center py-2">
             &copy; <span id="current-year">2025</span> greenhauL. Todos los derechos reservados.
         </div>
     </footer>
@@ -165,6 +221,8 @@
         </div>
     </div>
     
+    <!-- Bootstrap JS Bundle (necesario para responsive navbar) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="/assets/js/main.js"></script>
 </body>
 </html>
