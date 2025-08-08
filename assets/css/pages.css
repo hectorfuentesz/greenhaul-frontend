@@ -389,3 +389,129 @@ body.dark-theme {
   /* ===================================================================== */
   /* ========== FIN: ESTILOS PARA LA PÁGINA DE PRODUCTOS ========== */
   /* ===================================================================== */
+  @media (max-width: 900px) {
+    .navbar-content {
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .navbar-toggler {
+      display: block;
+    }
+    .navbar-collapse {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100vw;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+      z-index: 100;
+      padding: 16px 0;
+    }
+    .navbar-collapse.active {
+      display: block;
+    }
+    .nav-links-list {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      margin: 0;
+      padding: 0 24px;
+      position: static; /* Para que no se posicione en el centro en móvil */
+      left: auto;
+      top: auto;
+      transform: none;
+    }
+    .navbar-right-items {
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      margin-top: 0px;
+      padding: 0 12px;
+    }
+  }
+  /* Responsive para pantallas pequeñas (móvil) */
+  @media (max-width: 600px) {
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.7rem; }
+    h3 { font-size: 1.3rem; }
+    h4 { font-size: 1.15rem; }
+    .hero-content h1 { font-size: 2.2rem; }
+    .hero-content p { font-size: 1rem; }
+    .section-title h1, .section-title h2 { font-size: 2rem; }
+    .section-title p { font-size: 1rem; }
+    .container, .hero-content, .features-grid, .about-intro-grid, .how-it-works-grid {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+    }
+  
+    /* Grids en una sola columna */
+    .features-grid,
+    .how-it-works-grid,
+    .about-intro-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px !important;
+    }
+    .feature-item,
+    .step-card,
+    .intro-card {
+      width: 100% !important;
+      margin: 0 auto !important;
+    }
+  }
+  @media (max-width: 900px) {
+    .navbar-content {
+      display: flex;
+      align-items: center;
+      flex-direction: row-reverse; /* Cambia el orden visual: primero lo de la derecha */
+      justify-content: flex-start;
+      width: 100%;
+      position: relative;
+    }
+    .navbar-toggler {
+      order: 1; /* Hamburguesa primero (más a la derecha) */
+      margin-left: 0;
+      margin-right: 0;
+      z-index: 102;
+    }
+    .navbar-right-items {
+      order: 2; /* Carrito e iniciar sesión en medio */
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .logo {
+      order: 3; /* Logo hasta la izquierda */
+      margin-right: auto;
+      margin-left: 0;
+    }
+    .logo img {
+      height: 36px !important;
+      width: auto !important;
+      max-width: 140px;
+    }
+    .navbar-user-actions .btn-outline {
+      font-size: 1rem;
+      padding: 6px 16px;
+      min-width: 90px;
+      box-sizing: border-box;
+    }
+    .nav-icons .cart-icon {
+      font-size: 1rem;
+      margin-left: 8px;
+    }
+  }
+  @media (max-width: 900px) {
+    /* Solo el botón de iniciar sesión */
+    #loginBtn.btn-outline {
+      font-size: 0.85rem;     /* Texto más chico */
+      padding: 4px 10px;      /* Menos espacio interno */
+      min-width: 60px;        /* Opcional: ancho mínimo menor */
+      height: 22px;           /* Menos alto */
+      line-height: 1.2;       /* Texto más centrado */
+      border-radius: 7px;     /* Opcional: bordes más suaves */
+    }
+  }
