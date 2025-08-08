@@ -1974,24 +1974,34 @@ hr {
   .navbar-content {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Distribuye el logo a la izq y los botones/hamburguesa a la derecha */
-    position: relative;
+    flex-direction: row-reverse; /* Cambia el orden visual: primero lo de la derecha */
+    justify-content: flex-start;
     width: 100%;
+    position: relative;
+  }
+  .navbar-toggler {
+    order: 1; /* Hamburguesa primero (más a la derecha) */
+    margin-left: 0;
+    margin-right: 0;
+    z-index: 102;
+  }
+  .navbar-right-items {
+    order: 2; /* Carrito e iniciar sesión en medio */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .logo {
+    order: 3; /* Logo hasta la izquierda */
+    margin-right: auto;
+    margin-left: 0;
   }
   .logo img {
     height: 32px !important;
     width: auto !important;
-    max-width: 140px; /* Evita que el logo crezca demasiado */
-  }
-  .navbar-right-items {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: 12px;
-    /* Elimina position absolute */
-    position: static;
-    padding: 0;
-    margin: 0;
+    max-width: 140px;
   }
   .navbar-user-actions .btn-outline {
     font-size: 1rem;
@@ -2002,9 +2012,5 @@ hr {
   .nav-icons .cart-icon {
     font-size: 1.7rem;
     margin-left: 8px;
-  }
-  .navbar-toggler {
-    margin-left: 12px;
-    z-index: 102;
   }
 }
