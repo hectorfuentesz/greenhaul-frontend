@@ -1989,7 +1989,7 @@ hr {
     order: 2; /* Carrito e iniciar sesión en medio */
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
     margin-left: 0;
     margin-right: 0;
   }
