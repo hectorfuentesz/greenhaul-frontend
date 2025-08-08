@@ -515,3 +515,111 @@ body.dark-theme {
       border-radius: 7px;     /* Opcional: bordes más suaves */
     }
   }
+  @media (max-width: 800px) {
+    /* Hero y contenedor principal */
+    .tech-hero {
+      min-height: 60vh;
+      padding: 24px 0;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .hero-title {
+      font-size: 2.1rem !important;
+      padding: 0 10px;
+    }
+    .hero-subtitle, .hero-description {
+      font-size: 1.1rem !important;
+      padding: 0 10px;
+    }
+  
+    /* Stats grid: recuadros */
+    .stats-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .stat-card {
+      padding: 20px 10px;
+      margin: 0 auto;
+      max-width: 95vw;
+    }
+    .stat-number {
+      font-size: 2rem !important;
+    }
+  
+    /* Línea de tiempo completamente vertical */
+    .tech-timeline {
+      padding: 50px 0;
+    }
+    .timeline-container {
+      max-width: 100vw;
+      padding: 0 10px;
+    }
+    .timeline-container::after {
+      left: 18px !important;
+      width: 3px;
+      margin-left: 0;
+    }
+    .timeline-item {
+      width: 100% !important;
+      padding-left: 45px !important;
+      padding-right: 0 !important;
+      left: 0 !important;
+      margin-bottom: 32px;
+    }
+    .timeline-item::after {
+      left: 0 !important;
+      top: 24px !important;
+      width: 18px !important;
+      height: 18px !important;
+    }
+    .timeline-content {
+      padding: 20px 10px;
+    }
+  
+    /* Innovación: recuadros */
+    .innovation-grid {
+      grid-template-columns: 1fr !important;
+      gap: 18px !important;
+      padding: 0 5px;
+    }
+    .innovation-card {
+      padding: 18px 10px !important;
+      margin: 0 auto;
+      max-width: 97vw;
+      font-size: 1rem;
+    }
+    .innovation-icon {
+      font-size: 2.2rem !important;
+      margin-bottom: 10px;
+    }
+  
+    /* Tarjetas del equipo */
+    .team-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px !important;
+      align-items: center !important;
+    }
+    .team-card-enhanced {
+      max-width: 97vw !important;
+      padding: 18px 10px !important;
+      margin: 0 auto;
+    }
+    .team-photo-enhanced {
+      width: 80px !important;
+      height: 80px !important;
+      margin-bottom: 10px !important;
+    }
+    .team-card-enhanced h4 {
+      font-size: 1.1rem !important;
+    }
+    .team-card-enhanced p {
+      font-size: 0.95rem !important;
+    }
+  
+    /* General container padding */
+    .container {
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+    }
+  }
