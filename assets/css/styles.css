@@ -1999,7 +1999,7 @@ hr {
     margin-left: 0;
   }
   .logo img {
-    height: 32px !important;
+    height: 36px !important;
     width: auto !important;
     max-width: 140px;
   }
@@ -2010,7 +2010,7 @@ hr {
     box-sizing: border-box;
   }
   .nav-icons .cart-icon {
-    font-size: 1.7rem;
+    font-size: 1rem;
     margin-left: 8px;
   }
 }
