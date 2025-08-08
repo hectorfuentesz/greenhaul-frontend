@@ -1974,7 +1974,7 @@ hr {
   .navbar-right-items {
     position: absolute;
     right: 56px;
-    top: 9px;
+    top: 7px;
     display: flex;
     flex-direction: row;
     align-items: center;
