@@ -1933,11 +1933,11 @@ hr {
     transform: none;
   }
   .navbar-right-items {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    margin-top: 16px;
-    padding: 0 24px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0px;
+    padding: 0 12px;
   }
 }
 /* Responsive para pantallas pequeñas (móvil) */
