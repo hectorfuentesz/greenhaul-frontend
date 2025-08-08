@@ -2014,3 +2014,14 @@ hr {
     margin-left: 8px;
   }
 }
+@media (max-width: 900px) {
+  /* Solo el botón de iniciar sesión */
+  #loginBtn.btn-outline {
+    font-size: 0.85rem;     /* Texto más chico */
+    padding: 2px 10px;      /* Menos espacio interno */
+    min-width: 60px;        /* Opcional: ancho mínimo menor */
+    height: 28px;           /* Menos alto */
+    line-height: 1.2;       /* Texto más centrado */
+    border-radius: 7px;     /* Opcional: bordes más suaves */
+  }
+}
