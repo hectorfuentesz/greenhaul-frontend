@@ -2020,7 +2020,7 @@ hr {
     font-size: 0.85rem;     /* Texto más chico */
     padding: 4px 10px;      /* Menos espacio interno */
     min-width: 60px;        /* Opcional: ancho mínimo menor */
-    height: 28px;           /* Menos alto */
+    height: 22px;           /* Menos alto */
     line-height: 1.2;       /* Texto más centrado */
     border-radius: 7px;     /* Opcional: bordes más suaves */
   }
