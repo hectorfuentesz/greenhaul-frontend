@@ -6,9 +6,7 @@
     <title>Preguntas Frecuentes - GreenHaul</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-
     <style>
-        /* Fondo general y header */
         body {
             background: linear-gradient(90deg, #f8f9fa 80%, #e7eaf3 100%);
         }
@@ -20,20 +18,32 @@
             max-width: 160px;
             transition: height 0.2s;
         }
-        /* HEADER ALINEADO Y RESPONSIVO */
+        /* HEADER FLEX Y ALINEADO */
         .navbar-content {
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          width: 100%;
           padding: 0 16px;
         }
         .logo {
-          margin-right: auto;
+          margin-right: 24px;
+        }
+        .navbar-collapse {
+          flex-grow: 1;
+        }
+        .nav-links-list {
+          display: flex;
+          gap: 22px;
+          align-items: center;
+          margin: 0;
+          padding: 0;
+          list-style: none;
         }
         .navbar-right-items {
           display: flex;
           align-items: center;
           gap: 12px;
+          margin-left: auto;
         }
         .navbar-user-actions a,
         .navbar-user-actions button {
@@ -42,18 +52,22 @@
         .nav-icons {
           margin-left: 10px;
         }
+        .navbar-toggler {
+          margin-left: 12px;
+        }
         @media (max-width: 900px) {
           .navbar-content {
             flex-wrap: wrap;
             gap: 8px;
             padding: 0 6px;
           }
-          .navbar-right-items {
-            gap: 6px;
-          }
           .logo img {
             height: 38px !important;
             max-width: 110px !important;
+          }
+          .navbar-right-items {
+            gap: 6px;
+            margin-left: 0;
           }
           #loginBtn.btn-outline {
             font-size: 0.85rem;
@@ -62,8 +76,11 @@
             height: 22px;
             border-radius: 7px;
           }
+          .nav-links-list {
+            flex-direction: column;
+            gap: 10px;
+          }
         }
-
         /* --- FAQ styles --- */
         .faq-section-bg {
             position: relative;
@@ -106,7 +123,7 @@
             border-radius: 16px;
             box-shadow: 0 4px 14px rgba(44, 62, 80, 0.04);
             margin-bottom: 26px;
-            overflow: visible; /* Corregido para desplegar */
+            overflow: visible;
             transition: border-color 0.3s, box-shadow 0.3s;
             position: relative;
         }
@@ -137,7 +154,6 @@
             background: #f8f9fa;
         }
         .faq-item.active .faq-answer {
-            /* Para que el contenido se vea completo */
             overflow: visible;
         }
         .faq-answer p {
@@ -157,7 +173,6 @@
         .faq-item.active .faq-question {
             background: linear-gradient(90deg, #e7eaf3 60%, #f8f9fa 100%);
         }
-        /* Decorativos de íconos */
         .faq-item::before {
             content: '\f059';
             font-family: 'Font Awesome 6 Free';
@@ -167,7 +182,6 @@
             font-size: 1.4rem;
             color: #e7eaf3;
         }
-        /* Responsive */
         @media (max-width: 600px) {
             .faq-section-bg { padding-bottom: 32px; }
             .faq-container { padding: 0 2vw; }
@@ -179,41 +193,41 @@
 <body>
     <header>
         <nav class="navbar">
-            <div class="container navbar-content">
-                <a href="index.html" class="logo">
-                    <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
-                </a>
-                <div class="navbar-right-items">
-                    <div class="navbar-user-actions" id="navbarUserActions">
-                        <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
-                        <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
-                        <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-                    </div>
-                    <div class="nav-icons">
-                        <a href="#" class="nav-icon cart-icon" id="cartIcon">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count" id="cartCount">0</span>
-                        </a>
-                    </div>
-                </div>
-                <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
-                    <span class="toggler-icon"></span>
-                    <span class="toggler-icon"></span>
-                    <span class="toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse" id="navbarCollapse">
-                    <ul class="nav-links-list">
-                        <li><a href="index.html" class="nav-link">Inicio</a></li>
-                        <li><a href="productos.html" class="nav-link">Productos</a></li>
-                        <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-                        <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-                        <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-                        <li><a href="faq.html" class="nav-link active">Preguntas</a></li>
-                    </ul>
-                </div>
+          <div class="container navbar-content">
+            <a href="index.html" class="logo">
+              <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
+            </a>
+            <div class="navbar-collapse" id="navbarCollapse">
+              <ul class="nav-links-list">
+                <li><a href="index.html" class="nav-link">Inicio</a></li>
+                <li><a href="productos.html" class="nav-link">Productos</a></li>
+                <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+                <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                <li><a href="faq.html" class="nav-link active">Preguntas</a></li>
+              </ul>
             </div>
+            <div class="navbar-right-items">
+              <div class="navbar-user-actions" id="navbarUserActions">
+                <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+                <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+              </div>
+              <div class="nav-icons">
+                <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span class="cart-count" id="cartCount">0</span>
+                </a>
+              </div>
+            </div>
+            <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
+              <span class="toggler-icon"></span>
+              <span class="toggler-icon"></span>
+              <span class="toggler-icon"></span>
+            </button>
+          </div>
         </nav>
-    </header>
+      </header>
 
     <main class="page-content">
         <section class="faq-section-bg">
