@@ -1974,37 +1974,43 @@ hr {
   .navbar-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    position: relative;
+    flex-direction: row-reverse; /* Cambia el orden visual: primero lo de la derecha */
+    justify-content: flex-start;
     width: 100%;
+    position: relative;
   }
-  .logo img {
-    height: 48px !important;      /* Un poco más grande */
-    max-width: 220px;             /* Ajusta si quieres aún más grande */
-    width: auto !important;
+  .navbar-toggler {
+    order: 1; /* Hamburguesa primero (más a la derecha) */
+    margin-left: 0;
+    margin-right: 0;
+    z-index: 102;
   }
   .navbar-right-items {
+    order: 2; /* Carrito e iniciar sesión en medio */
     display: flex;
-    flex-direction: row;
     align-items: center;
     gap: 10px;
-    margin: 0;
-    padding: 0 8px;               /* Menos padding lateral */
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .logo {
+    order: 3; /* Logo hasta la izquierda */
+    margin-right: auto;
+    margin-left: 0;
+  }
+  .logo img {
+    height: 32px !important;
+    width: auto !important;
+    max-width: 140px;
   }
   .navbar-user-actions .btn-outline {
-    font-size: 0.95rem;           /* Más pequeño */
-    padding: 4px 10px;            /* Más compacto */
-    min-width: 70px;              /* Opcional: más corto */
+    font-size: 1rem;
+    padding: 6px 16px;
+    min-width: 90px;
     box-sizing: border-box;
   }
   .nav-icons .cart-icon {
-    font-size: 1.3rem;            /* Más pequeño */
-    margin-left: 4px;
-  }
-  .navbar-toggler {
-    font-size: 1.3rem;            /* Más pequeño el icono */
-    padding: 6px;                 /* Menos padding */
-    margin-left: 6px;
-    z-index: 102;
+    font-size: 1.7rem;
+    margin-left: 8px;
   }
 }
