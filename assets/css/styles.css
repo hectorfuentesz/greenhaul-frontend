@@ -1970,3 +1970,20 @@ hr {
     margin: 0 auto !important;
   }
 }
+@media (max-width: 900px) {
+  .navbar-right-items {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    z-index: 101;
+    padding: 0;
+    margin: 0;
+  }
+  .navbar-content {
+    position: relative;
+  }
+}
