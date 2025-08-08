@@ -1973,7 +1973,7 @@ hr {
 @media (max-width: 900px) {
   .navbar-right-items {
     position: absolute;
-    right: 16px;
+    right: 56px;
     top: 12px;
     display: flex;
     flex-direction: row;
