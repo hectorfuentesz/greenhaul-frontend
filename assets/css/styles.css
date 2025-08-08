@@ -1970,3 +1970,44 @@ hr {
     margin: 0 auto !important;
   }
 }
+/* Ajusta logo y botones en móvil */
+@media (max-width: 600px) {
+  .navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo img {
+    height: 36px !important; /* Más pequeño */
+  }
+  .navbar-icons-mobile {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-left: auto;
+  }
+  .nav-icon {
+    font-size: 1.7rem;
+    color: var(--primary-solid);
+    padding: 8px;
+  }
+  .cart-count {
+    font-size: 0.8rem;
+    top: -6px;
+    right: -10px;
+    min-width: 15px;
+  }
+  /* Oculta acciones de usuario del menú en móvil */
+  .navbar-user-actions, .navbar-right-items {
+    display: none !important;
+  }
+}
+/* En escritorio los íconos sólo aparecen en el menú normal */
+.navbar-icons-mobile {
+  display: none;
+}
+@media (max-width: 600px) {
+  .navbar-icons-mobile {
+    display: flex;
+  }
+}
