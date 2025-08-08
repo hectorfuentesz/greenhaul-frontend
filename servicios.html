@@ -14,35 +14,39 @@
     <header>
         <nav class="navbar">
             <div class="container navbar-content">
+                <!-- Logo -->
                 <a href="index.html" class="logo">
-                    <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul" />
+                    <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
                 </a>
+                <!-- Botón hamburguesa -->
                 <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
                     <span class="toggler-icon"></span>
                     <span class="toggler-icon"></span>
                     <span class="toggler-icon"></span>
                 </button>
+                <!-- Menú (solo navegación!) -->
                 <div class="navbar-collapse" id="navbarCollapse">
                     <ul class="nav-links-list">
-                        <li><a href="index.html" class="nav-link">Inicio</a></li>
+                        <li><a href="index.html" class="nav-link active">Inicio</a></li>
                         <li><a href="productos.html" class="nav-link">Productos</a></li>
                         <li><a href="servicios.html" class="nav-link">Servicios</a></li>
                         <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
                         <li><a href="contacto.html" class="nav-link">Contacto</a></li>
                         <li><a href="faq.html" class="nav-link">Preguntas</a></li>
                     </ul>
-                    <div class="navbar-right-items">
-                        <div class="navbar-user-actions" id="navbarUserActions">
-                            <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
-                            <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
-                            <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
-                        </div>
-                        <div class="nav-icons">
-                            <a href="#" class="nav-icon cart-icon" id="cartIcon">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="cart-count" id="cartCount">0</span>
-                            </a>
-                        </div>
+                </div>
+                <!-- Acciones: login y carrito, siempre visibles -->
+                <div class="navbar-right-items">
+                    <div class="navbar-user-actions" id="navbarUserActions">
+                        <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
+                        <a href="cuenta.html" class="nav-link" id="accountLink" style="display: none;">Hola, <span id="userName"></span></a>
+                        <button class="btn-tertiary" id="logoutBtn" style="display: none;" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                    <div class="nav-icons">
+                        <a href="#" class="nav-icon cart-icon" id="cartIcon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </a>
                     </div>
                 </div>
             </div>
