@@ -1940,3 +1940,33 @@ hr {
     padding: 0 24px;
   }
 }
+/* Responsive para pantallas pequeñas (móvil) */
+@media (max-width: 600px) {
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.7rem; }
+  h3 { font-size: 1.3rem; }
+  h4 { font-size: 1.15rem; }
+  .hero-content h1 { font-size: 2.2rem; }
+  .hero-content p { font-size: 1rem; }
+  .section-title h1, .section-title h2 { font-size: 2rem; }
+  .section-title p { font-size: 1rem; }
+  .container, .hero-content, .features-grid, .about-intro-grid, .how-it-works-grid {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  /* Grids en una sola columna */
+  .features-grid,
+  .how-it-works-grid,
+  .about-intro-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .feature-item,
+  .step-card,
+  .intro-card {
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+}
