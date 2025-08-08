@@ -1899,3 +1899,44 @@ hr {
     background: inherit !important;
     color: inherit !important;
 }
+@media (max-width: 900px) {
+  .navbar-content {
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .navbar-toggler {
+    display: block;
+  }
+  .navbar-collapse {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100vw;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    z-index: 100;
+    padding: 16px 0;
+  }
+  .navbar-collapse.active {
+    display: block;
+  }
+  .nav-links-list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin: 0;
+    padding: 0 24px;
+    position: static; /* Para que no se posicione en el centro en móvil */
+    left: auto;
+    top: auto;
+    transform: none;
+  }
+  .navbar-right-items {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 0 24px;
+  }
+}
