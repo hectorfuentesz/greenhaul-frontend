@@ -188,6 +188,21 @@
             .section-title h2 { font-size: 1.4rem; }
             .faq-question, .faq-answer p { font-size: 0.99rem; padding-left: 16px; padding-right: 16px; }
         }
+        .faq-item {
+  overflow: visible !important;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s cubic-bezier(.56,.07,.86,.58);
+  background: #f8f9fa;
+  display: block;
+}
+
+.faq-item.active .faq-answer {
+  overflow: visible !important;
+}
     </style>
 </head>
 <body>
