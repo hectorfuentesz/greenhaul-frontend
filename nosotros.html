@@ -5,11 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nosotros - La Revolución en Mudanzas | EcoBox</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/pages.css">
-    
     <style>
+        /* HEADER FLEX Y ALINEADO */
+        .navbar-content {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          padding: 0 16px;
+        }
+        .logo {
+          flex: 0 0 auto;
+          margin-right: 32px;
+        }
+        .navbar-collapse {
+          flex: 1 1 auto;
+          display: flex;
+          align-items: center;
+        }
+        .nav-links-list {
+          display: flex;
+          gap: 22px;
+          align-items: center;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+        .navbar-right-items {
+          flex: 0 0 auto;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          margin-left: 32px;
+        }
+        .navbar-user-actions a,
+        .navbar-user-actions button {
+          margin-right: 8px;
+        }
+        .nav-icons {
+          margin-left: 10px;
+        }
+        .navbar-toggler {
+          margin-left: 16px;
+        }
+        @media (max-width: 900px) {
+          .navbar-content {
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 0 6px;
+          }
+          .logo img {
+            height: 38px !important;
+            max-width: 110px !important;
+          }
+          .navbar-right-items {
+            gap: 8px;
+            margin-left: 0;
+          }
+          .nav-links-list {
+            flex-direction: column;
+            gap: 10px;
+          }
+        }
         /* ===== ANIMACIONES Y EFECTOS TECNOLÓGICOS ===== */
         .tech-hero {
             position: relative;
@@ -20,7 +78,6 @@
             background-color: var(--background);
             overflow: hidden;
         }
-        
         .tech-hero::before {
             content: '';
             position: absolute;
@@ -31,34 +88,28 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
             animation: gridMove 20s linear infinite;
         }
-        
         @keyframes gridMove {
             0% { transform: translate(0, 0); }
             100% { transform: translate(10px, 10px); }
         }
-        
         .floating-elements {
             position: absolute;
             width: 100%;
             height: 100%;
             overflow: hidden;
         }
-        
         .floating-element {
             position: absolute;
             opacity: 0.1;
             animation: float 15s infinite ease-in-out;
         }
-        
         .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
         .floating-element:nth-child(2) { top: 60%; left: 80%; animation-delay: 5s; }
         .floating-element:nth-child(3) { top: 80%; left: 20%; animation-delay: 10s; }
-        
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(180deg); }
         }
-        
         .hero-content {
             position: relative;
             z-index: 2;
@@ -67,7 +118,6 @@
             max-width: 800px;
             padding: 0 20px;
         }
-        
         .hero-title {
             font-size: 4rem;
             font-weight: 800;
@@ -76,7 +126,6 @@
             transform: translateY(50px);
             animation: slideUp 1s ease-out 0.5s forwards;
         }
-        
         .hero-subtitle {
             font-size: 1.5rem;
             margin-bottom: 30px;
@@ -84,7 +133,6 @@
             transform: translateY(30px);
             animation: slideUp 1s ease-out 1s forwards;
         }
-        
         .hero-description {
             font-size: 1.2rem;
             line-height: 1.6;
@@ -93,28 +141,24 @@
             transform: translateY(30px);
             animation: slideUp 1s ease-out 1.5s forwards;
         }
-        
         @keyframes slideUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
         .stats-section {
             background-color: #f8f9fa;
             color: var(--text-dark);
             padding: 80px 0;
             position: relative;
         }
-        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 40px;
             margin-top: 40px;
         }
-        
         .stat-card {
             text-align: center;
             padding: 30px;
@@ -124,35 +168,25 @@
             border: 1px solid var(--border);
             transition: transform 0.3s ease;
         }
-        
         .stat-card:hover {
             transform: translateY(-10px);
         }
-        
         .stat-number {
             font-size: 3rem;
             font-weight: 800;
             color: var(--accent-green);
             margin-bottom: 10px;
         }
-
-        /* ================================================= */
-        /* INICIO: CÓDIGO CSS CORREGIDO PARA LA LÍNEA DE TIEMPO */
-        /* ================================================= */
-
         .tech-timeline {
             padding: 100px 0;
             background-color: var(--background);
             position: relative;
         }
-        
         .timeline-container {
             position: relative;
             max-width: 1000px;
             margin: 0 auto;
         }
-        
-        /* La línea vertical central */
         .timeline-container::after {
             content: '';
             position: absolute;
@@ -161,62 +195,45 @@
             top: 0;
             bottom: 0;
             left: 50%;
-            margin-left: -2px; /* La mitad del ancho para centrarla perfectamente */
+            margin-left: -2px;
         }
-        
-        /* El contenedor de cada evento de la línea de tiempo */
         .timeline-item {
             padding: 10px 40px;
             position: relative;
             background-color: inherit;
             width: 50%;
-            /* Animación de entrada */
             opacity: 0;
             transform: translateY(50px);
             transition: all 0.6s ease;
         }
-
-        /* Hace visible el elemento cuando entra en la pantalla */
         .timeline-item.visible {
             opacity: 1;
             transform: translateY(0);
         }
-        
-        /* Posiciona los elementos impares a la izquierda */
         .timeline-item:nth-child(odd) {
             left: 0;
         }
-        
-        /* Posiciona los elementos pares a la derecha */
         .timeline-item:nth-child(even) {
             left: 50%;
         }
-        
-        /* El punto circular en la línea */
         .timeline-item::after {
             content: '';
             position: absolute;
             width: 20px;
             height: 20px;
-            top: 30px; /* Alineación vertical del punto */
+            top: 30px;
             background: var(--accent-green);
             border: 4px solid var(--background);
             border-radius: 50%;
             z-index: 1;
             box-shadow: 0 0 0 4px var(--accent-green);
         }
-        
-        /* Posiciona el punto para los elementos de la izquierda */
         .timeline-item:nth-child(odd)::after {
-            right: -10px; /* (Ancho del punto / 2) */
+            right: -10px;
         }
-        
-        /* Posiciona el punto para los elementos de la derecha */
         .timeline-item:nth-child(even)::after {
-            left: -10px; /* (Ancho del punto / 2) */
+            left: -10px;
         }
-        
-        /* El cuadro de contenido */
         .timeline-content {
             padding: 30px;
             background: var(--background);
@@ -225,18 +242,12 @@
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
         }
-        
-        /* ================================================= */
-        /* FIN: CÓDIGO CSS CORREGIDO PARA LA LÍNEA DE TIEMPO   */
-        /* ================================================= */
-        
         .innovation-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             margin-top: 60px;
         }
-        
         .innovation-card {
             background: var(--background);
             border-radius: 20px;
@@ -248,7 +259,6 @@
             overflow: hidden;
             border: 1px solid var(--border);
         }
-        
         .innovation-card::before {
             content: '';
             position: absolute;
@@ -259,16 +269,13 @@
             background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.1), transparent);
             transition: left 0.5s ease;
         }
-        
         .innovation-card:hover::before {
             left: 100%;
         }
-        
         .innovation-card:hover {
             transform: translateY(-15px);
             box-shadow: var(--shadow-hover);
         }
-        
         .innovation-icon {
             font-size: 4rem;
             background: linear-gradient(45deg, var(--primary-solid), var(--accent-green));
@@ -277,13 +284,11 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
         }
-        
         .team-enhanced {
             background-color: #f8f9fa;
             color: var(--text-dark);
             padding: 100px 0;
         }
-        
         .team-card-enhanced {
             background: var(--background);
             border: 1px solid var(--border);
@@ -295,7 +300,6 @@
             position: relative;
             overflow: hidden;
         }
-        
         .team-card-enhanced::before {
             content: '';
             position: absolute;
@@ -308,19 +312,15 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
         .team-card-enhanced:hover::before {
             opacity: 1;
         }
-        
         @keyframes rotate {
             100% { transform: rotate(360deg); }
         }
-        
         .team-card-enhanced:hover {
             transform: translateY(-10px) scale(1.02);
         }
-        
         .team-photo-enhanced {
             width: 120px;
             height: 120px;
@@ -329,35 +329,27 @@
             position: relative;
             overflow: hidden;
         }
-        
         .team-photo-enhanced img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-        
         .team-card-enhanced:hover .team-photo-enhanced img {
             transform: scale(1.1);
         }
-        
         .pulse-animation {
             animation: pulse 2s infinite;
         }
-        
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-        
-        /* Responsive */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.5rem; }
-            
-            /* Responsive para la línea de tiempo */
             .timeline-container::after {
-                left: 31px; /* Mueve la línea a la izquierda */
+                left: 31px;
             }
             .timeline-item {
                 width: 100%;
@@ -365,14 +357,13 @@
                 padding-right: 25px;
             }
             .timeline-item:nth-child(even) {
-                left: 0%; /* Todos los elementos a la izquierda */
+                left: 0%;
             }
             .timeline-item::after,
             .timeline-item:nth-child(odd)::after, 
             .timeline-item:nth-child(even)::after {
-                left: 15px; /* Mueve todos los puntos a la línea de la izquierda */
+                left: 15px;
             }
-
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
@@ -384,6 +375,16 @@
                 <a href="index.html" class="logo">
                     <img src="assets/img/Greenhaul-fl.svg" alt="Logo de GreenHaul">
                 </a>
+                <div class="navbar-collapse" id="navbarCollapse">
+                    <ul class="nav-links-list">
+                        <li><a href="index.html" class="nav-link">Inicio</a></li>
+                        <li><a href="productos.html" class="nav-link">Productos</a></li>
+                        <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+                        <li><a href="nosotros.html" class="nav-link active">Nosotros</a></li>
+                        <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+                        <li><a href="faq.html" class="nav-link">Preguntas</a></li>
+                    </ul>
+                </div>
                 <div class="navbar-right-items">
                     <div class="navbar-user-actions" id="navbarUserActions">
                         <a href="login.html" class="btn btn-outline" id="loginBtn">Iniciar Sesión</a>
@@ -402,20 +403,9 @@
                     <span class="toggler-icon"></span>
                     <span class="toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse" id="navbarCollapse">
-                    <ul class="nav-links-list">
-                        <li><a href="index.html" class="nav-link">Inicio</a></li>
-                        <li><a href="productos.html" class="nav-link">Productos</a></li>
-                        <li><a href="servicios.html" class="nav-link">Servicios</a></li>
-                        <li><a href="nosotros.html" class="nav-link active">Nosotros</a></li>
-                        <li><a href="contacto.html" class="nav-link">Contacto</a></li>
-                        <li><a href="faq.html" class="nav-link">Preguntas</a></li>
-                    </ul>
-                </div>
             </div>
         </nav>
     </header>
-
     <main class="page-content">
         <section class="tech-hero">
             <div class="floating-elements">
@@ -435,7 +425,6 @@
                 </div>
             </div>
         </section>
-
         <section class="stats-section">
             <div class="container">
                 <div class="section-title">
@@ -466,7 +455,6 @@
                 </div>
             </div>
         </section>
-
         <section class="tech-timeline">
             <div class="timeline-container">
                 <div class="timeline-item">
@@ -507,7 +495,6 @@
                 </div>
             </div>
         </section>
-
         <section class="section" id="como-funciona">
             <div class="container">
                 <div class="section-title">
@@ -520,31 +507,26 @@
                         <h3>100% Reutilizables</h3>
                         <p>Nuestras cajas de plástico resistente se pueden usar cientos de veces, eliminando el desperdicio de cartón.</p>
                     </div>
-                    
                     <div class="innovation-card">
                         <div class="innovation-icon"><i class="fas fa-shield-alt"></i></div>
                         <h3>Súper Resistentes</h3>
                         <p>Soportan hasta 30kg cada una y son impermeables. Tus pertenencias estarán más protegidas que en cartón.</p>
                     </div>
-                    
                     <div class="innovation-card">
                         <div class="innovation-icon"><i class="fas fa-truck"></i></div>
                         <h3>Entrega y Recolección</h3>
                         <p>Te llevamos las cajas limpias a tu domicilio y las recogemos cuando termines. Sin complicaciones.</p>
                     </div>
-                    
                     <div class="innovation-card">
                         <div class="innovation-icon"><i class="fas fa-dollar-sign"></i></div>
                         <h3>Más Económico</h3>
                         <p>Alquilar nuestras cajas cuesta menos que comprar cajas de cartón nuevas, y no tienes que deshacerte de ellas.</p>
                     </div>
-                    
                     <div class="innovation-card">
                         <div class="innovation-icon"><i class="fas fa-clock"></i></div>
                         <h3>Ahorra Tiempo</h3>
                         <p>No pierdas tiempo buscando cajas en tiendas o armándolas. Las nuestras llegan listas para usar.</p>
                     </div>
-                    
                     <div class="innovation-card">
                         <div class="innovation-icon"><i class="fas fa-leaf"></i></div>
                         <h3>Cuida el Planeta</h3>
@@ -553,7 +535,6 @@
                 </div>
             </div>
         </section>
-
         <section class="team-enhanced">
             <div class="container">
                 <div class="section-title">
@@ -573,7 +554,6 @@
                             <a href="#" style="color: var(--primary-solid);"><i class="fab fa-twitter"></i></a>
                         </div>
                     </div>
-                    
                     <div class="team-card-enhanced">
                         <div class="team-photo-enhanced">
                             <img src="https://i.pravatar.cc/150?img=5" alt="Ana Gómez">
@@ -586,7 +566,6 @@
                             <a href="#" style="color: var(--primary-solid);"><i class="fab fa-instagram"></i></a>
                         </div>
                     </div>
-                    
                     <div class="team-card-enhanced">
                         <div class="team-photo-enhanced">
                             <img src="https://i.pravatar.cc/150?img=8" alt="Carlos Ruiz">
@@ -599,7 +578,6 @@
                             <a href="#" style="color: var(--primary-solid);"><i class="fab fa-facebook"></i></a>
                         </div>
                     </div>
-                    
                     <div class="team-card-enhanced">
                         <div class="team-photo-enhanced">
                             <img src="https://i.pravatar.cc/150?img=32" alt="Sofía López">
@@ -616,7 +594,6 @@
             </div>
         </section>
     </main>
-
     <footer class="footer">
         <div class="container footer-content">
             <div class="footer-info">
@@ -650,7 +627,6 @@
             &copy; <span id="current-year"></span> greenhauL. Todos los derechos reservados.
         </div>
     </footer>
-    
     <div class="cart-modal-overlay" id="cartModalOverlay">
         <div class="cart-modal">
             <div class="cart-modal-header">
@@ -675,84 +651,52 @@
             </div>
         </div>
     </div>
-
     <div class="cart-notification" id="cartNotification">
         <div class="notification-content">
             <div class="notification-icon-wrapper"><span class="notification-icon"></span></div>
             <p id="notificationText"></p>
         </div>
     </div>
-
     <script type="module" src="assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // ===================================================================
-            // INICIO: LÓGICA DE INICIO DE SESIÓN Y ACTUALIZACIÓN DEL HEADER
-            // ===================================================================
             const loginBtn = document.getElementById('loginBtn');
             const accountLink = document.getElementById('accountLink');
             const userNameSpan = document.getElementById('userName');
             const logoutBtn = document.getElementById('logoutBtn');
-
             function updateLoginStatus() {
-                // Intenta obtener el usuario del localStorage
                 const loggedInUserStr = localStorage.getItem('loggedInUser');
-                
                 if (loggedInUserStr) {
                     const loggedInUser = JSON.parse(loggedInUserStr);
-                    // Si hay un usuario, muestra su información
                     if (loginBtn) loginBtn.style.display = 'none';
-                    if (accountLink) accountLink.style.display = 'inline'; // 'inline' o 'block' según tu CSS
+                    if (accountLink) accountLink.style.display = 'inline';
                     if (logoutBtn) logoutBtn.style.display = 'inline';
                     if (userNameSpan) userNameSpan.textContent = loggedInUser.name;
                 } else {
-                    // Si no hay usuario, muestra el botón de Iniciar Sesión
                     if (loginBtn) loginBtn.style.display = 'inline';
                     if (accountLink) accountLink.style.display = 'none';
                     if (logoutBtn) logoutBtn.style.display = 'none';
                 }
             }
-
-            // Añade un listener al botón de logout
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
-                    // Borra al usuario del localStorage
                     localStorage.removeItem('loggedInUser');
-                    // Actualiza el header inmediatamente
                     updateLoginStatus();
-                    // Opcional: redirigir a la página de inicio o login
-                    // window.location.href = 'index.html'; 
                 });
             }
-
-            // Llama a la función para establecer el estado inicial del header
             updateLoginStatus();
-            // ===================================================================
-            // FIN: LÓGICA DE INICIO DE SESIÓN
-            // ===================================================================
-
-
-            // Script para actualizar el año en el footer
             const yearSpan = document.getElementById('current-year');
             if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-
-            // Animaciones de timeline
             const timelineItems = document.querySelectorAll('.timeline-item');
-            
             const timelineObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
                     }
                 });
-            }, { threshold: 0.1 }); // Se ajusta el threshold para que se active antes
-            
+            }, { threshold: 0.1 });
             timelineItems.forEach(item => timelineObserver.observe(item));
-            
-            // Animación de contadores
             const statNumbers = document.querySelectorAll('.stat-number');
-            
             const statsObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -760,20 +704,17 @@
                         const target = parseInt(element.getAttribute('data-target'));
                         const isPercent = element.textContent.includes('%');
                         animateCounter(element, target, isPercent);
-                        observer.unobserve(element); // Dejar de observar una vez que la animación comienza
+                        observer.unobserve(element);
                     }
                 });
             }, { threshold: 0.5 });
-            
             statNumbers.forEach(stat => statsObserver.observe(stat));
-            
             function animateCounter(element, target, isPercent) {
                 let current = 0;
-                const duration = 2000; // 2 segundos
-                const stepTime = 20; // Actualizar cada 20ms
+                const duration = 2000;
+                const stepTime = 20;
                 const totalSteps = duration / stepTime;
                 const increment = target / totalSteps;
-
                 const timer = setInterval(() => {
                     current += increment;
                     if (current >= target) {
@@ -783,18 +724,16 @@
                     element.textContent = Math.floor(current) + (isPercent ? '%' : '');
                 }, stepTime);
             }
-            
-            // Efecto parallax suave
             window.addEventListener('scroll', () => {
-                const scrolled = window.pageYOffset;
+                const scrolled = window.page
+                YOffset;
                 const parallaxElements = document.querySelectorAll('.floating-element');
-                
                 parallaxElements.forEach((element, index) => {
                     const speed = 0.5 + (index * 0.1);
                     element.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.1}deg)`;
                 });
             });
-            
+
             // Smooth scroll para enlaces internos
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
